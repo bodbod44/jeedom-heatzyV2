@@ -494,7 +494,7 @@ class HttpGizwits {
      * 
      * @return Un tableau associatif ou false en cas d'erreur
      */
-    public static function GetConsigne($Did) {
+    public static function GetConsigne($UserToken, $Did) {
         
         if(empty($Did))
             {
@@ -506,7 +506,8 @@ class HttpGizwits {
         $params = array(
                 CURLOPT_HTTPHEADER => array(
                         'Accept: application/json',
-                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId
+                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+			'X-Gizwits-User-token: '.$UserToken
                 ),
                 CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
                 CURLOPT_RETURNTRANSFER => 1,
@@ -539,6 +540,7 @@ class HttpGizwits {
         //if(isset($aRep['error_message'])) {
         //    throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
        // }
+	log::add('heatzy', 'debug',  __METHOD__.':'.var_export($params, true));
         log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
         return $aRep;
     }
@@ -729,7 +731,7 @@ class heatzy extends eqLogic {
             $eqLogic->save();
                           
             if ($eqLogic->getIsEnable() == 1) { /// mise à jour du did
-                $eqLogic->updateHeatzyDid($aStatus);
+                 $eqLogic->updateHeatzyDid($UserToken,$aStatus);
             }
         }
         
@@ -739,13 +741,14 @@ class heatzy extends eqLogic {
     /**
      * @brief Fonction de mise à jour du device did
      */
-    public function updateHeatzyDid($aDevice = array()) {
+    public function updateHeatzyDid($UserToken, $aDevice = array()) {
       
         if(empty($aDevice)) {
             /// Lecture de l'etat
-            $aDevice = HttpGizwits::GetConsigne($this->getLogicalId());
+            $UserToken = config::byKey('UserToken','heatzy','none');
+            $aDevice = HttpGizwits::GetConsigne($UserToken, $this->getLogicalId());
             if($aDevice === false) {
-                log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+                log::add('heatzy', 'warning',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
                 $this->setStatus('timeout','1');
                 $this->save();
                 return false;
@@ -1398,7 +1401,7 @@ class heatzyCmd extends cmd {
         $Result = array();
         
         if ($this->getLogicalId() == 'refresh') {
-            $this->getEqLogic()->updateHeatzyDid();
+            $this->getEqLogic()->updateHeatzyDid($UserToken);
         }
         else if($this->getType() == 'info' ) {
               return $this->getValue();
@@ -1523,7 +1526,7 @@ class heatzyCmd extends cmd {
             }
             
             /// Mise à jour de l'état
-            $this->getEqLogic()->updateHeatzyDid();
+            $this->getEqLogic()->updateHeatzyDid($UserToken);
             
         } /// Fin action
         $mc = cache::byKey('heatzyWidgetmobile' . $this->getEqLogic()->getId());
