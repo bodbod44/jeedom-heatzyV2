@@ -63,7 +63,7 @@ class HttpGizwits {
                     CURLOPT_FRESH_CONNECT => 1,
                     CURLOPT_RETURNTRANSFER => 1,
                     CURLOPT_FORBID_REUSE => 1,
-                    CURLOPT_TIMEOUT => 4,
+                    CURLOPT_TIMEOUT => 10,
                     CURLOPT_POSTFIELDS => $data
             );
     
@@ -122,7 +122,7 @@ class HttpGizwits {
                 ),
                 CURLOPT_URL => self::$UrlGizwits.'/app/datapoint?product_key='.$ProductKey,
                 CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_TIMEOUT => 4
+                CURLOPT_TIMEOUT => 10
         );
 
         /// Initialisation de la ressources curl
@@ -181,7 +181,7 @@ class HttpGizwits {
                 ),
                 CURLOPT_URL => self::$UrlGizwits.'/app/bindings?limit=20&amp;skip=0',
                 CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_TIMEOUT => 4
+                CURLOPT_TIMEOUT => 10
         );
     
         /// Initialisation de la ressources curl
@@ -243,7 +243,7 @@ class HttpGizwits {
                 ),
                 CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did.'/scheduler?limit='.$Limit.'&amp;skip='.$Skip,
                 CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_TIMEOUT => 4
+                CURLOPT_TIMEOUT => 10
         );
 
         /// Initialisation de la ressources curl
@@ -313,7 +313,7 @@ class HttpGizwits {
                 CURLOPT_FRESH_CONNECT => 1,
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_FORBID_REUSE => 1,
-                CURLOPT_TIMEOUT => 4,
+                CURLOPT_TIMEOUT => 10,
                 CURLOPT_POSTFIELDS => $data
         );
         
@@ -383,7 +383,7 @@ class HttpGizwits {
                 CURLOPT_FRESH_CONNECT => 1,
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_FORBID_REUSE => 1,
-                CURLOPT_TIMEOUT => 4,
+                CURLOPT_TIMEOUT => 10,
                 CURLOPT_POSTFIELDS => $data
         );
         
@@ -453,7 +453,7 @@ class HttpGizwits {
                 CURLOPT_FRESH_CONNECT => 1,
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_FORBID_REUSE => 1,
-                CURLOPT_TIMEOUT => 4,
+                CURLOPT_TIMEOUT => 10,
                 CURLOPT_POSTFIELDS => $data
         );
 
@@ -510,7 +510,7 @@ class HttpGizwits {
                 ),
                 CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
                 CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_TIMEOUT => 4
+                CURLOPT_TIMEOUT => 10
         );
         /// Initialisation de la ressources curl
         $gizwits = curl_init();
@@ -568,7 +568,7 @@ class HttpGizwits {
                 ),
                 CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did,
                 CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_TIMEOUT => 4
+                CURLOPT_TIMEOUT => 10
         );
         
         /// Initialisation de la ressources curl
