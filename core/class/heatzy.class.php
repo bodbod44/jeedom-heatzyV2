@@ -840,6 +840,9 @@ class heatzy extends eqLogic {
           
           if( isset ($aDevice['attr']['timer_switch']) )
           		$this->checkAndUpdateCmd('etatprog', $aDevice['attr']['timer_switch'] );
+
+	  if( isset ($aDevice['attr']['lock_switch']) )
+          		$this->checkAndUpdateCmd('etatlock', $aDevice['attr']['lock_switch'] );
         }
         else {                                             
           log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
@@ -1071,7 +1074,7 @@ class heatzy extends eqLogic {
                 $cmd->save();
             }
         }
-            
+            	// Programmation On/Off
 	        $cmd = $this->getCmd(null, 'ProgOn');
 	        if (!is_object($cmd)) {
 	            $cmd = new heatzyCmd();
@@ -1108,6 +1111,51 @@ class heatzy extends eqLogic {
 	            $etat = new heatzyCmd();
 	            $etat->setName(__('Etat programmation', __FILE__));
 	            $etat->setLogicalId('etatprog');
+	            $etat->setType('info');
+	            $etat->setSubType('binary');
+	            $etat->setEqLogic_id($this->getId());
+	            $etat->setIsHistorized(0);
+	            $etat->setIsVisible(1);
+	            $etat->save();
+	        }
+
+	    	// Verouillage-lock On/Off
+	        $cmd = $this->getCmd(null, 'LockOn');
+	        if (!is_object($cmd)) {
+	            $cmd = new heatzyCmd();
+	            $cmd->setLogicalId('LockOn');
+	            $cmd->setIsVisible(1);
+	            $cmd->setName(__('Activer Lock', __FILE__));
+	            $cmd->setType('action');
+	            $cmd->setSubType('other');
+	            $cmd->setConfiguration('infoName', 'etatlock');
+	            $cmd->setEqLogic_id($this->getId());
+	            $cmd->setIsHistorized(0);
+	            $cmd->setIsVisible(1);
+	            $cmd->save();
+	        }
+	        
+	        $cmd = $this->getCmd(null, 'LockOff');
+	        if (!is_object($cmd)) {
+	            $cmd = new heatzyCmd();
+	            $cmd->setLogicalId('LockOff');
+	            $cmd->setIsVisible(1);
+	            $cmd->setName(__('Désactiver Lock', __FILE__));
+	            $cmd->setType('action');
+	            $cmd->setSubType('other');
+	            $cmd->setConfiguration('infoName', 'etatlock');
+	            $cmd->setEqLogic_id($this->getId());
+	            $cmd->setIsHistorized(0);
+	            $cmd->setIsVisible(1);
+	            $cmd->save();
+	        }
+	        
+	        /// Creation de la commande info etatlock binaire
+	        $etat = $this->getCmd(null, 'etatlock');
+	        if (!is_object($etat)) {
+	            $etat = new heatzyCmd();
+	            $etat->setName(__('Etat lock', __FILE__));
+	            $etat->setLogicalId('etatlock');
 	            $etat->setType('info');
 	            $etat->setSubType('binary');
 	            $etat->setEqLogic_id($this->getId());
@@ -1329,6 +1377,16 @@ class heatzy extends eqLogic {
       
         $ProgOn = $this->getCmd(null,'ProgOn');
         $replace['#cmd_progon_id#'] = (is_object($ProgOn)) ? $ProgOn->getId() : '';
+
+        $Etat = $this->getCmd(null,'etatlock');
+        $replace['#info_lock#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
+        $replace['#cmd_lock_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
+      
+        $LockOff = $this->getCmd(null,'LockOff');
+        $replace['#cmd_lockoff_id#'] = (is_object($LockOff)) ? $LockOff->getId() : '';
+      
+        $LockOn = $this->getCmd(null,'LockOn');
+        $replace['#cmd_lockon_id#'] = (is_object($LockOn)) ? $LockOn->getId() : '';    
       
         if( $product == 'Flam_Week2' 
          || $product == 'INEA') {     /// Pour heatzy flam ou inea mais par defaut le pilote
@@ -1460,6 +1518,38 @@ class heatzyCmd extends cmd {
                 $eqLogic->GestProg(false);
               else {
               	$Consigne = array( 'attrs' => array ( 'timer_switch' => 0 )  );
+              	
+              	$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+              	if($Result === false) {
+              		log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+              		return false;
+              	}
+              }
+              $eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
+            }
+	    else if ($this->getLogicalId() == 'LockOn') {
+            	
+            	if( $eqLogic->getConfiguration('product', '') == 'Heatzy' ||
+            			$eqLogic->getConfiguration('product', '') == 'Flam_Week2')
+                $eqLogic->GestProg(true);
+              else {
+              	$Consigne = array( 'attrs' => array ( 'lock_switch' => 1 )  );
+              	
+              	$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+              	if($Result === false) {
+              		log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+              		return false;
+              	}
+              }
+              $eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
+            }
+            else if ($this->getLogicalId() == 'LockOff') {
+            	
+							if( $eqLogic->getConfiguration('product', '') == 'Heatzy' ||
+            			$eqLogic->getConfiguration('product', '') == 'Flam_Week2')
+                $eqLogic->GestProg(false);
+              else {
+              	$Consigne = array( 'attrs' => array ( 'lock_switch' => 0 )  );
               	
               	$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
               	if($Result === false) {
