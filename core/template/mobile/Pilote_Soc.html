@@ -91,11 +91,11 @@
     jeedom.cmd.update['#cmd_lock_id#'] = function(_options){
         if(_options.display_value == 1) {
           $('.lock[data-cmd_id=#cmd_lock_id#]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-          $('.lock[data-cmd_id=#cmd_lock_id#]').attr('title', 'Désactiver la lock');
+          $('.lock[data-cmd_id=#cmd_lock_id#]').attr('title', 'Désactiver le verrouillage');
           $('.lock[data-cmd_id=#cmd_lock_id#]').parent().attr('data-cmd_id', '#cmd_lockoff_id#');
         } else {
           $('.lock[data-cmd_id=#cmd_lock_id#]').empty().append('<i class="fa fa-toggle-off lockon" style="font-size : 1.1em;color: #FF0000;"></i>');
-          $('.lock[data-cmd_id=#cmd_lock_id#]').attr('title', 'Activer la lock');
+          $('.lock[data-cmd_id=#cmd_lock_id#]').attr('title', 'Activer le verrouillage');
           $('.lock[data-cmd_id=#cmd_lock_id#]').parent().attr('data-cmd_id', '#cmd_lockon_id#');
         }
       }
