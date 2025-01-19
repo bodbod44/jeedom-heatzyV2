@@ -1125,7 +1125,7 @@ class heatzy extends eqLogic {
 	            $cmd = new heatzyCmd();
 	            $cmd->setLogicalId('LockOn');
 	            $cmd->setIsVisible(1);
-	            $cmd->setName(__('Activer Lock', __FILE__));
+	            $cmd->setName(__('Activer Verrouillage', __FILE__));
 	            $cmd->setType('action');
 	            $cmd->setSubType('other');
 	            $cmd->setConfiguration('infoName', 'etatlock');
@@ -1140,7 +1140,7 @@ class heatzy extends eqLogic {
 	            $cmd = new heatzyCmd();
 	            $cmd->setLogicalId('LockOff');
 	            $cmd->setIsVisible(1);
-	            $cmd->setName(__('Désactiver Lock', __FILE__));
+	            $cmd->setName(__('Désactiver Verrouillage', __FILE__));
 	            $cmd->setType('action');
 	            $cmd->setSubType('other');
 	            $cmd->setConfiguration('infoName', 'etatlock');
