@@ -111,7 +111,12 @@ Et d'une commande **Etat programmation** de type _binaire_ :
 
 * **1** : La programmation est activée
 * **0**: La programmation est désactivée
-                                               
+
+Et d'une commande **Etat Verrouillage** de type _binaire_ :
+
+* **1** : Le verrouillage est activée
+* **0**: Le verrouillage est désactivée
+                                  
 L'équipement de type flam dispose des commandes de type _numerique_ :
 
 * **Temp. confort** : la température de consigne du mode confort
