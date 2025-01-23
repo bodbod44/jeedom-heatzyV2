@@ -1154,7 +1154,7 @@ class heatzy extends eqLogic {
 	        $etat = $this->getCmd(null, 'etatlock');
 	        if (!is_object($etat)) {
 	            $etat = new heatzyCmd();
-	            $etat->setName(__('Etat lock', __FILE__));
+	            $etat->setName(__('Etat Verrouillage', __FILE__));
 	            $etat->setLogicalId('etatlock');
 	            $etat->setType('info');
 	            $etat->setSubType('binary');
