@@ -44,10 +44,12 @@ foreach ($eqLogics as $eqLogic) {
 	$opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
 	echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
 	echo "<center>";
-    if($eqLogic->getConfiguration('product', '')=='Flam_Week2') 	        /// Pour heatzy INEA
-    	echo '<img src="plugins/heatzy/core/template/images/LOGO_FLAM.png" width="100" height="100"/>';
-    else
-        echo '<img src="plugins/heatzy/core/template/images/LOGO_PILOTE.png" width="100" height="100"/>';
+	if(file_exists('plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product', '').'.png'))
+		echo '<img src="plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product', '').'.png" width="100" height="100"/>'; // Logo personnalisé
+	else if($eqLogic->getConfiguration('product', '')=='Flam_Week2') 	        /// Pour heatzy INEA
+		echo '<img src="plugins/heatzy/core/template/images/LOGO_FLAM.png" width="100" height="100"/>';
+	else
+		echo '<img src="plugins/heatzy/core/template/images/LOGO_PILOTE.png" width="100" height="100"/>';
 	echo "</center>";
 	echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><center>' . $eqLogic->getHumanName(true, true) . '</center></span>';
 	echo '</div>';
