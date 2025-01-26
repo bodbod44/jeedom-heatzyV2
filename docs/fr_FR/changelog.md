@@ -1,8 +1,62 @@
+
+# 26/01/2025
+
+- Mise à jour du changelog
+  
+# 25/01/2025
+
+- Ajout logo pour le type INEA
+- Ajout logo Flam-week2
+- Ajout logo Elec_Pro
+
+# 24/01/2025
+
+- Modification icone Heatzy ([Merci dragoon25](https://community.jeedom.com/u/dragoon25/summary))
+
+# 23/01/2025
+
+- Ajout d'une personalisation du logo équipement
+  - Si le logo n'est pas trouvé, il affiche l'éclaur ou la flamme
+  - Logo : Pilote2, Pilote_Soc, flam
+- Correction clic sur le filtre de gauche dans la configuration
+- Renommage de la commande Etat Lock -> Etat Vérouillage
+- Correction displayExeption (ajout d'une condition sur la version jeedom) 
+
+# 22/01/2025
+
+- Ajout de la fonctionnalité de Verrouillage pour Pilote2 (dashboard+mobile+API) ([Signalement](https://community.jeedom.com/t/resurrection-du-plugin-heatzy-mise-a-jour/136824/2?u=bodbod))
+
+# 19/01/2025
+
+- Renommage de la commande lock en Verouillage (dashboard + mobile + commandes actions)
+- Correction affichage du logo qui était en 403 (affichage de l'éclair ou de la flamme)
+- Ajout du mode Verrouillage dans la documentation
+  
+# 18/01/2025
+
+- Ajout de la fonctionnalité de Verrouillage pour Pilote_Soc (dashboard+mobile+API) ([Signalement](https://community.jeedom.com/t/plugin-tiers-heatzy/54291/5?u=bodbod))
+  - Le mode verouillage évite qu’une tiers personne modifie le fonctionnement du radiateur via le module physique (blque toutes actions faîtes depuis le bouton de contrôle du module)
+  - Le mode verrouillage permet également d'éteindre les leds sur le module (pratique si ceux-ci sont placés dans une chambre)
+- Modification de l'icone du plugin pour améliorer la visibilité en mode sombre ([Signalement](https://community.jeedom.com/t/plugin-tiers-heatzy/54291/3?u=bodbod))
+
+# 10/01/2025
+
+- Correction "ERROR : heatzy::Login : impossible de se connecter" ([Signalement](https://community.jeedom.com/t/error-heatzy-login-impossible-de-se-connecter/129877))
+- Correction du problème token sur GetConsigne ([Signalement](https://community.jeedom.com/t/probleme-token-depuis-le-passage-a-2024/118282))
+- Call to undefined displayExeption ([Signalement](https://community.jeedom.com/t/lors-de-la-synchronisation-erreur-500-internal-server-error/134687/3?u=bodbod) / [Détail1](https://community.jeedom.com/t/correction-ajax-displayexeption-e-a-remplacer-par-displayexception-e-et-doc-absente-en-beta/105525) / [Détail2](https://community.jeedom.com/t/correction-ajax-displayexeption-e-a-remplacer-par-displayexception-e/105523))
+- Affichage équipement Pilote_Soc_C3.html (Dashboard+Mobile) ([Signalement](https://community.jeedom.com/t/affichage-equipement/95357/4?u=bodbod))
+
 # 20/10/2019
 
 - Affichage compatible pour jeedom v4
 - Chaque modules disposent d'un template
 - La commande timer_switch est utilisé pour activer/désactiver la programmation des modules seconde génération et INEA
+
+---
+---
+Reprise du code de l3flo
+---
+---
 
 # 06/01/2019
 
