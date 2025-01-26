@@ -46,11 +46,7 @@
 - Call to undefined displayExeption ([Signalement](https://community.jeedom.com/t/lors-de-la-synchronisation-erreur-500-internal-server-error/134687/3?u=bodbod) / [Détail1](https://community.jeedom.com/t/correction-ajax-displayexeption-e-a-remplacer-par-displayexception-e-et-doc-absente-en-beta/105525) / [Détail2](https://community.jeedom.com/t/correction-ajax-displayexeption-e-a-remplacer-par-displayexception-e/105523))
 - Affichage équipement Pilote_Soc_C3.html (Dashboard+Mobile) ([Signalement](https://community.jeedom.com/t/affichage-equipement/95357/4?u=bodbod))
 
-# 20/10/2019
 
-- Affichage compatible pour jeedom v4
-- Chaque modules disposent d'un template
-- La commande timer_switch est utilisé pour activer/désactiver la programmation des modules seconde génération et INEA
 
 ---
 ---
@@ -58,6 +54,14 @@ Reprise du code de l3flo
 ---
 ---
 
+
+
+# 20/10/2019
+
+- Affichage compatible pour jeedom v4
+- Chaque modules disposent d'un template
+- La commande timer_switch est utilisé pour activer/désactiver la programmation des modules seconde génération et INEA
+  
 # 06/01/2019
 
 - Ajout du module INEA. Le module est géré de la même maniere que le module FLAM
