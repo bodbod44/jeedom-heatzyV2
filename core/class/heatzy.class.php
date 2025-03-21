@@ -781,14 +781,14 @@ class heatzy extends eqLogic {
         }
       
         /// Mise à jour de la derniere communication
-          if(isset($aDevice['updated_at']) && $aDevice['updated_at'] != 0 ) {
+		if(isset($aDevice['updated_at']) && $aDevice['updated_at'] != 0 ) {
             $this->setStatus('timeout','0');
             log::add('heatzy', 'debug',  'lastCommunication :'.date('Y-m-d H:i:s', $aDevice['updated_at']));
             $this->setConfiguration('lastCommunication', date('Y-m-d H:i:s', $aDevice['updated_at']));
         }
 
-	// Modes de chauffe
-	// Note : Théoriquement pilote_pro doit être lu avec cur_mode (mais le retour contient quand même mode
+		// Modes de chauffe
+		// Note : Théoriquement pilote_pro doit être lu avec cur_mode (mais le retour contient quand même mode
         if(isset($aDevice['attr']['mode'])) {
           
             if( $aDevice['attr']['mode'] == 'cft' ) {  /// Confort
@@ -828,58 +828,59 @@ class heatzy extends eqLogic {
                 }
             }
           
-	  // Consigne de température du mode éco
-          if( isset ($aDevice['attr']['eco_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro')
-               $this->checkAndUpdateCmd('eco_temp', $aDevice['attr']['eco_temp'] );
-		
-	  // Consigne de température du mode éco
-	  // L : La température est exprimée en dixièmes de degrés
-	  // H : La température est exprimée en dizaines de degrés
-          if( isset ($aDevice['attr']['eco_tempH']) && isset ($aDevice['attr']['eco_tempL']) )
-              $this->checkAndUpdateCmd('eco_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['eco_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['eco_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
+			// Consigne de température du mode éco
+			if( isset ($aDevice['attr']['eco_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
+				$this->checkAndUpdateCmd('eco_temp', $aDevice['attr']['eco_temp'] );
 
-	  // Consigne de température du mode confort
-          if( isset ($aDevice['attr']['cft_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro')
-              $this->checkAndUpdateCmd('cft_temp', $aDevice['attr']['cft_temp'] );
+			// Consigne de température du mode éco
+			// L : La température est exprimée en dixièmes de degrés
+			// H : La température est exprimée en dizaines de degrés
+			if( isset ($aDevice['attr']['eco_tempH']) && isset ($aDevice['attr']['eco_tempL']) )
+				$this->checkAndUpdateCmd('eco_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['eco_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['eco_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
 
-	  // Consigne de température du mode confort
-	  // L : La température est exprimée en dixièmes de degrés
-	  // H : La température est exprimée en dizaines de degrés
-          if( isset ($aDevice['attr']['cft_tempH']) && isset ($aDevice['attr']['cft_tempL']) )
-              $this->checkAndUpdateCmd('cft_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cft_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cft_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
+			// Consigne de température du mode confort
+			if( isset ($aDevice['attr']['cft_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
+				$this->checkAndUpdateCmd('cft_temp', $aDevice['attr']['cft_temp'] );
 
-	  // cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
-          if( isset ($aDevice['attr']['cur_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro')
-              $this->checkAndUpdateCmd('cur_temp', $aDevice['attr']['cur_temp'] );
-	  
-	  // cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
-	  // L : La température est exprimée en dixièmes de degrés
-	  // H : La température est exprimée en dizaines de degrés
-	  if( isset ($aDevice['attr']['cur_tempH']) && isset ($aDevice['attr']['cur_tempL']) )
-              $this->checkAndUpdateCmd('cur_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cur_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cur_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
+			// Consigne de température du mode confort
+			// L : La température est exprimée en dixièmes de degrés
+			// H : La température est exprimée en dizaines de degrés
+			if( isset ($aDevice['attr']['cft_tempH']) && isset ($aDevice['attr']['cft_tempL']) )
+				$this->checkAndUpdateCmd('cft_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cft_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cft_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
 
-	  // Taux d’humidité de l’air dans la pièce (%). 
-	  if( isset ($aDevice['attr']['cur_humi']) && $this->getConfiguration('product', '') == 'Pilote_Pro')
-              $this->checkAndUpdateCmd('cur_humi', $aDevice['attr']['cur_humi'] );
+			// cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
+			if( isset ($aDevice['attr']['cur_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
+				$this->checkAndUpdateCmd('cur_temp', $aDevice['attr']['cur_temp'] );
 
-	  // Allumage du radiateur
-	  if( isset ($aDevice['attr']['on_off']) && $this->getConfiguration('product', '') == 'Flam_Week2')
-              $this->checkAndUpdateCmd('plugzy', $aDevice['attr']['on_off'] );
+			// cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
+			// L : La température est exprimée en dixièmes de degrés
+			// H : La température est exprimée en dizaines de degrés
+			if( isset ($aDevice['attr']['cur_tempH']) && isset ($aDevice['attr']['cur_tempL']) )
+				$this->checkAndUpdateCmd('cur_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cur_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cur_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
 
-	  // Activation du mode programmation
-          if( isset ($aDevice['attr']['timer_switch']) )
-          		$this->checkAndUpdateCmd('etatprog', $aDevice['attr']['timer_switch'] );
+			// Taux d’humidité de l’air dans la pièce (%). 
+			if( isset ($aDevice['attr']['cur_humi']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
+				$this->checkAndUpdateCmd('cur_humi', $aDevice['attr']['cur_humi'] );
 
-	  // Activation du verrouillage
-	  if( isset ($aDevice['attr']['lock_switch']) )
-          		$this->checkAndUpdateCmd('etatlock', $aDevice['attr']['lock_switch'] );
+			// Allumage du radiateur
+			if( isset ($aDevice['attr']['on_off']) && $this->getConfiguration('product', '') == 'Flam_Week2' )
+				$this->checkAndUpdateCmd('plugzy', $aDevice['attr']['on_off'] );
+
+			// Activation du mode programmation
+			if( isset ($aDevice['attr']['timer_switch']) )
+				$this->checkAndUpdateCmd('etatprog', $aDevice['attr']['timer_switch'] );
+
+			// Activation du verrouillage
+			if( isset ($aDevice['attr']['lock_switch']) )
+				$this->checkAndUpdateCmd('etatlock', $aDevice['attr']['lock_switch'] );
         }
         else {                                             
-          log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
-          $this->setStatus('timeout','1');
-          $this->save(); /// Enregistre les info
-          return false;
+			log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
+			$this->setStatus('timeout','1');
+			$this->save(); /// Enregistre les info
+			return false;
         }
+		
         $this->save(); /// Enregistre les info
         /// Recherche la valeur de la clef du mode courant
         log::add('heatzy', 'debug',  $this->getLogicalId().' : Mode '.$KeyMode);
@@ -1241,15 +1242,15 @@ class heatzy extends eqLogic {
 			/// Creation de la commande info du plugzy
 			$Plugzy = $this->getCmd(null, 'plugzy'); 
 			if (!is_object($Plugzy)) {
-			  $Plugzy = new heatzyCmd();
-			  $Plugzy->setName(__('Plugzy', __FILE__));
-			  $Plugzy->setLogicalId('plugzy');
-			  $Plugzy->setType('info');
-			  $Plugzy->setSubType('binary');
-			  $Plugzy->setEqLogic_id($this->getId());
-			  $Plugzy->setIsHistorized(0);
-			  $Plugzy->setIsVisible(1);
-			  $Plugzy->save();
+				$Plugzy = new heatzyCmd();
+				$Plugzy->setName(__('Plugzy', __FILE__));
+				$Plugzy->setLogicalId('plugzy');
+				$Plugzy->setType('info');
+				$Plugzy->setSubType('binary');
+				$Plugzy->setEqLogic_id($this->getId());
+				$Plugzy->setIsHistorized(0);
+				$Plugzy->setIsVisible(1);
+				$Plugzy->save();
 			}
 	          
 			/// Creation de la commande plugzy on
@@ -1286,7 +1287,7 @@ class heatzy extends eqLogic {
         }
         
         if( $this->getConfiguration('product', '') == 'Flam_Week2' ||
-            $this->getConfiguration('product', '') == 'INEA') ||
+            $this->getConfiguration('product', '') == 'INEA' ||
             $this->getConfiguration('product', '') == 'Pilote_Pro') {    /// Pour heatzy flam ou inea ou pilote_pro
           
 			/// Creation de la commande info de la temperature de confort
@@ -1333,22 +1334,22 @@ class heatzy extends eqLogic {
 				$CurTemp->setIsVisible(1);
 				$CurTemp->save();
 			}
-          
-        }
+        } // if flam/inea/pro
 		
 		if ( $this->getConfiguration('product', '') == 'Pilote_Pro' ) {
 			/// Creation de la commande info du pilote_pro
 			$CurHum = $this->getCmd(null, 'cur_hum'); 
 			if (!is_object($CurHum)) {
-			  $CurHum = new heatzyCmd();
-			  $CurHum->setName(__('Taux Humidité', __FILE__));
-			  $CurHum->setLogicalId('cur_hum');
-			  $CurHum->setType('info');
-			  $CurHum->setSubType('binary');
-			  $CurHum->setEqLogic_id($this->getId());
-			  $CurHum->setIsHistorized(0);
-			  $CurHum->setIsVisible(1);
-			  $CurHum->save();
+				$CurHum = new heatzyCmd();
+				$CurHum->setName(__('Taux Humidité', __FILE__));
+				$CurHum->setLogicalId('cur_hum');
+				$CurHum->setType('info');
+				$CurTemp->setUnite('%');
+				$CurHum->setSubType('numeric');
+				$CurHum->setEqLogic_id($this->getId());
+				$CurHum->setIsHistorized(0);
+				$CurHum->setIsVisible(1);
+				$CurHum->save();
 			}
 		}
 
