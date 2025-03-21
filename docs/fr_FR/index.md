@@ -12,6 +12,7 @@ Les modules gérés sont :
 * **INEA**
 * **Pilote seconde génération**
 * **Pilote SoC**
+* **Pilote_Pro**
 * **Elec Pro (Acova version)**
 
 Pré-requis
@@ -90,6 +91,8 @@ Chaque équipement dispose des commandes actions :
 * **refresh** : permet forcer le rafraichissement de l'etat de l'équipement
 * **Activer Programmation** : permet d'activer la programmation, pré-définie par l'application Heatzy
 * **Désactiver Programmation** : permet d'activer la programmation, pré-définie par l'application Heatzy
+* **Activer le verrouillage** : permet d'activer le verrouillage et d'éteindre la led, pré-définie par l'application Heatzy
+* **Désactiver le verrouillage** : permet d'activer le verrouillage et d'allumer la led, pré-définie par l'application Heatzy
 * **Plugzy OFF** : Permet d'éteindre le plugzy *(seulement pour l'équipement de type flam)*
 * **Plugzy ON** : Permet d'allumer le plugzy *(seulement pour l'équipement de type flam)*
 
@@ -117,12 +120,15 @@ Et d'une commande **Etat Verrouillage** de type _binaire_ :
 * **1** : Le verrouillage est activée
 * **0**: Le verrouillage est désactivée
                                   
-L'équipement de type flam dispose des commandes de type _numerique_ :
+Les équipements de type flam et pilote_pro disposent des commandes de type _numerique_ :
 
 * **Temp. confort** : la température de consigne du mode confort
 * **Temp. eco**  : la température de consigne du mode eco
 * **Temperature** : la température relevé par plugzy
 
+L'équipement de type pilote_pro dispose des commandes de type _numerique_ :
+
+* **Taux Humidité** : le taux d'huùidité relevé par le module
 
 >Vous pouvez tester la valeur de la commande info *Etat* ou *Mode* dans vos scénarios.
 
