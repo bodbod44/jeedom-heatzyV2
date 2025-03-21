@@ -1338,18 +1338,18 @@ class heatzy extends eqLogic {
 		
 		if ( $this->getConfiguration('product', '') == 'Pilote_Pro' ) {
 			/// Creation de la commande info du pilote_pro
-			$CurHum = $this->getCmd(null, 'cur_hum'); 
-			if (!is_object($CurHum)) {
-				$CurHum = new heatzyCmd();
-				$CurHum->setName(__('Taux Humidité', __FILE__));
-				$CurHum->setLogicalId('cur_hum');
-				$CurHum->setType('info');
-				$CurTemp->setUnite('%');
-				$CurHum->setSubType('numeric');
-				$CurHum->setEqLogic_id($this->getId());
-				$CurHum->setIsHistorized(0);
-				$CurHum->setIsVisible(1);
-				$CurHum->save();
+			$CurHumi = $this->getCmd(null, 'cur_humi'); 
+			if (!is_object($CurHumi)) {
+				$CurHumi = new heatzyCmd();
+				$CurHumi->setName(__('Taux Humidité', __FILE__));
+				$CurHumi->setLogicalId('cur_humi');
+				$CurHumi->setType('info');
+				$CurHumi->setUnite('%');
+				$CurHumi->setSubType('numeric');
+				$CurHumi->setEqLogic_id($this->getId());
+				$CurHumi->setIsHistorized(0);
+				$CurHumi->setIsVisible(1);
+				$CurHumi->save();
 			}
 		}
 
@@ -1437,8 +1437,9 @@ class heatzy extends eqLogic {
         $LockOn = $this->getCmd(null,'LockOn');
         $replace['#cmd_lockon_id#'] = (is_object($LockOn)) ? $LockOn->getId() : '';    
       
-        if( $product == 'Flam_Week2' 
-         || $product == 'INEA') {     /// Pour heatzy flam ou inea mais par defaut le pilote
+        if( $product == 'Flam_Week2' ||
+		    $product == 'INEA' ||
+			$product == 'Pilote_Pro') {     /// Pour heatzy flam ou inea mais par defaut le pilote
 
             if($product == 'Flam_Week2') {
 	            $plugzy = $this->getCmd(null,'plugzy');
@@ -1450,7 +1451,8 @@ class heatzy extends eqLogic {
 	
 	            $plugzyoff = $this->getCmd(null,'plugzyoff');
 	            $replace['#cmd_plugzyoff_id#'] = (is_object($plugzyoff)) ? $plugzyoff->getId() : '';
- 			     }
+ 			}
+			
             $CurTemp = $this->getCmd(null,'cur_temp');
             if( is_object($CurTemp)) {
                 $replace['#history_cur_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
@@ -1477,7 +1479,20 @@ class heatzy extends eqLogic {
               $replace['#cft_temp#'] = $CftTemp->execCmd();
               $replace['#unite_cft_temp#'] = $CftTemp->getUnite();
             }    
-        }
+        } // if flam/inea/pro
+
+        if( $product == 'Pilote_Pro') {     /// Pour pro
+
+            $CurHumi = $this->getCmd(null,'cur_humi');
+            if( is_object($CurHumi)) {
+                $replace['#history_cur_humi#'] = ($CurHumi->getIsHistorized())? 'history cursor' : '';
+              
+                $replace['#cur_humi_id#'] = $CurHumi->getId();
+                $replace['#cur_humi#'] = $CurHumi->execCmd();
+                $replace['#unite_cur_humi#'] = $CurHumi->getUnite();
+                }
+        } // if pro
+
         $html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));
        // cache::set('heatzy' . $_version . $this->getId(), $html, 0);
         return $html;
