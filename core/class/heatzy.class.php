@@ -873,6 +873,10 @@ class heatzy extends eqLogic {
 			// Activation du verrouillage
 			if( isset ($aDevice['attr']['lock_switch']) )
 				$this->checkAndUpdateCmd('etatlock', $aDevice['attr']['lock_switch'] );
+				
+			// Activation de la détection de fenêtre ouverte 
+			if( isset ($aDevice['attr']['window_switch']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
+				$this->checkAndUpdateCmd('window_switch', $aDevice['attr']['window_switch'] );
         }
         else {                                             
 			log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
@@ -1337,7 +1341,8 @@ class heatzy extends eqLogic {
         } // if flam/inea/pro
 		
 		if ( $this->getConfiguration('product', '') == 'Pilote_Pro' ) {
-			/// Creation de la commande info du pilote_pro
+			
+			/// Creation de la commande humidité du pilote_pro
 			$CurHumi = $this->getCmd(null, 'cur_humi'); 
 			if (!is_object($CurHumi)) {
 				$CurHumi = new heatzyCmd();
@@ -1350,6 +1355,20 @@ class heatzy extends eqLogic {
 				$CurHumi->setIsHistorized(0);
 				$CurHumi->setIsVisible(1);
 				$CurHumi->save();
+			}
+			
+			/// Creation de la commande Activation de la détection de fenêtre ouverte du pilote_pro
+			$CurWindows = $this->getCmd(null, 'window_switch'); 
+			if (!is_object($CurWindows)) {
+				$CurWindows = new heatzyCmd();
+				$CurWindows->setName(__('Détection de fenêtre ouverte', __FILE__));
+				$CurWindows->setLogicalId('window_switch');
+				$CurWindows->setType('info');
+				$CurWindows->setSubType('binary');
+				$CurWindows->setEqLogic_id($this->getId());
+				$CurWindows->setIsHistorized(0);
+				$CurWindows->setIsVisible(0);
+				$CurWindows->save();
 			}
 		}
 
@@ -1490,7 +1509,15 @@ class heatzy extends eqLogic {
                 $replace['#cur_humi_id#'] = $CurHumi->getId();
                 $replace['#cur_humi#'] = $CurHumi->execCmd();
                 $replace['#unite_cur_humi#'] = $CurHumi->getUnite();
-                }
+            }
+			
+			$WindowsSwitch = $this->getCmd(null,'window_switch');
+			if( is_object($WindowsSwitch)) {
+				$replace['#WindowsSwitch#'] = (is_object($WindowsSwitch)) ? $WindowsSwitch->execCmd() : '';
+				$replace['#WindowsSwitchid#'] = (is_object($WindowsSwitch)) ? $WindowsSwitch->getId() : '';
+				$replace['#WindowsSwitch_display#'] = (is_object($WindowsSwitch) && $WindowsSwitch->getIsVisible()) ? '#Etat_display#' : 'none';
+				$replace['#WindowsSwitch_history#'] = (is_object($WindowsSwitch) && $WindowsSwitch->getIsHistorized())? 'history cursor' : '';
+			}
         } // if pro
 
         $html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));
