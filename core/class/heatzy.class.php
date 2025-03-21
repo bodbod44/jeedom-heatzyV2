@@ -787,6 +787,8 @@ class heatzy extends eqLogic {
             $this->setConfiguration('lastCommunication', date('Y-m-d H:i:s', $aDevice['updated_at']));
         }
 
+	// Modes de chauffe
+	// Note : Théoriquement pilote_pro doit être lu avec cur_mode (mais le retour contient quand même mode
         if(isset($aDevice['attr']['mode'])) {
           
             if( $aDevice['attr']['mode'] == 'cft' ) {  /// Confort
@@ -826,21 +828,49 @@ class heatzy extends eqLogic {
                 }
             }
           
-          if( isset ($aDevice['attr']['on_off']) && $this->getConfiguration('product', '') == 'Flam_Week2')
-              $this->checkAndUpdateCmd('plugzy', $aDevice['attr']['on_off'] );
-          
+	  // Consigne de température du mode éco
+          if( isset ($aDevice['attr']['eco_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro')
+               $this->checkAndUpdateCmd('eco_temp', $aDevice['attr']['eco_temp'] );
+		
+	  // Consigne de température du mode éco
+	  // L : La température est exprimée en dixièmes de degrés
+	  // H : La température est exprimée en dizaines de degrés
           if( isset ($aDevice['attr']['eco_tempH']) && isset ($aDevice['attr']['eco_tempL']) )
               $this->checkAndUpdateCmd('eco_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['eco_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['eco_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
-          
+
+	  // Consigne de température du mode confort
+          if( isset ($aDevice['attr']['cft_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro')
+              $this->checkAndUpdateCmd('cft_temp', $aDevice['attr']['cft_temp'] );
+
+	  // Consigne de température du mode confort
+	  // L : La température est exprimée en dixièmes de degrés
+	  // H : La température est exprimée en dizaines de degrés
           if( isset ($aDevice['attr']['cft_tempH']) && isset ($aDevice['attr']['cft_tempL']) )
               $this->checkAndUpdateCmd('cft_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cft_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cft_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
-          
-          if( isset ($aDevice['attr']['cur_tempH']) && isset ($aDevice['attr']['cur_tempL']) )
+
+	  // cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
+          if( isset ($aDevice['attr']['cur_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro')
+              $this->checkAndUpdateCmd('cur_temp', $aDevice['attr']['cur_temp'] );
+	  
+	  // cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
+	  // L : La température est exprimée en dixièmes de degrés
+	  // H : La température est exprimée en dizaines de degrés
+	  if( isset ($aDevice['attr']['cur_tempH']) && isset ($aDevice['attr']['cur_tempL']) )
               $this->checkAndUpdateCmd('cur_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cur_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cur_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
-          
+
+	  // Taux d’humidité de l’air dans la pièce (%). 
+	  if( isset ($aDevice['attr']['cur_humi']) && $this->getConfiguration('product', '') == 'Pilote_Pro')
+              $this->checkAndUpdateCmd('cur_humi', $aDevice['attr']['cur_humi'] );
+
+	  // Allumage du radiateur
+	  if( isset ($aDevice['attr']['on_off']) && $this->getConfiguration('product', '') == 'Flam_Week2')
+              $this->checkAndUpdateCmd('plugzy', $aDevice['attr']['on_off'] );
+
+	  // Activation du mode programmation
           if( isset ($aDevice['attr']['timer_switch']) )
           		$this->checkAndUpdateCmd('etatprog', $aDevice['attr']['timer_switch'] );
 
+	  // Activation du verrouillage
 	  if( isset ($aDevice['attr']['lock_switch']) )
           		$this->checkAndUpdateCmd('etatlock', $aDevice['attr']['lock_switch'] );
         }
@@ -1074,95 +1104,96 @@ class heatzy extends eqLogic {
                 $cmd->save();
             }
         }
-            	// Programmation On/Off
-	        $cmd = $this->getCmd(null, 'ProgOn');
-	        if (!is_object($cmd)) {
-	            $cmd = new heatzyCmd();
-	            $cmd->setLogicalId('ProgOn');
-	            $cmd->setIsVisible(1);
-	            $cmd->setName(__('Activer Programmation', __FILE__));
-	            $cmd->setType('action');
-	            $cmd->setSubType('other');
-	            $cmd->setConfiguration('infoName', 'etatprog');
-	            $cmd->setEqLogic_id($this->getId());
-	            $cmd->setIsHistorized(0);
-	            $cmd->setIsVisible(1);
-	            $cmd->save();
-	        }
+		
+		// Programmation On/Off
+		$cmd = $this->getCmd(null, 'ProgOn');
+		if (!is_object($cmd)) {
+			$cmd = new heatzyCmd();
+			$cmd->setLogicalId('ProgOn');
+			$cmd->setIsVisible(1);
+			$cmd->setName(__('Activer Programmation', __FILE__));
+			$cmd->setType('action');
+			$cmd->setSubType('other');
+			$cmd->setConfiguration('infoName', 'etatprog');
+			$cmd->setEqLogic_id($this->getId());
+			$cmd->setIsHistorized(0);
+			$cmd->setIsVisible(1);
+			$cmd->save();
+		}
 	        
-	        $cmd = $this->getCmd(null, 'ProgOff');
-	        if (!is_object($cmd)) {
-	            $cmd = new heatzyCmd();
-	            $cmd->setLogicalId('ProgOff');
-	            $cmd->setIsVisible(1);
-	            $cmd->setName(__('Désactiver Programmation', __FILE__));
-	            $cmd->setType('action');
-	            $cmd->setSubType('other');
-	            $cmd->setConfiguration('infoName', 'etatprog');
-	            $cmd->setEqLogic_id($this->getId());
-	            $cmd->setIsHistorized(0);
-	            $cmd->setIsVisible(1);
-	            $cmd->save();
-	        }
+		$cmd = $this->getCmd(null, 'ProgOff');
+		if (!is_object($cmd)) {
+			$cmd = new heatzyCmd();
+			$cmd->setLogicalId('ProgOff');
+			$cmd->setIsVisible(1);
+			$cmd->setName(__('Désactiver Programmation', __FILE__));
+			$cmd->setType('action');
+			$cmd->setSubType('other');
+			$cmd->setConfiguration('infoName', 'etatprog');
+			$cmd->setEqLogic_id($this->getId());
+			$cmd->setIsHistorized(0);
+			$cmd->setIsVisible(1);
+			$cmd->save();
+		}
 	        
-	        /// Creation de la commande info etatprog binaire
-	        $etat = $this->getCmd(null, 'etatprog');
-	        if (!is_object($etat)) {
-	            $etat = new heatzyCmd();
-	            $etat->setName(__('Etat programmation', __FILE__));
-	            $etat->setLogicalId('etatprog');
-	            $etat->setType('info');
-	            $etat->setSubType('binary');
-	            $etat->setEqLogic_id($this->getId());
-	            $etat->setIsHistorized(0);
-	            $etat->setIsVisible(1);
-	            $etat->save();
-	        }
+		/// Creation de la commande info etatprog binaire
+		$etat = $this->getCmd(null, 'etatprog');
+		if (!is_object($etat)) {
+			$etat = new heatzyCmd();
+			$etat->setName(__('Etat programmation', __FILE__));
+			$etat->setLogicalId('etatprog');
+			$etat->setType('info');
+			$etat->setSubType('binary');
+			$etat->setEqLogic_id($this->getId());
+			$etat->setIsHistorized(0);
+			$etat->setIsVisible(1);
+			$etat->save();
+		}
 
-	    	// Verouillage-lock On/Off
-	        $cmd = $this->getCmd(null, 'LockOn');
-	        if (!is_object($cmd)) {
-	            $cmd = new heatzyCmd();
-	            $cmd->setLogicalId('LockOn');
-	            $cmd->setIsVisible(1);
-	            $cmd->setName(__('Activer Verrouillage', __FILE__));
-	            $cmd->setType('action');
-	            $cmd->setSubType('other');
-	            $cmd->setConfiguration('infoName', 'etatlock');
-	            $cmd->setEqLogic_id($this->getId());
-	            $cmd->setIsHistorized(0);
-	            $cmd->setIsVisible(1);
-	            $cmd->save();
-	        }
+		// Verouillage-lock On/Off
+		$cmd = $this->getCmd(null, 'LockOn');
+		if (!is_object($cmd)) {
+			$cmd = new heatzyCmd();
+			$cmd->setLogicalId('LockOn');
+			$cmd->setIsVisible(1);
+			$cmd->setName(__('Activer Verrouillage', __FILE__));
+			$cmd->setType('action');
+			$cmd->setSubType('other');
+			$cmd->setConfiguration('infoName', 'etatlock');
+			$cmd->setEqLogic_id($this->getId());
+			$cmd->setIsHistorized(0);
+			$cmd->setIsVisible(1);
+			$cmd->save();
+		}
 	        
-	        $cmd = $this->getCmd(null, 'LockOff');
-	        if (!is_object($cmd)) {
-	            $cmd = new heatzyCmd();
-	            $cmd->setLogicalId('LockOff');
-	            $cmd->setIsVisible(1);
-	            $cmd->setName(__('Désactiver Verrouillage', __FILE__));
-	            $cmd->setType('action');
-	            $cmd->setSubType('other');
-	            $cmd->setConfiguration('infoName', 'etatlock');
-	            $cmd->setEqLogic_id($this->getId());
-	            $cmd->setIsHistorized(0);
-	            $cmd->setIsVisible(1);
-	            $cmd->save();
-	        }
+		$cmd = $this->getCmd(null, 'LockOff');
+		if (!is_object($cmd)) {
+			$cmd = new heatzyCmd();
+			$cmd->setLogicalId('LockOff');
+			$cmd->setIsVisible(1);
+			$cmd->setName(__('Désactiver Verrouillage', __FILE__));
+			$cmd->setType('action');
+			$cmd->setSubType('other');
+			$cmd->setConfiguration('infoName', 'etatlock');
+			$cmd->setEqLogic_id($this->getId());
+			$cmd->setIsHistorized(0);
+			$cmd->setIsVisible(1);
+			$cmd->save();
+		}
 	        
-	        /// Creation de la commande info etatlock binaire
-	        $etat = $this->getCmd(null, 'etatlock');
-	        if (!is_object($etat)) {
-	            $etat = new heatzyCmd();
-	            $etat->setName(__('Etat Verrouillage', __FILE__));
-	            $etat->setLogicalId('etatlock');
-	            $etat->setType('info');
-	            $etat->setSubType('binary');
-	            $etat->setEqLogic_id($this->getId());
-	            $etat->setIsHistorized(0);
-	            $etat->setIsVisible(1);
-	            $etat->save();
-	        }
+		/// Creation de la commande info etatlock binaire
+		$etat = $this->getCmd(null, 'etatlock');
+		if (!is_object($etat)) {
+			$etat = new heatzyCmd();
+			$etat->setName(__('Etat Verrouillage', __FILE__));
+			$etat->setLogicalId('etatlock');
+			$etat->setType('info');
+			$etat->setSubType('binary');
+			$etat->setEqLogic_id($this->getId());
+			$etat->setIsHistorized(0);
+			$etat->setIsVisible(1);
+			$etat->save();
+		}
 
         /// Creation de la commande de rafraichissement
         $refresh = $this->getCmd(null, 'refresh');
@@ -1206,103 +1237,120 @@ class heatzy extends eqLogic {
             $mode->save();
         }
         
-    		if ( $this->getConfiguration('product', '') == 'Flam_Week2' ) {
-	          /// Creation de la commande info du plugzy
-	          $Plugzy = $this->getCmd(null, 'plugzy'); 
-	          if (!is_object($Plugzy)) {
-	              $Plugzy = new heatzyCmd();
-	              $Plugzy->setName(__('Plugzy', __FILE__));
-	              $Plugzy->setLogicalId('plugzy');
-	              $Plugzy->setType('info');
-	              $Plugzy->setSubType('binary');
-	              $Plugzy->setEqLogic_id($this->getId());
-	              $Plugzy->setIsHistorized(0);
-	              $Plugzy->setIsVisible(1);
-	              $Plugzy->save();
-	          }
+		if ( $this->getConfiguration('product', '') == 'Flam_Week2' ) {
+			/// Creation de la commande info du plugzy
+			$Plugzy = $this->getCmd(null, 'plugzy'); 
+			if (!is_object($Plugzy)) {
+			  $Plugzy = new heatzyCmd();
+			  $Plugzy->setName(__('Plugzy', __FILE__));
+			  $Plugzy->setLogicalId('plugzy');
+			  $Plugzy->setType('info');
+			  $Plugzy->setSubType('binary');
+			  $Plugzy->setEqLogic_id($this->getId());
+			  $Plugzy->setIsHistorized(0);
+			  $Plugzy->setIsVisible(1);
+			  $Plugzy->save();
+			}
 	          
-	          /// Creation de la commande plugzy on
-	          $cmd = $this->getCmd(null, 'plugzyon');
-	          if (!is_object($cmd)) {
-	            $cmd = new heatzyCmd();
-	            $cmd->setLogicalId('plugzyon');
-	            $cmd->setIsVisible(1);
-	            $cmd->setName(__('Plugzy ON', __FILE__));
-	            $cmd->setType('action');
-	            $cmd->setSubType('other');
-	            $cmd->setConfiguration('infoName', 'plugzy');
-	            $cmd->setEqLogic_id($this->getId());
-	            $cmd->setIsHistorized(0);
-	            $cmd->setIsVisible(1);
-	            $cmd->save();
-	          }
-	          
-	          /// Creation de la commande plugzy off
-	          $cmd = $this->getCmd(null, 'plugzyoff');
-	          if (!is_object($cmd)) {
-	            $cmd = new heatzyCmd();
-	            $cmd->setLogicalId('plugzyoff');
-	            $cmd->setIsVisible(1);
-	            $cmd->setName(__('Plugzy OFF', __FILE__));
-	            $cmd->setType('action');
-	            $cmd->setSubType('other');
-	            $cmd->setConfiguration('infoName', 'plugzy');
-	            $cmd->setEqLogic_id($this->getId());
-	            $cmd->setIsHistorized(0);
-	            $cmd->setIsVisible(1);
-	            $cmd->save();
-	          }
-          }
+			/// Creation de la commande plugzy on
+			$cmd = $this->getCmd(null, 'plugzyon');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('plugzyon');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Plugzy ON', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'plugzy');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
+			}
+			  
+			/// Creation de la commande plugzy off
+			$cmd = $this->getCmd(null, 'plugzyoff');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('plugzyoff');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Plugzy OFF', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'plugzy');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
+			}
+        }
         
         if( $this->getConfiguration('product', '') == 'Flam_Week2' ||
-            $this->getConfiguration('product', '') == 'INEA') {    /// Pour heatzy flam ou inea
+            $this->getConfiguration('product', '') == 'INEA') ||
+            $this->getConfiguration('product', '') == 'Pilote_Pro') {    /// Pour heatzy flam ou inea ou pilote_pro
           
-          /// Creation de la commande info de la temperature de confort
-          $CftTemp = $this->getCmd(null, 'cft_temp'); 
-          if (!is_object($CftTemp)) {
-              $CftTemp = new heatzyCmd();
-              $CftTemp->setName(__('Temp. confort', __FILE__));
-              $CftTemp->setLogicalId('cft_temp');
-              $CftTemp->setType('info');
-              $CftTemp->setUnite('°C');
-              $CftTemp->setSubType('numeric');
-              $CftTemp->setEqLogic_id($this->getId());
-              $CftTemp->setIsHistorized(0);
-              $CftTemp->setIsVisible(1);
-              $CftTemp->save();
-          }
+			/// Creation de la commande info de la temperature de confort
+			$CftTemp = $this->getCmd(null, 'cft_temp'); 
+			if (!is_object($CftTemp)) {
+				$CftTemp = new heatzyCmd();
+				$CftTemp->setName(__('Temp. confort', __FILE__));
+				$CftTemp->setLogicalId('cft_temp');
+				$CftTemp->setType('info');
+				$CftTemp->setUnite('°C');
+				$CftTemp->setSubType('numeric');
+				$CftTemp->setEqLogic_id($this->getId());
+				$CftTemp->setIsHistorized(0);
+				$CftTemp->setIsVisible(1);
+				$CftTemp->save();
+			}
           
-          /// Creation de la commande info de la temperature eco
-          $EcoTemp = $this->getCmd(null, 'eco_temp'); 
-          if (!is_object($EcoTemp)) {
-              $EcoTemp = new heatzyCmd();
-              $EcoTemp->setName(__('Temp. eco', __FILE__));
-              $EcoTemp->setLogicalId('eco_temp');
-              $EcoTemp->setType('info');
-              $EcoTemp->setUnite('°C');
-              $EcoTemp->setSubType('numeric');
-              $EcoTemp->setEqLogic_id($this->getId());
-              $EcoTemp->setIsHistorized(0);
-              $EcoTemp->setIsVisible(1);
-              $EcoTemp->save();
-          }
+			/// Creation de la commande info de la temperature eco
+			$EcoTemp = $this->getCmd(null, 'eco_temp'); 
+			if (!is_object($EcoTemp)) {
+				$EcoTemp = new heatzyCmd();
+				$EcoTemp->setName(__('Temp. eco', __FILE__));
+				$EcoTemp->setLogicalId('eco_temp');
+				$EcoTemp->setType('info');
+				$EcoTemp->setUnite('°C');
+				$EcoTemp->setSubType('numeric');
+				$EcoTemp->setEqLogic_id($this->getId());
+				$EcoTemp->setIsHistorized(0);
+				$EcoTemp->setIsVisible(1);
+				$EcoTemp->save();
+			}
           
-          /// Creation de la commande info de la temperature courante
-          $CurTemp = $this->getCmd(null, 'cur_temp'); 
-          if (!is_object($CurTemp)) {
-              $CurTemp = new heatzyCmd();
-              $CurTemp->setName(__('Temperature', __FILE__));
-              $CurTemp->setLogicalId('cur_temp');
-              $CurTemp->setType('info');
-              $CurTemp->setUnite('°C');
-              $CurTemp->setSubType('numeric');
-              $CurTemp->setEqLogic_id($this->getId());
-              $CurTemp->setIsHistorized(0);
-              $CurTemp->setIsVisible(1);
-              $CurTemp->save();
-          }
+			/// Creation de la commande info de la temperature courante
+			$CurTemp = $this->getCmd(null, 'cur_temp'); 
+			if (!is_object($CurTemp)) {
+				$CurTemp = new heatzyCmd();
+				$CurTemp->setName(__('Temperature', __FILE__));
+				$CurTemp->setLogicalId('cur_temp');
+				$CurTemp->setType('info');
+				$CurTemp->setUnite('°C');
+				$CurTemp->setSubType('numeric');
+				$CurTemp->setEqLogic_id($this->getId());
+				$CurTemp->setIsHistorized(0);
+				$CurTemp->setIsVisible(1);
+				$CurTemp->save();
+			}
           
         }
+		
+		if ( $this->getConfiguration('product', '') == 'Pilote_Pro' ) {
+			/// Creation de la commande info du pilote_pro
+			$CurHum = $this->getCmd(null, 'cur_hum'); 
+			if (!is_object($CurHum)) {
+			  $CurHum = new heatzyCmd();
+			  $CurHum->setName(__('Taux Humidité', __FILE__));
+			  $CurHum->setLogicalId('cur_hum');
+			  $CurHum->setType('info');
+			  $CurHum->setSubType('binary');
+			  $CurHum->setEqLogic_id($this->getId());
+			  $CurHum->setIsHistorized(0);
+			  $CurHum->setIsVisible(1);
+			  $CurHum->save();
+			}
+		}
 
     }
 
