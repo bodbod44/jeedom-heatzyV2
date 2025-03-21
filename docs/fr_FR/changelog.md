@@ -1,3 +1,10 @@
+# 21/03/2025
+
+- Ajout de la doc sur les API
+- Ajout du template pilote pro (dashboard+mobile)
+- Ajout de l'image du pilote_pro
+- Prise en charge du taux d'humidité pour le pilote_pro
+- Prise en charge de la lecture de cur_temp, com_temp, eco_temp, cft_temp
 
 # 26/01/2025
 
