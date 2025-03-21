@@ -41,6 +41,12 @@
           <i class="programmation"></i>
          </span>
       </span>
+      <!--  Verrouillage -->
+      <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
+        <span title="" class="lock cursor action btn" data-cmd_id="#cmd_lock_id#" data-type="info" data-subtype="numeric" data-version="#version#">
+          <i class="lock"></i>
+         </span>
+      </span>
     </div>
     </span>
     
@@ -50,6 +56,13 @@
         <a><i class="fa fa-2x jeedom-thermometre" style="margin-left: 10px" aria-hidden="true"></i></a>  
         <span style="margin-right: 5px;font-weight: bold;font-size: 2em;"></span>
       </span>
+	  
+	  <!-- Affichage du taux d'humidité -->
+      <span class="cmd cmd-widget #history_cur_humi# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_humi_id#" title="#collectDate#" data-version="#version#">
+        <a><i class="fa fa-2x jeedom-thermometre" style="margin-left: 10px" aria-hidden="true"></i></a>  
+        <span style="margin-right: 5px;font-weight: bold;font-size: 2em;"></span>
+      </span>
+	  
       <div style="margin-top:5px; margin-left: 10px">
         <!-- Affichage de la consigne eco -->
         <span class="cmd cmd-widget #history_eco_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display: #Etat_display#;" title="consigne eco" data-version="#version#">
@@ -109,6 +122,19 @@
          }
        }
      jeedom.cmd.update['#cmd_prog_id#']({display_value:'#info_prog#'});
+
+     jeedom.cmd.update['#cmd_lock_id#'] = function(_options){
+         if(_options.display_value == 1) {
+           $('.lock[data-cmd_id=#cmd_lock_id#]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+           $('.lock[data-cmd_id=#cmd_lock_id#]').attr('title', 'Désactiver le verrouillage');
+           $('.lock[data-cmd_id=#cmd_lock_id#]').parent().attr('data-cmd_id', '#cmd_lockoff_id#');
+         } else {
+           $('.lock[data-cmd_id=#cmd_lock_id#]').empty().append('<i class="fa fa-toggle-off lockon" style="font-size : 1.1em;color: #FF0000;"></i>');
+           $('.lock[data-cmd_id=#cmd_lock_id#]').attr('title', 'Activer le verrouillage');
+           $('.lock[data-cmd_id=#cmd_lock_id#]').parent().attr('data-cmd_id', '#cmd_lockon_id#');
+         }
+       }
+     jeedom.cmd.update['#cmd_lock_id#']({display_value:'#info_lock#'});
     
      jeedom.cmd.update['#cur_temp_id#'] = function(_options){
        $('.cmd[data-cmd_id=#cur_temp_id#]').attr('title','Collectée le '+_options.collectDate);
@@ -126,6 +152,11 @@
      }
      jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp# #unite_cft_temp#',collectDate:'#collectDate#'});
 
+     jeedom.cmd.update['#cur_humi_id#'] = function(_options){
+       $('.cmd[data-cmd_id=#cur_humi_id#] span').value(_options.display_value);
+     }
+     jeedom.cmd.update['#cur_humi_id#']({display_value:': #cur_humi# #unite_cur_humi#',collectDate:'#collectDate#'});
+	 
      jeedom.cmd.update['#Etatid#'] = function(_options){
     	 $('.cmd[data-cmd_id=#Etatid#]').attr('title','Collectée le '+_options.collectDate);
        if (_options.display_value == '0') {
