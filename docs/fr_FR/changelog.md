@@ -1,3 +1,10 @@
+# 22/03/2025
+
+- Correction de la temp pour pilote_pro (/10)
+- Changement de l'icone pour l'humidité (pilote_pro)
+- Désactivation possible du bouton Prog/Vérouillage (Pilote_Soc + Pilote_Pro)
+- Désactivation possible de l'affichage de l'humidité (Pilote_Pro)
+  
 # 21/03/2025
 
 - Ajout de la doc sur les API
