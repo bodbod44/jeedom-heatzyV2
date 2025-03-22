@@ -830,7 +830,7 @@ class heatzy extends eqLogic {
           
 			// Consigne de température du mode éco
 			if( isset ($aDevice['attr']['eco_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('eco_temp', $aDevice['attr']['eco_temp'] );
+				$this->checkAndUpdateCmd('eco_temp', floatval( $aDevice['attr']['eco_temp'] / 10 ) );
 
 			// Consigne de température du mode éco
 			// L : La température est exprimée en dixièmes de degrés
@@ -840,7 +840,7 @@ class heatzy extends eqLogic {
 
 			// Consigne de température du mode confort
 			if( isset ($aDevice['attr']['cft_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('cft_temp', $aDevice['attr']['cft_temp'] );
+				$this->checkAndUpdateCmd('cft_temp', floatval( $aDevice['attr']['cft_temp'] / 10 ) );
 
 			// Consigne de température du mode confort
 			// L : La température est exprimée en dixièmes de degrés
@@ -850,7 +850,7 @@ class heatzy extends eqLogic {
 
 			// cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
 			if( isset ($aDevice['attr']['cur_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('cur_temp', $aDevice['attr']['cur_temp'] );
+				$this->checkAndUpdateCmd('cur_temp', floatval( $aDevice['attr']['cur_temp'] / 10 ) );
 
 			// cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
 			// L : La température est exprimée en dixièmes de degrés
@@ -1588,67 +1588,62 @@ class heatzyCmd extends cmd {
             }
             else if ($this->getLogicalId() == 'ProgOn') {
             	
-            	if( $eqLogic->getConfiguration('product', '') == 'Heatzy' ||
-            			$eqLogic->getConfiguration('product', '') == 'Flam_Week2')
-                $eqLogic->GestProg(true);
-              else {
-              	$Consigne = array( 'attrs' => array ( 'timer_switch' => 1 )  );
+            	if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
+					$eqLogic->GestProg(true);
+				else {
+					$Consigne = array( 'attrs' => array ( 'timer_switch' => 1 )  );
               	
-              	$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-              	if($Result === false) {
-              		log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-              		return false;
-              	}
-              }
-              $eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
+					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+					if($Result === false) {
+						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+						return false;
+					}
+				}
+				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
             }
             else if ($this->getLogicalId() == 'ProgOff') {
-            	
-							if( $eqLogic->getConfiguration('product', '') == 'Heatzy' ||
-            			$eqLogic->getConfiguration('product', '') == 'Flam_Week2')
-                $eqLogic->GestProg(false);
-              else {
-              	$Consigne = array( 'attrs' => array ( 'timer_switch' => 0 )  );
+				if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
+					$eqLogic->GestProg(false);
+				else {
+					$Consigne = array( 'attrs' => array ( 'timer_switch' => 0 )  );
               	
-              	$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-              	if($Result === false) {
-              		log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-              		return false;
-              	}
-              }
-              $eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
+					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+					if($Result === false) {
+						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+						return false;
+					}
+				}
+				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
             }
-	    else if ($this->getLogicalId() == 'LockOn') {
+			else if ($this->getLogicalId() == 'LockOn') {
             	
-            	if( $eqLogic->getConfiguration('product', '') == 'Heatzy' ||
-            			$eqLogic->getConfiguration('product', '') == 'Flam_Week2')
-                $eqLogic->GestProg(true);
-              else {
-              	$Consigne = array( 'attrs' => array ( 'lock_switch' => 1 )  );
+            	if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
+					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'LockOff KO pour Heatzy/Flam_Week2');
+				else {
+					$Consigne = array( 'attrs' => array ( 'lock_switch' => 1 )  );
               	
-              	$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-              	if($Result === false) {
-              		log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-              		return false;
-              	}
-              }
-              $eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
+					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+					if($Result === false) {
+						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+						return false;
+					}
+				}
+				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
             }
             else if ($this->getLogicalId() == 'LockOff') {
             	
-							if( $eqLogic->getConfiguration('product', '') == 'Heatzy' ||
-            			$eqLogic->getConfiguration('product', '') == 'Flam_Week2')
-                $eqLogic->GestProg(false);
-              else {
-              	$Consigne = array( 'attrs' => array ( 'lock_switch' => 0 )  );
-              	
-              	$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-              	if($Result === false) {
-              		log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-              		return false;
-              	}
-              }
-              $eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
+				if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
+					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'LockOff KO pour Heatzy/Flam_Week2');
+				else {
+					$Consigne = array( 'attrs' => array ( 'lock_switch' => 0 )  );
+					
+					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+					if($Result === false) {
+						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+						return false;
+					}
+				}
+				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
             }
             else {
 
@@ -1660,17 +1655,17 @@ class heatzyCmd extends cmd {
                     $Consigne = array( 'raw' => array(1, 1, $Mode[0]) ) ;
                 }
                 else {
-                        switch($Mode[0])
-                        {
-                        case 0:
-                           $Mode = 'cft'; break;
-                        case 1:
-                           $Mode = 'eco'; break;
-                        case 2:
-                           $Mode = 'fro'; break;
-                        case 3:
-                           $Mode = 'stop'; break;
-                        }
+					switch($Mode[0])
+					{
+					case 0:
+					   $Mode = 'cft'; break;
+					case 1:
+					   $Mode = 'eco'; break;
+					case 2:
+					   $Mode = 'fro'; break;
+					case 3:
+					   $Mode = 'stop'; break;
+					}
                   
                     $Consigne = array( 'attrs' => array ( 'mode' => $Mode )  );
                 }
