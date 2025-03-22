@@ -1439,6 +1439,7 @@ class heatzy extends eqLogic {
         $Etat = $this->getCmd(null,'etatprog');
         $replace['#info_prog#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
         $replace['#cmd_prog_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
+		$replace['#Prog_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Prog_display#' : 'none';
       
         $ProgOff = $this->getCmd(null,'ProgOff');
         $replace['#cmd_progoff_id#'] = (is_object($ProgOff)) ? $ProgOff->getId() : '';
@@ -1449,6 +1450,7 @@ class heatzy extends eqLogic {
         $Etat = $this->getCmd(null,'etatlock');
         $replace['#info_lock#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
         $replace['#cmd_lock_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
+		$replace['#Lock_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Lock_display#' : 'none';
       
         $LockOff = $this->getCmd(null,'LockOff');
         $replace['#cmd_lockoff_id#'] = (is_object($LockOff)) ? $LockOff->getId() : '';
