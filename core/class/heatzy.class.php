@@ -1511,6 +1511,7 @@ class heatzy extends eqLogic {
                 $replace['#cur_humi_id#'] = $CurHumi->getId();
                 $replace['#cur_humi#'] = $CurHumi->execCmd();
                 $replace['#unite_cur_humi#'] = $CurHumi->getUnite();
+				$replace['#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none';
             }
 			
 			$WindowsSwitch = $this->getCmd(null,'window_switch');
