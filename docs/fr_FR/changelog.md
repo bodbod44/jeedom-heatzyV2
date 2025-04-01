@@ -1,3 +1,7 @@
+# 01/04/2025
+
+- Correction de la température pour pilote_pro (suppression du /10)
+  
 # 22/03/2025
 
 - Correction de la temp pour pilote_pro (/10)
