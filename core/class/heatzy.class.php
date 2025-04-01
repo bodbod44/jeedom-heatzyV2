@@ -830,7 +830,7 @@ class heatzy extends eqLogic {
           
 			// Consigne de température du mode éco
 			if( isset ($aDevice['attr']['eco_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('eco_temp', floatval( $aDevice['attr']['eco_temp'] / 10 ) );
+				$this->checkAndUpdateCmd('eco_temp', floatval( $aDevice['attr']['eco_temp'] ) );
 
 			// Consigne de température du mode éco
 			// L : La température est exprimée en dixièmes de degrés
@@ -840,7 +840,7 @@ class heatzy extends eqLogic {
 
 			// Consigne de température du mode confort
 			if( isset ($aDevice['attr']['cft_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('cft_temp', floatval( $aDevice['attr']['cft_temp'] / 10 ) );
+				$this->checkAndUpdateCmd('cft_temp', floatval( $aDevice['attr']['cft_temp'] ) );
 
 			// Consigne de température du mode confort
 			// L : La température est exprimée en dixièmes de degrés
@@ -850,7 +850,7 @@ class heatzy extends eqLogic {
 
 			// cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
 			if( isset ($aDevice['attr']['cur_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('cur_temp', floatval( $aDevice['attr']['cur_temp'] / 10 ) );
+				$this->checkAndUpdateCmd('cur_temp', floatval( $aDevice['attr']['cur_temp'] ) );
 
 			// cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
 			// L : La température est exprimée en dixièmes de degrés
