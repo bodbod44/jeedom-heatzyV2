@@ -1,6 +1,7 @@
 # 01/04/2025
 
 - Correction de la température pour pilote_pro (suppression du /10)
+- Correction de la resynchronisation automatique lors du code 9004
   
 # 22/03/2025
 
