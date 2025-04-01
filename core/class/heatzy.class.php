@@ -755,9 +755,9 @@ class heatzy extends eqLogic {
             }
              ///// --- TEST ----
             else if(isset($aDevice['error_message']) && isset($aDevice['error_code'])) {
-                if($aDevice['error_code'] === '9004') {
+                if($aDevice['error_code'] == '9004') {
                     log::add('heatzy', 'error',  __METHOD__.' : '.$aDevice['error_code'].' '.$aDevice['error_message']);
-                    $Nb = $eqLogic->Synchronize();
+                    $Nb = $this->Synchronize(); //$Nb = $eqLogic->Synchronize();
                     if ($Nb == false) {
                         log::add('heatzy', 'error',  __METHOD__.' : erreur synchronisation');
                         return false;
