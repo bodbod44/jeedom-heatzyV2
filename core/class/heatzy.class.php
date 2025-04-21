@@ -1508,28 +1508,28 @@ class heatzy extends eqLogic {
             $CurTemp = $this->getCmd(null,'cur_temp');
             if( is_object($CurTemp)) {
                 $replace['#history_cur_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-              
                 $replace['#cur_temp_id#'] = $CurTemp->getId();
                 $replace['#cur_temp#'] = $CurTemp->execCmd();
                 $replace['#unite_cur_temp#'] = $CurTemp->getUnite();
+		$replace['#cur_temp_display#'] = (is_object($CurTemp) && $CurTemp->getIsVisible()) ? '#cur_temp_display#' : 'none';
                 }
           
             $EcoTemp = $this->getCmd(null,'eco_temp');
             if( is_object($EcoTemp)) {
-              $replace['#history_eco_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-
-              $replace['#eco_temp_id#'] = $EcoTemp->getId();
-              $replace['#eco_temp#'] = $EcoTemp->execCmd();
-              $replace['#unite_eco_temp#'] = $EcoTemp->getUnite();
+              	$replace['#history_eco_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
+              	$replace['#eco_temp_id#'] = $EcoTemp->getId();
+              	$replace['#eco_temp#'] = $EcoTemp->execCmd();
+              	$replace['#unite_eco_temp#'] = $EcoTemp->getUnite();
+	      	$replace['#eco_temp_display#'] = (is_object($EcoTemp) && $EcoTemp->getIsVisible()) ? '#eco_temp_display#' : 'none';
             }
 
             $CftTemp = $this->getCmd(null,'cft_temp');
             if( is_object($CftTemp)) {
-              $replace['#history_cft_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-
-              $replace['#cft_temp_id#'] = $CftTemp->getId();
-              $replace['#cft_temp#'] = $CftTemp->execCmd();
-              $replace['#unite_cft_temp#'] = $CftTemp->getUnite();
+              	$replace['#history_cft_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
+              	$replace['#cft_temp_id#'] = $CftTemp->getId();
+              	$replace['#cft_temp#'] = $CftTemp->execCmd();
+              	$replace['#unite_cft_temp#'] = $CftTemp->getUnite();
+	      	$replace['#cft_temp_display#'] = (is_object($CftTemp) && $CftTemp->getIsVisible()) ? '#cft_temp_display#' : 'none';
             }    
         } // if flam/inea/pro
 
@@ -1542,7 +1542,7 @@ class heatzy extends eqLogic {
                 $replace['#cur_humi_id#'] = $CurHumi->getId();
                 $replace['#cur_humi#'] = $CurHumi->execCmd();
                 $replace['#unite_cur_humi#'] = $CurHumi->getUnite();
-				$replace['#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none';
+		$replace['#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none';
             }
 			
 		$EtatWindow = $this->getCmd(null,'EtatWindow');
