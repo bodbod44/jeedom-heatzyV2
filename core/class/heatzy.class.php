@@ -876,7 +876,7 @@ class heatzy extends eqLogic {
 				
 			// Activation de la détection de fenêtre ouverte 
 			if( isset ($aDevice['attr']['window_switch']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('window_switch', $aDevice['attr']['window_switch'] );
+				$this->checkAndUpdateCmd('EtatWindow', $aDevice['attr']['window_switch'] );
         }
         else {                                             
 			log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
@@ -1358,17 +1358,48 @@ class heatzy extends eqLogic {
 			}
 			
 			/// Creation de la commande Activation de la détection de fenêtre ouverte du pilote_pro
-			$CurWindows = $this->getCmd(null, 'window_switch'); 
-			if (!is_object($CurWindows)) {
-				$CurWindows = new heatzyCmd();
-				$CurWindows->setName(__('Détection de fenêtre ouverte', __FILE__));
-				$CurWindows->setLogicalId('window_switch');
-				$CurWindows->setType('info');
-				$CurWindows->setSubType('binary');
-				$CurWindows->setEqLogic_id($this->getId());
-				$CurWindows->setIsHistorized(0);
-				$CurWindows->setIsVisible(0);
-				$CurWindows->save();
+			$CurWindow = $this->getCmd(null, 'EtatWindow'); 
+			if (!is_object($CurWindow)) {
+				$CurWindow = new heatzyCmd();
+				$CurWindow->setName(__('Détection de fenêtre ouverte', __FILE__));
+				$CurWindow->setLogicalId('EtatWindow');
+				$CurWindow->setType('info');
+				$CurWindow->setSubType('binary');
+				$CurWindow->setEqLogic_id($this->getId());
+				$CurWindow->setIsHistorized(0);
+				$CurWindow->setIsVisible(0);
+				$CurWindow->save();
+			}
+
+			// window_switch On/Off
+			$cmd = $this->getCmd(null, 'WindowOn');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('WindowOn');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Activer Fenetre Ouverte', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'EtatWindow');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
+			}
+		        
+			$cmd = $this->getCmd(null, 'WindowOff');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('WindowOff');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Désactiver Fenetre Ouverte', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'EtatWindow');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
 			}
 		}
 
@@ -1439,7 +1470,7 @@ class heatzy extends eqLogic {
         $Etat = $this->getCmd(null,'etatprog');
         $replace['#info_prog#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
         $replace['#cmd_prog_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
-		$replace['#Prog_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Prog_display#' : 'none';
+	$replace['#Prog_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Prog_display#' : 'none';
       
         $ProgOff = $this->getCmd(null,'ProgOff');
         $replace['#cmd_progoff_id#'] = (is_object($ProgOff)) ? $ProgOff->getId() : '';
@@ -1450,7 +1481,7 @@ class heatzy extends eqLogic {
         $Etat = $this->getCmd(null,'etatlock');
         $replace['#info_lock#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
         $replace['#cmd_lock_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
-		$replace['#Lock_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Lock_display#' : 'none';
+	$replace['#Lock_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Lock_display#' : 'none';
       
         $LockOff = $this->getCmd(null,'LockOff');
         $replace['#cmd_lockoff_id#'] = (is_object($LockOff)) ? $LockOff->getId() : '';
@@ -1514,13 +1545,18 @@ class heatzy extends eqLogic {
 				$replace['#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none';
             }
 			
-			$WindowsSwitch = $this->getCmd(null,'window_switch');
-			if( is_object($WindowsSwitch)) {
-				$replace['#WindowsSwitch#'] = (is_object($WindowsSwitch)) ? $WindowsSwitch->execCmd() : '';
-				$replace['#WindowsSwitchid#'] = (is_object($WindowsSwitch)) ? $WindowsSwitch->getId() : '';
-				$replace['#WindowsSwitch_display#'] = (is_object($WindowsSwitch) && $WindowsSwitch->getIsVisible()) ? '#Etat_display#' : 'none';
-				$replace['#WindowsSwitch_history#'] = (is_object($WindowsSwitch) && $WindowsSwitch->getIsHistorized())? 'history cursor' : '';
-			}
+		$EtatWindow = $this->getCmd(null,'EtatWindow');
+		if( is_object($EtatWindow)) {
+		        $replace['#info_window#'] = (is_object($EtatWindow)) ? $EtatWindow->execCmd() : '';
+		        $replace['#cmd_window_id#'] = (is_object($EtatWindow)) ? $EtatWindow->getId() : '';
+			$replace['#window_display#'] = (is_object($EtatWindow) && $EtatWindow->getIsVisible()) ? '#window_display#' : 'none';
+		      
+		        $WindowOff = $this->getCmd(null,'WindowOff');
+		        $replace['#cmd_windowoff_id#'] = (is_object($WindowOff)) ? $WindowOff->getId() : '';
+		      
+		        $WindowOn = $this->getCmd(null,'WindowOn');
+		        $replace['#cmd_windowon_id#'] = (is_object($WindowOn)) ? $WindowOn->getId() : '';  
+		}  
         } // if pro
 
         $html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));
@@ -1589,27 +1625,27 @@ class heatzyCmd extends cmd {
               	else 
                 	$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
             }
-            else if ($this->getLogicalId() == 'ProgOn') {
+	else if ($this->getLogicalId() == 'ProgOn') {
             	
-            	if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
-					$eqLogic->GestProg(true);
-				else {
-					$Consigne = array( 'attrs' => array ( 'timer_switch' => 1 )  );
-              	
-					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-					if($Result === false) {
-						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-						return false;
-					}
-				}
-				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
-            }
-            else if ($this->getLogicalId() == 'ProgOff') {
+		if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
+			$eqLogic->GestProg(true);
+		else {
+			$Consigne = array( 'attrs' => array ( 'timer_switch' => 1 )  );
+		
+			$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+			if($Result === false) {
+				log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+				return false;
+			}
+		}
+			$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
+		}
+		else if ($this->getLogicalId() == 'ProgOff') {
 				if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
 					$eqLogic->GestProg(false);
 				else {
 					$Consigne = array( 'attrs' => array ( 'timer_switch' => 0 )  );
-              	
+		
 					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
 					if($Result === false) {
 						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
@@ -1617,14 +1653,14 @@ class heatzyCmd extends cmd {
 					}
 				}
 				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
-            }
-			else if ($this->getLogicalId() == 'LockOn') {
-            	
-            	if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
-					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'LockOff KO pour Heatzy/Flam_Week2');
+		}
+		else if ($this->getLogicalId() == 'LockOn') {
+		
+			if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
+					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'LockOn KO pour Heatzy/Flam_Week2');
 				else {
 					$Consigne = array( 'attrs' => array ( 'lock_switch' => 1 )  );
-              	
+		
 					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
 					if($Result === false) {
 						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
@@ -1638,7 +1674,7 @@ class heatzyCmd extends cmd {
 				if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
 					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'LockOff KO pour Heatzy/Flam_Week2');
 				else {
-					$Consigne = array( 'attrs' => array ( 'lock_switch' => 0 )  );
+					$Consigne = array( 'attrs' => array ( 'window_switch' => 0 )  );
 					
 					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
 					if($Result === false) {
@@ -1648,6 +1684,36 @@ class heatzyCmd extends cmd {
 				}
 				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
             }
+		else if ($this->getLogicalId() == 'WindowOn') {
+            	
+            		if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
+					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'WindowOn KO pour Heatzy/Flam_Week2');
+				else {
+					$Consigne = array( 'attrs' => array ( 'window_switch' => 1 )  );
+              	
+					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+					if($Result === false) {
+						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+						return false;
+					}
+				}
+				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
+            }
+            else if ($this->getLogicalId() == 'WindowOff') {
+            	
+				if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
+					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'WindowOff KO pour Heatzy/Flam_Week2');
+				else {
+					$Consigne = array( 'attrs' => array ( 'window_switch' => 0 )  );
+					
+					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+					if($Result === false) {
+						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+						return false;
+					}
+				}
+				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
+	    }
             else {
 
                 $Mode = array_keys(heatzy::$_HeatzyMode, $this->getLogicalId());
