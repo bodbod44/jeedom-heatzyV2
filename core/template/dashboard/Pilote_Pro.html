@@ -49,10 +49,18 @@
       </span>
     </div>
     </span>
+      <!--  Fenetre ouverte -->
+      <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
+        <span title="" class="window cursor action btn" data-cmd_id="#cmd_window_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display: #winodw_display#;">
+          <i class="window"></i>
+         </span>
+      </span>
+    </div>
+    </span>
     
     <!-- Affichage de la temperature courante -->
     <span class="float:right" style="margin-right: 20px;margin-top: 0px;">
-      <span class="cmd cmd-widget #history_cur_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" title="#collectDate#" data-version="#version#">
+      <span class="cmd cmd-widget #history_cur_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" title="#collectDate#" data-version="#version#" style="display: #cur_temp_display#;">
         <a><i class="fa fa-2x jeedom-thermometre" style="margin-left: 10px" aria-hidden="true"></i></a>  
         <span style="margin-right: 5px;font-weight: bold;font-size: 2em;"></span>
       </span>
@@ -65,12 +73,12 @@
 	  
       <div style="margin-top:5px; margin-left: 10px">
         <!-- Affichage de la consigne eco -->
-        <span class="cmd cmd-widget #history_eco_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display: #Etat_display#;" title="consigne eco" data-version="#version#">
+        <span class="cmd cmd-widget #history_eco_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display: #eco_temp_display#;" title="consigne eco" data-version="#version#">
           <i class="nature-night2" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
         </span>
         
         <!-- Affichage de la consigne confort -->
-        <span class="cmd cmd-widget #history_cft_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display: #Etat_display#;" title="consigne confort" data-version="#version#">
+        <span class="cmd cmd-widget #history_cft_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display: #cft_temp_display#;" title="consigne confort" data-version="#version#">
           <i class="meteo-soleil" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
         </span>
        </div>
@@ -135,7 +143,20 @@
          }
        }
      jeedom.cmd.update['#cmd_lock_id#']({display_value:'#info_lock#'});
-    
+
+     jeedom.cmd.update['#cmd_window_id#'] = function(_options){
+         if(_options.display_value == 1) {
+           $('.window[data-cmd_id=#cmd_window_id#]').empty().append('<i class="fa fa-toggle-on windowoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+           $('.window[data-cmd_id=#cmd_window_id#]').attr('title', 'Désactiver la vérification de fenetre ouverte');
+           $('.window[data-cmd_id=#cmd_window_id#]').parent().attr('data-cmd_id', '#cmd_windowoff_id#');
+         } else {
+           $('.window[data-cmd_id=#cmd_window_id#]').empty().append('<i class="fa fa-toggle-off windowon" style="font-size : 1.1em;color: #FF0000;"></i>');
+           $('.window[data-cmd_id=#cmd_window_id#]').attr('title', 'Activer la vérification de fenetre ouverte');
+           $('.window[data-cmd_id=#cmd_window_id#]').parent().attr('data-cmd_id', '#cmd_windowon_id#');
+         }
+       }
+     jeedom.cmd.update['#cmd_window_id#']({display_value:'#info_window#'});
+	  
      jeedom.cmd.update['#cur_temp_id#'] = function(_options){
        $('.cmd[data-cmd_id=#cur_temp_id#]').attr('title','Collectée le '+_options.collectDate);
        $('.cmd[data-cmd_id=#cur_temp_id#] span').value(_options.display_value);
