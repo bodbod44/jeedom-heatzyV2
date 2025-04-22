@@ -1,3 +1,13 @@
+# 22/04/2025
+
+- Correction pour Pilote_pro (template DashBoard + bug entre lock_switch et winodow_switch)
+- Ajout d'une tempo (1s) ente l'action et l'update depuis l'API (pour être sure que l'API renvoit la nouvelle valeur)
+  
+# 21/04/2025
+
+- Ajout d'une commande fenêtre ouverte (pilote_pro)
+- Correction d'un bug affichage température
+
 # 01/04/2025
 
 - Correction de la température pour pilote_pro (suppression du /10)
