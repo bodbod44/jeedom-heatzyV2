@@ -47,11 +47,9 @@
           <i class="lock"></i>
          </span>
       </span>
-    </div>
-    </span>
       <!--  Fenetre ouverte -->
       <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-        <span title="" class="window cursor action btn" data-cmd_id="#cmd_window_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display: #winodw_display#;">
+        <span title="" class="window cursor action btn" data-cmd_id="#cmd_window_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display: #window_display#;">
           <i class="window"></i>
          </span>
       </span>
@@ -96,6 +94,7 @@
   </div>
   <script>
      $('.eqLogic[data-eqLogic_uid=#uid#] .cmd').on('click', function() {
+       	 //alert($(this).data('cmd_id'));
          jeedom.cmd.execute({id: $(this).data('cmd_id')});
          });
      
