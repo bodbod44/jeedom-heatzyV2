@@ -1361,7 +1361,7 @@ class heatzy extends eqLogic {
 			$CurWindow = $this->getCmd(null, 'EtatWindow'); 
 			if (!is_object($CurWindow)) {
 				$CurWindow = new heatzyCmd();
-				$CurWindow->setName(__('Détection de fenêtre ouverte', __FILE__));
+				$CurWindow->setName(__('Etat fenêtre ouverte', __FILE__));
 				$CurWindow->setLogicalId('EtatWindow');
 				$CurWindow->setType('info');
 				$CurWindow->setSubType('binary');
@@ -1597,6 +1597,7 @@ class heatzyCmd extends cmd {
         else if($this->getType() == 'action' ) {
             
             $eqLogic = $this->getEqLogic();
+            //log::add('heatzy', 'debug',  __METHOD__.' : $this->getLogicalId()='.$this->getLogicalId());
             
             /// Lecture du token
             $UserToken = config::byKey('UserToken','heatzy','none');
@@ -1626,7 +1627,6 @@ class heatzyCmd extends cmd {
                 	$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
             }
 	else if ($this->getLogicalId() == 'ProgOn') {
-            	
 		if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
 			$eqLogic->GestProg(true);
 		else {
@@ -1655,7 +1655,6 @@ class heatzyCmd extends cmd {
 				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
 		}
 		else if ($this->getLogicalId() == 'LockOn') {
-		
 			if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
 					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'LockOn KO pour Heatzy/Flam_Week2');
 				else {
@@ -1670,11 +1669,10 @@ class heatzyCmd extends cmd {
 				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
             }
             else if ($this->getLogicalId() == 'LockOff') {
-            	
 				if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
 					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'LockOff KO pour Heatzy/Flam_Week2');
 				else {
-					$Consigne = array( 'attrs' => array ( 'window_switch' => 0 )  );
+					$Consigne = array( 'attrs' => array ( 'lock_switch' => 0 )  );
 					
 					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
 					if($Result === false) {
@@ -1685,7 +1683,6 @@ class heatzyCmd extends cmd {
 				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
             }
 		else if ($this->getLogicalId() == 'WindowOn') {
-            	
             		if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
 					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'WindowOn KO pour Heatzy/Flam_Week2');
 				else {
@@ -1700,7 +1697,6 @@ class heatzyCmd extends cmd {
 				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
             }
             else if ($this->getLogicalId() == 'WindowOff') {
-            	
 				if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
 					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'WindowOff KO pour Heatzy/Flam_Week2');
 				else {
@@ -1771,7 +1767,8 @@ class heatzyCmd extends cmd {
             }
             
             /// Mise à jour de l'état
-            $this->getEqLogic()->updateHeatzyDid($UserToken);
+            sleep(1); // tempo de 1sec pour laisser le temps a l'API de le prendre en compte et le restituer
+	    $this->getEqLogic()->updateHeatzyDid($UserToken);
             
         } /// Fin action
         $mc = cache::byKey('heatzyWidgetmobile' . $this->getEqLogic()->getId());
