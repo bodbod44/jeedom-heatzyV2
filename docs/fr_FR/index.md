@@ -93,6 +93,8 @@ Chaque équipement dispose des commandes actions :
 * **Désactiver Programmation** : permet d'activer la programmation, pré-définie par l'application Heatzy
 * **Activer le verrouillage** : permet d'activer le verrouillage et d'éteindre la led, pré-définie par l'application Heatzy
 * **Désactiver le verrouillage** : permet d'activer le verrouillage et d'allumer la led, pré-définie par l'application Heatzy
+* **Activer la détéction de fenetre ouverte** : permet d'activer la détéction de fenetre ouverte (le radiateur passe en mode HorsGel si la température chute de 2° en moins de 5min)
+* **Désactiver  la détéction de fenetre ouverte** : permet d'activer la détéction de fenetre ouverte
 * **Plugzy OFF** : Permet d'éteindre le plugzy *(seulement pour l'équipement de type flam)*
 * **Plugzy ON** : Permet d'allumer le plugzy *(seulement pour l'équipement de type flam)*
 
@@ -113,17 +115,22 @@ Et d'une commande **Mode** de type _string_ :
 Et d'une commande **Etat programmation** de type _binaire_ :
 
 * **1** : La programmation est activée
-* **0**: La programmation est désactivée
+* **0** : La programmation est désactivée
 
 Et d'une commande **Etat Verrouillage** de type _binaire_ :
 
-* **1** : Le verrouillage est activée
-* **0**: Le verrouillage est désactivée
+* **1** : Le verrouillage est activé
+* **0** : Le verrouillage est désactivé
+
+Et d'une commande **Détéction fenetre ouverte** de type _binaire_ :
+
+* **1** : La détéction est activée
+* **0** : La détéction est désactivée
                                   
 Les équipements de type flam et pilote_pro disposent des commandes de type _numerique_ :
 
 * **Temp. confort** : la température de consigne du mode confort
-* **Temp. eco**  : la température de consigne du mode eco
+* **Temp. eco**   : la température de consigne du mode eco
 * **Temperature** : la température relevé par plugzy
 
 L'équipement de type pilote_pro dispose des commandes de type _numerique_ :
