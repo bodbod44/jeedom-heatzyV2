@@ -1,3 +1,8 @@
+# 23/04/2025
+
+- Suppression du ":" devant le taux d'humidité (pilote_pro)
+- Affichage de la valeur dans la page des commandes
+
 # 22/04/2025
 
 - Correction pour Pilote_pro (template DashBoard + bug entre lock_switch et winodow_switch)
