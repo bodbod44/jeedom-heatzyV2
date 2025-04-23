@@ -175,7 +175,7 @@
      jeedom.cmd.update['#cur_humi_id#'] = function(_options){
        $('.cmd[data-cmd_id=#cur_humi_id#] span').value(_options.display_value);
      }
-     jeedom.cmd.update['#cur_humi_id#']({display_value:': #cur_humi# #unite_cur_humi#',collectDate:'#collectDate#'});
+     jeedom.cmd.update['#cur_humi_id#']({display_value:'#cur_humi# #unite_cur_humi#',collectDate:'#collectDate#'});
 	 
      jeedom.cmd.update['#Etatid#'] = function(_options){
     	 $('.cmd[data-cmd_id=#Etatid#]').attr('title','Collectée le '+_options.collectDate);
