@@ -42,6 +42,10 @@ function addCmdToTable(_cmd) {
     tr += '<span class="subType" subType="' + init(_cmd.subType) + '"></span>';
     tr += '</td>';
     tr += '<td>';
+    tr += '<span class="cmdAttr" data-l1key="htmlstate"></span>';
+    //tr += '<span class="cmdAttr" data-l1key="unite"></span>';
+    tr += '</td>';
+    tr += '<td>';
     tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" checked/>{{Afficher}}</label></span> ';
     if (init(_cmd.type) == 'info' && init(_cmd.subType) == "numeric") 
     	tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isHistorized" checked/>{{Historiser}}</label></span> ';
