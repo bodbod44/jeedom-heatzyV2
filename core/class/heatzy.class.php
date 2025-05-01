@@ -1559,6 +1559,34 @@ class heatzy extends eqLogic {
 		}  
         } // if pro
 
+      // ****** TODO : Generer les cmd a mettre a jour directement depuis la liste de l'equipement ******
+      //log::add('heatzy', 'debug',  __METHOD__.' : Liste commandes - '.$this->getName());
+      foreach ($this->getCmd() as $cmd) {	
+        switch($cmd->getType())
+        {
+          case 'info':
+            log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
+            
+            $replace['#'.$cmd->getLogicalId().'_id#'] = $cmd->getId();
+            $replace['#'.$cmd->getLogicalId().'_#'] = $cmd->execCmd();
+            $replace['#'.$cmd->getLogicalId().'_unite#'] = $cmd->getUnite();
+			$replace['#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none';
+            $replace['#'.$cmd->getLogicalId().'_history#'] = ($cmd->getIsHistorized())? 'history cursor' : '';
+            break;
+          case 'action':
+            log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
+            
+            $replace['#'.$cmd->getLogicalId().'_id#'] = is_object($cmd) ? $cmd->getId() : '';
+            $replace['#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none';
+            break;
+          default :
+            log::add('heatzy', 'error',  __METHOD__.' : Type de commande ($cmd->getType()='.$cmd->getType().') inconnu');
+            break;
+        }
+
+      }
+      */
+	    
         $html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));
        // cache::set('heatzy' . $_version . $this->getId(), $html, 0);
         return $html;
