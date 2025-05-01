@@ -1559,6 +1559,7 @@ class heatzy extends eqLogic {
 		}  
         } // if pro
 
+       /*
       // ****** TODO : Generer les cmd a mettre a jour directement depuis la liste de l'equipement ******
       //log::add('heatzy', 'debug',  __METHOD__.' : Liste commandes - '.$this->getName());
       foreach ($this->getCmd() as $cmd) {	
