@@ -114,6 +114,12 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
             </div>
      </div>
+     <div class="form-group" style="display:none;">
+              <label class="col-sm-4 control-label"></label>
+              <div class="col-sm-6">
+                <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="isTemplateCommun" />{{Template Commun}}</label>
+     	      </div>
+     </div>
 	<div class="form-group">
     	<label class="col-sm-4 control-label">{{MAC}}</label>
         <div class="col-sm-6">
@@ -130,8 +136,8 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
     	<label class="col-sm-4 control-label">{{Commentaire}}</label>
         <div class="col-sm-6">
         	<textarea class="eqLogicAttr form-control" data-l1key="comment" ></textarea>
-		</div>
 	</div>
+    </div>
   </fieldset>
 </form>
 </div>
@@ -184,7 +190,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
               <th style="width: 50px;">#</th>
               <th style="width: 150px;">{{Nom}}</th>
               <th style="width: 110px;">{{Type}}</th>
-	      <th style="width: 50px;">{{Etat}}</th>
+              <th style="width: 50px;">{{Etat}}</th>
               <th style="width: 200px;">{{Paramètres}}</th>
             </tr>
           </thead>
