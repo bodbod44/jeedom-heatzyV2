@@ -114,11 +114,11 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
             </div>
      </div>
-     <div class="form-group" style="display:none;">
+     <div class="form-group" style="display:<?php if(log::getLogLevel('heatzy') == 100) echo 'display' ; else echo 'none' ; ?>">
               <label class="col-sm-4 control-label"></label>
               <div class="col-sm-6">
                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="isTemplateCommun" />{{Template Commun}}</label>
-     	      </div>
+            </div>
      </div>
 	<div class="form-group">
     	<label class="col-sm-4 control-label">{{MAC}}</label>
@@ -136,8 +136,8 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
     	<label class="col-sm-4 control-label">{{Commentaire}}</label>
         <div class="col-sm-6">
         	<textarea class="eqLogicAttr form-control" data-l1key="comment" ></textarea>
+		</div>
 	</div>
-    </div>
   </fieldset>
 </form>
 </div>
