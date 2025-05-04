@@ -830,7 +830,7 @@ class heatzy extends eqLogic {
           
 			// Consigne de température du mode éco
 			if( isset ($aDevice['attr']['eco_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('eco_temp', floatval( $aDevice['attr']['eco_temp'] ) );
+				$this->checkAndUpdateCmd('eco_temp', floatval( $aDevice['attr']['eco_temp'] / 10 ) );
 
 			// Consigne de température du mode éco
 			// L : La température est exprimée en dixièmes de degrés
@@ -840,7 +840,7 @@ class heatzy extends eqLogic {
 
 			// Consigne de température du mode confort
 			if( isset ($aDevice['attr']['cft_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('cft_temp', floatval( $aDevice['attr']['cft_temp'] ) );
+				$this->checkAndUpdateCmd('cft_temp', floatval( $aDevice['attr']['cft_temp'] / 10 ) );
 
 			// Consigne de température du mode confort
 			// L : La température est exprimée en dixièmes de degrés
@@ -850,7 +850,7 @@ class heatzy extends eqLogic {
 
 			// cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
 			if( isset ($aDevice['attr']['cur_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('cur_temp', floatval( $aDevice['attr']['cur_temp'] ) );
+				$this->checkAndUpdateCmd('cur_temp', floatval( $aDevice['attr']['cur_temp'] / 10 ) );
 
 			// cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
 			// L : La température est exprimée en dixièmes de degrés
@@ -1542,7 +1542,8 @@ class heatzy extends eqLogic {
                 $replace['#cur_humi_id#'] = $CurHumi->getId();
                 $replace['#cur_humi#'] = $CurHumi->execCmd();
                 $replace['#unite_cur_humi#'] = $CurHumi->getUnite();
-		$replace['#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none';
+			    $replace['none;#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none;';	
+                $replace['#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none';
             }
 			
 		$EtatWindow = $this->getCmd(null,'EtatWindow');
@@ -1569,7 +1570,7 @@ class heatzy extends eqLogic {
             log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
             
             $replace['#'.$cmd->getLogicalId().'_id#'] = $cmd->getId();
-            $replace['#'.$cmd->getLogicalId().'_#'] = $cmd->execCmd();
+            $replace['#'.$cmd->getLogicalId().'_cmd#'] = $cmd->execCmd();
             $replace['#'.$cmd->getLogicalId().'_unite#'] = $cmd->getUnite();
 			$replace['#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none';
             $replace['#'.$cmd->getLogicalId().'_history#'] = ($cmd->getIsHistorized())? 'history cursor' : '';
@@ -1587,8 +1588,12 @@ class heatzy extends eqLogic {
 
       }
       */
-	    
-        $html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));
+
+      	//log::add('heatzy', 'debug',  'isTemplateCommun='.$this->getConfiguration('isTemplateCommun','') );
+	    if( $this->getConfiguration('isTemplateCommun', '0') )
+        	$html = template_replace($replace, getTemplate('core', $_version, 'Dashboard','heatzy'));
+        else
+        	$html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));
        // cache::set('heatzy' . $_version . $this->getId(), $html, 0);
         return $html;
     }
