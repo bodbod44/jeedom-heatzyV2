@@ -1,3 +1,10 @@
+# 04/05/2025
+- Remise en place du divisé par 10 à la lecture des températures (pilote_pro)
+- Suppr de l'ancienne cmd window_switch lors de la mise à jour du plugin
+  
+# 02/05/2025
+- Ajout config isTemplateCommun (mode debug pour tester un template commun)
+
 # 23/04/2025
 
 - Suppression du ":" devant le taux d'humidité (pilote_pro)
