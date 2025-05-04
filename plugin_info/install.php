@@ -26,7 +26,13 @@ function heatzy_install() {
 }
 
 function heatzy_update() {
-    
+	$eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
+	foreach ($eqLogics as $eqLogic) {
+		$cmd = $eqLogic->getCmd(null, 'window_switch');
+		if (is_object($cmd)) {
+			$cmd->remove();
+		}
+	}
 }
 
 function heatzy_remove() {
