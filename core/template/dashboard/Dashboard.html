@@ -10,22 +10,22 @@
          <span style="float:left; margin-left: 20px;margin-top: 0px;">
             <center>
                <!-- Affichage de la temperature courante -->
-               <span class="cmd cmd-widget #history_cur_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" title="#collectDate#" data-version="#version#" style="display: #cur_temp_display#;">
+               <span class="cmd cmd-widget #cur_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" title="#collectDate#" data-version="#version#" style="display:none;#cur_temp_display#;">
                <a><i class="fa fa-2x jeedom-thermometre" style="margin-left: 10px" aria-hidden="true"></i></a>  
                <span style="margin-right: 5px;font-weight: bold;font-size: 2em;"></span>
                </span>
                <!-- Affichage du taux d'humidité -->
-               <span class="cmd cmd-widget #history_cur_humi# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_humi_id#" title="#collectDate#" data-version="#version#" style="display:none;#Humidity_display#;">
+               <span class="cmd cmd-widget #cur_humi_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_humi_id#" title="#collectDate#" data-version="#version#" style="display:none;#cur_humi_display#;">
                <a><i class="fa fa-2x jeedomapp-humidity" style="margin-left: 10px" aria-hidden="true"></i></a>  
                <span style="margin-right: 5px;font-weight: bold;font-size: 2em;"></span>
                </span>
                <div style="margin-top:5px; margin-left: 10px">
                   <!-- Affichage de la consigne eco -->
-                  <span class="cmd cmd-widget #history_eco_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display: #eco_temp_display#;" title="consigne eco" data-version="#version#">
+                  <span class="cmd cmd-widget #eco_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display:none;#eco_temp_display#;" title="consigne eco" data-version="#version#">
                   <i class="nature-night2" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
                   </span>
                   <!-- Affichage de la consigne confort -->
-                  <span class="cmd cmd-widget #history_cft_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display: #cft_temp_display#;" title="consigne confort" data-version="#version#">
+                  <span class="cmd cmd-widget #cft_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display:none;#cft_temp_display#;" title="consigne confort" data-version="#version#">
                   <i class="meteo-soleil" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
                   </span>
                </div>
@@ -35,7 +35,7 @@
             <center>
                <!-- Etat -->
                <span class="float:right" style="margin-right: 0px;margin-top: 0px;">
-               <span class="cmd cmd-widget #history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#Etatid#" style="margin-left:5px;display: #Etat_display#;" title="#collectDate#" data-version="#version#">
+               <span class="cmd cmd-widget #etat_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#etat_id#" style="margin-left:5px;display:none;#etat_display#;" title="#collectDate#" data-version="#version#">
                <span class="iconCmd"></span>
                </span>
                </span>
@@ -45,25 +45,25 @@
             <center>
                <div style="margin-left: 10px">
                   <!-- off -->
-                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_off_id#" data-version="#version#">
+                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Off_id#" data-version="#version#" style="display:none;#Off_display#;">
                   <span title="Mode OFF" class="off cursor action btn">
                   <i class="jeedom-off" style="font-size:1em"></i>
                   </span>
                   </span>
                   <!-- confort -->
-                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_confort_id#" data-version="#version#">
+                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort_id#" data-version="#version#" style="display:none;#Confort_display#;">
                   <span title="Mode Confort" class="confort cursor action btn">
                   <i class="meteo-soleil" style="font-size:1.8em"></i>
                   </span>
                   </span>
                   <!-- Eco -->
-                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_eco_id#" data-version="#version#">
+                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Eco_id#" data-version="#version#" style="display:none;#Eco_display#;">
                   <span title="Mode Eco" class="eco cursor action btn">
                   <i class="nature-night2" style="font-size:1.8em"></i>
                   </span>
                   </span>
                   <!--  Hors Gel -->
-                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_hg_id#" data-version="#version#">
+                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#HorsGel_id#" data-version="#version#" style="display:none;#HorsGel_display#;">
                   <span title="Mode Hors Gel" class="horsgel cursor action btn">
                   <i class="nature-snowflake" style="font-size:1.8em"></i>
                   </span>
@@ -75,19 +75,19 @@
             <span style="margin-left: 20px;margin-top: 0px;">
                <!--  programmation -->
                <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-               <span title="" class="prog cursor action btn" data-cmd_id="#cmd_prog_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display: #Prog_display#;">
+               <span title="" class="prog cursor action btn" data-cmd_id="#etatprog_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#etatprog_display#;">
                <i class="programmation"></i>
                </span>
                </span>
                <!--  Verrouillage -->
                <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-               <span title="" class="lock cursor action btn" data-cmd_id="#cmd_lock_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display: #Lock_display#;">
+               <span title="" class="lock cursor action btn" data-cmd_id="#etatlock_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#etatlock_display#;">
                <i class="lock"></i>
                </span>
                </span>
                <!--  Fenetre ouverte -->
                <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-               <span title="" class="window cursor action btn" data-cmd_id="#cmd_window_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display: #window_display#;">
+               <span title="" class="window cursor action btn" data-cmd_id="#EtatWindow_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#EtatWindow_display#;">
                <i class="window"></i>
                </span>
                </span>
@@ -101,97 +101,97 @@
           jeedom.cmd.execute({id: $(this).data('cmd_id')});
           });
       
-      jeedom.cmd.update['#Etatid#'] = function(_options){
-        $('.cmd[data-cmd_id=#Etatid#]').attr('title','Collectée le '+_options.collectDate);
-        $('.cmd[data-cmd_id=#cmd_confort_id#] .confort i.meteo-soleil').css("color","");
-        $('.cmd[data-cmd_id=#cmd_eco_id#] .eco i.nature-night2').css("color","");
-        $('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel i.nature-snowflake').css("color","");
-        $('.cmd[data-cmd_id=#cmd_off_id#] .off i.jeedom-off').css("color","");
+      jeedom.cmd.update['#etat_id#'] = function(_options){
+        $('.cmd[data-cmd_id=#etat_id#]').attr('title','Collectée le '+_options.collectDate);
+        $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","");
+        $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","");
+        $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","");
+        $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","");
       
         if (_options.display_value == '0') {
-          $('.cmd[data-cmd_id=#cmd_confort_id#] .confort i.meteo-soleil').css("color","#00FF00"); /// Mode Confort
+          $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","#00FF00"); /// Mode Confort
         }else if (_options.display_value == '1') {
-          $('.cmd[data-cmd_id=#cmd_eco_id#] .eco i.nature-night2').css("color","#00FF00");  /// Mode Eco
+          $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","#00FF00");  /// Mode Eco
         }else if (_options.display_value == '2') {
-          $('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel i.nature-snowflake').css("color","#00FF00");/// Mode HorsGel
+          $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","#00FF00");/// Mode HorsGel
         }else {
-          $('.cmd[data-cmd_id=#cmd_off_id#] .off i.jeedom-off').css("color","#00FF00");  /// Mode Off
+          $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","#00FF00");  /// Mode Off
         }
       }
-      jeedom.cmd.update['#Etatid#']({display_value:'#Etat#',collectDate:'#collectDate#'});
+      jeedom.cmd.update['#etat_id#']({display_value:'#etat_cmd#',collectDate:'#collectDate#'});
       
-      jeedom.cmd.update['#cmd_prog_id#'] = function(_options){
+      jeedom.cmd.update['#etatprog_id#'] = function(_options){
           if(_options.display_value == 1) {
-            $('.prog[data-cmd_id=#cmd_prog_id#]').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-            $('.prog[data-cmd_id=#cmd_prog_id#]').attr('title', 'Désactiver la programmation');
-            $('.prog[data-cmd_id=#cmd_prog_id#]').parent().attr('data-cmd_id', '#cmd_progoff_id#');
+            $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+            $('.prog[data-cmd_id=#etatprog_id#]').attr('title', 'Désactiver la programmation');
+            $('.prog[data-cmd_id=#etatprog_id#]').parent().attr('data-cmd_id', '#ProgOff_id#');
           } else {
-            $('.prog[data-cmd_id=#cmd_prog_id#]').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
-            $('.prog[data-cmd_id=#cmd_prog_id#]').attr('title', 'Activer la programmation');
-            $('.prog[data-cmd_id=#cmd_prog_id#]').parent().attr('data-cmd_id', '#cmd_progon_id#');
+            $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
+            $('.prog[data-cmd_id=#etatprog_id#]').attr('title', 'Activer la programmation');
+            $('.prog[data-cmd_id=#etatprog_id#]').parent().attr('data-cmd_id', '#ProgOn_id#');
           }
         }
-      jeedom.cmd.update['#cmd_prog_id#']({display_value:'#info_prog#'});
+      jeedom.cmd.update['#etatprog_id#']({display_value:'#etatprog_cmd#'});
       
-      jeedom.cmd.update['#cmd_lock_id#'] = function(_options){
+      jeedom.cmd.update['#etatlock_id#'] = function(_options){
           if(_options.display_value == 1) {
-            $('.lock[data-cmd_id=#cmd_lock_id#]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-            $('.lock[data-cmd_id=#cmd_lock_id#]').attr('title', 'Désactiver le verrouillage');
-            $('.lock[data-cmd_id=#cmd_lock_id#]').parent().attr('data-cmd_id', '#cmd_lockoff_id#');
+            $('.lock[data-cmd_id=#etatlock_id#]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+            $('.lock[data-cmd_id=#etatlock_id#]').attr('title', 'Désactiver le verrouillage');
+            $('.lock[data-cmd_id=#etatlock_id#]').parent().attr('data-cmd_id', '#LockOff_id#');
           } else {
-            $('.lock[data-cmd_id=#cmd_lock_id#]').empty().append('<i class="fa fa-toggle-off lockon" style="font-size : 1.1em;color: #FF0000;"></i>');
-            $('.lock[data-cmd_id=#cmd_lock_id#]').attr('title', 'Activer le verrouillage');
-            $('.lock[data-cmd_id=#cmd_lock_id#]').parent().attr('data-cmd_id', '#cmd_lockon_id#');
+            $('.lock[data-cmd_id=#etatlock_id#]').empty().append('<i class="fa fa-toggle-off lockon" style="font-size : 1.1em;color: #FF0000;"></i>');
+            $('.lock[data-cmd_id=#etatlock_id#]').attr('title', 'Activer le verrouillage');
+            $('.lock[data-cmd_id=#etatlock_id#]').parent().attr('data-cmd_id', '#LockOn_id#');
           }
         }
-      jeedom.cmd.update['#cmd_lock_id#']({display_value:'#info_lock#'});
+      jeedom.cmd.update['#etatlock_id#']({display_value:'#etatlock_cmd#'});
       
-      jeedom.cmd.update['#cmd_window_id#'] = function(_options){
+      jeedom.cmd.update['#EtatWindow_id#'] = function(_options){
           if(_options.display_value == 1) {
-            $('.window[data-cmd_id=#cmd_window_id#]').empty().append('<i class="fa fa-toggle-on windowoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-            $('.window[data-cmd_id=#cmd_window_id#]').attr('title', 'Désactiver la vérification de fenetre ouverte');
-            $('.window[data-cmd_id=#cmd_window_id#]').parent().attr('data-cmd_id', '#cmd_windowoff_id#');
+            $('.window[data-cmd_id=#EtatWindow_id#]').empty().append('<i class="fa fa-toggle-on windowoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+            $('.window[data-cmd_id=#EtatWindow_id#]').attr('title', 'Désactiver la vérification de fenetre ouverte');
+            $('.window[data-cmd_id=#EtatWindow_id#]').parent().attr('data-cmd_id', '#WindowOff_id#');
           } else {
-            $('.window[data-cmd_id=#cmd_window_id#]').empty().append('<i class="fa fa-toggle-off windowon" style="font-size : 1.1em;color: #FF0000;"></i>');
-            $('.window[data-cmd_id=#cmd_window_id#]').attr('title', 'Activer la vérification de fenetre ouverte');
-            $('.window[data-cmd_id=#cmd_window_id#]').parent().attr('data-cmd_id', '#cmd_windowon_id#');
+            $('.window[data-cmd_id=#EtatWindow_id#]').empty().append('<i class="fa fa-toggle-off windowon" style="font-size : 1.1em;color: #FF0000;"></i>');
+            $('.window[data-cmd_id=#EtatWindow_id#]').attr('title', 'Activer la vérification de fenetre ouverte');
+            $('.window[data-cmd_id=#EtatWindow_id#]').parent().attr('data-cmd_id', '#WindowOn_id#');
           }
         }
-      jeedom.cmd.update['#cmd_window_id#']({display_value:'#info_window#'});
+      jeedom.cmd.update['#EtatWindow_id#']({display_value:'#EtatWindow_cmd#'});
       
       jeedom.cmd.update['#cur_temp_id#'] = function(_options){
         $('.cmd[data-cmd_id=#cur_temp_id#]').attr('title','Collectée le '+_options.collectDate);
         $('.cmd[data-cmd_id=#cur_temp_id#] span').value(_options.display_value);
       }
-      jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp# #unite_cur_temp#',collectDate:'#collectDate#'});
+      jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd# #cur_temp_unite#',collectDate:'#collectDate#'});
       
       jeedom.cmd.update['#eco_temp_id#'] = function(_options){
         $('.cmd[data-cmd_id=#eco_temp_id#] span').value(_options.display_value);
       }
-      jeedom.cmd.update['#eco_temp_id#']({display_value:': #eco_temp# #unite_eco_temp#',collectDate:'#collectDate#'});
+      jeedom.cmd.update['#eco_temp_id#']({display_value:': #eco_temp_cmd# #eco_temp_unite#',collectDate:'#collectDate#'});
       
       jeedom.cmd.update['#cft_temp_id#'] = function(_options){
         $('.cmd[data-cmd_id=#cft_temp_id#] span').value(_options.display_value);
       }
-      jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp# #unite_cft_temp#',collectDate:'#collectDate#'});
+      jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp_cmd# #cft_temp_unite#',collectDate:'#collectDate#'});
       
       jeedom.cmd.update['#cur_humi_id#'] = function(_options){
         $('.cmd[data-cmd_id=#cur_humi_id#] span').value(_options.display_value);
       }
-      jeedom.cmd.update['#cur_humi_id#']({display_value:'#cur_humi# #unite_cur_humi#',collectDate:'#collectDate#'});
+      jeedom.cmd.update['#cur_humi_id#']({display_value:'#cur_humi_cmd# #cur_humi_unite#',collectDate:'#collectDate#'});
       
-      jeedom.cmd.update['#Etatid#'] = function(_options){
-       $('.cmd[data-cmd_id=#Etatid#]').attr('title','Collectée le '+_options.collectDate);
+      jeedom.cmd.update['#etat_id#'] = function(_options){
+       $('.cmd[data-cmd_id=#etat_id#]').attr('title','Collectée le '+_options.collectDate);
         if (_options.display_value == '0') {
-         $('.cmd[data-cmd_id=#Etatid#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i>'); /// Mode Confort
+         $('.cmd[data-cmd_id=#etat_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i>'); /// Mode Confort
         }else if (_options.display_value == '1') {
-          $('.cmd[data-cmd_id=#Etatid#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco" style="font-size:2em"></i>');  /// Mode Eco
+          $('.cmd[data-cmd_id=#etat_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco" style="font-size:2em"></i>');  /// Mode Eco
         }else if (_options.display_value == '2') {
-          $('.cmd[data-cmd_id=#Etatid#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg" style="font-size:2em"></i>');   /// Mode HorsGel
+          $('.cmd[data-cmd_id=#etat_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg" style="font-size:2em"></i>');   /// Mode HorsGel
         }else {
-          $('.cmd[data-cmd_id=#Etatid#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-off" style="font-size:2em"></i>');    /// Mode Off
+          $('.cmd[data-cmd_id=#etat_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-off" style="font-size:2em"></i>');    /// Mode Off
         }
       }
-      jeedom.cmd.update['#Etatid#']({display_value:'#Etat#',collectDate:'#collectDate#'});
+      jeedom.cmd.update['#etat_id#']({display_value:'#etat_cmd#',collectDate:'#collectDate#'});
    </script>
 </div>
