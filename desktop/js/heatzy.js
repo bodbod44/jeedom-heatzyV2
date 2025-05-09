@@ -18,6 +18,11 @@ $('#bt_healthHeatzy').on('click', function () {
   $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=health').dialog('open');
 });
 
+$('#bt_debugHeatzy').on('click', function () {
+  $('#md_modal').dialog({title: "{{Debug}}"});
+  $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=debug').dialog('open');
+});
+
 $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
 /*
  * Fonction pour l'ajout de commande, appellé automatiquement par plugin.template
@@ -40,6 +45,10 @@ function addCmdToTable(_cmd) {
     tr += '<td>';
     tr += '<span class="type" type="' + init(_cmd.type) + '">' + jeedom.cmd.availableType() + '</span>';
     tr += '<span class="subType" subType="' + init(_cmd.subType) + '"></span>';
+    tr += '</td>';
+    tr += '<td>';
+    tr += '<span class="cmdAttr" data-l1key="htmlstate"></span>';
+    //tr += '<span class="cmdAttr" data-l1key="unite"></span>';
     tr += '</td>';
     tr += '<td>';
     tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" checked/>{{Afficher}}</label></span> ';

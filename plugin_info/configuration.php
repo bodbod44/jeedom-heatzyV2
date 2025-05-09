@@ -26,12 +26,6 @@ if (!isConnect()) {
     <fieldset>
           <legend><i class="fa fa-list-ul"></i>{{Général}}</legend>
         <div class="form-group">
-		    <label class="col-lg-4 control-label">{{Aide}} :</label>
-      		<div class="col-lg-6">
-        	 <a class="btn btn-success" href="/plugins/heatzy/doc/fr_FR/index.html" target="_blank"><i class="fa fa-question-circle"></i> {{Documentation locale}}</a>
-      		</div>
-      	</div>
-        <div class="form-group">
         	<label class="col-lg-4 control-label">{{Email}}</label>
         	<div class="col-lg-6">
         	    <input type="text" class="configKey form-control" data-l1key="email" />

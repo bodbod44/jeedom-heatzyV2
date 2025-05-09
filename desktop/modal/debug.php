@@ -22,7 +22,7 @@ if (!isConnect('admin')) {
 $eqLogics = heatzy::byType('heatzy');
 ?>
 
-<table class="table table-condensed tablesorter" id="table_healthrflink">
+<table class="table table-condensed tablesorter" id="table_debugrflink">
 	<thead>
 		<tr>
 			<th>{{Module}}</th>

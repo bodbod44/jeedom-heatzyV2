@@ -5,6 +5,16 @@ Description
 === 
 Ce plugin permet de gérer vos modules pilote et flam de la marque Heatzy.
 
+Les modules gérés sont :
+
+* **Heatzy**
+* **Flam/Plugzy**
+* **INEA**
+* **Pilote seconde génération**
+* **Pilote SoC**
+* **Pilote_Pro**
+* **Elec Pro (Acova version)**
+
 Pré-requis
 === 
 L'utilisation de ce plugin requiert de créer un compte avec l'application Heatzy disponible sur Android et iOS.
@@ -54,14 +64,15 @@ Vous retrouvez dans la section **Informations**
 * **Création** : date et heure de création de l'équipement
 * **Dernière communication** : date et heure de la dernière communication du module Heatzy dans le cloud
 * **Dernière mise à jour** : date et heure de mise à jour de l'équipement
-* *Type** : pilote ou flam
+* **Type** : pilote ou flam
+* **Produit** : le type de produit de la marque heatzy
 
 Configuration des commandes des objets connectés Heatzy
 -------------
 
 ### Wigdet dashboard pilote
 
-![heatzy4](../images/widget_dashbord.png)
+![heatzy4](../images/widget_dashbaord.png)
 
 ### Wigdet dashboard flam
 
@@ -77,9 +88,13 @@ Chaque équipement dispose des commandes actions :
 * **Confort** : permet de passer en mode confort
 * **Eco** : permet de passer en mode eco
 * **HorsGel** : permet de passer en mode hors-gel
-* refresh : permet forcer le rafraichissement de l'etat de l'équipement
+* **refresh** : permet forcer le rafraichissement de l'etat de l'équipement
 * **Activer Programmation** : permet d'activer la programmation, pré-définie par l'application Heatzy
 * **Désactiver Programmation** : permet d'activer la programmation, pré-définie par l'application Heatzy
+* **Activer le verrouillage** : permet d'activer le verrouillage et d'éteindre la led, pré-définie par l'application Heatzy
+* **Désactiver le verrouillage** : permet d'activer le verrouillage et d'allumer la led, pré-définie par l'application Heatzy
+* **Activer la détéction de fenetre ouverte** : permet d'activer la détéction de fenetre ouverte (le radiateur passe en mode HorsGel si la température chute de 2° en moins de 5min)
+* **Désactiver  la détéction de fenetre ouverte** : permet d'activer la détéction de fenetre ouverte
 * **Plugzy OFF** : Permet d'éteindre le plugzy *(seulement pour l'équipement de type flam)*
 * **Plugzy ON** : Permet d'allumer le plugzy *(seulement pour l'équipement de type flam)*
 
@@ -100,14 +115,27 @@ Et d'une commande **Mode** de type _string_ :
 Et d'une commande **Etat programmation** de type _binaire_ :
 
 * **1** : La programmation est activée
-* **0**: La programmation est désactivée
-                                               
-L'équipement de type flam dispose des commandes de type _numerique_ :
+* **0** : La programmation est désactivée
+
+Et d'une commande **Etat Verrouillage** de type _binaire_ :
+
+* **1** : Le verrouillage est activé
+* **0** : Le verrouillage est désactivé
+
+Et d'une commande **Détéction fenetre ouverte** de type _binaire_ :
+
+* **1** : La détéction est activée
+* **0** : La détéction est désactivée
+                                  
+Les équipements de type flam et pilote_pro disposent des commandes de type _numerique_ :
 
 * **Temp. confort** : la température de consigne du mode confort
-* **Temp. eco**  : la température de consigne du mode eco
+* **Temp. eco**   : la température de consigne du mode eco
 * **Temperature** : la température relevé par plugzy
 
+L'équipement de type pilote_pro dispose des commandes de type _numerique_ :
+
+* **Taux Humidité** : le taux d'huùidité relevé par le module
 
 >Vous pouvez tester la valeur de la commande info *Etat* ou *Mode* dans vos scénarios.
 
@@ -117,13 +145,13 @@ FAQ
 
 **Quelle est la fréquence de rafraîchissement ?**
 
-Le système récupère l'état du module Heatzy toutes les minutes. L'état de la programmation est rafraîchie toutes les 30 minutes.
+Le système récupère l'état des modules toutes les minutes. L'état de la programmation est rafraîchie toutes les 30 minutes pour les modules Heatzy et Flam.
 
->Il est possible de désactiver le rafraîchissement de l'état de la programmation en décochant la fonctionnalités **con30** depuis la page de configuration du plugin.
+>Pour les modules Heatzy et Flam, il est possible de désactiver le rafraîchissement de l'état de la programmation en décochant la fonctionnalités **con30** depuis la page de configuration du plugin. Pour les autres modules la programmation est lu dans la commande **timer_switch**.
 
 **Lorsque je désactive la programmation, l'état n'est pas mis à jour ?**
 
-Le plugin met à jour les 336 tâches associées au module Heatzy pour les désactiver/activer, soit 336 requêtes HTTP envoyé au cloud Heatzy. Il est donc nécessaire d'attendre quelques secondes que le plugin finisse d'activer/désactiver chacune des tâches. L’état de la programmation est mis à jour si tous ce passe bien.
+Le plugin met à jour les 336 tâches associées au module Heatzy ou Flam pour les désactiver/activer, soit 336 requêtes HTTP envoyé au cloud Heatzy. Il est donc nécessaire d'attendre quelques secondes que le plugin finisse d'activer/désactiver chacune des tâches. L’état de la programmation est mis à jour si tous ce passe bien.
 
 **Quelle est la durée de vie du token utilisateur d'accès au cloud ?**
 
@@ -132,4 +160,8 @@ Le token d'accès au cloud change à chaque synchronisation. Un nouveau token es
 **Mon équipement n'est pas rafraîchi ?**
 
 Vérifiez si l'équipement est bien activé.
+                                               
+**Je viens de mettre à jour le plugin, que dois-je faire ?**
+
+Il est conseillé de synchroniser les modules via la page de configuration du plugin.                            
 
