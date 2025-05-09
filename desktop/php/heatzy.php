@@ -14,7 +14,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
         <li class="filter" style="margin-bottom: 5px;"><input class="filter form-control input-sm" placeholder="{{Rechercher}}" style="width: 100%"/></li>
         <?php
 foreach ($eqLogics as $eqLogic) {
-	echo '<li class="cursor li_eqLogic" data-eqLogic_id="' . $eqLogic->getId() . '"><a>' . $eqLogic->getHumanName(true) . '</a></li>';
+	echo '<li style="text-align: left;" class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '"><a>' . $eqLogic->getHumanName(true) . '</a></li>';
 }
 ?>
      </ul>
@@ -44,10 +44,12 @@ foreach ($eqLogics as $eqLogic) {
 	$opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
 	echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
 	echo "<center>";
-    if($eqLogic->getConfiguration('product', '')=='Flam_Week2') 	        /// Pour heatzy INEA
-    	echo '<img src="plugins/heatzy/docs/images/LOGO_FLAM.png"  width="100" height="100"/>';
-    else
-        echo '<img src="plugins/heatzy/docs/images/LOGO_PILOTE.png" width="100" height="100"/>';
+	if(file_exists('plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product', '').'.png'))
+		echo '<img src="plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product', '').'.png" width="100" height="100"/>'; // Logo personnalisé
+	else if($eqLogic->getConfiguration('product', '')=='Flam_Week2') 	        /// Pour heatzy INEA
+		echo '<img src="plugins/heatzy/core/template/images/LOGO_FLAM.png" width="100" height="100"/>';
+	else
+		echo '<img src="plugins/heatzy/core/template/images/LOGO_PILOTE.png" width="100" height="100"/>';
 	echo "</center>";
 	echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><center>' . $eqLogic->getHumanName(true, true) . '</center></span>';
 	echo '</div>';
@@ -110,6 +112,12 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
               <div class="col-sm-6">
                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
+            </div>
+     </div>
+     <div class="form-group" style="display:<?php if(log::getLogLevel('heatzy') == 100) echo 'display' ; else echo 'none' ; ?>">
+              <label class="col-sm-4 control-label"></label>
+              <div class="col-sm-6">
+                <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="isTemplateCommun" />{{Template Commun}}</label>
             </div>
      </div>
 	<div class="form-group">
@@ -182,6 +190,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
               <th style="width: 50px;">#</th>
               <th style="width: 150px;">{{Nom}}</th>
               <th style="width: 110px;">{{Type}}</th>
+              <th style="width: 50px;">{{Etat}}</th>
               <th style="width: 200px;">{{Paramètres}}</th>
             </tr>
           </thead>

@@ -45,7 +45,7 @@
         <i class="programmation"></i>
        </span>
     </span>
-    <!--  Verrouillage -->
+    <!--  verrouillage -->
     <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
       <span title="" class="lock cursor action btn" data-cmd_id="#cmd_lock_id#" data-type="info" data-subtype="numeric" data-version="#version#">
         <i class="lock"></i>
@@ -87,7 +87,7 @@
         }
       }
     jeedom.cmd.update['#cmd_prog_id#']({display_value:'#info_prog#'});
-
+	
     jeedom.cmd.update['#cmd_lock_id#'] = function(_options){
         if(_options.display_value == 1) {
           $('.lock[data-cmd_id=#cmd_lock_id#]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.1em;color: #00FF00;"></i>');
