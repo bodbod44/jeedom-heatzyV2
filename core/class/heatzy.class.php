@@ -1454,11 +1454,14 @@ class heatzy extends eqLogic {
 			foreach ($this->getCmd() as $cmd) {	
 				switch($cmd->getType()){
 					case 'info':
-						log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
+						log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType().' - '.$cmd->getCollectDate().' - '.$cmd->getValueDate());
 
 						$replace['#'.$cmd->getLogicalId().'_id#'] = $cmd->getId();
 						$replace['#'.$cmd->getLogicalId().'_cmd#'] = $cmd->execCmd();
 						$replace['#'.$cmd->getLogicalId().'_unite#'] = $cmd->getUnite();
+						$replace['#'.$cmd->getLogicalId().'_CollectDate#'] = $cmd->getCollectDate() ; 
+						$replace['#'.$cmd->getLogicalId().'_ValueDate#'] = $cmd->getValueDate() ; 
+						$replace['#'.$cmd->getLogicalId().'_history#'] = (is_object($cmd) && $cmd->getIsHistorized()) ? 'history cursor' : '';
 						$replace['none;#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
 						break;
 					case 'action':

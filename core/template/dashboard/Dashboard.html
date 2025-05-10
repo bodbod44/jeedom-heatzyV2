@@ -160,28 +160,31 @@
       jeedom.cmd.update['#EtatWindow_id#']({display_value:'#EtatWindow_cmd#'});
       
       jeedom.cmd.update['#cur_temp_id#'] = function(_options){
-        $('.cmd[data-cmd_id=#cur_temp_id#]').attr('title','Collectée le '+_options.collectDate);
+        $('.cmd[data-cmd_id=#cur_temp_id#]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
         $('.cmd[data-cmd_id=#cur_temp_id#] span').value(_options.display_value);
       }
-      jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd# #cur_temp_unite#',collectDate:'#collectDate#'});
+      jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd# #cur_temp_unite#',collectDate:'#cur_temp_CollectDate#',valueDate:'#cur_temp_ValueDate#'});
       
       jeedom.cmd.update['#eco_temp_id#'] = function(_options){
+        $('.cmd[data-cmd_id=#eco_temp_id#]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
         $('.cmd[data-cmd_id=#eco_temp_id#] span').value(_options.display_value);
       }
-      jeedom.cmd.update['#eco_temp_id#']({display_value:': #eco_temp_cmd# #eco_temp_unite#',collectDate:'#collectDate#'});
+      jeedom.cmd.update['#eco_temp_id#']({display_value:': #eco_temp_cmd# #eco_temp_unite#',collectDate:'#eco_temp_CollectDate#',valueDate:'#eco_temp_ValueDate#'});
       
       jeedom.cmd.update['#cft_temp_id#'] = function(_options){
+        $('.cmd[data-cmd_id=#cft_temp_id#]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
         $('.cmd[data-cmd_id=#cft_temp_id#] span').value(_options.display_value);
       }
-      jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp_cmd# #cft_temp_unite#',collectDate:'#collectDate#'});
+      jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp_cmd# #cft_temp_unite#',collectDate:'#cft_temp_CollectDate#',valueDate:'#cft_temp_ValueDate#'});
       
       jeedom.cmd.update['#cur_humi_id#'] = function(_options){
+        $('.cmd[data-cmd_id=#cur_humi_id#]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
         $('.cmd[data-cmd_id=#cur_humi_id#] span').value(_options.display_value);
       }
-      jeedom.cmd.update['#cur_humi_id#']({display_value:'#cur_humi_cmd# #cur_humi_unite#',collectDate:'#collectDate#'});
+      jeedom.cmd.update['#cur_humi_id#']({display_value:'#cur_humi_cmd# #cur_humi_unite#',collectDate:'#cur_humi_CollectDate#',valueDate:'#cur_humi_ValueDate#'});
       
       jeedom.cmd.update['#etat_id#'] = function(_options){
-       $('.cmd[data-cmd_id=#etat_id#]').attr('title','Collectée le '+_options.collectDate);
+       $('.cmd[data-cmd_id=#etat_id#]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
         if (_options.display_value == '0') {
          $('.cmd[data-cmd_id=#etat_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i>'); /// Mode Confort
         }else if (_options.display_value == '1') {
@@ -192,6 +195,6 @@
           $('.cmd[data-cmd_id=#etat_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-off" style="font-size:2em"></i>');    /// Mode Off
         }
       }
-      jeedom.cmd.update['#etat_id#']({display_value:'#etat_cmd#',collectDate:'#collectDate#'});
+      jeedom.cmd.update['#etat_id#']({display_value:'#etat_cmd#',collectDate:'#etat_CollectDate#',valueDate:'#etat_ValueDate#'});
    </script>
 </div>
