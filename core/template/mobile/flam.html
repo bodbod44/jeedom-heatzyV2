@@ -138,8 +138,8 @@
   </div>
 
 <script>
-			jeedom.cmd.update['#Etat_id#'] = function(_options){
-          		    $('.cmd[data-cmd_id=#Etat_id#]').attr('title','Collectée le '+_options.collectDate);
+			jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
+          		    $('.cmd[data-cmd_id=#EtatConsigne_id#]').attr('title','Collectée le '+_options.collectDate);
                     $('.cmd[data-cmd_id=#Confort_id#] .confort i.fa-sun-o').css("color","");
            			$('.cmd[data-cmd_id=#Eco_id#] .eco i.fa-moon-o').css("color","");
            			$('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.fa-snowflake-o').css("color","");
@@ -155,6 +155,6 @@
               			$('.cmd[data-cmd_id=#Off_id#] .off i.fa-power-off').css("color","#00FF00");  /// Mode Off
             		}
         		}
-				jeedom.cmd.update['#Etat_id#']({display_value:'#Etat_cmd#',collectDate:'#Etat_CollectDate#'});
+				jeedom.cmd.update['#EtatConsigne_id#']({display_value:'#EtatConsigne_cmd#',collectDate:'#EtatConsigne_CollectDate#'});
 			</script>
 </div>

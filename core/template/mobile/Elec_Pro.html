@@ -50,8 +50,8 @@
     $('.eqLogic[data-eqLogic_uid=#uid#] .cmd').on('click', function() {
       jeedom.cmd.execute({id: $(this).data('cmd_id')});
     });
-    jeedom.cmd.update['#Etat_id#'] = function(_options){
-      $('.cmd[data-cmd_id=#Etat_id#]').attr('title','Collectée le '+_options.collectDate);
+    jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
+      $('.cmd[data-cmd_id=#EtatConsigne_id#]').attr('title','Collectée le '+_options.collectDate);
       $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","");
       $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","");
       $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","");
@@ -67,7 +67,7 @@
         $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","#00FF00");     /// Mode Off
       }
     }
-    jeedom.cmd.update['#Etat_id#']({display_value:'#Etat_cmd#',collectDate:'#Etat_CollectDate#'});
+    jeedom.cmd.update['#EtatConsigne_id#']({display_value:'#EtatConsigne_cmd#',collectDate:'#EtatConsigne_CollectDate#'});
 
     jeedom.cmd.update['#etatprog_id#'] = function(_options){
         if(_options.display_value == 1) {

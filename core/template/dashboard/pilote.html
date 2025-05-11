@@ -53,22 +53,22 @@
    <center class="widget-name"><a href="#eqLink#" style="font-size : 1.1em;#hideEqLogicName#">#name_display# <span style="font-size: 0.85em;position: relative;top:-2px;">#object_name#</span></a></center>
    <center>
    <div>
-		<div class="cmd cmd-widget #Etat_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#Etat_id#" style="margin-left:5px;display:none;#Etat_display#;" title="#Etat_CollectDate#" data-version="#version#">
+		<div class="cmd cmd-widget #EtatConsigne_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#EtatConsigne_id#" style="margin-left:5px;display:none;#EtatConsigne_display#;" title="#EtatConsigne_CollectDate#" data-version="#version#">
           	<span style="font-size: 3.5em;" class="iconCmd"></span>
           	<script>
-			jeedom.cmd.update['#Etat_id#'] = function(_options){
-          		    $('.cmd[data-cmd_id=#Etat_id#]').attr('title','Collectée le '+_options.collectDate);
+			jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
+          		    $('.cmd[data-cmd_id=#EtatConsigne_id#]').attr('title','Collectée le '+_options.collectDate);
             		if (_options.display_value == '0') {
-              			$('.cmd[data-cmd_id=#Etat_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf"></i>'); /// Mode Confort
+              			$('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf"></i>'); /// Mode Confort
                     }else if (_options.display_value == '1') {
-              			$('.cmd[data-cmd_id=#Etat_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco"></i>');   /// Mode Eco
+              			$('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco"></i>');   /// Mode Eco
  					}else if (_options.display_value == '2') {
-              			$('.cmd[data-cmd_id=#Etat_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg"></i>'); /// Mode HorsGel
+              			$('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg"></i>'); /// Mode HorsGel
  					}else {
-              			$('.cmd[data-cmd_id=#Etat_id#] span.iconCmd').empty().append('<i class="icon jeedom-pilote-off"></i>');  /// Mode Off
+              			$('.cmd[data-cmd_id=#EtatConsigne_id#] span.iconCmd').empty().append('<i class="icon jeedom-pilote-off"></i>');  /// Mode Off
             		}
         		}
-				jeedom.cmd.update['#Etat_id#']({display_value:'#Etat_cmd#',collectDate:'#Etat_CollectDate#'});
+				jeedom.cmd.update['#EtatConsigne_id#']({display_value:'#EtatConsigne_cmd#',collectDate:'#EtatConsigne_CollectDate#'});
 			</script>
   		</div>
    </div> 

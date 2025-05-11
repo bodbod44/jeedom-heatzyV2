@@ -56,7 +56,7 @@
    <div style="float: center;" >
           
 	<!-- Affichage de la temperature courante -->
-	<div class="cmd cmd-widget #cur_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" style="margin-left:5px;display:none;#Etat_display#;" title="#Etat_CollectDate#" data-version="#version#">
+	<div class="cmd cmd-widget #cur_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" style="margin-left:5px;display:none;#EtatConsigne_display#;" title="#EtatConsigne_CollectDate#" data-version="#version#">
            <a><i class="fa fa-2x jeedom-thermometre" aria-hidden="true"></i></a>	
            <span style="margin-right: 5px;font-weight: bold;font-size: 2em;"></span>
           	<script>
@@ -70,7 +70,7 @@
 
 	<div style="float: right;">
     	<!-- Affichage de la consigne eco -->
-        <div class="cmd cmd-widget #eco_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display:none;#Etat_display#;" title="consigne eco" data-version="#version#">
+        <div class="cmd cmd-widget #eco_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display:none;#EtatConsigne_display#;" title="consigne eco" data-version="#version#">
         	<i class="fa fa-moon-o" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
             
             <script>
@@ -82,7 +82,7 @@
   		</div>
 
           <!-- Affichage de la consigne confort -->
-        <div class="cmd cmd-widget #cft_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display:none;#Etat_display#;" title="consigne confort" data-version="#version#">
+        <div class="cmd cmd-widget #cft_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display:none;#EtatConsigne_display#;" title="consigne confort" data-version="#version#">
         	<i class="fa fa-sun-o" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
             
             <script>
@@ -192,8 +192,8 @@
 
   </div>
           <script>
-			jeedom.cmd.update['#Etat_id#'] = function(_options){
-          		    $('.cmd[data-cmd_id=#Etat_id#]').attr('title','Collectée le '+_options.collectDate);
+			jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
+          		    $('.cmd[data-cmd_id=#EtatConsigne_id#]').attr('title','Collectée le '+_options.collectDate);
                     $('.cmd[data-cmd_id=#Confort_id#] .confort i.fa-sun-o').css("color","");
            			$('.cmd[data-cmd_id=#Eco_id#] .eco i.fa-moon-o').css("color","");
            			$('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.fa-snowflake-o').css("color","");
@@ -209,6 +209,6 @@
               			$('.cmd[data-cmd_id=#Off_id#] .off i.fa-power-off').css("color","#00FF00");  /// Mode Off
             		}
         		}
-				jeedom.cmd.update['#Etat_id#']({display_value:'#Etat_cmd#',collectDate:'#Etat_CollectDate#'});
+				jeedom.cmd.update['#EtatConsigne_id#']({display_value:'#EtatConsigne_cmd#',collectDate:'#EtatConsigne_CollectDate#'});
 			</script>
  </div>

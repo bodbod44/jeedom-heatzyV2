@@ -59,12 +59,12 @@
       </span>
       <div style="margin-top:5px; margin-left: 10px">
         <!-- Affichage de la consigne eco -->
-        <span class="cmd cmd-widget #eco_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display:none;#Etat_display#;" title="consigne eco" data-version="#version#">
+        <span class="cmd cmd-widget #eco_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display:none;#EtatConsigne_display#;" title="consigne eco" data-version="#version#">
           <i class="nature-night2" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
         </span>
         
         <!-- Affichage de la consigne confort -->
-        <span class="cmd cmd-widget #cft_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display:none;#Etat_display#;" title="consigne confort" data-version="#version#">
+        <span class="cmd cmd-widget #cft_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display:none;#EtatConsigne_display#;" title="consigne confort" data-version="#version#">
           <i class="meteo-soleil" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
         </span>
        </div> 
@@ -75,8 +75,8 @@
          jeedom.cmd.execute({id: $(this).data('cmd_id')});
          });
      
-     jeedom.cmd.update['#Etat_id#'] = function(_options){
-    	 $('.cmd[data-cmd_id=#Etat_id#]').attr('title','Collectée le '+_options.collectDate);
+     jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
+    	 $('.cmd[data-cmd_id=#EtatConsigne_id#]').attr('title','Collectée le '+_options.collectDate);
        $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","");
        $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","");
        $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","");
@@ -92,7 +92,7 @@
          $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","#00FF00");  /// Mode Off
        }
      }
-     jeedom.cmd.update['#Etat_id#']({display_value:'#Etat_cmd#',collectDate:'#Etat_CollectDate#'});
+     jeedom.cmd.update['#EtatConsigne_id#']({display_value:'#EtatConsigne_cmd#',collectDate:'#EtatConsigne_CollectDate#'});
     
      jeedom.cmd.update['#etatprog_id#'] = function(_options){
          if(_options.display_value == 1) {

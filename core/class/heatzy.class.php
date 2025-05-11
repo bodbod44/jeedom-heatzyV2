@@ -889,7 +889,7 @@ class heatzy extends eqLogic {
         /// Recherche la valeur de la clef du mode courant
         log::add('heatzy', 'debug',  $this->getLogicalId().' : Mode '.$KeyMode);
         $aKeyVal = array_keys(self::$_HeatzyMode, $KeyMode);
-        $this->checkAndUpdateCmd('Etat', $aKeyVal[0]);
+        $this->checkAndUpdateCmd('EtatConsigne', $aKeyVal[0]);
         $this->checkAndUpdateCmd('mode', $KeyMode);
         return true;
     }
@@ -1086,7 +1086,7 @@ class heatzy extends eqLogic {
      * @brief  Méthode appellée après la sauvegarde de votre objet
      *         Creation des 4 ordres : Off, Confort, Eco, HorsGel
      *         Creation de la commande refresh
-     *         Creation de la commande info Etat
+     *         Creation de la commande info EtatConsigne
      */
     
     public function postSave() {
@@ -1102,7 +1102,7 @@ class heatzy extends eqLogic {
                 $cmd->setName(__($Mode, __FILE__));
                 $cmd->setType('action');
                 $cmd->setSubType('other');
-                $cmd->setConfiguration('infoName', 'Etat');
+                $cmd->setConfiguration('infoName', 'EtatConsigne');
                 $cmd->setEqLogic_id($this->getId());
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
@@ -1215,11 +1215,11 @@ class heatzy extends eqLogic {
         }
 
         /// Creation de la commande info Etat numeric
-        $etat = $this->getCmd(null, 'Etat');
+        $etat = $this->getCmd(null, 'EtatConsigne');
         if (!is_object($etat)) {
             $etat = new heatzyCmd();
-            $etat->setName(__('Etat', __FILE__));
-            $etat->setLogicalId('Etat');
+            $etat->setName(__('Etat Consigne', __FILE__));
+            $etat->setLogicalId('EtatConsigne');
             $etat->setType('info');
             $etat->setSubType('numeric');
             $etat->setEqLogic_id($this->getId());
@@ -1447,7 +1447,7 @@ class heatzy extends eqLogic {
         //$refresh = $this->getCmd(null, 'refresh');
         //$replace['#refresh_id#'] = is_object($refresh) ? $refresh->getId() : '';
         
-        //$Etat = $this->getCmd(null,'Etat');
+        //$Etat = $this->getCmd(null,'EtatConsigne');
         //$replace['#Etat#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
         //$replace['#Etatid#'] = (is_object($Etat)) ? $Etat->getId() : '';
         //$replace['#Etat_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Etat_display#' : 'none';

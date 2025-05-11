@@ -32,6 +32,14 @@ function heatzy_update() {
 		if (is_object($cmd)) {
 			$cmd->remove();
 		}
+		$cmd = $eqLogic->getCmd(null, 'etat');
+		if (is_object($cmd)) {
+			$cmd->remove();
+		}
+		$cmd = $eqLogic->getCmd(null, 'Etat');
+		if (is_object($cmd)) {
+			$cmd->remove();
+		}
 	}
 }
 
