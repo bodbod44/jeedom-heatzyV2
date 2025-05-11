@@ -1090,6 +1090,24 @@ class heatzy extends eqLogic {
      */
     
     public function postSave() {
+      
+      // Menage sur d'ancienne commande
+      $cmd = $this->getCmd(null, 'window_switch');
+      if (is_object($cmd)) {
+        	log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
+			$cmd->remove();
+      }
+      $cmd = $this->getCmd(null, 'etat');
+      if (is_object($cmd)) {
+        	log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
+			$cmd->remove();
+      }
+      $cmd = $this->getCmd(null, 'Etat');
+      if (is_object($cmd)) {
+        	log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
+			$cmd->remove();
+      }
+      
         
         foreach (self::$_HeatzyMode as $Key => $Mode ) {
             /// Creation de la commande action $Mode : $Key
@@ -1108,6 +1126,9 @@ class heatzy extends eqLogic {
                 $cmd->setIsVisible(1);
                 $cmd->save();
             }
+          else{
+            $cmd->setConfiguration('infoName', 'EtatConsigne');
+          }
         }
 		
 		// Programmation On/Off
@@ -1125,6 +1146,9 @@ class heatzy extends eqLogic {
 			$cmd->setIsVisible(1);
 			$cmd->save();
 		}
+          else{
+            $cmd->setConfiguration('infoName', 'etatprog');
+          }
 	        
 		$cmd = $this->getCmd(null, 'ProgOff');
 		if (!is_object($cmd)) {
@@ -1140,6 +1164,9 @@ class heatzy extends eqLogic {
 			$cmd->setIsVisible(1);
 			$cmd->save();
 		}
+          else{
+            $cmd->setConfiguration('infoName', 'etatprog');
+          }
 	        
 		/// Creation de la commande info etatprog binaire
 		$etat = $this->getCmd(null, 'etatprog');
@@ -1170,6 +1197,9 @@ class heatzy extends eqLogic {
 			$cmd->setIsVisible(1);
 			$cmd->save();
 		}
+          else{
+            $cmd->setConfiguration('infoName', 'etatlock');
+          }
 	        
 		$cmd = $this->getCmd(null, 'LockOff');
 		if (!is_object($cmd)) {
@@ -1185,6 +1215,9 @@ class heatzy extends eqLogic {
 			$cmd->setIsVisible(1);
 			$cmd->save();
 		}
+          else{
+            $cmd->setConfiguration('infoName', 'etatlock');
+          }
 	        
 		/// Creation de la commande info etatlock binaire
 		$etat = $this->getCmd(null, 'etatlock');
@@ -1386,6 +1419,9 @@ class heatzy extends eqLogic {
 				$cmd->setIsVisible(1);
 				$cmd->save();
 			}
+          else{
+            $cmd->setConfiguration('infoName', 'EtatWindow');
+          }
 		        
 			$cmd = $this->getCmd(null, 'WindowOff');
 			if (!is_object($cmd)) {
@@ -1401,7 +1437,10 @@ class heatzy extends eqLogic {
 				$cmd->setIsVisible(1);
 				$cmd->save();
 			}
-		}
+          else{
+            $cmd->setConfiguration('infoName', 'EtatWindow');
+          }
+		} // if pilote_pro
 
     }
 
@@ -1565,7 +1604,7 @@ class heatzy extends eqLogic {
         foreach ($this->getCmd() as $cmd) {	
             switch($cmd->getType()){
                 case 'info':
-                    log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
+                    //log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
 
                     $replace['#'.$cmd->getLogicalId().'_id#'] = $cmd->getId();
                     $replace['#'.$cmd->getLogicalId().'_cmd#'] = $cmd->execCmd();
@@ -1576,13 +1615,13 @@ class heatzy extends eqLogic {
                     $replace['none;#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
                     break;
                 case 'action':
-                    log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
+                    //log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
 
                     $replace['#'.$cmd->getLogicalId().'_id#'] = is_object($cmd) ? $cmd->getId() : '';
                     $replace['none;#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
                     break;
                 default :
-                    log::add('heatzy', 'error',  __METHOD__.' : Type de commande ($cmd->getType()='.$cmd->getType().') inconnu');
+                    //log::add('heatzy', 'error',  __METHOD__.' : Type de commande ($cmd->getType()='.$cmd->getType().') inconnu');
                     break;
             }
         }
