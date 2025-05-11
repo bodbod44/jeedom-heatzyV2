@@ -1,4 +1,5 @@
 # 11/05/2025
+- Possibilité de choisir le template d'affichage (bodbod / l3flo / jeedom)
 - Modification du template commun pour les modules qui n'ont pas toutes les commandes (objet non pris en charge par certains modules)
 
 # 10/05/2025
