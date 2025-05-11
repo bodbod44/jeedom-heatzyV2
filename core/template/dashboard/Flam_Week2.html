@@ -11,18 +11,18 @@
     <div style="float:left;margin-left: 10px">
       <!-- plugzy -->
       <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-        <span title="" class="plugzy cursor action btn" data-cmd_id="#cmd_plugzy_id#" data-type="info" data-subtype="numeric" data-version="#version#">
+        <span title="" class="plugzy cursor action btn" data-cmd_id="#plugzy_id#" data-type="info" data-subtype="numeric" data-version="#version#">
           <i class="jeedom-prise" aria-hidden="true"></i>
          </span>
       </span>
       <!-- off -->
-      <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_off_id#" data-version="#version#">
+      <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Off_id#" data-version="#version#">
         <span title="Mode OFF" class="off cursor action btn">
             <i class="jeedom-off" style="font-size:1em"></i>
         </span>
       </span>
       <!-- confort -->
-      <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_confort_id#" data-version="#version#">
+      <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort_id#" data-version="#version#">
         <span title="Mode Confort" class="confort cursor action btn">
           <i class="meteo-soleil" style="font-size:1.8em"></i>
         </span>
@@ -31,20 +31,20 @@
     
     <div style="margin-left: 10px">
       <!-- Eco -->
-      <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_eco_id#" data-version="#version#">
+      <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Eco_id#" data-version="#version#">
         <span title="Mode Eco" class="eco cursor action btn">
           <i class="nature-night2" style="font-size:1.8em"></i>
         </span>
       </span>
       <!--  Hors Gel -->
-      <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_hg_id#" data-version="#version#">
+      <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#HorsGel_id#" data-version="#version#">
         <span title="Mode Hors Gel" class="horsgel cursor action btn">
           <i class="nature-snowflake" style="font-size:1.8em"></i>
         </span>
       </span>
       <!--  programmation -->
       <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-        <span title="" class="prog cursor action btn" data-cmd_id="#cmd_prog_id#" data-type="info" data-subtype="numeric" data-version="#version#">
+        <span title="" class="prog cursor action btn" data-cmd_id="#etatprog_id#" data-type="info" data-subtype="numeric" data-version="#version#">
           <i class="programmation"></i>
          </span>
       </span>
@@ -53,18 +53,18 @@
     
     <!-- Affichage de la temperature courante -->
     <span class="float:right" style="margin-right: 20px;margin-top: 0px;">
-      <span class="cmd cmd-widget #history_cur_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" title="#collectDate#" data-version="#version#">
+      <span class="cmd cmd-widget #cur_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" title="#cur_temp_CollectDate#" data-version="#version#">
         <a><i class="fa fa-2x jeedom-thermometre" style="margin-left: 10px" aria-hidden="true"></i></a>  
         <span style="margin-right: 5px;font-weight: bold;font-size: 2em;"></span>
       </span>
       <div style="margin-top:5px; margin-left: 10px">
         <!-- Affichage de la consigne eco -->
-        <span class="cmd cmd-widget #history_eco_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display: #Etat_display#;" title="consigne eco" data-version="#version#">
+        <span class="cmd cmd-widget #eco_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display:none;#Etat_display#;" title="consigne eco" data-version="#version#">
           <i class="nature-night2" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
         </span>
         
         <!-- Affichage de la consigne confort -->
-        <span class="cmd cmd-widget #history_cft_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display: #Etat_display#;" title="consigne confort" data-version="#version#">
+        <span class="cmd cmd-widget #cft_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display:none;#Etat_display#;" title="consigne confort" data-version="#version#">
           <i class="meteo-soleil" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
         </span>
        </div> 
@@ -75,66 +75,66 @@
          jeedom.cmd.execute({id: $(this).data('cmd_id')});
          });
      
-     jeedom.cmd.update['#Etatid#'] = function(_options){
-    	 $('.cmd[data-cmd_id=#Etatid#]').attr('title','Collectée le '+_options.collectDate);
-       $('.cmd[data-cmd_id=#cmd_confort_id#] .confort i.meteo-soleil').css("color","");
-       $('.cmd[data-cmd_id=#cmd_eco_id#] .eco i.nature-night2').css("color","");
-       $('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel i.nature-snowflake').css("color","");
-       $('.cmd[data-cmd_id=#cmd_off_id#] .off i.jeedom-off').css("color","");
+     jeedom.cmd.update['#Etat_id#'] = function(_options){
+    	 $('.cmd[data-cmd_id=#Etat_id#]').attr('title','Collectée le '+_options.collectDate);
+       $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","");
+       $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","");
+       $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","");
+       $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","");
  
        if (_options.display_value == '0') {
-    	   $('.cmd[data-cmd_id=#cmd_confort_id#] .confort i.meteo-soleil').css("color","#00FF00"); /// Mode Confort
+    	   $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","#00FF00"); /// Mode Confort
        }else if (_options.display_value == '1') {
-    	   $('.cmd[data-cmd_id=#cmd_eco_id#] .eco i.nature-night2').css("color","#00FF00");  /// Mode Eco
+    	   $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","#00FF00");  /// Mode Eco
        }else if (_options.display_value == '2') {
-         $('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel i.nature-snowflake').css("color","#00FF00");/// Mode HorsGel
+         $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","#00FF00");/// Mode HorsGel
        }else {
-         $('.cmd[data-cmd_id=#cmd_off_id#] .off i.jeedom-off').css("color","#00FF00");  /// Mode Off
+         $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","#00FF00");  /// Mode Off
        }
      }
-     jeedom.cmd.update['#Etatid#']({display_value:'#Etat#',collectDate:'#collectDate#'});
+     jeedom.cmd.update['#Etat_id#']({display_value:'#Etat_cmd#',collectDate:'#Etat_CollectDate#'});
     
-     jeedom.cmd.update['#cmd_prog_id#'] = function(_options){
+     jeedom.cmd.update['#etatprog_id#'] = function(_options){
          if(_options.display_value == 1) {
-           $('.prog[data-cmd_id=#cmd_prog_id#]').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-           $('.prog[data-cmd_id=#cmd_prog_id#]').attr('title', 'Désactiver la programmation');
-           $('.prog[data-cmd_id=#cmd_prog_id#]').parent().attr('data-cmd_id', '#cmd_progoff_id#');
+           $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+           $('.prog[data-cmd_id=#etatprog_id#]').attr('title', 'Désactiver la programmation');
+           $('.prog[data-cmd_id=#etatprog_id#]').parent().attr('data-cmd_id', '#ProgOff_id#');
          } else {
-           $('.prog[data-cmd_id=#cmd_prog_id#]').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
-           $('.prog[data-cmd_id=#cmd_prog_id#]').attr('title', 'Activer la programmation');
-           $('.prog[data-cmd_id=#cmd_prog_id#]').parent().attr('data-cmd_id', '#cmd_progon_id#');
+           $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
+           $('.prog[data-cmd_id=#etatprog_id#]').attr('title', 'Activer la programmation');
+           $('.prog[data-cmd_id=#etatprog_id#]').parent().attr('data-cmd_id', '#ProgOn_id#');
          }
        }
-     jeedom.cmd.update['#cmd_prog_id#']({display_value:'#info_prog#'});
+     jeedom.cmd.update['#etatprog_id#']({display_value:'#etatprog_cmd#'});
      
-     jeedom.cmd.update['#cmd_plugzy_id#'] = function(_options){
+     jeedom.cmd.update['#plugzy_id#'] = function(_options){
          if(_options.display_value == 1) {
-           $('.plugzy[data-cmd_id=#cmd_plugzy_id#]').empty().append('<i class="jeedom-prise plugzyoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-           $('.plugzy[data-cmd_id=#cmd_plugzy_id#]').attr('title', 'Eteindre Plugzy');
-           $('.plugzy[data-cmd_id=#cmd_plugzy_id#]').parent().attr('data-cmd_id', '#cmd_plugzyoff_id#');
+           $('.plugzy[data-cmd_id=#plugzy_id#]').empty().append('<i class="jeedom-prise plugzyoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+           $('.plugzy[data-cmd_id=#plugzy_id#]').attr('title', 'Eteindre Plugzy');
+           $('.plugzy[data-cmd_id=#plugzy_id#]').parent().attr('data-cmd_id', '#plugzyoff_id#');
          } else {
-           $('.plugzy[data-cmd_id=#cmd_plugzy_id#]').empty().append('<i class="jeedom-prise plugzyon" style="font-size : 1.1em;color: #FF0000;"></i>');
-           $('.plugzy[data-cmd_id=#cmd_plugzy_id#]').attr('title', 'Allumer Plugzy');
-           $('.plugzy[data-cmd_id=#cmd_plugzy_id#]').parent().attr('data-cmd_id', '#cmd_plugzyon_id#');
+           $('.plugzy[data-cmd_id=#plugzy_id#]').empty().append('<i class="jeedom-prise plugzyon" style="font-size : 1.1em;color: #FF0000;"></i>');
+           $('.plugzy[data-cmd_id=#plugzy_id#]').attr('title', 'Allumer Plugzy');
+           $('.plugzy[data-cmd_id=#plugzy_id#]').parent().attr('data-cmd_id', '#plugzyon_id#');
          }
        }
-     jeedom.cmd.update['#cmd_plugzy_id#']({display_value:'#info_plugzy#'});
+     jeedom.cmd.update['#plugzy_id#']({display_value:'#plugzy_cmd#'});
 
      jeedom.cmd.update['#cur_temp_id#'] = function(_options){
   	   $('.cmd[data-cmd_id=#cur_temp_id#]').attr('title','Collectée le '+_options.collectDate);
        $('.cmd[data-cmd_id=#cur_temp_id#] span').value(_options.display_value);
      }
-     jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp# #unite_cur_temp#',collectDate:'#collectDate#'});
+     jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd# #cur_temp_unite#',collectDate:'#cur_temp_CollectDate#'});
 
      jeedom.cmd.update['#eco_temp_id#'] = function(_options){
   	   $('.cmd[data-cmd_id=#eco_temp_id#] span').value(_options.display_value);
      }
-     jeedom.cmd.update['#eco_temp_id#']({display_value:': #eco_temp# #unite_eco_temp#',collectDate:'#collectDate#'});
+     jeedom.cmd.update['#eco_temp_id#']({display_value:': #eco_temp_cmd# #eco_temp_unite#',collectDate:'#eco_temp_CollectDate#'});
      
      jeedom.cmd.update['#cft_temp_id#'] = function(_options){
          $('.cmd[data-cmd_id=#cft_temp_id#] span').value(_options.display_value);
      }
-     jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp# #unite_cft_temp#',collectDate:'#collectDate#'});
+     jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp_cmd# #cft_temp_unite#',collectDate:'#cft_temp_CollectDate#'});
      
   </script>
 </div>

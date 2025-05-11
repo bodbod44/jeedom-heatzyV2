@@ -1,9 +1,10 @@
 # 11/05/2025
 - Possibilité de choisir le template d'affichage (bodbod / l3flo / jeedom)
 - Modification du template commun pour les modules qui n'ont pas toutes les commandes (objet non pris en charge par certains modules)
+- Modification de tous les templates pour uniformiser les #variables# (LogicalId_xxx)
 
 # 10/05/2025
-- Correction du curseur sur une comman de avec un historique
+- Correction du curseur sur une commande avec un historique
 - Modification des popup pour afficher les CollecteDate et ValueDate de chaque commande
 
 # 08/05/2025

@@ -889,7 +889,7 @@ class heatzy extends eqLogic {
         /// Recherche la valeur de la clef du mode courant
         log::add('heatzy', 'debug',  $this->getLogicalId().' : Mode '.$KeyMode);
         $aKeyVal = array_keys(self::$_HeatzyMode, $KeyMode);
-        $this->checkAndUpdateCmd('etat', $aKeyVal[0]);
+        $this->checkAndUpdateCmd('Etat', $aKeyVal[0]);
         $this->checkAndUpdateCmd('mode', $KeyMode);
         return true;
     }
@@ -1219,7 +1219,7 @@ class heatzy extends eqLogic {
         if (!is_object($etat)) {
             $etat = new heatzyCmd();
             $etat->setName(__('Etat', __FILE__));
-            $etat->setLogicalId('etat');
+            $etat->setLogicalId('Etat');
             $etat->setType('info');
             $etat->setSubType('numeric');
             $etat->setEqLogic_id($this->getId());
@@ -1443,170 +1443,160 @@ class heatzy extends eqLogic {
         }
         $_version = jeedom::versionAlias($_version);
         $product = $this->getConfiguration('product', '');
+    
+        //$refresh = $this->getCmd(null, 'refresh');
+        //$replace['#refresh_id#'] = is_object($refresh) ? $refresh->getId() : '';
         
-        $replace['#collectDate#'] = $this->getConfiguration('updatetime', '');
+        //$Etat = $this->getCmd(null,'Etat');
+        //$replace['#Etat#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
+        //$replace['#Etatid#'] = (is_object($Etat)) ? $Etat->getId() : '';
+        //$replace['#Etat_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Etat_display#' : 'none';
+        //$replace['#history#'] = (is_object($Etat) && $Etat->getIsHistorized())? 'history cursor' : '';
+        
+        //$Confort = $this->getCmd(null,'Confort');
+        //$replace['#cmd_confort_id#'] = (is_object($Confort)) ? $Confort->getId() : '';
+        
+        //$Eco = $this->getCmd(null,'Eco');
+        //$replace['#cmd_eco_id#'] = (is_object($Eco)) ? $Eco->getId() : '';
+        
+        //$HorsGel = $this->getCmd(null,'HorsGel');
+        //$replace['#cmd_hg_id#'] = (is_object($HorsGel)) ? $HorsGel->getId() : '';
+        
+        //$Off = $this->getCmd(null,'Off');
+        //$replace['#cmd_off_id#'] = (is_object($Off)) ? $Off->getId() : '';
 
-      	//log::add('heatzy', 'debug',  $this->getName().' - TypeTemplate='.$this->getConfiguration('TypeTemplate','') );
-	    if( $this->getConfiguration('TypeTemplate', '0') == 0 ){
-          			
-			// ****** TODO : Generer les cmd a mettre a jour directement depuis la liste de l'equipement ******
-			//log::add('heatzy', 'debug',  __METHOD__.' : Liste commandes - '.$this->getName());
-			foreach ($this->getCmd() as $cmd) {	
-				switch($cmd->getType()){
-					case 'info':
-						log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType().' - '.$cmd->getCollectDate().' - '.$cmd->getValueDate());
+        //$Etat = $this->getCmd(null,'etatprog');
+        //$replace['#info_prog#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
+        //$replace['#cmd_prog_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
+        //$replace['#Prog_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Prog_display#' : 'none';
+      
+        //$ProgOff = $this->getCmd(null,'ProgOff');
+        //$replace['#cmd_progoff_id#'] = (is_object($ProgOff)) ? $ProgOff->getId() : '';
+      
+        //$ProgOn = $this->getCmd(null,'ProgOn');
+        //$replace['#cmd_progon_id#'] = (is_object($ProgOn)) ? $ProgOn->getId() : '';
 
-						$replace['#'.$cmd->getLogicalId().'_id#'] = $cmd->getId();
-						$replace['#'.$cmd->getLogicalId().'_cmd#'] = $cmd->execCmd();
-						$replace['#'.$cmd->getLogicalId().'_unite#'] = $cmd->getUnite();
-						$replace['#'.$cmd->getLogicalId().'_CollectDate#'] = $cmd->getCollectDate() ; 
-						$replace['#'.$cmd->getLogicalId().'_ValueDate#'] = $cmd->getValueDate() ; 
-						$replace['#'.$cmd->getLogicalId().'_history#'] = (is_object($cmd) && $cmd->getIsHistorized()) ? 'history cursor' : '';
-						$replace['none;#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
-						break;
-					case 'action':
-						log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
+        //$Etat = $this->getCmd(null,'etatlock');
+        //$replace['#info_lock#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
+        //$replace['#cmd_lock_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
+        //$replace['#Lock_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Lock_display#' : 'none';
+      
+        //$LockOff = $this->getCmd(null,'LockOff');
+        //$replace['#cmd_lockoff_id#'] = (is_object($LockOff)) ? $LockOff->getId() : '';
+      
+        //$LockOn = $this->getCmd(null,'LockOn');
+        //$replace['#cmd_lockon_id#'] = (is_object($LockOn)) ? $LockOn->getId() : '';    
+      
+        //if( $product == 'Flam_Week2' ||
+            //$product == 'INEA' ||
+            //$product == 'Pilote_Pro') {     /// Pour heatzy flam ou inea mais par defaut le pilote
 
-						$replace['#'.$cmd->getLogicalId().'_id#'] = is_object($cmd) ? $cmd->getId() : '';
-						$replace['none;#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
-						break;
-					default :
-						log::add('heatzy', 'error',  __METHOD__.' : Type de commande ($cmd->getType()='.$cmd->getType().') inconnu');
-						break;
-				}
-			}
-        	//$html = template_replace($replace, getTemplate('core', $_version, 'Dashboard','heatzy'));
-		}
-        else{
-		 
-			$refresh = $this->getCmd(null, 'refresh');
-			$replace['#refresh_id#'] = is_object($refresh) ? $refresh->getId() : '';
-			
-			$Etat = $this->getCmd(null,'Etat');
-			$replace['#Etat#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
-			$replace['#Etatid#'] = (is_object($Etat)) ? $Etat->getId() : '';
-			$replace['#Etat_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Etat_display#' : 'none';
-			$replace['#history#'] = (is_object($Etat) && $Etat->getIsHistorized())? 'history cursor' : '';
-			
-			$Confort = $this->getCmd(null,'Confort');
-			$replace['#cmd_confort_id#'] = (is_object($Confort)) ? $Confort->getId() : '';
-			
-			$Eco = $this->getCmd(null,'Eco');
-			$replace['#cmd_eco_id#'] = (is_object($Eco)) ? $Eco->getId() : '';
-			
-			$HorsGel = $this->getCmd(null,'HorsGel');
-			$replace['#cmd_hg_id#'] = (is_object($HorsGel)) ? $HorsGel->getId() : '';
-			
-			$Off = $this->getCmd(null,'Off');
-			$replace['#cmd_off_id#'] = (is_object($Off)) ? $Off->getId() : '';
+            //if($product == 'Flam_Week2') {
+                //$plugzy = $this->getCmd(null,'plugzy');
+                //$replace['#info_plugzy#'] = (is_object($plugzy)) ? $plugzy->execCmd() : '';
+                //$replace['#cmd_plugzy_id#'] = (is_object($plugzy)) ? $plugzy->getId() : '';
+    
+                //$plugzyon = $this->getCmd(null,'plugzyon');
+                //$replace['#cmd_plugzyon_id#'] = (is_object($plugzyon)) ? $plugzyon->getId() : '';
+    
+                //$plugzyoff = $this->getCmd(null,'plugzyoff');
+                //$replace['#cmd_plugzyoff_id#'] = (is_object($plugzyoff)) ? $plugzyoff->getId() : '';
+            //}
+            
+            //$CurTemp = $this->getCmd(null,'cur_temp');
+            //if( is_object($CurTemp)) {
+                //$replace['#history_cur_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
+                //$replace['#cur_temp_id#'] = $CurTemp->getId();
+                //$replace['#cur_temp#'] = $CurTemp->execCmd();
+                //$replace['#unite_cur_temp#'] = $CurTemp->getUnite();
+                //$replace['#cur_temp_display#'] = (is_object($CurTemp) && $CurTemp->getIsVisible()) ? '#cur_temp_display#' : 'none';
+            //}
+          
+            //$EcoTemp = $this->getCmd(null,'eco_temp');
+            //if( is_object($EcoTemp)) {
+                //$replace['#history_eco_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
+                //$replace['#eco_temp_id#'] = $EcoTemp->getId();
+                //$replace['#eco_temp#'] = $EcoTemp->execCmd();
+                //$replace['#unite_eco_temp#'] = $EcoTemp->getUnite();
+				//$replace['#eco_temp_display#'] = (is_object($EcoTemp) && $EcoTemp->getIsVisible()) ? '#eco_temp_display#' : 'none';
+            //}
 
-			$Etat = $this->getCmd(null,'etatprog');
-			$replace['#info_prog#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
-			$replace['#cmd_prog_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
-			$replace['#Prog_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Prog_display#' : 'none';
-		  
-			$ProgOff = $this->getCmd(null,'ProgOff');
-			$replace['#cmd_progoff_id#'] = (is_object($ProgOff)) ? $ProgOff->getId() : '';
-		  
-			$ProgOn = $this->getCmd(null,'ProgOn');
-			$replace['#cmd_progon_id#'] = (is_object($ProgOn)) ? $ProgOn->getId() : '';
+            //$CftTemp = $this->getCmd(null,'cft_temp');
+            //if( is_object($CftTemp)) {
+                //$replace['#history_cft_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
+                //$replace['#cft_temp_id#'] = $CftTemp->getId();
+                //$replace['#cft_temp#'] = $CftTemp->execCmd();
+                //$replace['#unite_cft_temp#'] = $CftTemp->getUnite();
+				//$replace['#cft_temp_display#'] = (is_object($CftTemp) && $CftTemp->getIsVisible()) ? '#cft_temp_display#' : 'none';
+            //}    
+        //} // if flam/inea/pro
 
-			$Etat = $this->getCmd(null,'etatlock');
-			$replace['#info_lock#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
-			$replace['#cmd_lock_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
-			$replace['#Lock_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Lock_display#' : 'none';
-		  
-			$LockOff = $this->getCmd(null,'LockOff');
-			$replace['#cmd_lockoff_id#'] = (is_object($LockOff)) ? $LockOff->getId() : '';
-		  
-			$LockOn = $this->getCmd(null,'LockOn');
-			$replace['#cmd_lockon_id#'] = (is_object($LockOn)) ? $LockOn->getId() : '';    
-		  
-			if( $product == 'Flam_Week2' ||
-				$product == 'INEA' ||
-				$product == 'Pilote_Pro') {     /// Pour heatzy flam ou inea mais par defaut le pilote
+        //if( $product == 'Pilote_Pro') {     /// Pour pro
 
-				if($product == 'Flam_Week2') {
-					$plugzy = $this->getCmd(null,'plugzy');
-					$replace['#info_plugzy#'] = (is_object($plugzy)) ? $plugzy->execCmd() : '';
-					$replace['#cmd_plugzy_id#'] = (is_object($plugzy)) ? $plugzy->getId() : '';
+            //$CurHumi = $this->getCmd(null,'cur_humi');
+            //if( is_object($CurHumi)) {
+                //$replace['#history_cur_humi#'] = ($CurHumi->getIsHistorized())? 'history cursor' : '';
+              
+                //$replace['#cur_humi_id#'] = $CurHumi->getId();
+                //$replace['#cur_humi#'] = $CurHumi->execCmd();
+                //$replace['#unite_cur_humi#'] = $CurHumi->getUnite();
+                //$replace['none;#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none;';	
+                //$replace['#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none';
+            //}
+            
+            //$EtatWindow = $this->getCmd(null,'EtatWindow');
+            //if( is_object($EtatWindow)) {
+                //$replace['#info_window#'] = (is_object($EtatWindow)) ? $EtatWindow->execCmd() : '';
+                //$replace['#cmd_window_id#'] = (is_object($EtatWindow)) ? $EtatWindow->getId() : '';
+                //$replace['#window_display#'] = (is_object($EtatWindow) && $EtatWindow->getIsVisible()) ? '#window_display#' : 'none';
+              
+                //$WindowOff = $this->getCmd(null,'WindowOff');
+                //$replace['#cmd_windowoff_id#'] = (is_object($WindowOff)) ? $WindowOff->getId() : '';
+              
+                //$WindowOn = $this->getCmd(null,'WindowOn');
+                //$replace['#cmd_windowon_id#'] = (is_object($WindowOn)) ? $WindowOn->getId() : '';  
+            //}  
+        //} // if pro
 		
-					$plugzyon = $this->getCmd(null,'plugzyon');
-					$replace['#cmd_plugzyon_id#'] = (is_object($plugzyon)) ? $plugzyon->getId() : '';
-		
-					$plugzyoff = $this->getCmd(null,'plugzyoff');
-					$replace['#cmd_plugzyoff_id#'] = (is_object($plugzyoff)) ? $plugzyoff->getId() : '';
-				}
-				
-				$CurTemp = $this->getCmd(null,'cur_temp');
-				if( is_object($CurTemp)) {
-					$replace['#history_cur_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-					$replace['#cur_temp_id#'] = $CurTemp->getId();
-					$replace['#cur_temp#'] = $CurTemp->execCmd();
-					$replace['#unite_cur_temp#'] = $CurTemp->getUnite();
-					$replace['#cur_temp_display#'] = (is_object($CurTemp) && $CurTemp->getIsVisible()) ? '#cur_temp_display#' : 'none';
-				}
-			  
-				$EcoTemp = $this->getCmd(null,'eco_temp');
-				if( is_object($EcoTemp)) {
-					$replace['#history_eco_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-					$replace['#eco_temp_id#'] = $EcoTemp->getId();
-					$replace['#eco_temp#'] = $EcoTemp->execCmd();
-					$replace['#unite_eco_temp#'] = $EcoTemp->getUnite();
-				$replace['#eco_temp_display#'] = (is_object($EcoTemp) && $EcoTemp->getIsVisible()) ? '#eco_temp_display#' : 'none';
-				}
+		//$replace['#collectDate#'] = $this->getConfiguration('updatetime', '');
+        
+        // ****** TODO : Generer les cmd a mettre a jour directement depuis la liste de l'equipement ******
+        //log::add('heatzy', 'debug',  __METHOD__.' : Liste commandes - '.$this->getName());
+        foreach ($this->getCmd() as $cmd) {	
+            switch($cmd->getType()){
+                case 'info':
+                    log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
 
-				$CftTemp = $this->getCmd(null,'cft_temp');
-				if( is_object($CftTemp)) {
-					$replace['#history_cft_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-					$replace['#cft_temp_id#'] = $CftTemp->getId();
-					$replace['#cft_temp#'] = $CftTemp->execCmd();
-					$replace['#unite_cft_temp#'] = $CftTemp->getUnite();
-				$replace['#cft_temp_display#'] = (is_object($CftTemp) && $CftTemp->getIsVisible()) ? '#cft_temp_display#' : 'none';
-				}    
-			} // if flam/inea/pro
+                    $replace['#'.$cmd->getLogicalId().'_id#'] = $cmd->getId();
+                    $replace['#'.$cmd->getLogicalId().'_cmd#'] = $cmd->execCmd();
+                    $replace['#'.$cmd->getLogicalId().'_unite#'] = $cmd->getUnite();
+                    $replace['#'.$cmd->getLogicalId().'_CollectDate#'] = $cmd->getCollectDate() ; 
+                    $replace['#'.$cmd->getLogicalId().'_ValueDate#'] = $cmd->getValueDate() ; 
+                    $replace['#'.$cmd->getLogicalId().'_history#'] = (is_object($cmd) && $cmd->getIsHistorized()) ? 'history cursor' : '';
+                    $replace['none;#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
+                    break;
+                case 'action':
+                    log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
 
-			if( $product == 'Pilote_Pro') {     /// Pour pro
-
-				$CurHumi = $this->getCmd(null,'cur_humi');
-				if( is_object($CurHumi)) {
-					$replace['#history_cur_humi#'] = ($CurHumi->getIsHistorized())? 'history cursor' : '';
-				  
-					$replace['#cur_humi_id#'] = $CurHumi->getId();
-					$replace['#cur_humi#'] = $CurHumi->execCmd();
-					$replace['#unite_cur_humi#'] = $CurHumi->getUnite();
-					$replace['none;#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none;';	
-					$replace['#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none';
-				}
-				
-				$EtatWindow = $this->getCmd(null,'EtatWindow');
-				if( is_object($EtatWindow)) {
-					$replace['#info_window#'] = (is_object($EtatWindow)) ? $EtatWindow->execCmd() : '';
-					$replace['#cmd_window_id#'] = (is_object($EtatWindow)) ? $EtatWindow->getId() : '';
-					$replace['#window_display#'] = (is_object($EtatWindow) && $EtatWindow->getIsVisible()) ? '#window_display#' : 'none';
-				  
-					$WindowOff = $this->getCmd(null,'WindowOff');
-					$replace['#cmd_windowoff_id#'] = (is_object($WindowOff)) ? $WindowOff->getId() : '';
-				  
-					$WindowOn = $this->getCmd(null,'WindowOn');
-					$replace['#cmd_windowon_id#'] = (is_object($WindowOn)) ? $WindowOn->getId() : '';  
-				}  
-			} // if pro
-			
-			//$html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));
-			// cache::set('heatzy' . $_version . $this->getId(), $html, 0);
-		} // if TemplCommun
+                    $replace['#'.$cmd->getLogicalId().'_id#'] = is_object($cmd) ? $cmd->getId() : '';
+                    $replace['none;#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
+                    break;
+                default :
+                    log::add('heatzy', 'error',  __METHOD__.' : Type de commande ($cmd->getType()='.$cmd->getType().') inconnu');
+                    break;
+            }
+        }
 		
 		//log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().'-TypeTemplate='.$this->getConfiguration('TypeTemplate', '0'));
 		switch( $this->getConfiguration('TypeTemplate', '0') ){
 			case '0':
-				$html = template_replace($replace, getTemplate('core', $_version, 'Dashboard','heatzy'));
+				$html = template_replace($replace, getTemplate('core', $_version, 'Dashboard','heatzy')); // template commun (bodbod)
             	break;
 			case '1':
-				$html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));
+				$html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));  // template d'origine (l3flo)
             	break;
 			default :
-				$html = template_replace($replace, getTemplate('core', $_version, 'xxx','heatzy'));
+				$html = template_replace($replace, getTemplate('core', $_version, 'xxx','heatzy')); // template jeedom
             	break;
 		}
 		//cache::set('heatzy' . $_version . $this->getId(), $html, 0);

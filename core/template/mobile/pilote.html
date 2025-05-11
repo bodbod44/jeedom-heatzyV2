@@ -5,57 +5,57 @@
   <div style="float: center;" >
   	 <center>
 		<!-- Off -->
-		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_off_id#" data-version="#version#" style="float: left; margin-left:15px;">
+		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Off_id#" data-version="#version#" style="float: left; margin-left:15px;">
 			<span class="input-group-btn" title="Mode OFF" >
             	<a class="btn btn-default off" style="background-color:#background-color# !important;border-color : transparent !important;">
             		<i class="fa fa-power-off" aria-hidden="true"></i>
             	</a>
             </span>
 			<script>
-            	$('.cmd[data-cmd_id=#cmd_off_id#] .off').on('click', function() {
- 					jeedom.cmd.execute({id: '#cmd_off_id#'});
+            	$('.cmd[data-cmd_id=#Off_id#] .off').on('click', function() {
+ 					jeedom.cmd.execute({id: '#Off_id#'});
   				});
            	</script>
 		</div>
 
 	  <!-- Confort -->
-		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_confort_id#" data-version="#version#" style="float: left; margin-left:15px;">
+		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort_id#" data-version="#version#" style="float: left; margin-left:15px;">
            	<span class="input-group-btn" title="Mode Confort" >
            		<a class="btn btn-default confort" style="background-color:#background-color# !important;border-color : transparent !important;">
            			<i class="fa fa-sun-o" aria-hidden="true"></i>
            		</a>
            	</span>
 			<script>
-            	$('.cmd[data-cmd_id=#cmd_confort_id#] .confort').on('click', function() {
- 					jeedom.cmd.execute({id: '#cmd_confort_id#'});
+            	$('.cmd[data-cmd_id=#Confort_id#] .confort').on('click', function() {
+ 					jeedom.cmd.execute({id: '#Confort_id#'});
   				});
           	</script>
 		</div>
 
 	  <!-- Eco -->
-		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_eco_id#" data-version="#version#" style="float: left; margin-left:15px;">
+		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Eco_id#" data-version="#version#" style="float: left; margin-left:15px;">
            	<span class="input-group-btn" title="Mode Eco" >
            		<a class="btn btn-default eco" style="background-color:#background-color# !important;border-color : transparent !important;">
            			<i class="fa fa-moon-o" aria-hidden="true"></i>
            		</a>
            	</span>
 			<script>
-            	$('.cmd[data-cmd_id=#cmd_eco_id#] .eco').on('click', function() {
- 					jeedom.cmd.execute({id: '#cmd_eco_id#'});
+            	$('.cmd[data-cmd_id=#Eco_id#] .eco').on('click', function() {
+ 					jeedom.cmd.execute({id: '#Eco_id#'});
   				});
           	</script>
 		</div>
 
 	  <!--  Hors Gel -->
-		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_hg_id#" data-version="#version#" style="float: left; margin-left:15px;">
+		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#HorsGel_id#" data-version="#version#" style="float: left; margin-left:15px;">
            	<span class="input-group-btn" title="Mode Hors Gel" >
            		<a class="btn btn-default horsgel" style="background-color:#background-color# !important;border-color : transparent !important;">
            			<i class="fa fa-snowflake-o" aria-hidden="true"></i>
            		</a>
            	</span>
 			<script>
-            	$('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel').on('click', function() {
- 					jeedom.cmd.execute({id: '#cmd_hg_id#'});
+            	$('.cmd[data-cmd_id=#HorsGel_id#] .horsgel').on('click', function() {
+ 					jeedom.cmd.execute({id: '#HorsGel_id#'});
   				});
           	</script>
 		</div>
@@ -72,22 +72,22 @@
   				if(_options.display_value == 1) {
 					$('.prog#EtatProgId#').attr('title', 'Désactiver la programmation');
                     $('.prog#EtatProgId# i.programmation').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-                    $('.prog#EtatProgId#').parent().attr('data-cmd_id', '#cmd_progoff_id#');
+                    $('.prog#EtatProgId#').parent().attr('data-cmd_id', '#ProgOff_id#');
                 }
   				else {
 					$('.prog#EtatProgId#').attr('title', 'Activer la programmation');
                     $('.prog#EtatProgId# i.programmation').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
-                    $('.prog#EtatProgId#').parent().attr('data-cmd_id', '#cmd_progon_id#');
+                    $('.prog#EtatProgId#').parent().attr('data-cmd_id', '#ProgOn_id#');
 				}
         	}
         	jeedom.cmd.update['#EtatProgId#']({display_value:'#ProgEtat#'});
 
-            $('.cmd[data-cmd_id=#cmd_progon_id#] .progon').on('click', function () {
-              jeedom.cmd.execute({id: '#cmd_progon_id#'});
+            $('.cmd[data-cmd_id=#ProgOn_id#] .progon').on('click', function () {
+              jeedom.cmd.execute({id: '#ProgOn_id#'});
             });
 
-            $('.cmd[data-cmd_id=#cmd_progoff_id#] .progoff').on('click', function () {
-              jeedom.cmd.execute({id: '#cmd_progoff_id#'});
+            $('.cmd[data-cmd_id=#ProgOff_id#] .progoff').on('click', function () {
+              jeedom.cmd.execute({id: '#ProgOff_id#'});
 
   			});
   		</script>
@@ -99,23 +99,23 @@
   </div>
 
 <script>
-			jeedom.cmd.update['#Etatid#'] = function(_options){
-          		    $('.cmd[data-cmd_id=#Etatid#]').attr('title','Collectée le '+_options.collectDate);
-                    $('.cmd[data-cmd_id=#cmd_confort_id#] .confort i.fa-sun-o').css("color","");
-           			$('.cmd[data-cmd_id=#cmd_eco_id#] .eco i.fa-moon-o').css("color","");
-           			$('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel i.fa-snowflake-o').css("color","");
-           			$('.cmd[data-cmd_id=#cmd_off_id#] .off i.fa-power-off').css("color","");
+			jeedom.cmd.update['#Etat_id#'] = function(_options){
+          		    $('.cmd[data-cmd_id=#Etat_id#]').attr('title','Collectée le '+_options.collectDate);
+                    $('.cmd[data-cmd_id=#Confort_id#] .confort i.fa-sun-o').css("color","");
+           			$('.cmd[data-cmd_id=#Eco_id#] .eco i.fa-moon-o').css("color","");
+           			$('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.fa-snowflake-o').css("color","");
+           			$('.cmd[data-cmd_id=#Off_id#] .off i.fa-power-off').css("color","");
           
             		if (_options.display_value == '0') {
-              			$('.cmd[data-cmd_id=#cmd_confort_id#] .confort i.fa-sun-o').css("color","#00FF00"); /// Mode Confort
+              			$('.cmd[data-cmd_id=#Confort_id#] .confort i.fa-sun-o').css("color","#00FF00"); /// Mode Confort
                     }else if (_options.display_value == '1') {
-              			$('.cmd[data-cmd_id=#cmd_eco_id#] .eco i.fa-moon-o').css("color","#00FF00");  /// Mode Eco
+              			$('.cmd[data-cmd_id=#Eco_id#] .eco i.fa-moon-o').css("color","#00FF00");  /// Mode Eco
  					}else if (_options.display_value == '2') {
-              			$('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel i.fa-snowflake-o').css("color","#00FF00");/// Mode HorsGel
+              			$('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.fa-snowflake-o').css("color","#00FF00");/// Mode HorsGel
  					}else {
-              			$('.cmd[data-cmd_id=#cmd_off_id#] .off i.fa-power-off').css("color","#00FF00");  /// Mode Off
+              			$('.cmd[data-cmd_id=#Off_id#] .off i.fa-power-off').css("color","#00FF00");  /// Mode Off
             		}
         		}
-				jeedom.cmd.update['#Etatid#']({display_value:'#Etat#',collectDate:'#collectDate#'});
+				jeedom.cmd.update['#Etat_id#']({display_value:'#Etat_cmd#',collectDate:'#Etat_CollectDate#'});
 			</script>
 </div>
