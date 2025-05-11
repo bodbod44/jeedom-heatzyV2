@@ -1,3 +1,14 @@
+# 11/05/2025
+- Modification du template commun pour les modules qui n'ont pas toutes les commandes (objet non pris en charge par certains modules)
+
+# 10/05/2025
+- Correction du curseur sur une comman de avec un historique
+- Modification des popup pour afficher les CollecteDate et ValueDate de chaque commande
+
+# 08/05/2025
+- Modification dynamique des commandes dans ToHtml pour le template commun
+- Ajout d'une modal debug (non utilisée à date)
+
 # 04/05/2025
 - Remise en place du divisé par 10 à la lecture des températures (pilote_pro)
 - Suppr de l'ancienne cmd window_switch lors de la mise à jour du plugin
