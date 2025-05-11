@@ -1446,9 +1446,9 @@ class heatzy extends eqLogic {
         
         $replace['#collectDate#'] = $this->getConfiguration('updatetime', '');
 
-      	//log::add('heatzy', 'debug',  'isTemplateCommun='.$this->getConfiguration('isTemplateCommun','') );
-	    if( $this->getConfiguration('isTemplateCommun', '0') ){
-			
+      	//log::add('heatzy', 'debug',  $this->getName().' - TypeTemplate='.$this->getConfiguration('TypeTemplate','') );
+	    if( $this->getConfiguration('TypeTemplate', '0') == 0 ){
+          			
 			// ****** TODO : Generer les cmd a mettre a jour directement depuis la liste de l'equipement ******
 			//log::add('heatzy', 'debug',  __METHOD__.' : Liste commandes - '.$this->getName());
 			foreach ($this->getCmd() as $cmd) {	
@@ -1474,9 +1474,8 @@ class heatzy extends eqLogic {
 						log::add('heatzy', 'error',  __METHOD__.' : Type de commande ($cmd->getType()='.$cmd->getType().') inconnu');
 						break;
 				}
-
 			}
-        	$html = template_replace($replace, getTemplate('core', $_version, 'Dashboard','heatzy'));
+        	//$html = template_replace($replace, getTemplate('core', $_version, 'Dashboard','heatzy'));
 		}
         else{
 		 
@@ -1594,10 +1593,23 @@ class heatzy extends eqLogic {
 				}  
 			} // if pro
 			
-			$html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));
+			//$html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));
 			// cache::set('heatzy' . $_version . $this->getId(), $html, 0);
 		} // if TemplCommun
-
+		
+		//log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().'-TypeTemplate='.$this->getConfiguration('TypeTemplate', '0'));
+		switch( $this->getConfiguration('TypeTemplate', '0') ){
+			case '0':
+				$html = template_replace($replace, getTemplate('core', $_version, 'Dashboard','heatzy'));
+            	break;
+			case '1':
+				$html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));
+            	break;
+			default :
+				$html = template_replace($replace, getTemplate('core', $_version, 'xxx','heatzy'));
+            	break;
+		}
+		//cache::set('heatzy' . $_version . $this->getId(), $html, 0);
         return $html;
     }
 
