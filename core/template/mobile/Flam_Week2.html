@@ -12,8 +12,8 @@
   </center>
   <center>
     <!-- Plugzy -->
-    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#plugzyId#" data-version="#version#">
-      <span title="" class="plugzy#plugzyId# cursor action btn">
+    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#plugzy_id#" data-version="#version#">
+      <span title="" class="plugzy#plugzy_id# cursor action btn">
           <i class="plugzy"></i>
       </span>
     </span>
@@ -88,17 +88,17 @@
       }
     jeedom.cmd.update['#etatprog_id#']({display_value:'#etatprog_cmd#'});
     
-    jeedom.cmd.update['#plugzyId#'] = function(_options){
+    jeedom.cmd.update['#plugzy_id#'] = function(_options){
     	if(_options.display_value == 1) {
-    		$('.plugzy#plugzyId#').attr('title', 'Eteindre Plugzy');
-        $('.plugzy#plugzyId# i.plugzy').empty().append('<i class="jeedom-prise plugzyoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-        $('.plugzy#plugzyId#').parent().attr('data-cmd_id', '#plugzyoff_id#');
+    		$('.plugzy#plugzy_id#').attr('title', 'Eteindre Plugzy');
+        $('.plugzy#plugzy_id# i.plugzy').empty().append('<i class="jeedom-prise plugzyoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+        $('.plugzy#plugzy_id#').parent().attr('data-cmd_id', '#plugzyoff_id#');
       } else {
-        $('.plugzy#plugzyId#').attr('title', 'Allumer Plugzy');
-        $('.plugzy#plugzyId# i.plugzy').empty().append('<i class="jeedom-prise plugzyon" style="font-size : 1.1em;color: #FF0000;"></i>');
-        $('.plugzy#plugzyId#').parent().attr('data-cmd_id', '#plugzyon_id#');
+        $('.plugzy#plugzy_id#').attr('title', 'Allumer Plugzy');
+        $('.plugzy#plugzy_id# i.plugzy').empty().append('<i class="jeedom-prise plugzyon" style="font-size : 1.1em;color: #FF0000;"></i>');
+        $('.plugzy#plugzy_id#').parent().attr('data-cmd_id', '#plugzyon_id#');
       }
     }
-    jeedom.cmd.update['#plugzyId#']({display_value:'#plugzy#'});
+    jeedom.cmd.update['#plugzy_id#']({display_value:'#plugzy_cmd#'});
   </script>
 </div>

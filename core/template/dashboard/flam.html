@@ -7,25 +7,25 @@
 
     <!-- Etat programmation -->
 	<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" style="float: left; display: #EtatProg_display#; margin-top: 1px;margin-right: 1px;" data-version="#version#">
-    		<span class="prog#EtatProgId#" title="" >
+    		<span class="prog#etatprog_id#" title="" >
     			<a class="btn btn-default" style="background-color:#background-color# !important;border-color : transparent !important;">
     			<i class="programmation" aria-hidden="true"></i>
     			</a>
     		</span>
    		 <script>
-        	jeedom.cmd.update['#EtatProgId#'] = function(_options){
+        	jeedom.cmd.update['#etatprog_id#'] = function(_options){
   				if(_options.display_value == 1) {
-					$('.prog#EtatProgId#').attr('title', 'Désactiver la programmation');
-                    $('.prog#EtatProgId# i.programmation').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-                    $('.prog#EtatProgId#').parent().attr('data-cmd_id', '#ProgOff_id#');
+					$('.prog#etatprog_id#').attr('title', 'Désactiver la programmation');
+                    $('.prog#etatprog_id# i.programmation').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+                    $('.prog#etatprog_id#').parent().attr('data-cmd_id', '#ProgOff_id#');
                 }
   				else {
-					$('.prog#EtatProgId#').attr('title', 'Activer la programmation');
-                    $('.prog#EtatProgId# i.programmation').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
-                    $('.prog#EtatProgId#').parent().attr('data-cmd_id', '#ProgOn_id#');
+					$('.prog#etatprog_id#').attr('title', 'Activer la programmation');
+                    $('.prog#etatprog_id# i.programmation').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
+                    $('.prog#etatprog_id#').parent().attr('data-cmd_id', '#ProgOn_id#');
 				}
         	}
-        	jeedom.cmd.update['#EtatProgId#']({display_value:'#ProgEtat#'});
+        	jeedom.cmd.update['#etatprog_id#']({display_value:'#etatprog_cmd#'});
 
             $('.cmd[data-cmd_id=#ProgOn_id#] .progon').on('click', function () {
                 jeedom.cmd.execute({id: '#ProgOn_id#'});
@@ -156,25 +156,25 @@
               
 	<!--  Plugzy          -->
 	<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" style="float: left; display: #EtatProg_display#; margin-top: 1px;margin-right: 1px;" data-version="#version#">
-    		<span class="plugzy#plugzyId#" title="" >
+    		<span class="plugzy#plugzy_id#" title="" >
     			<a class="btn btn-default" style="background-color:#background-color# !important;border-color : transparent !important;">
     			<i class="plugzy" aria-hidden="true"></i>
     			</a>
     		</span>
    		 <script>
-        	jeedom.cmd.update['#plugzyId#'] = function(_options){
+        	jeedom.cmd.update['#plugzy_id#'] = function(_options){
   				if(_options.display_value == 1) {
-					$('.plugzy#plugzyId#').attr('title', 'Eteindre Plugzy');
-                    $('.plugzy#plugzyId# i.plugzy').empty().append('<i class="jeedom-prise plugzyoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-                    $('.plugzy#plugzyId#').parent().attr('data-cmd_id', '#plugzyoff_id#');
+					$('.plugzy#plugzy_id#').attr('title', 'Eteindre Plugzy');
+                    $('.plugzy#plugzy_id# i.plugzy').empty().append('<i class="jeedom-prise plugzyoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+                    $('.plugzy#plugzy_id#').parent().attr('data-cmd_id', '#plugzyoff_id#');
                 }
   				else {
-					$('.plugzy#plugzyId#').attr('title', 'Allumer Plugzy');
-                    $('.plugzy#plugzyId# i.plugzy').empty().append('<i class="jeedom-prise plugzyon" style="font-size : 1.1em;color: #FF0000;"></i>');
-                    $('.plugzy#plugzyId#').parent().attr('data-cmd_id', '#plugzyon_id#');
+					$('.plugzy#plugzy_id#').attr('title', 'Allumer Plugzy');
+                    $('.plugzy#plugzy_id# i.plugzy').empty().append('<i class="jeedom-prise plugzyon" style="font-size : 1.1em;color: #FF0000;"></i>');
+                    $('.plugzy#plugzy_id#').parent().attr('data-cmd_id', '#plugzyon_id#');
 				}
         	}
-        	jeedom.cmd.update['#plugzyId#']({display_value:'#plugzy#'});
+        	jeedom.cmd.update['#plugzy_id#']({display_value:'#plugzy_cmd#'});
 
             $('.cmd[data-cmd_id=#plugzyon_id#] .plugzyon').on('click', function () {
               jeedom.cmd.execute({id: '#plugzyon_id#'});

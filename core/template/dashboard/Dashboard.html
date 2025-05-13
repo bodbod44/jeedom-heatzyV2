@@ -47,7 +47,7 @@
                   <!-- off -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Off_id#" data-version="#version#" style="display:none;#Off_display#;">
                   <span title="Mode OFF" class="off cursor action btn">
-                  <i class="jeedom-off" style="font-size:1.4em"></i>
+                  <i class="jeedom-off" style="font-size:1.2em"></i>
                   </span>
                   </span>
                   <!-- confort -->
@@ -73,7 +73,13 @@
          </span>
          <center>
             <span style="margin-left: 20px;margin-top: 0px;">
-               <!--  programmation -->
+               <!--  Plugzy -->
+               <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
+               <span title="" class="plug cursor action btn" data-cmd_id="#plugzy_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#plugzy_display#;">
+               <i class="plugzy"></i>
+               </span>
+               </span>
+              <!--  programmation -->
                <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
                <span title="" class="prog cursor action btn" data-cmd_id="#etatprog_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#etatprog_display#;">
                <i class="programmation"></i>
@@ -121,15 +127,30 @@
          }
       }
       jeedom.cmd.update['#EtatConsigne_id#']({display_value:'#EtatConsigne_cmd#',collectDate:'#EtatConsigne_CollectDate#'});
-      
-      jeedom.cmd.update['#etatprog_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('etatprog_id##') ) ){  
+
+      jeedom.cmd.update['#plugzy_id#'] = function(_options){
+         if( !Number.isNaN( Number.parseInt('#plugzy_id#') ) ){  
             if(_options.display_value == 1) {
-               $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+               $('.plug[data-cmd_id=#plugzy_id#]').empty().append('<i class="jeedomapp-prise plugzyoff" style="font-size : 1.5em;color: #00FF00;"></i>');
+               $('.plug[data-cmd_id=#plugzy_id#]').attr('title', 'Désactiver Plugzy');
+               $('.plug[data-cmd_id=#plugzy_id#]').parent().attr('data-cmd_id', '#plugzyoff_id#');
+            } else {
+               $('.plug[data-cmd_id=#plugzy_id#]').empty().append('<i class="jeedomapp-prise-off plugzyon" style="font-size : 1.5em;color: #FF0000;"></i>');
+               $('.plug[data-cmd_id=#plugzy_id#]').attr('title', 'Activer Plugzy');
+               $('.plug[data-cmd_id=#plugzy_id#]').parent().attr('data-cmd_id', '#plugzyon_id#');
+            }
+         }
+      }
+      jeedom.cmd.update['#plugzy_id#']({display_value:'#plugzy_cmd#'});
+     
+      jeedom.cmd.update['#etatprog_id#'] = function(_options){
+         if( !Number.isNaN( Number.parseInt('#etatprog_id#') ) ){  
+            if(_options.display_value == 1) {
+               $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.2em;color: #00FF00;"></i>');
                $('.prog[data-cmd_id=#etatprog_id#]').attr('title', 'Désactiver la programmation');
                $('.prog[data-cmd_id=#etatprog_id#]').parent().attr('data-cmd_id', '#ProgOff_id#');
             } else {
-               $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
+               $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.2em;color: #FF0000;"></i>');
                $('.prog[data-cmd_id=#etatprog_id#]').attr('title', 'Activer la programmation');
                $('.prog[data-cmd_id=#etatprog_id#]').parent().attr('data-cmd_id', '#ProgOn_id#');
             }
@@ -138,13 +159,13 @@
       jeedom.cmd.update['#etatprog_id#']({display_value:'#etatprog_cmd#'});
       
       jeedom.cmd.update['#etatlock_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('etatlock_id##') ) ){  
+         if( !Number.isNaN( Number.parseInt('#etatlock_id#') ) ){  
             if(_options.display_value == 1) {
-               $('.lock[data-cmd_id=#etatlock_id#]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+               $('.lock[data-cmd_id=#etatlock_id#]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.2em;color: #00FF00;"></i>');
                $('.lock[data-cmd_id=#etatlock_id#]').attr('title', 'Désactiver le verrouillage');
                $('.lock[data-cmd_id=#etatlock_id#]').parent().attr('data-cmd_id', '#LockOff_id#');
             } else {
-               $('.lock[data-cmd_id=#etatlock_id#]').empty().append('<i class="fa fa-toggle-off lockon" style="font-size : 1.1em;color: #FF0000;"></i>');
+               $('.lock[data-cmd_id=#etatlock_id#]').empty().append('<i class="fa fa-toggle-off lockon" style="font-size : 1.2em;color: #FF0000;"></i>');
                $('.lock[data-cmd_id=#etatlock_id#]').attr('title', 'Activer le verrouillage');
                $('.lock[data-cmd_id=#etatlock_id#]').parent().attr('data-cmd_id', '#LockOn_id#');
             }
@@ -155,11 +176,11 @@
       jeedom.cmd.update['#EtatWindow_id#'] = function(_options){
          if( !Number.isNaN( Number.parseInt('#EtatWindow_id#') ) ){  
             if(_options.display_value == 1) {
-               $('.window[data-cmd_id=#EtatWindow_id#]').empty().append('<i class="fa fa-toggle-on windowoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+               $('.window[data-cmd_id=#EtatWindow_id#]').empty().append('<i class="fa fa-toggle-on windowoff" style="font-size : 1.2em;color: #00FF00;"></i>');
                $('.window[data-cmd_id=#EtatWindow_id#]').attr('title', 'Désactiver la vérification de fenetre ouverte');
                $('.window[data-cmd_id=#EtatWindow_id#]').parent().attr('data-cmd_id', '#WindowOff_id#');
             } else {
-               $('.window[data-cmd_id=#EtatWindow_id#]').empty().append('<i class="fa fa-toggle-off windowon" style="font-size : 1.1em;color: #FF0000;"></i>');
+               $('.window[data-cmd_id=#EtatWindow_id#]').empty().append('<i class="fa fa-toggle-off windowon" style="font-size : 1.2em;color: #FF0000;"></i>');
                $('.window[data-cmd_id=#EtatWindow_id#]').attr('title', 'Activer la vérification de fenetre ouverte');
                $('.window[data-cmd_id=#EtatWindow_id#]').parent().attr('data-cmd_id', '#WindowOn_id#');
             }
