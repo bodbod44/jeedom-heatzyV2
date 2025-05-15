@@ -121,9 +121,9 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
             </div>
      </div>
      <div class="form-group">
-              <label class="col-sm-4 control-label"></label>
+              <label class="col-sm-4 control-label">Template</label>
               <div class="col-sm-6">               
-                <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate">
+                <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title="bodbod : Nouveau template commun à tous les modules<br>l3flo : Template issu de la version d'origine de l3flo<br>Jeedom : Utilisation du template de base jeedom">
 					<option value="0">{{Template heatzy bodbod}}</option>
 					<option value="1">{{Template heatzy l3flo}}</option>
 					<option value="2">{{Template jeedom}}</option>
