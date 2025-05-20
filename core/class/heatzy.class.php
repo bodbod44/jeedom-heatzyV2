@@ -1092,6 +1092,7 @@ class heatzy extends eqLogic {
     public function postSave() {
       
       // Menage sur d'ancienne commande
+	  /*
       $cmd = $this->getCmd(null, 'window_switch');
       if (is_object($cmd)) {
         	log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
@@ -1106,7 +1107,7 @@ class heatzy extends eqLogic {
       if (is_object($cmd)) {
         	log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
 			$cmd->remove();
-      }
+      }*/
       
         
         foreach (self::$_HeatzyMode as $Key => $Mode ) {
@@ -1627,9 +1628,12 @@ class heatzy extends eqLogic {
         }
 		
 		//log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().'-TypeTemplate='.$this->getConfiguration('TypeTemplate', '0'));
-		switch( $this->getConfiguration('TypeTemplate', '0') ){
+		switch( $this->getConfiguration('TypeTemplate', '') ){
+			case '':
+				$this->setConfiguration('TypeTemplate', '0');
+                $this->save() ;
 			case '0':
-				$html = template_replace($replace, getTemplate('core', $_version, 'Dashboard','heatzy')); // template commun (bodbod)
+                $html = template_replace($replace, getTemplate('core', $_version, 'Dashboard','heatzy')); // template commun (bodbod)
             	break;
 			case '1':
 				$html = template_replace($replace, getTemplate('core', $_version, $product,'heatzy'));  // template d'origine (l3flo)

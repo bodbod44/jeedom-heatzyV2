@@ -1,3 +1,13 @@
+# 20/05/2025
+- Affectation par défaut du template commun
+- Renommage de la commande etat en EtatConsigne lors de l'update du plugin
+
+# 14/05/2025
+- Création du template commun mobile
+
+# 13/05/2025
+- Ajout plugzy dans template commun + correction
+
 # 11/05/2025
 - Possibilité de choisir le template d'affichage (bodbod / l3flo / jeedom)
 - Modification du template commun pour les modules qui n'ont pas toutes les commandes (objet non pris en charge par certains modules)
