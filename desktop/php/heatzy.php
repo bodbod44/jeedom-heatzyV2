@@ -120,10 +120,14 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
             </div>
      </div>
-     <div class="form-group" style="display:<?php if(log::getLogLevel('heatzy') == 100) echo 'display' ; else echo 'none' ; ?>">
-              <label class="col-sm-4 control-label"></label>
-              <div class="col-sm-6">
-                <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="isTemplateCommun" />{{Template Commun}}</label>
+     <div class="form-group">
+              <label class="col-sm-4 control-label">Template</label>
+              <div class="col-sm-6">               
+                <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title="bodbod : Nouveau template commun à tous les modules<br>l3flo : Template issu de la version d'origine de l3flo<br>Jeedom : Utilisation du template de base jeedom">
+					<option value="0">{{Template heatzy bodbod}}</option>
+					<option value="1">{{Template heatzy l3flo}}</option>
+					<option value="2">{{Template jeedom}}</option>
+				</select>
             </div>
      </div>
 	<div class="form-group">

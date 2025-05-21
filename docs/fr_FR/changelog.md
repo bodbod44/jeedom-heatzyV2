@@ -1,3 +1,26 @@
+# 20/05/2025
+- Affectation par défaut du template commun
+- Renommage de la commande etat en EtatConsigne lors de l'update du plugin
+
+# 14/05/2025
+- Création du template commun mobile
+
+# 13/05/2025
+- Ajout plugzy dans template commun + correction
+
+# 11/05/2025
+- Possibilité de choisir le template d'affichage (bodbod / l3flo / jeedom)
+- Modification du template commun pour les modules qui n'ont pas toutes les commandes (objet non pris en charge par certains modules)
+- Modification de tous les templates pour uniformiser les #variables# (LogicalId_xxx)
+
+# 10/05/2025
+- Correction du curseur sur une commande avec un historique
+- Modification des popup pour afficher les CollecteDate et ValueDate de chaque commande
+
+# 08/05/2025
+- Modification dynamique des commandes dans ToHtml pour le template commun
+- Ajout d'une modal debug (non utilisée à date)
+
 # 04/05/2025
 - Remise en place du divisé par 10 à la lecture des températures (pilote_pro)
 - Suppr de l'ancienne cmd window_switch lors de la mise à jour du plugin

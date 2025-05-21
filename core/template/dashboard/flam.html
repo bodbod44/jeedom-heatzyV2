@@ -7,32 +7,32 @@
 
     <!-- Etat programmation -->
 	<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" style="float: left; display: #EtatProg_display#; margin-top: 1px;margin-right: 1px;" data-version="#version#">
-    		<span class="prog#EtatProgId#" title="" >
+    		<span class="prog#etatprog_id#" title="" >
     			<a class="btn btn-default" style="background-color:#background-color# !important;border-color : transparent !important;">
     			<i class="programmation" aria-hidden="true"></i>
     			</a>
     		</span>
    		 <script>
-        	jeedom.cmd.update['#EtatProgId#'] = function(_options){
+        	jeedom.cmd.update['#etatprog_id#'] = function(_options){
   				if(_options.display_value == 1) {
-					$('.prog#EtatProgId#').attr('title', 'Désactiver la programmation');
-                    $('.prog#EtatProgId# i.programmation').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-                    $('.prog#EtatProgId#').parent().attr('data-cmd_id', '#cmd_progoff_id#');
+					$('.prog#etatprog_id#').attr('title', 'Désactiver la programmation');
+                    $('.prog#etatprog_id# i.programmation').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+                    $('.prog#etatprog_id#').parent().attr('data-cmd_id', '#ProgOff_id#');
                 }
   				else {
-					$('.prog#EtatProgId#').attr('title', 'Activer la programmation');
-                    $('.prog#EtatProgId# i.programmation').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
-                    $('.prog#EtatProgId#').parent().attr('data-cmd_id', '#cmd_progon_id#');
+					$('.prog#etatprog_id#').attr('title', 'Activer la programmation');
+                    $('.prog#etatprog_id# i.programmation').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
+                    $('.prog#etatprog_id#').parent().attr('data-cmd_id', '#ProgOn_id#');
 				}
         	}
-        	jeedom.cmd.update['#EtatProgId#']({display_value:'#ProgEtat#'});
+        	jeedom.cmd.update['#etatprog_id#']({display_value:'#etatprog_cmd#'});
 
-            $('.cmd[data-cmd_id=#cmd_progon_id#] .progon').on('click', function () {
-                jeedom.cmd.execute({id: '#cmd_progon_id#'});
+            $('.cmd[data-cmd_id=#ProgOn_id#] .progon').on('click', function () {
+                jeedom.cmd.execute({id: '#ProgOn_id#'});
             });
 
-            $('.cmd[data-cmd_id=#cmd_progoff_id#] .progoff').on('click', function () {
-                jeedom.cmd.execute({id: '#cmd_progoff_id#'});
+            $('.cmd[data-cmd_id=#ProgOff_id#] .progoff').on('click', function () {
+                jeedom.cmd.execute({id: '#ProgOff_id#'});
   			});
   		</script>
     </div>
@@ -56,7 +56,7 @@
    <div style="float: center;" >
           
 	<!-- Affichage de la temperature courante -->
-	<div class="cmd cmd-widget #history_cur_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" style="margin-left:5px;display: #Etat_display#;" title="#collectDate#" data-version="#version#">
+	<div class="cmd cmd-widget #cur_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" style="margin-left:5px;display:none;#EtatConsigne_display#;" title="#EtatConsigne_CollectDate#" data-version="#version#">
            <a><i class="fa fa-2x jeedom-thermometre" aria-hidden="true"></i></a>	
            <span style="margin-right: 5px;font-weight: bold;font-size: 2em;"></span>
           	<script>
@@ -64,32 +64,32 @@
           		    $('.cmd[data-cmd_id=#cur_temp_id#]').attr('title','Collectée le '+_options.collectDate);
           			$('.cmd[data-cmd_id=#cur_temp_id#] span').value(_options.display_value);
         		}
-				jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp# #unite_cur_temp#',collectDate:'#collectDate#'});
+				jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd# #cur_temp_unite#',collectDate:'#cur_temp_CollectDate#'});
 			</script>
   	</div>
 
 	<div style="float: right;">
     	<!-- Affichage de la consigne eco -->
-        <div class="cmd cmd-widget #history_eco_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display: #Etat_display#;" title="consigne eco" data-version="#version#">
+        <div class="cmd cmd-widget #eco_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display:none;#EtatConsigne_display#;" title="consigne eco" data-version="#version#">
         	<i class="fa fa-moon-o" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
             
             <script>
             	jeedom.cmd.update['#eco_temp_id#'] = function(_options){
               		$('.cmd[data-cmd_id=#eco_temp_id#] span').value(_options.display_value);
             	}
-				jeedom.cmd.update['#eco_temp_id#']({display_value:': #eco_temp# #unite_eco_temp#',collectDate:'#collectDate#'});
+				jeedom.cmd.update['#eco_temp_id#']({display_value:': #eco_temp_cmd# #eco_temp_unite#',collectDate:'#eco_temp_CollectDate#'});
 			</script>
   		</div>
 
           <!-- Affichage de la consigne confort -->
-        <div class="cmd cmd-widget #history_cft_temp# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display: #Etat_display#;" title="consigne confort" data-version="#version#">
+        <div class="cmd cmd-widget #cft_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display:none;#EtatConsigne_display#;" title="consigne confort" data-version="#version#">
         	<i class="fa fa-sun-o" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
             
             <script>
             	jeedom.cmd.update['#cft_temp_id#'] = function(_options){
               		$('.cmd[data-cmd_id=#cft_temp_id#] span').value(_options.display_value);
             	}
-				jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp# #unite_cft_temp#',collectDate:'#collectDate#'});
+				jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp_cmd# #cft_temp_unite#',collectDate:'#cft_temp_CollectDate#'});
 			</script>
   		</div>
   
@@ -99,89 +99,89 @@
   <div style="float: left;" >
   	 <center>
 		<!-- Off -->
-		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_off_id#">
+		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Off_id#">
 			<span title="Mode OFF" >
             	<a class="btn btn-default off" style="background-color:#background-color# !important;border-color : transparent !important;">
             		<i class="fa fa-power-off" aria-hidden="true"></i>
             	</a>
             </span>
 			<script>
-            	$('.cmd[data-cmd_id=#cmd_off_id#] .off').on('click', function() {
- 					jeedom.cmd.execute({id: '#cmd_off_id#'});
+            	$('.cmd[data-cmd_id=#Off_id#] .off').on('click', function() {
+ 					jeedom.cmd.execute({id: '#Off_id#'});
   				});
            	</script>
 		</div>
 
 	  <!-- Confort -->
-		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_confort_id#">
+		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort_id#">
            	<span title="Mode Confort" >
            		<a class="btn btn-default confort" style="background-color:#background-color# !important;border-color : transparent !important;">
            			<i class="fa fa-sun-o" aria-hidden="true"></i>
            		</a>
            	</span>
 			<script>
-            	$('.cmd[data-cmd_id=#cmd_confort_id#] .confort').on('click', function() {
- 					jeedom.cmd.execute({id: '#cmd_confort_id#'});
+            	$('.cmd[data-cmd_id=#Confort_id#] .confort').on('click', function() {
+ 					jeedom.cmd.execute({id: '#Confort_id#'});
   				});
           	</script>
 		</div>
 
 	  <!-- Eco -->
-		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_eco_id#">
+		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Eco_id#">
            	<span title="Mode Eco" >
            		<a class="btn btn-default eco" style="background-color:#background-color# !important;border-color : transparent !important;">
            			<i class="fa fa-moon-o" aria-hidden="true"></i>
            		</a>
            	</span>
 			<script>
-            	$('.cmd[data-cmd_id=#cmd_eco_id#] .eco').on('click', function() {
- 					jeedom.cmd.execute({id: '#cmd_eco_id#'});
+            	$('.cmd[data-cmd_id=#Eco_id#] .eco').on('click', function() {
+ 					jeedom.cmd.execute({id: '#Eco_id#'});
   				});
           	</script>
 		</div>
 
 	  <!--  Hors Gel -->
-		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_hg_id#">
+		<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#HorsGel_id#">
            	<span title="Mode Hors Gel" >
            		<a class="btn btn-default horsgel" style="background-color:#background-color# !important;border-color : transparent !important;">
            			<i class="fa fa-snowflake-o" aria-hidden="true"></i>
            		</a>
            	</span>
 			<script>
-            	$('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel').on('click', function() {
- 					jeedom.cmd.execute({id: '#cmd_hg_id#'});
+            	$('.cmd[data-cmd_id=#HorsGel_id#] .horsgel').on('click', function() {
+ 					jeedom.cmd.execute({id: '#HorsGel_id#'});
   				});
           	</script>
 		</div>
               
 	<!--  Plugzy          -->
 	<div class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" style="float: left; display: #EtatProg_display#; margin-top: 1px;margin-right: 1px;" data-version="#version#">
-    		<span class="plugzy#plugzyId#" title="" >
+    		<span class="plugzy#plugzy_id#" title="" >
     			<a class="btn btn-default" style="background-color:#background-color# !important;border-color : transparent !important;">
     			<i class="plugzy" aria-hidden="true"></i>
     			</a>
     		</span>
    		 <script>
-        	jeedom.cmd.update['#plugzyId#'] = function(_options){
+        	jeedom.cmd.update['#plugzy_id#'] = function(_options){
   				if(_options.display_value == 1) {
-					$('.plugzy#plugzyId#').attr('title', 'Eteindre Plugzy');
-                    $('.plugzy#plugzyId# i.plugzy').empty().append('<i class="jeedom-prise plugzyoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-                    $('.plugzy#plugzyId#').parent().attr('data-cmd_id', '#cmd_plugzyoff_id#');
+					$('.plugzy#plugzy_id#').attr('title', 'Eteindre Plugzy');
+                    $('.plugzy#plugzy_id# i.plugzy').empty().append('<i class="jeedom-prise plugzyoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+                    $('.plugzy#plugzy_id#').parent().attr('data-cmd_id', '#plugzyoff_id#');
                 }
   				else {
-					$('.plugzy#plugzyId#').attr('title', 'Allumer Plugzy');
-                    $('.plugzy#plugzyId# i.plugzy').empty().append('<i class="jeedom-prise plugzyon" style="font-size : 1.1em;color: #FF0000;"></i>');
-                    $('.plugzy#plugzyId#').parent().attr('data-cmd_id', '#cmd_plugzyon_id#');
+					$('.plugzy#plugzy_id#').attr('title', 'Allumer Plugzy');
+                    $('.plugzy#plugzy_id# i.plugzy').empty().append('<i class="jeedom-prise plugzyon" style="font-size : 1.1em;color: #FF0000;"></i>');
+                    $('.plugzy#plugzy_id#').parent().attr('data-cmd_id', '#plugzyon_id#');
 				}
         	}
-        	jeedom.cmd.update['#plugzyId#']({display_value:'#plugzy#'});
+        	jeedom.cmd.update['#plugzy_id#']({display_value:'#plugzy_cmd#'});
 
-            $('.cmd[data-cmd_id=#cmd_plugzyon_id#] .plugzyon').on('click', function () {
-              jeedom.cmd.execute({id: '#cmd_plugzyon_id#'});
+            $('.cmd[data-cmd_id=#plugzyon_id#] .plugzyon').on('click', function () {
+              jeedom.cmd.execute({id: '#plugzyon_id#'});
             });
 
-            $('.cmd[data-cmd_id=#cmd_plugzyoff_id#] .plugzyoff').on('click', function () {
-              jeedom.cmd.execute({id: '#cmd_plugzyoff_id#'});
+            $('.cmd[data-cmd_id=#plugzyoff_id#] .plugzyoff').on('click', function () {
+              jeedom.cmd.execute({id: '#plugzyoff_id#'});
 
   			});
   		</script>
@@ -192,23 +192,23 @@
 
   </div>
           <script>
-			jeedom.cmd.update['#Etatid#'] = function(_options){
-          		    $('.cmd[data-cmd_id=#Etatid#]').attr('title','Collectée le '+_options.collectDate);
-                    $('.cmd[data-cmd_id=#cmd_confort_id#] .confort i.fa-sun-o').css("color","");
-           			$('.cmd[data-cmd_id=#cmd_eco_id#] .eco i.fa-moon-o').css("color","");
-           			$('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel i.fa-snowflake-o').css("color","");
-           			$('.cmd[data-cmd_id=#cmd_off_id#] .off i.fa-power-off').css("color","");
+			jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
+          		    $('.cmd[data-cmd_id=#EtatConsigne_id#]').attr('title','Collectée le '+_options.collectDate);
+                    $('.cmd[data-cmd_id=#Confort_id#] .confort i.fa-sun-o').css("color","");
+           			$('.cmd[data-cmd_id=#Eco_id#] .eco i.fa-moon-o').css("color","");
+           			$('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.fa-snowflake-o').css("color","");
+           			$('.cmd[data-cmd_id=#Off_id#] .off i.fa-power-off').css("color","");
           
             		if (_options.display_value == '0') {
-              			$('.cmd[data-cmd_id=#cmd_confort_id#] .confort i.fa-sun-o').css("color","#00FF00"); /// Mode Confort
+              			$('.cmd[data-cmd_id=#Confort_id#] .confort i.fa-sun-o').css("color","#00FF00"); /// Mode Confort
                     }else if (_options.display_value == '1') {
-              			$('.cmd[data-cmd_id=#cmd_eco_id#] .eco i.fa-moon-o').css("color","#00FF00");  /// Mode Eco
+              			$('.cmd[data-cmd_id=#Eco_id#] .eco i.fa-moon-o').css("color","#00FF00");  /// Mode Eco
  					}else if (_options.display_value == '2') {
-              			$('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel i.fa-snowflake-o').css("color","#00FF00");/// Mode HorsGel
+              			$('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.fa-snowflake-o').css("color","#00FF00");/// Mode HorsGel
  					}else {
-              			$('.cmd[data-cmd_id=#cmd_off_id#] .off i.fa-power-off').css("color","#00FF00");  /// Mode Off
+              			$('.cmd[data-cmd_id=#Off_id#] .off i.fa-power-off').css("color","#00FF00");  /// Mode Off
             		}
         		}
-				jeedom.cmd.update['#Etatid#']({display_value:'#Etat#',collectDate:'#collectDate#'});
+				jeedom.cmd.update['#EtatConsigne_id#']({display_value:'#EtatConsigne_cmd#',collectDate:'#EtatConsigne_CollectDate#'});
 			</script>
  </div>

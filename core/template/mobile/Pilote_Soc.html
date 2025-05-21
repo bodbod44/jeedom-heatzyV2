@@ -12,28 +12,28 @@
   </center>
   <center>
     <!-- off -->
-    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_off_id#" data-version="#version#">
+    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Off_id#" data-version="#version#">
       <span title="Mode OFF" class="off cursor action btn">
           <i class="jeedom-off"></i>
       </span>
     </span>
     <span>&nbsp;</span>
     <!-- confort -->
-    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_confort_id#" data-version="#version#">
+    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort_id#" data-version="#version#">
       <span title="Mode Confort" class="confort cursor action btn">
         <i class="meteo-soleil"></i>
     </span>
     </span>
     <span>&nbsp;</span>
     <!-- Eco -->
-    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_eco_id#" data-version="#version#">
+    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Eco_id#" data-version="#version#">
       <span title="Mode Eco" class="eco cursor action btn">
         <i class="nature-night2"></i>
       </span>
     </span>
     <span>&nbsp;</span>
     <!--  Hors Gel -->
-    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#cmd_hg_id#" data-version="#version#">
+    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#HorsGel_id#" data-version="#version#">
       <span title="Mode Hors Gel" class="horsgel cursor action btn">
         <i class="nature-snowflake"></i>
       </span>
@@ -41,13 +41,13 @@
     <span>&nbsp;</span>
     <!--  programmation -->
     <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-      <span title="" class="prog cursor action btn" data-cmd_id="#cmd_prog_id#" data-type="info" data-subtype="numeric" data-version="#version#">
+      <span title="" class="prog cursor action btn" data-cmd_id="#etatprog_id#" data-type="info" data-subtype="numeric" data-version="#version#">
         <i class="programmation"></i>
        </span>
     </span>
     <!--  lock -->
     <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-      <span title="" class="lock cursor action btn" data-cmd_id="#cmd_lock_id#" data-type="info" data-subtype="numeric" data-version="#version#">
+      <span title="" class="lock cursor action btn" data-cmd_id="#etatlock_id#" data-type="info" data-subtype="numeric" data-version="#version#">
         <i class="lock"></i>
        </span>
     </span>
@@ -56,49 +56,49 @@
     $('.eqLogic[data-eqLogic_uid=#uid#] .cmd').on('click', function() {
       jeedom.cmd.execute({id: $(this).data('cmd_id')});
     });
-    jeedom.cmd.update['#Etatid#'] = function(_options){
-      $('.cmd[data-cmd_id=#Etatid#]').attr('title','Collectée le '+_options.collectDate);
-      $('.cmd[data-cmd_id=#cmd_confort_id#] .confort i.meteo-soleil').css("color","");
-      $('.cmd[data-cmd_id=#cmd_eco_id#] .eco i.nature-night2').css("color","");
-      $('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel i.nature-snowflake').css("color","");
-      $('.cmd[data-cmd_id=#cmd_off_id#] .off i.jeedom-off').css("color","");
+    jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
+      $('.cmd[data-cmd_id=#EtatConsigne_id#]').attr('title','Collectée le '+_options.collectDate);
+      $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","");
+      $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","");
+      $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","");
+      $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","");
 
       if (_options.display_value == '0') {
-        $('.cmd[data-cmd_id=#cmd_confort_id#] .confort i.meteo-soleil').css("color","#00FF00"); /// Mode Confort
+        $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","#00FF00"); /// Mode Confort
       }else if (_options.display_value == '1') {
-        $('.cmd[data-cmd_id=#cmd_eco_id#] .eco i.nature-night2').css("color","#00FF00");        /// Mode Eco
+        $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","#00FF00");        /// Mode Eco
       }else if (_options.display_value == '2') {
-        $('.cmd[data-cmd_id=#cmd_hg_id#] .horsgel i.nature-snowflake').css("color","#00FF00");/// Mode HorsGel
+        $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","#00FF00");/// Mode HorsGel
       }else {
-        $('.cmd[data-cmd_id=#cmd_off_id#] .off i.jeedom-off').css("color","#00FF00");     /// Mode Off
+        $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","#00FF00");     /// Mode Off
       }
     }
-    jeedom.cmd.update['#Etatid#']({display_value:'#Etat#',collectDate:'#collectDate#'});
+    jeedom.cmd.update['#EtatConsigne_id#']({display_value:'#EtatConsigne_cmd#',collectDate:'#EtatConsigne_CollectDate#'});
 
-    jeedom.cmd.update['#cmd_prog_id#'] = function(_options){
+    jeedom.cmd.update['#etatprog_id#'] = function(_options){
         if(_options.display_value == 1) {
-          $('.prog[data-cmd_id=#cmd_prog_id#]').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-          $('.prog[data-cmd_id=#cmd_prog_id#]').attr('title', 'Désactiver la programmation');
-          $('.prog[data-cmd_id=#cmd_prog_id#]').parent().attr('data-cmd_id', '#cmd_progoff_id#');
+          $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+          $('.prog[data-cmd_id=#etatprog_id#]').attr('title', 'Désactiver la programmation');
+          $('.prog[data-cmd_id=#etatprog_id#]').parent().attr('data-cmd_id', '#ProgOff_id#');
         } else {
-          $('.prog[data-cmd_id=#cmd_prog_id#]').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
-          $('.prog[data-cmd_id=#cmd_prog_id#]').attr('title', 'Activer la programmation');
-          $('.prog[data-cmd_id=#cmd_prog_id#]').parent().attr('data-cmd_id', '#cmd_progon_id#');
+          $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.1em;color: #FF0000;"></i>');
+          $('.prog[data-cmd_id=#etatprog_id#]').attr('title', 'Activer la programmation');
+          $('.prog[data-cmd_id=#etatprog_id#]').parent().attr('data-cmd_id', '#ProgOn_id#');
         }
       }
-    jeedom.cmd.update['#cmd_prog_id#']({display_value:'#info_prog#'});
+    jeedom.cmd.update['#etatprog_id#']({display_value:'#etatprog_cmd#'});
    
-    jeedom.cmd.update['#cmd_lock_id#'] = function(_options){
+    jeedom.cmd.update['#etatlock_id#'] = function(_options){
         if(_options.display_value == 1) {
-          $('.lock[data-cmd_id=#cmd_lock_id#]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-          $('.lock[data-cmd_id=#cmd_lock_id#]').attr('title', 'Désactiver le verrouillage');
-          $('.lock[data-cmd_id=#cmd_lock_id#]').parent().attr('data-cmd_id', '#cmd_lockoff_id#');
+          $('.lock[data-cmd_id=#etatlock_id#]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+          $('.lock[data-cmd_id=#etatlock_id#]').attr('title', 'Désactiver le verrouillage');
+          $('.lock[data-cmd_id=#etatlock_id#]').parent().attr('data-cmd_id', '#LockOff_id#');
         } else {
-          $('.lock[data-cmd_id=#cmd_lock_id#]').empty().append('<i class="fa fa-toggle-off lockon" style="font-size : 1.1em;color: #FF0000;"></i>');
-          $('.lock[data-cmd_id=#cmd_lock_id#]').attr('title', 'Activer le verrouillage');
-          $('.lock[data-cmd_id=#cmd_lock_id#]').parent().attr('data-cmd_id', '#cmd_lockon_id#');
+          $('.lock[data-cmd_id=#etatlock_id#]').empty().append('<i class="fa fa-toggle-off lockon" style="font-size : 1.1em;color: #FF0000;"></i>');
+          $('.lock[data-cmd_id=#etatlock_id#]').attr('title', 'Activer le verrouillage');
+          $('.lock[data-cmd_id=#etatlock_id#]').parent().attr('data-cmd_id', '#LockOn_id#');
         }
       }
-    jeedom.cmd.update['#cmd_lock_id#']({display_value:'#info_lock#'});
+    jeedom.cmd.update['#etatlock_id#']({display_value:'#etatlock_cmd#'});
   </script>
 </div>
