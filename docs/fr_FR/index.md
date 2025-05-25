@@ -11,7 +11,8 @@ Les modules gérés sont :
 * **Flam/Plugzy**
 * **INEA**
 * **Pilote seconde génération**
-* **Pilote SoC + Pilote SoC3**
+* **Pilote SoC**
+* **Pilote SoC3**
 * **Pilote_Pro**
 * **Elec Pro (Acova version)**
 * **Radiateur Glow**
@@ -32,7 +33,7 @@ Après téléchargement du plugin, il vous suffit juste d'activer celui-ci et de
 
 Puis cliquez sur synchroniser pour récupérer la liste des modules Heatzy pilotes associés à votre compte.
 
-![heatzy1](../images/configuration.png)
+![heatzy1](../images/configuration2.png)
 
 * **Email** : votre adresse email utilisé lors de votre enregistrement dans le cloud
 * **Mot de passe** : votre mot de passe d'accès renseigné lors de votre enregistrement dans le cloud
@@ -45,11 +46,11 @@ Configuration des objets connectés Heatzy
 -------------
 La configuration des modules Heatzy est accessible à partir du menu 'Plugins' > 'Objets connectés'.
 
-![heatzy2](../images/configuration_equipement.png)
+![heatzy2](../images/configuration_equipement2.png)
 
 Une fois que vous cliquez sur un équipement vous retrouvez la configuration de l'équipement :
 
-![heatzy3](../images/detail_equipement.png)
+![heatzy3](../images/detail_equipement2.png)
 
 Vous retrouvez dans la section **Général**
 
@@ -72,17 +73,14 @@ Vous retrouvez dans la section **Informations**
 Configuration des commandes des objets connectés Heatzy
 -------------
 
-### Wigdet dashboard pilote
+### Wigdet dashboard desktop
 
-![heatzy4](../images/widget_dashbaord.png)
+![heatzy4](../images/WidgetDesktop.png)
 
-### Wigdet dashboard flam
+### Wigdet dashboard mobile
 
-![heatzy6](../images/widget_dashboard_flam.png)
+![heatzy5](../images/WidgetMobile.png)
 
-### Wigdet mobile
-
-![heatzy5](../images/widget_mobile.png)
 
 Chaque équipement dispose des commandes actions :
 
@@ -146,40 +144,59 @@ Et de commandes de type _numerique_ :
 **Tableau des commandes possible par modules :**
 
 *(les futurs modules qui ne sont pas dans ce tableau seront naturellement pris en charg si l'utilisation de l'APi est la même)*
- | Commande | Type | Pilote_Soc | Pilote_Soc3 | Pilote_Pro | Elec_Pro | Glow | Shine | Flam_Week2 | INEA |
- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
- | Etat Consigne<br>4 ordres : 0/1/2/3<br>6 ordres : 0/1/2/3/4/5 | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
- | Mode<br>4 ordres : Confort/Eco/Hors Gel/Off<br>6 ordres : Confort/Confort-1/Confort-2/Eco/Hors Gel/Off | info | N/A | N/A | Oui | N/A | Oui | Oui | ? | ? |
- | Confort | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
- | Confort-1 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A |
- | Confort-2 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A |
- | Eco | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
- | Hors Gel | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
- | Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
- | Température courante | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A |
- | Température Confort | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A |
- | Température Eco | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A |
- | Humidité courante | info | N/A | N/A | Oui | N/A | Oui | Oui | N/A | N/A |
- | Etat Programmation | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
- | Programmation On | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
- | Programmation Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
- | Etat Vérouillage | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
- | Vérouillage On | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
- | Vérouillage Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
- | Etat Fenetre Ouverte | info | N/A | N/A | Oui | N/A | Oui | Oui | ? | ? |
- | Fenetre Ouverte On | action | N/A | N/A | Oui | N/A | Oui | Oui | ? | ? |
- | Fenetre Ouverte Off | action | N/A | N/A | Oui | N/A | Oui | Oui | ? | ? |
- | Etat Plugzy | info | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A |
- | Plugzy On | action | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A |
- | Plugzy Off | action | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A |
+ | Commande | Type | Pilote_Soc | Pilote_Soc3 | Pilote_Pro | Elec_Pro | Glow | Shine | Flam_Week2 | INEA | Heatzy Cool | 
+ | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | 
+ | Etat Consigne<br>4 ordres : 0/1/2/3<br>6 ordres : 0/1/2/3/4/5 | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
+ | Mode<br>4 ordres : Confort/Eco/Hors Gel/Off<br>6 ordres : Confort/Confort-1/Confort-2/Eco/Hors Gel/Off | info | N/A | N/A | Oui | N/A | Oui | Oui | ? | ? | ? | 
+ | Confort | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
+ | Confort-1 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | ? | 
+ | Confort-2 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | ? | 
+ | Eco | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
+ | Hors Gel | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
+ | Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
+ | Température courante | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | ? | 
+ | Température Confort | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | ? | 
+ | Température Eco | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | ? | 
+ | Humidité courante | info | N/A | N/A | Oui | N/A | Oui | Oui | N/A | N/A | ? | 
+ | Etat Programmation | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
+ | Programmation On | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
+ | Programmation Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
+ | Etat Vérouillage | info | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | ? | 
+ | Vérouillage On | action | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | ? | 
+ | Vérouillage Off | action | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | ? | 
+ | Etat Fenetre Ouverte | info | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | ? | 
+ | Fenetre Ouverte On | action | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | ? | 
+ | Fenetre Ouverte Off | action | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | ? | 
+ | Etat Plugzy | info | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A | ? | 
+ | Plugzy On | action | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A | ? | 
+ | Plugzy Off | action | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A | ? | 
 
 
 FAQ
 === 
 
+**Sur le market, je ne trouvez que la version non mise à jour mais je ne trouve pas celle-ci ?**
+Le plugin a été créé par @l3flo mais ce dernier ne donne plus de nouvelles et le plugin n'était plus mis à jour.
+J'ai donc décidé de reprendre le développement sur la base de premier (avec correction et évolution)
+Je n'exclue pas une intégration sous un autre nom (heatzy2 par exemple)
+
+**Comme le plugin n'est pas dans le market, comment doit-on l'installer ?**
+En attendant une intégration dans le market, je préconise une instalation depuis le github
+L'instllation depuis le github vous permettra d'être notifié par jeedom lors d'une mise à jour du plugin
+En premier lieu, il faut veiller à ce que l'installation depuis le github est bien autorisé
+![heatzy6](../images/AutorisationPluginGithub.png)
+
+Puis installer le plugin
+ID : **heatzy** (sans espace et en minuscule)
+Utilisateur : **bodbod44**
+Nom du dépôt : **jeedom-heatzyV2**
+Branche : **master** (ou beta)
+Puis Sauvegarder
+![heatzy6](../images/ParamInstallGithub.png)
+
 **Quelle est la fréquence de rafraîchissement ?**
 
-Le système récupère l'état des modules toutes les minutes. L'état de la programmation est rafraîchie toutes les 30 minutes pour les modules Heatzy et Flam.
+Le système récupère l'état des modules **toutes les minutes**. L'état de la programmation est rafraîchie toutes les 30 minutes pour les modules Heatzy et Flam.
 
 >Pour les modules Heatzy et Flam, il est possible de désactiver le rafraîchissement de l'état de la programmation en décochant la fonctionnalités **con30** depuis la page de configuration du plugin. Pour les autres modules la programmation est lu dans la commande **timer_switch**.
 
@@ -189,7 +206,8 @@ Le plugin met à jour les 336 tâches associées au module Heatzy ou Flam pour l
 
 **Quelle est la durée de vie du token utilisateur d'accès au cloud ?**
 
-Le token d'accès au cloud change à chaque synchronisation. Un nouveau token est demandé au cloud automatiquement 24h avant que celui-ci expire.
+Le token d'accès au cloud change à chaque synchronisation avec une validité d'environ 6 mois.
+Un nouveau token est demandé au cloud automatiquement 24h avant que celui-ci expire.
 
 **Mon équipement n'est pas rafraîchi ?**
 
@@ -198,4 +216,8 @@ Vérifiez si l'équipement est bien activé.
 **Je viens de mettre à jour le plugin, que dois-je faire ?**
 
 Il est conseillé de synchroniser les modules via la page de configuration du plugin.                            
+                                               
+**J'ai un type de module qui n'est pas répertorié sur cette page, que faire ?**
 
+Le plugin va créer de lui même toutes les commandes qui sont connues dans les autres modules.
+S'il manque des commandes, n'hésitez pas à faire un message sur le forum jeedom pour @bodbod (avec le tag heatzy)

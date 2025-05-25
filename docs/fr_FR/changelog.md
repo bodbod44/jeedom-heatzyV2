@@ -1,6 +1,6 @@
 # 25/05/2025 (dev)
-- Modification du template commun pour les 6 ordres
-- Modification de la documentation
+- Modification du template commun pour la prise en charge des modules 6 ordres
+- Mise à jour de la documentation
 
 # 24/05/2025 (dev)
 - Prise en charge des modules GLOW et SHINE
