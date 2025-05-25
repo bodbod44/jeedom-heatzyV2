@@ -59,6 +59,10 @@ Vous retrouvez dans la section **Général**
 * **Catégorie** : catégorie de l'équipement, par défaut chauffage
 * **Activer** : permet de rendre votre équipement actif
 * **Visible** : le rend visible sur le dashboard
+* **Template** : Choix du template d'affichage
+  * template **bodbod** : Nouveau template unique et commun à tous les modules *(les commandes non prises en charge par le module ne sont pas affichées)*
+  * template **l3flo** : Template d'origine créé par l3flo (<span style="color: #FF0000">/!\ Ces templates n'est plus maintenu et disparaitra des une future version</span>)
+  * template **jeedom** : Laisse jeedom créer les commandes et informations par défaut
 * **MAC** : l'adresse MAC du module Heatzy
 * **DID** : l'identifiant du module Heatzy
 
@@ -147,7 +151,7 @@ Et de commandes de type _numerique_ :
  | Commande | Type | Pilote_Soc | Pilote_Soc3 | Pilote_Pro | Elec_Pro | Glow | Shine | Flam_Week2 | INEA | Heatzy Cool | 
  | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | 
  | Etat Consigne<br>4 ordres : 0/1/2/3<br>6 ordres : 0/1/2/3/4/5 | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
- | Mode<br>4 ordres : Confort/Eco/Hors Gel/Off<br>6 ordres : Confort/Confort-1/Confort-2/Eco/Hors Gel/Off | info | N/A | N/A | Oui | N/A | Oui | Oui | ? | ? | ? | 
+ | Mode<br>4 ordres : Confort/Eco/Hors Gel/Off<br>6 ordres : Confort/Confort-1/Confort-2/Eco/Hors Gel/Off | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
  | Confort | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
  | Confort-1 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | ? | 
  | Confort-2 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | ? | 
@@ -175,23 +179,23 @@ Et de commandes de type _numerique_ :
 FAQ
 === 
 
-**Sur le market, je ne trouvez que la version non mise à jour mais je ne trouve pas celle-ci ?**
+**Sur le market, je ne trouve pas la version mise à jour, pourquoi ?**
 Le plugin a été créé par @l3flo mais ce dernier ne donne plus de nouvelles et le plugin n'était plus mis à jour.
 J'ai donc décidé de reprendre le développement sur la base de premier (avec correction et évolution)
 Je n'exclue pas une intégration sous un autre nom (heatzy2 par exemple)
 
 **Comme le plugin n'est pas dans le market, comment doit-on l'installer ?**
 En attendant une intégration dans le market, je préconise une instalation depuis le github
-L'instllation depuis le github vous permettra d'être notifié par jeedom lors d'une mise à jour du plugin
-En premier lieu, il faut veiller à ce que l'installation depuis le github est bien autorisé
+L'installation depuis le github vous permettra d'être notifié par jeedom lors d'une mise à jour du plugin
+En premier lieu, il faut veiller à ce que l'installation depuis le github soit bien autorisé<br>
 ![heatzy6](../images/AutorisationPluginGithub.png)
 
-Puis installer le plugin
-ID : **heatzy** (sans espace et en minuscule)
-Utilisateur : **bodbod44**
-Nom du dépôt : **jeedom-heatzyV2**
-Branche : **master** (ou beta)
-Puis Sauvegarder
+Puis installer le plugin (Plugins -> Gestion des plugins -> +)<br>
+ID : **heatzy** (sans espace et en minuscule)<br>
+Utilisateur : **bodbod44**<br>
+Nom du dépôt : **jeedom-heatzyV2**<br>
+Branche : **master** (ou beta)<br>
+Puis Sauvegarder<br>
 ![heatzy6](../images/ParamInstallGithub.png)
 
 **Quelle est la fréquence de rafraîchissement ?**
@@ -206,7 +210,7 @@ Le plugin met à jour les 336 tâches associées au module Heatzy ou Flam pour l
 
 **Quelle est la durée de vie du token utilisateur d'accès au cloud ?**
 
-Le token d'accès au cloud change à chaque synchronisation avec une validité d'environ 6 mois.
+Le token d'accès au cloud change à chaque synchronisation avec une validité d'environ 6 mois.<br>
 Un nouveau token est demandé au cloud automatiquement 24h avant que celui-ci expire.
 
 **Mon équipement n'est pas rafraîchi ?**
@@ -219,5 +223,5 @@ Il est conseillé de synchroniser les modules via la page de configuration du pl
                                                
 **J'ai un type de module qui n'est pas répertorié sur cette page, que faire ?**
 
-Le plugin va créer de lui même toutes les commandes qui sont connues dans les autres modules.
+Le plugin va créer de lui même toutes les commandes qui sont connues dans les autres modules.<br>
 S'il manque des commandes, n'hésitez pas à faire un message sur le forum jeedom pour @bodbod (avec le tag heatzy)
