@@ -11,9 +11,11 @@ Les modules gérés sont :
 * **Flam/Plugzy**
 * **INEA**
 * **Pilote seconde génération**
-* **Pilote SoC**
+* **Pilote SoC + Pilote SoC3**
 * **Pilote_Pro**
 * **Elec Pro (Acova version)**
+* **Radiateur Glow**
+* **Radiateur Shine**
 
 Pré-requis
 === 
@@ -98,9 +100,11 @@ Chaque équipement dispose des commandes actions :
 * **Plugzy OFF** : Permet d'éteindre le plugzy *(seulement pour l'équipement de type flam)*
 * **Plugzy ON** : Permet d'allumer le plugzy *(seulement pour l'équipement de type flam)*
 
-D'une commande **Etat** de type _numerique_ :
+D'une commande **Etat Consigne** de type _numerique_ :
 
 * **0** : Mode Confort
+* **4** : Mode Confort-1 (uniquement pour les modules 6 ordres)
+* **5** : Mode Confort-2 (uniquement pour les modules 6 ordres)
 * **1** : Mode Eco
 * **2** : Mode Hors-gel
 * **3** : Mode Off
@@ -108,6 +112,8 @@ D'une commande **Etat** de type _numerique_ :
 Et d'une commande **Mode** de type _string_ :
 
 * **Confort**
+* **Confort-1** (uniquement pour les modules 6 ordres)
+* **Confort-2** (uniquement pour les modules 6 ordres)
 * **Eco**
 * **HorsGel**
 * **Off**
@@ -127,17 +133,45 @@ Et d'une commande **Détéction fenetre ouverte** de type _binaire_ :
 * **1** : La détéction est activée
 * **0** : La détéction est désactivée
                                   
-Les équipements de type flam et pilote_pro disposent des commandes de type _numerique_ :
+Et de commandes de type _numerique_ :
 
 * **Temp. confort** : la température de consigne du mode confort
 * **Temp. eco**   : la température de consigne du mode eco
-* **Temperature** : la température relevé par plugzy
-
-L'équipement de type pilote_pro dispose des commandes de type _numerique_ :
-
-* **Taux Humidité** : le taux d'huùidité relevé par le module
+* **Temperature** : la température relevé par le module
+* **Taux Humidité** : le taux d'humidité relevé par le module
 
 >Vous pouvez tester la valeur de la commande info *Etat* ou *Mode* dans vos scénarios.
+
+
+**Tableau des commandes possible par modules :**
+
+*(les futurs modules qui ne sont pas dans ce tableau seront naturellement pris en charg si l'utilisation de l'APi est la même)*
+ | Commande | Type | Pilote_Soc | Pilote_Soc3 | Pilote_Pro | Elec_Pro | Glow | Shine | Flam_Week2 | INEA |
+ | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+ | Etat Consigne<br>4 ordres : 0/1/2/3<br>6 ordres : 0/1/2/3/4/5 | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
+ | Mode<br>4 ordres : Confort/Eco/Hors Gel/Off<br>6 ordres : Confort/Confort-1/Confort-2/Eco/Hors Gel/Off | info | N/A | N/A | Oui | N/A | Oui | Oui | ? | ? |
+ | Confort | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
+ | Confort-1 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A |
+ | Confort-2 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A |
+ | Eco | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
+ | Hors Gel | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
+ | Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
+ | Température courante | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A |
+ | Température Confort | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A |
+ | Température Eco | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A |
+ | Humidité courante | info | N/A | N/A | Oui | N/A | Oui | Oui | N/A | N/A |
+ | Etat Programmation | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
+ | Programmation On | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
+ | Programmation Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
+ | Etat Vérouillage | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
+ | Vérouillage On | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
+ | Vérouillage Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui |
+ | Etat Fenetre Ouverte | info | N/A | N/A | Oui | N/A | Oui | Oui | ? | ? |
+ | Fenetre Ouverte On | action | N/A | N/A | Oui | N/A | Oui | Oui | ? | ? |
+ | Fenetre Ouverte Off | action | N/A | N/A | Oui | N/A | Oui | Oui | ? | ? |
+ | Etat Plugzy | info | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A |
+ | Plugzy On | action | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A |
+ | Plugzy Off | action | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A |
 
 
 FAQ

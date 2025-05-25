@@ -539,8 +539,8 @@ class HttpGizwits {
         $aRep = json_decode($result, true);
         //if(isset($aRep['error_message'])) {
         //    throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
-       // }
-	log::add('heatzy', 'debug',  __METHOD__.':'.var_export($params, true));
+        // }
+        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($params, true));
         log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
         return $aRep;
     }
@@ -626,7 +626,7 @@ class heatzy extends eqLogic {
      *      /!\ Les clefs des valeurs du tableau correspond
      *      aux valeurs supportées par les devices
      */
-    public static $_HeatzyMode = array('Confort', 'Eco', 'HorsGel', 'Off');
+    public static $_HeatzyMode = array('Confort', 'Eco', 'HorsGel', 'Off','Confort-1','Confort-2');
     
     /**
      * @brief Fonction qui permet de tirer un nouveau token utilisateur
@@ -786,13 +786,22 @@ class heatzy extends eqLogic {
             log::add('heatzy', 'debug',  'lastCommunication :'.date('Y-m-d H:i:s', $aDevice['updated_at']));
             $this->setConfiguration('lastCommunication', date('Y-m-d H:i:s', $aDevice['updated_at']));
         }
-
+      
 		// Modes de chauffe
 		// Note : Théoriquement pilote_pro doit être lu avec cur_mode (mais le retour contient quand même mode
         if(isset($aDevice['attr']['mode'])) {
+
+            // Créer les commandes en fonction du contenu de la réponse
+            $this->CheckAndCreateCmd($aDevice) ;
           
             if( $aDevice['attr']['mode'] == 'cft' ) {  /// Confort
                 $KeyMode = 'Confort';
+            }
+            else if( $aDevice['attr']['mode'] == 'cft1' ) { /// Eco
+                $KeyMode = 'Confort-1';
+            }
+            else if( $aDevice['attr']['mode'] == 'cft2' ) { /// Eco
+                $KeyMode = 'Confort-2';
             }
             else if( $aDevice['attr']['mode'] == 'eco' ) { /// Eco
                 $KeyMode = 'Eco';
@@ -892,6 +901,397 @@ class heatzy extends eqLogic {
         $this->checkAndUpdateCmd('EtatConsigne', $aKeyVal[0]);
         $this->checkAndUpdateCmd('mode', $KeyMode);
         return true;
+    }
+  
+      /**
+     * @brief Fonction qui permet de savoir si le module gère 4 ou 6 ordres
+     * 
+     * @param tableau retour API
+     */
+  
+    public function VerifNbOrdres($aDevice) {
+      
+        $NbOrdres = 0 ;
+        if( $aDevice['attr']['mode'] == 'cft1' || $aDevice['attr']['mode'] == 'cft2' ){
+            $NbOrdres = 6 ;
+        }
+        else{
+            // On tente de mettre le 6e ordre
+            //    - Si OK : 6 ordres
+            //    - Si KO : 4 ordres
+            $Consigne = array( 'attrs' => array ( 'mode' => 'cft2' )  );
+            $UserToken = config::byKey('UserToken','heatzy','none');
+            $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
+            if( $ResultSet['error_code'] == ''){
+                sleep(3); // Attente 3sec
+                $ResultGet = HttpGizwits::GetConsigne($UserToken, $this->getLogicalId() ) ;
+                if( $ResultGet['error_code'] == ''){
+                    if( $ResultGet['attr']['mode'] == 'cft2'){
+                        $NbOrdres = 6 ;
+                    }
+                    else if( $ResultGet['attr']['mode'] == 'cft' ){
+                        $NbOrdres = 4 ;
+                    }
+                }
+                else
+                    log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code GET='.$ResultSet['error_code']);
+            }
+            else
+                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code SET='.$ResultSet['error_code']);
+            // On remet l'ordre initial
+            sleep(1);
+            $Consigne = array( 'attrs' => array ( 'mode' => $aDevice['attr']['mode'] )  );
+            $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
+            if( $ResultSet['error_code'] != '' )
+                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code SET2='.$ResultSet['error_code']);
+        }
+
+        log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' Nombre d ordre='.$NbOrdres);
+      	return $NbOrdres ;
+    }
+  
+    /**
+     * @brief Fonction qui permet de créer les commandes en fonction du retour de l'API
+     * 
+     * @param tableau retour API
+     */
+  
+    public function CheckAndCreateCmd($aDevice) {
+        
+        
+        if( isset($aDevice['attr']['mode']) && !is_object( $this->getCmd(null,'EtatConsigne')) ){
+
+            // Verifie si module 4 ou 6 ordres
+        	$NbOrdres = $this->VerifNbOrdres($aDevice) ;
+          
+          	if( $NbOrdres > 0 ){
+                foreach (self::$_HeatzyMode as $Key => $Mode ) {
+                    if($Key < $NbOrdres){
+                        /// Creation de la commande action $Mode : $Key
+                        $cmd = $this->getCmd(null, $Mode);
+                        if (!is_object($cmd)) {
+                            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' creation commande :'.$Key.'=>'.$Mode);
+                            $cmd = new heatzyCmd();
+                            $cmd->setLogicalId($Mode);
+                            $cmd->setIsVisible(1);
+                            $cmd->setName(__($Mode, __FILE__));
+                            $cmd->setType('action');
+                            $cmd->setSubType('other');
+                            $cmd->setConfiguration('infoName', 'EtatConsigne');
+                            $cmd->setEqLogic_id($this->getId());
+                            $cmd->setIsHistorized(0);
+                            $cmd->setIsVisible(1);
+                            $cmd->save();
+                        }
+                        else{
+                            $cmd->setConfiguration('infoName', 'EtatConsigne');
+                        }
+                    }
+                } // for
+
+                /// Creation de la commande info Etat numeric
+                $etat = $this->getCmd(null, 'EtatConsigne');
+                if (!is_object($etat)) {
+                    $etat = new heatzyCmd();
+                    $etat->setName(__('Etat Consigne', __FILE__));
+                    $etat->setLogicalId('EtatConsigne');
+                    $etat->setType('info');
+                    $etat->setSubType('numeric');
+                    $etat->setEqLogic_id($this->getId());
+                    $etat->setIsHistorized(0);
+                    $etat->setIsVisible(1);
+                    $etat->save();
+                }
+                
+                /// Creation de la commande info mode (correspond à l'état sous forme d'une chaine de carcateres)
+                $mode = $this->getCmd(null, 'mode');
+                if (!is_object($mode)) {
+                    $mode = new heatzyCmd();
+                    $mode->setName(__('Mode', __FILE__));
+                    $mode->setLogicalId('mode');
+                    $mode->setType('info');
+                    $mode->setSubType('string');
+                    $mode->setEqLogic_id($this->getId());
+                    $mode->setIsHistorized(0);
+                    $mode->setIsVisible(1);
+                    $mode->save();
+                }
+            } // if nb ordre > 0
+          
+        } // if mode 
+        
+		if( isset ($aDevice['attr']['cft_temp']) || isset ($aDevice['attr']['cft_tempH']) ){
+      			/// Creation de la commande info de la temperature de confort
+			$CftTemp = $this->getCmd(null, 'cft_temp'); 
+			if (!is_object($CftTemp)) {
+				$CftTemp = new heatzyCmd();
+				$CftTemp->setName(__('Temp. confort', __FILE__));
+				$CftTemp->setLogicalId('cft_temp');
+				$CftTemp->setType('info');
+				$CftTemp->setUnite('°C');
+				$CftTemp->setSubType('numeric');
+				$CftTemp->setEqLogic_id($this->getId());
+				$CftTemp->setIsHistorized(0);
+				$CftTemp->setIsVisible(1);
+				$CftTemp->save();
+			}
+        } // cft_temp - cft_tempH
+          
+     	if( isset ($aDevice['attr']['eco_temp']) || isset ($aDevice['attr']['eco_tempH']) ){
+			/// Creation de la commande info de la temperature eco
+			$EcoTemp = $this->getCmd(null, 'eco_temp'); 
+			if (!is_object($EcoTemp)) {
+				$EcoTemp = new heatzyCmd();
+				$EcoTemp->setName(__('Temp. eco', __FILE__));
+				$EcoTemp->setLogicalId('eco_temp');
+				$EcoTemp->setType('info');
+				$EcoTemp->setUnite('°C');
+				$EcoTemp->setSubType('numeric');
+				$EcoTemp->setEqLogic_id($this->getId());
+				$EcoTemp->setIsHistorized(0);
+				$EcoTemp->setIsVisible(1);
+				$EcoTemp->save();
+			}
+        } // if eco_temp - eco_tempH
+          
+        if( isset ($aDevice['attr']['cur_temp']) || isset ($aDevice['attr']['cur_tempH']) ){
+			/// Creation de la commande info de la temperature courante
+			$CurTemp = $this->getCmd(null, 'cur_temp'); 
+			if (!is_object($CurTemp)) {
+				$CurTemp = new heatzyCmd();
+				$CurTemp->setName(__('Temperature', __FILE__));
+				$CurTemp->setLogicalId('cur_temp');
+				$CurTemp->setType('info');
+				$CurTemp->setUnite('°C');
+				$CurTemp->setSubType('numeric');
+				$CurTemp->setEqLogic_id($this->getId());
+				$CurTemp->setIsHistorized(0);
+				$CurTemp->setIsVisible(1);
+				$CurTemp->save();
+			}
+        } // if cur_temp - cur_tempH
+            
+        if( isset ($aDevice['attr']['timer_switch']) ){
+            // Programmation On/Off
+            $cmd = $this->getCmd(null, 'ProgOn');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('ProgOn');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Activer Programmation', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'etatprog');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            else{
+                $cmd->setConfiguration('infoName', 'etatprog');
+            }
+                
+            $cmd = $this->getCmd(null, 'ProgOff');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('ProgOff');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Désactiver Programmation', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'etatprog');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+              else{
+                $cmd->setConfiguration('infoName', 'etatprog');
+            }
+                
+            /// Creation de la commande info etatprog binaire
+            $etat = $this->getCmd(null, 'etatprog');
+            if (!is_object($etat)) {
+                $etat = new heatzyCmd();
+                $etat->setName(__('Etat programmation', __FILE__));
+                $etat->setLogicalId('etatprog');
+                $etat->setType('info');
+                $etat->setSubType('binary');
+                $etat->setEqLogic_id($this->getId());
+                $etat->setIsHistorized(0);
+                $etat->setIsVisible(1);
+                $etat->save();
+            }
+        } // if timer switch
+      
+        if( isset ($aDevice['attr']['lock_switch']) ){
+            // Verouillage-lock On/Off
+            $cmd = $this->getCmd(null, 'LockOn');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('LockOn');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Activer Verrouillage', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'etatlock');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+              else{
+                $cmd->setConfiguration('infoName', 'etatlock');
+            }
+                
+            $cmd = $this->getCmd(null, 'LockOff');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('LockOff');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Désactiver Verrouillage', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'etatlock');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+              else{
+                $cmd->setConfiguration('infoName', 'etatlock');
+            }
+                
+            /// Creation de la commande info etatlock binaire
+            $etat = $this->getCmd(null, 'etatlock');
+            if (!is_object($etat)) {
+                $etat = new heatzyCmd();
+                $etat->setName(__('Etat Verrouillage', __FILE__));
+                $etat->setLogicalId('etatlock');
+                $etat->setType('info');
+                $etat->setSubType('binary');
+                $etat->setEqLogic_id($this->getId());
+                $etat->setIsHistorized(0);
+                $etat->setIsVisible(1);
+                $etat->save();
+            }
+        } // if lock_switch
+      
+        if( isset ($aDevice['attr']['cur_humi']) ){
+            /// Creation de la commande humidité du pilote_pro
+            $CurHumi = $this->getCmd(null, 'cur_humi'); 
+            if (!is_object($CurHumi)) {
+              $CurHumi = new heatzyCmd();
+              $CurHumi->setName(__('Taux Humidité', __FILE__));
+              $CurHumi->setLogicalId('cur_humi');
+              $CurHumi->setType('info');
+              $CurHumi->setUnite('%');
+              $CurHumi->setSubType('numeric');
+              $CurHumi->setEqLogic_id($this->getId());
+              $CurHumi->setIsHistorized(0);
+              $CurHumi->setIsVisible(1);
+              $CurHumi->save();
+            }
+        } // cur_humi
+      
+        if( isset ($aDevice['attr']['window_switch']) ){
+            /// Creation de la commande Activation de la détection de fenêtre ouverte du pilote_pro
+            $CurWindow = $this->getCmd(null, 'EtatWindow'); 
+            if (!is_object($CurWindow)) {
+                $CurWindow = new heatzyCmd();
+                $CurWindow->setName(__('Etat fenêtre ouverte', __FILE__));
+                $CurWindow->setLogicalId('EtatWindow');
+                $CurWindow->setType('info');
+                $CurWindow->setSubType('binary');
+                $CurWindow->setEqLogic_id($this->getId());
+                $CurWindow->setIsHistorized(0);
+                $CurWindow->setIsVisible(0);
+                $CurWindow->save();
+            }
+            // window_switch On/Off
+            $cmd = $this->getCmd(null, 'WindowOn');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('WindowOn');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Activer Fenetre Ouverte', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'EtatWindow');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            else{
+                $cmd->setConfiguration('infoName', 'EtatWindow');
+            }		        
+            $cmd = $this->getCmd(null, 'WindowOff');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('WindowOff');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Désactiver Fenetre Ouverte', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'EtatWindow');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            else{
+                $cmd->setConfiguration('infoName', 'EtatWindow');
+            }     
+        } // if window_switch    
+      
+        if( isset ($aDevice['attr']['on_off']) ){
+			/// Creation de la commande info du plugzy
+			$Plugzy = $this->getCmd(null, 'plugzy'); 
+			if (!is_object($Plugzy)) {
+				$Plugzy = new heatzyCmd();
+				$Plugzy->setName(__('Plugzy', __FILE__));
+				$Plugzy->setLogicalId('plugzy');
+				$Plugzy->setType('info');
+				$Plugzy->setSubType('binary');
+				$Plugzy->setEqLogic_id($this->getId());
+				$Plugzy->setIsHistorized(0);
+				$Plugzy->setIsVisible(1);
+				$Plugzy->save();
+			}
+	          
+			/// Creation de la commande plugzy on
+			$cmd = $this->getCmd(null, 'plugzyon');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('plugzyon');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Plugzy ON', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'plugzy');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
+			}
+			  
+			/// Creation de la commande plugzy off
+			$cmd = $this->getCmd(null, 'plugzyoff');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('plugzyoff');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Plugzy OFF', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'plugzy');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
+			}
+        } // if on_off
     }
     
     /**
@@ -1091,148 +1491,23 @@ class heatzy extends eqLogic {
     
     public function postSave() {
       
-      // Menage sur d'ancienne commande
-	  /*
-      $cmd = $this->getCmd(null, 'window_switch');
-      if (is_object($cmd)) {
-        	log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
-			$cmd->remove();
-      }
-      $cmd = $this->getCmd(null, 'etat');
-      if (is_object($cmd)) {
-        	log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
-			$cmd->remove();
-      }
-      $cmd = $this->getCmd(null, 'Etat');
-      if (is_object($cmd)) {
-        	log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
-			$cmd->remove();
-      }*/
-      
-        
-        foreach (self::$_HeatzyMode as $Key => $Mode ) {
-            /// Creation de la commande action $Mode : $Key
-            $cmd = $this->getCmd(null, $Mode);
-            if (!is_object($cmd)) {
-                log::add('heatzy', 'debug',  $this->getLogicalId().' creation commande :'.$Key.'=>'.$Mode);
-                $cmd = new heatzyCmd();
-                $cmd->setLogicalId($Mode);
-                $cmd->setIsVisible(1);
-                $cmd->setName(__($Mode, __FILE__));
-                $cmd->setType('action');
-                $cmd->setSubType('other');
-                $cmd->setConfiguration('infoName', 'EtatConsigne');
-                $cmd->setEqLogic_id($this->getId());
-                $cmd->setIsHistorized(0);
-                $cmd->setIsVisible(1);
-                $cmd->save();
-            }
-          else{
-            $cmd->setConfiguration('infoName', 'EtatConsigne');
-          }
+        // Menage sur d'ancienne commande
+        /*
+        $cmd = $this->getCmd(null, 'window_switch');
+        if (is_object($cmd)) {
+            log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
+            $cmd->remove();
         }
-		
-		// Programmation On/Off
-		$cmd = $this->getCmd(null, 'ProgOn');
-		if (!is_object($cmd)) {
-			$cmd = new heatzyCmd();
-			$cmd->setLogicalId('ProgOn');
-			$cmd->setIsVisible(1);
-			$cmd->setName(__('Activer Programmation', __FILE__));
-			$cmd->setType('action');
-			$cmd->setSubType('other');
-			$cmd->setConfiguration('infoName', 'etatprog');
-			$cmd->setEqLogic_id($this->getId());
-			$cmd->setIsHistorized(0);
-			$cmd->setIsVisible(1);
-			$cmd->save();
-		}
-          else{
-            $cmd->setConfiguration('infoName', 'etatprog');
-          }
-	        
-		$cmd = $this->getCmd(null, 'ProgOff');
-		if (!is_object($cmd)) {
-			$cmd = new heatzyCmd();
-			$cmd->setLogicalId('ProgOff');
-			$cmd->setIsVisible(1);
-			$cmd->setName(__('Désactiver Programmation', __FILE__));
-			$cmd->setType('action');
-			$cmd->setSubType('other');
-			$cmd->setConfiguration('infoName', 'etatprog');
-			$cmd->setEqLogic_id($this->getId());
-			$cmd->setIsHistorized(0);
-			$cmd->setIsVisible(1);
-			$cmd->save();
-		}
-          else{
-            $cmd->setConfiguration('infoName', 'etatprog');
-          }
-	        
-		/// Creation de la commande info etatprog binaire
-		$etat = $this->getCmd(null, 'etatprog');
-		if (!is_object($etat)) {
-			$etat = new heatzyCmd();
-			$etat->setName(__('Etat programmation', __FILE__));
-			$etat->setLogicalId('etatprog');
-			$etat->setType('info');
-			$etat->setSubType('binary');
-			$etat->setEqLogic_id($this->getId());
-			$etat->setIsHistorized(0);
-			$etat->setIsVisible(1);
-			$etat->save();
-		}
-
-		// Verouillage-lock On/Off
-		$cmd = $this->getCmd(null, 'LockOn');
-		if (!is_object($cmd)) {
-			$cmd = new heatzyCmd();
-			$cmd->setLogicalId('LockOn');
-			$cmd->setIsVisible(1);
-			$cmd->setName(__('Activer Verrouillage', __FILE__));
-			$cmd->setType('action');
-			$cmd->setSubType('other');
-			$cmd->setConfiguration('infoName', 'etatlock');
-			$cmd->setEqLogic_id($this->getId());
-			$cmd->setIsHistorized(0);
-			$cmd->setIsVisible(1);
-			$cmd->save();
-		}
-          else{
-            $cmd->setConfiguration('infoName', 'etatlock');
-          }
-	        
-		$cmd = $this->getCmd(null, 'LockOff');
-		if (!is_object($cmd)) {
-			$cmd = new heatzyCmd();
-			$cmd->setLogicalId('LockOff');
-			$cmd->setIsVisible(1);
-			$cmd->setName(__('Désactiver Verrouillage', __FILE__));
-			$cmd->setType('action');
-			$cmd->setSubType('other');
-			$cmd->setConfiguration('infoName', 'etatlock');
-			$cmd->setEqLogic_id($this->getId());
-			$cmd->setIsHistorized(0);
-			$cmd->setIsVisible(1);
-			$cmd->save();
-		}
-          else{
-            $cmd->setConfiguration('infoName', 'etatlock');
-          }
-	        
-		/// Creation de la commande info etatlock binaire
-		$etat = $this->getCmd(null, 'etatlock');
-		if (!is_object($etat)) {
-			$etat = new heatzyCmd();
-			$etat->setName(__('Etat Verrouillage', __FILE__));
-			$etat->setLogicalId('etatlock');
-			$etat->setType('info');
-			$etat->setSubType('binary');
-			$etat->setEqLogic_id($this->getId());
-			$etat->setIsHistorized(0);
-			$etat->setIsVisible(1);
-			$etat->save();
-		}
+        $cmd = $this->getCmd(null, 'etat');
+        if (is_object($cmd)) {
+            log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
+            $cmd->remove();
+        }
+        $cmd = $this->getCmd(null, 'Etat');
+        if (is_object($cmd)) {
+            log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
+            $cmd->remove();
+        }*/
 
         /// Creation de la commande de rafraichissement
         $refresh = $this->getCmd(null, 'refresh');
@@ -1247,202 +1522,6 @@ class heatzy extends eqLogic {
             $refresh->setIsVisible(1);
             $refresh->save();
         }
-
-        /// Creation de la commande info Etat numeric
-        $etat = $this->getCmd(null, 'EtatConsigne');
-        if (!is_object($etat)) {
-            $etat = new heatzyCmd();
-            $etat->setName(__('Etat Consigne', __FILE__));
-            $etat->setLogicalId('EtatConsigne');
-            $etat->setType('info');
-            $etat->setSubType('numeric');
-            $etat->setEqLogic_id($this->getId());
-            $etat->setIsHistorized(0);
-            $etat->setIsVisible(1);
-            $etat->save();
-        }
-        
-        /// Creation de la commande info mode (correspond à l'état sous forme d'une chaine de carcateres)
-        $mode = $this->getCmd(null, 'mode');
-        if (!is_object($mode)) {
-            $mode = new heatzyCmd();
-            $mode->setName(__('Mode', __FILE__));
-            $mode->setLogicalId('mode');
-            $mode->setType('info');
-            $mode->setSubType('string');
-            $mode->setEqLogic_id($this->getId());
-            $mode->setIsHistorized(0);
-            $mode->setIsVisible(1);
-            $mode->save();
-        }
-        
-		if ( $this->getConfiguration('product', '') == 'Flam_Week2' ) {
-			/// Creation de la commande info du plugzy
-			$Plugzy = $this->getCmd(null, 'plugzy'); 
-			if (!is_object($Plugzy)) {
-				$Plugzy = new heatzyCmd();
-				$Plugzy->setName(__('Plugzy', __FILE__));
-				$Plugzy->setLogicalId('plugzy');
-				$Plugzy->setType('info');
-				$Plugzy->setSubType('binary');
-				$Plugzy->setEqLogic_id($this->getId());
-				$Plugzy->setIsHistorized(0);
-				$Plugzy->setIsVisible(1);
-				$Plugzy->save();
-			}
-	          
-			/// Creation de la commande plugzy on
-			$cmd = $this->getCmd(null, 'plugzyon');
-			if (!is_object($cmd)) {
-				$cmd = new heatzyCmd();
-				$cmd->setLogicalId('plugzyon');
-				$cmd->setIsVisible(1);
-				$cmd->setName(__('Plugzy ON', __FILE__));
-				$cmd->setType('action');
-				$cmd->setSubType('other');
-				$cmd->setConfiguration('infoName', 'plugzy');
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setIsHistorized(0);
-				$cmd->setIsVisible(1);
-				$cmd->save();
-			}
-			  
-			/// Creation de la commande plugzy off
-			$cmd = $this->getCmd(null, 'plugzyoff');
-			if (!is_object($cmd)) {
-				$cmd = new heatzyCmd();
-				$cmd->setLogicalId('plugzyoff');
-				$cmd->setIsVisible(1);
-				$cmd->setName(__('Plugzy OFF', __FILE__));
-				$cmd->setType('action');
-				$cmd->setSubType('other');
-				$cmd->setConfiguration('infoName', 'plugzy');
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setIsHistorized(0);
-				$cmd->setIsVisible(1);
-				$cmd->save();
-			}
-        }
-        
-        if( $this->getConfiguration('product', '') == 'Flam_Week2' ||
-            $this->getConfiguration('product', '') == 'INEA' ||
-            $this->getConfiguration('product', '') == 'Pilote_Pro') {    /// Pour heatzy flam ou inea ou pilote_pro
-          
-			/// Creation de la commande info de la temperature de confort
-			$CftTemp = $this->getCmd(null, 'cft_temp'); 
-			if (!is_object($CftTemp)) {
-				$CftTemp = new heatzyCmd();
-				$CftTemp->setName(__('Temp. confort', __FILE__));
-				$CftTemp->setLogicalId('cft_temp');
-				$CftTemp->setType('info');
-				$CftTemp->setUnite('°C');
-				$CftTemp->setSubType('numeric');
-				$CftTemp->setEqLogic_id($this->getId());
-				$CftTemp->setIsHistorized(0);
-				$CftTemp->setIsVisible(1);
-				$CftTemp->save();
-			}
-          
-			/// Creation de la commande info de la temperature eco
-			$EcoTemp = $this->getCmd(null, 'eco_temp'); 
-			if (!is_object($EcoTemp)) {
-				$EcoTemp = new heatzyCmd();
-				$EcoTemp->setName(__('Temp. eco', __FILE__));
-				$EcoTemp->setLogicalId('eco_temp');
-				$EcoTemp->setType('info');
-				$EcoTemp->setUnite('°C');
-				$EcoTemp->setSubType('numeric');
-				$EcoTemp->setEqLogic_id($this->getId());
-				$EcoTemp->setIsHistorized(0);
-				$EcoTemp->setIsVisible(1);
-				$EcoTemp->save();
-			}
-          
-			/// Creation de la commande info de la temperature courante
-			$CurTemp = $this->getCmd(null, 'cur_temp'); 
-			if (!is_object($CurTemp)) {
-				$CurTemp = new heatzyCmd();
-				$CurTemp->setName(__('Temperature', __FILE__));
-				$CurTemp->setLogicalId('cur_temp');
-				$CurTemp->setType('info');
-				$CurTemp->setUnite('°C');
-				$CurTemp->setSubType('numeric');
-				$CurTemp->setEqLogic_id($this->getId());
-				$CurTemp->setIsHistorized(0);
-				$CurTemp->setIsVisible(1);
-				$CurTemp->save();
-			}
-        } // if flam/inea/pro
-		
-		if ( $this->getConfiguration('product', '') == 'Pilote_Pro' ) {
-			
-			/// Creation de la commande humidité du pilote_pro
-			$CurHumi = $this->getCmd(null, 'cur_humi'); 
-			if (!is_object($CurHumi)) {
-				$CurHumi = new heatzyCmd();
-				$CurHumi->setName(__('Taux Humidité', __FILE__));
-				$CurHumi->setLogicalId('cur_humi');
-				$CurHumi->setType('info');
-				$CurHumi->setUnite('%');
-				$CurHumi->setSubType('numeric');
-				$CurHumi->setEqLogic_id($this->getId());
-				$CurHumi->setIsHistorized(0);
-				$CurHumi->setIsVisible(1);
-				$CurHumi->save();
-			}
-			
-			/// Creation de la commande Activation de la détection de fenêtre ouverte du pilote_pro
-			$CurWindow = $this->getCmd(null, 'EtatWindow'); 
-			if (!is_object($CurWindow)) {
-				$CurWindow = new heatzyCmd();
-				$CurWindow->setName(__('Etat fenêtre ouverte', __FILE__));
-				$CurWindow->setLogicalId('EtatWindow');
-				$CurWindow->setType('info');
-				$CurWindow->setSubType('binary');
-				$CurWindow->setEqLogic_id($this->getId());
-				$CurWindow->setIsHistorized(0);
-				$CurWindow->setIsVisible(0);
-				$CurWindow->save();
-			}
-
-			// window_switch On/Off
-			$cmd = $this->getCmd(null, 'WindowOn');
-			if (!is_object($cmd)) {
-				$cmd = new heatzyCmd();
-				$cmd->setLogicalId('WindowOn');
-				$cmd->setIsVisible(1);
-				$cmd->setName(__('Activer Fenetre Ouverte', __FILE__));
-				$cmd->setType('action');
-				$cmd->setSubType('other');
-				$cmd->setConfiguration('infoName', 'EtatWindow');
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setIsHistorized(0);
-				$cmd->setIsVisible(1);
-				$cmd->save();
-			}
-          else{
-            $cmd->setConfiguration('infoName', 'EtatWindow');
-          }
-		        
-			$cmd = $this->getCmd(null, 'WindowOff');
-			if (!is_object($cmd)) {
-				$cmd = new heatzyCmd();
-				$cmd->setLogicalId('WindowOff');
-				$cmd->setIsVisible(1);
-				$cmd->setName(__('Désactiver Fenetre Ouverte', __FILE__));
-				$cmd->setType('action');
-				$cmd->setSubType('other');
-				$cmd->setConfiguration('infoName', 'EtatWindow');
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setIsHistorized(0);
-				$cmd->setIsVisible(1);
-				$cmd->save();
-			}
-          else{
-            $cmd->setConfiguration('infoName', 'EtatWindow');
-          }
-		} // if pilote_pro
-
     }
 
     /**
@@ -1484,123 +1563,6 @@ class heatzy extends eqLogic {
         $_version = jeedom::versionAlias($_version);
         $product = $this->getConfiguration('product', '');
     
-        //$refresh = $this->getCmd(null, 'refresh');
-        //$replace['#refresh_id#'] = is_object($refresh) ? $refresh->getId() : '';
-        
-        //$Etat = $this->getCmd(null,'EtatConsigne');
-        //$replace['#Etat#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
-        //$replace['#Etatid#'] = (is_object($Etat)) ? $Etat->getId() : '';
-        //$replace['#Etat_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Etat_display#' : 'none';
-        //$replace['#history#'] = (is_object($Etat) && $Etat->getIsHistorized())? 'history cursor' : '';
-        
-        //$Confort = $this->getCmd(null,'Confort');
-        //$replace['#cmd_confort_id#'] = (is_object($Confort)) ? $Confort->getId() : '';
-        
-        //$Eco = $this->getCmd(null,'Eco');
-        //$replace['#cmd_eco_id#'] = (is_object($Eco)) ? $Eco->getId() : '';
-        
-        //$HorsGel = $this->getCmd(null,'HorsGel');
-        //$replace['#cmd_hg_id#'] = (is_object($HorsGel)) ? $HorsGel->getId() : '';
-        
-        //$Off = $this->getCmd(null,'Off');
-        //$replace['#cmd_off_id#'] = (is_object($Off)) ? $Off->getId() : '';
-
-        //$Etat = $this->getCmd(null,'etatprog');
-        //$replace['#info_prog#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
-        //$replace['#cmd_prog_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
-        //$replace['#Prog_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Prog_display#' : 'none';
-      
-        //$ProgOff = $this->getCmd(null,'ProgOff');
-        //$replace['#cmd_progoff_id#'] = (is_object($ProgOff)) ? $ProgOff->getId() : '';
-      
-        //$ProgOn = $this->getCmd(null,'ProgOn');
-        //$replace['#cmd_progon_id#'] = (is_object($ProgOn)) ? $ProgOn->getId() : '';
-
-        //$Etat = $this->getCmd(null,'etatlock');
-        //$replace['#info_lock#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
-        //$replace['#cmd_lock_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
-        //$replace['#Lock_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Lock_display#' : 'none';
-      
-        //$LockOff = $this->getCmd(null,'LockOff');
-        //$replace['#cmd_lockoff_id#'] = (is_object($LockOff)) ? $LockOff->getId() : '';
-      
-        //$LockOn = $this->getCmd(null,'LockOn');
-        //$replace['#cmd_lockon_id#'] = (is_object($LockOn)) ? $LockOn->getId() : '';    
-      
-        //if( $product == 'Flam_Week2' ||
-            //$product == 'INEA' ||
-            //$product == 'Pilote_Pro') {     /// Pour heatzy flam ou inea mais par defaut le pilote
-
-            //if($product == 'Flam_Week2') {
-                //$plugzy = $this->getCmd(null,'plugzy');
-                //$replace['#info_plugzy#'] = (is_object($plugzy)) ? $plugzy->execCmd() : '';
-                //$replace['#cmd_plugzy_id#'] = (is_object($plugzy)) ? $plugzy->getId() : '';
-    
-                //$plugzyon = $this->getCmd(null,'plugzyon');
-                //$replace['#cmd_plugzyon_id#'] = (is_object($plugzyon)) ? $plugzyon->getId() : '';
-    
-                //$plugzyoff = $this->getCmd(null,'plugzyoff');
-                //$replace['#cmd_plugzyoff_id#'] = (is_object($plugzyoff)) ? $plugzyoff->getId() : '';
-            //}
-            
-            //$CurTemp = $this->getCmd(null,'cur_temp');
-            //if( is_object($CurTemp)) {
-                //$replace['#history_cur_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-                //$replace['#cur_temp_id#'] = $CurTemp->getId();
-                //$replace['#cur_temp#'] = $CurTemp->execCmd();
-                //$replace['#unite_cur_temp#'] = $CurTemp->getUnite();
-                //$replace['#cur_temp_display#'] = (is_object($CurTemp) && $CurTemp->getIsVisible()) ? '#cur_temp_display#' : 'none';
-            //}
-          
-            //$EcoTemp = $this->getCmd(null,'eco_temp');
-            //if( is_object($EcoTemp)) {
-                //$replace['#history_eco_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-                //$replace['#eco_temp_id#'] = $EcoTemp->getId();
-                //$replace['#eco_temp#'] = $EcoTemp->execCmd();
-                //$replace['#unite_eco_temp#'] = $EcoTemp->getUnite();
-				//$replace['#eco_temp_display#'] = (is_object($EcoTemp) && $EcoTemp->getIsVisible()) ? '#eco_temp_display#' : 'none';
-            //}
-
-            //$CftTemp = $this->getCmd(null,'cft_temp');
-            //if( is_object($CftTemp)) {
-                //$replace['#history_cft_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-                //$replace['#cft_temp_id#'] = $CftTemp->getId();
-                //$replace['#cft_temp#'] = $CftTemp->execCmd();
-                //$replace['#unite_cft_temp#'] = $CftTemp->getUnite();
-				//$replace['#cft_temp_display#'] = (is_object($CftTemp) && $CftTemp->getIsVisible()) ? '#cft_temp_display#' : 'none';
-            //}    
-        //} // if flam/inea/pro
-
-        //if( $product == 'Pilote_Pro') {     /// Pour pro
-
-            //$CurHumi = $this->getCmd(null,'cur_humi');
-            //if( is_object($CurHumi)) {
-                //$replace['#history_cur_humi#'] = ($CurHumi->getIsHistorized())? 'history cursor' : '';
-              
-                //$replace['#cur_humi_id#'] = $CurHumi->getId();
-                //$replace['#cur_humi#'] = $CurHumi->execCmd();
-                //$replace['#unite_cur_humi#'] = $CurHumi->getUnite();
-                //$replace['none;#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none;';	
-                //$replace['#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none';
-            //}
-            
-            //$EtatWindow = $this->getCmd(null,'EtatWindow');
-            //if( is_object($EtatWindow)) {
-                //$replace['#info_window#'] = (is_object($EtatWindow)) ? $EtatWindow->execCmd() : '';
-                //$replace['#cmd_window_id#'] = (is_object($EtatWindow)) ? $EtatWindow->getId() : '';
-                //$replace['#window_display#'] = (is_object($EtatWindow) && $EtatWindow->getIsVisible()) ? '#window_display#' : 'none';
-              
-                //$WindowOff = $this->getCmd(null,'WindowOff');
-                //$replace['#cmd_windowoff_id#'] = (is_object($WindowOff)) ? $WindowOff->getId() : '';
-              
-                //$WindowOn = $this->getCmd(null,'WindowOn');
-                //$replace['#cmd_windowon_id#'] = (is_object($WindowOn)) ? $WindowOn->getId() : '';  
-            //}  
-        //} // if pro
-		
-		//$replace['#collectDate#'] = $this->getConfiguration('updatetime', '');
-        
-        // ****** TODO : Generer les cmd a mettre a jour directement depuis la liste de l'equipement ******
         //log::add('heatzy', 'debug',  __METHOD__.' : Liste commandes - '.$this->getName());
         foreach ($this->getCmd() as $cmd) {	
             switch($cmd->getType()){
@@ -1791,7 +1753,7 @@ class heatzyCmd extends cmd {
 					}
 				}
 				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
-	    }
+            }
             else {
 
                 $Mode = array_keys(heatzy::$_HeatzyMode, $this->getLogicalId());
@@ -1812,6 +1774,10 @@ class heatzyCmd extends cmd {
 					   $Mode = 'fro'; break;
 					case 3:
 					   $Mode = 'stop'; break;
+					case 4:
+					   $Mode = 'cft1'; break;
+					case 5:
+					   $Mode = 'cft2'; break;
 					}
                   
                     $Consigne = array( 'attrs' => array ( 'mode' => $Mode )  );

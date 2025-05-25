@@ -44,16 +44,28 @@
          <span style="margin-left: 20px;margin-top: 0px;">
             <center>
                <div style="margin-left: 10px">
-                  <!-- off -->
+                  <!-- Off -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Off_id#" data-version="#version#" style="display:none;#Off_display#;">
                   <span title="Mode OFF" class="off cursor action btn">
                   <i class="jeedom-off" style="font-size:1.2em"></i>
                   </span>
                   </span>
-                  <!-- confort -->
+                  <!-- Confort -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort_id#" data-version="#version#" style="display:none;#Confort_display#;">
                   <span title="Mode Confort" class="confort cursor action btn">
                   <i class="meteo-soleil" style="font-size:1.4em"></i>
+                  </span>
+                  </span>
+                  <!--  Confort-1 -->
+                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort-1_id#" data-version="#version#" style="display:none;#Confort-1_display#;">
+                  <span title="Mode Confort-1" class="confort cursor action btn">
+                  <i class="meteo-soleil" style="font-size:1.0em">-1</i>
+                  </span>
+                  </span>
+                  <!--  Confort-2 -->
+                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort-2_id#" data-version="#version#" style="display:none;#Confort-2_display#;">
+                  <span title="Mode Confort-2" class="confort cursor action btn">
+                  <i class="meteo-soleil" style="font-size:1.0em">-2</i>
                   </span>
                   </span>
                   <!-- Eco -->
@@ -114,15 +126,24 @@
             $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","");
             $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","");
             $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","");
-
+         }
+         if( !Number.isNaN( Number.parseInt('#Confort-1_id#') ) ){
+            $('.cmd[data-cmd_id=#Confort-1_id#] .confort i.meteo-soleil').css("color","");
+            $('.cmd[data-cmd_id=#Confort-2_id#] .confort i.meteo-soleil').css("color","");
+         }
+         if( !Number.isNaN( Number.parseInt('#EtatConsigne_id#') ) ){
             if (_options.display_value == '0') {
                $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","#00FF00"); /// Mode Confort
+            }else if (_options.display_value == '4') {
+               $('.cmd[data-cmd_id=#Confort-1_id#] .eco i.meteo-soleil').css("color","#00FF00");   /// Mode Confort-1
+            }else if (_options.display_value == '5') {
+               $('.cmd[data-cmd_id=#Confort-2_id#] .eco i.meteo-soleil').css("color","#00FF00");   /// Mode Confort-2
             }else if (_options.display_value == '1') {
-               $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","#00FF00");  /// Mode Eco
+               $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","#00FF00");        /// Mode Eco
             }else if (_options.display_value == '2') {
-               $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","#00FF00");/// Mode HorsGel
+               $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","#00FF00"); /// Mode HorsGel
             }else {
-               $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","#00FF00");  /// Mode Off
+               $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","#00FF00");           /// Mode Off
             }
          }
       }
@@ -223,12 +244,16 @@
       jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
          if( !Number.isNaN( Number.parseInt('#EtatConsigne_id#') ) ){
             $('.cmd[data-cmd_id=#EtatConsigne_id#]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-            if (_options.display_value == '0') {
-               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i>'); /// Mode Confort
+           if (_options.display_value == '0') {
+               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i>');   /// Mode Confort
+            }else if (_options.display_value == '4') { 
+               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i><i style="font-size:0.5em">-1</i>');   /// Mode Confort-1
+            }else if (_options.display_value == '5') {
+               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i><i style="font-size:0.5em">-2</i>');   /// Mode Confort-2
             }else if (_options.display_value == '1') {
-               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco" style="font-size:2em"></i>');  /// Mode Eco
+               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco" style="font-size:2em"></i>');    /// Mode Eco
             }else if (_options.display_value == '2') {
-               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg" style="font-size:2em"></i>');   /// Mode HorsGel
+               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg" style="font-size:2em"></i>');     /// Mode HorsGel
             }else {
                $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-off" style="font-size:2em"></i>');    /// Mode Off
             }

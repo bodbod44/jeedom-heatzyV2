@@ -1,3 +1,11 @@
+# 25/05/2025 (dev)
+- Modification du template commun pour les 6 ordres
+- Modification de la documentation
+
+# 24/05/2025 (dev)
+- Prise en charge des modules GLOW et SHINE
+- Refonte de la création des commande (à partir du retour API)
+- Prise en charge des 5e et6e ordre (pilote_pro + glow + shine)
 
 # 21/05/2025 (beta)
 - Mise à jour des templates commun

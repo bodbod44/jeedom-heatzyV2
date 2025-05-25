@@ -31,6 +31,20 @@
     </span>
     </span>
     <span>&nbsp;</span>
+    <!-- confort-1 -->
+    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort-1_id#" data-version="#version#" style="display:none;#Confort-1_display#;">
+      <span title="Mode Confort-1" class="confort-1 cursor action btn">
+        <i class="meteo-soleil"><i style="font-size : 0.7em">-1</i></i>
+    </span>
+    </span>
+    <span>&nbsp;</span>
+    <!-- confort-2 -->
+    <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort-2_id#" data-version="#version#" style="display:none;#Confort-2_display#;">
+      <span title="Mode Confort-2" class="confort-2 cursor action btn">
+        <i class="meteo-soleil"><i style="font-size : 0.7em">-2</i></i>
+    </span>
+    </span>
+    <span>&nbsp;</span>
     <!-- Eco -->
     <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Eco_id#" data-version="#version#" style="display:none;#Eco_display#;">
       <span title="Mode Eco" class="eco cursor action btn">
@@ -69,9 +83,18 @@
         $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","");
         $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","");
         $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","");
-
+      }
+      if( !Number.isNaN( Number.parseInt('#Confort-1_id#') ) ){
+        $('.cmd[data-cmd_id=#Confort-1_id#] .confort-1 i.meteo-soleil').css("color","");
+        $('.cmd[data-cmd_id=#Confort-2_id#] .confort-2 i.meteo-soleil').css("color","");
+      }
+      if( !Number.isNaN( Number.parseInt('#EtatConsigne_id#') ) ){
         if (_options.display_value == '0') {
           $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","#00FF00"); /// Mode Confort
+        }else if (_options.display_value == '4') {
+          $('.cmd[data-cmd_id=#Confort-1_id#] .confort-1 i.meteo-soleil').css("color","#00FF00"); /// Mode Confort-1
+        }else if (_options.display_value == '5') {
+          $('.cmd[data-cmd_id=#Confort-2_id#] .confort-2 i.meteo-soleil').css("color","#00FF00"); /// Mode Confort-2
         }else if (_options.display_value == '1') {
           $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","#00FF00");        /// Mode Eco
         }else if (_options.display_value == '2') {
@@ -119,6 +142,6 @@
           $('.cmd[data-cmd_id=#cur_temp_id#] span').value(_options.display_value);
        }
     }
-    jeedom.cmd.update['#cur_temp_id#']({display_value:'&nbsp;#cur_temp_cmd# #cur_temp_unite#'});
+    jeedom.cmd.update['#cur_temp_id#']({display_value:'&nbsp;#cur_temp_cmd##cur_temp_unite#'});
   </script>
 </div>
