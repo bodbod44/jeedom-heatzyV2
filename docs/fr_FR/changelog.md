@@ -1,3 +1,7 @@
+# 27/05/2025 (dev)
+- Correction info.json
+- Correction template mobile
+
 # 25/05/2025 (dev)
 - Modification du template commun pour la prise en charge des modules 6 ordres
 - Mise à jour de la documentation

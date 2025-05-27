@@ -120,143 +120,120 @@
           });
       
       jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('#EtatConsigne_id#') ) ){
-            $('.cmd[data-cmd_id=#EtatConsigne_id#]').attr('title','Collectée le '+_options.collectDate);
-            $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","");
-            $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","");
-            $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","");
-            $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","");
-         }
-         if( !Number.isNaN( Number.parseInt('#Confort-1_id#') ) ){
-            $('.cmd[data-cmd_id=#Confort-1_id#] .confort i.meteo-soleil').css("color","");
-            $('.cmd[data-cmd_id=#Confort-2_id#] .confort i.meteo-soleil').css("color","");
-         }
-         if( !Number.isNaN( Number.parseInt('#EtatConsigne_id#') ) ){
-            if (_options.display_value == '0') {
-               $('.cmd[data-cmd_id=#Confort_id#] .confort i.meteo-soleil').css("color","#00FF00"); /// Mode Confort
-            }else if (_options.display_value == '4') {
-               $('.cmd[data-cmd_id=#Confort-1_id#] .eco i.meteo-soleil').css("color","#00FF00");   /// Mode Confort-1
-            }else if (_options.display_value == '5') {
-               $('.cmd[data-cmd_id=#Confort-2_id#] .eco i.meteo-soleil').css("color","#00FF00");   /// Mode Confort-2
-            }else if (_options.display_value == '1') {
-               $('.cmd[data-cmd_id=#Eco_id#] .eco i.nature-night2').css("color","#00FF00");        /// Mode Eco
-            }else if (_options.display_value == '2') {
-               $('.cmd[data-cmd_id=#HorsGel_id#] .horsgel i.nature-snowflake').css("color","#00FF00"); /// Mode HorsGel
-            }else {
-               $('.cmd[data-cmd_id=#Off_id#] .off i.jeedom-off').css("color","#00FF00");           /// Mode Off
-            }
+         $('.cmd[data-cmd_id="#EtatConsigne_id#"]').attr('title','Collectée le '+_options.collectDate);
+         $('.cmd[data-cmd_id="#Confort_id#"] .confort i.meteo-soleil').css("color","");
+         $('.cmd[data-cmd_id="#Confort-1_id#"] .confort i.meteo-soleil').css("color","");
+         $('.cmd[data-cmd_id="#Confort-2_id#"] .confort i.meteo-soleil').css("color","");
+         $('.cmd[data-cmd_id="#Eco_id#"] .eco i.nature-night2').css("color","");
+         $('.cmd[data-cmd_id="#HorsGel_id#"] .horsgel i.nature-snowflake').css("color","");
+         $('.cmd[data-cmd_id="#Off_id#"] .off i.jeedom-off').css("color","");
+
+         if (_options.display_value == '0') {
+            $('.cmd[data-cmd_id="#Confort_id#"] .confort i.meteo-soleil').css("color","#00FF00"); /// Mode Confort
+         }else if (_options.display_value == '4') {
+            $('.cmd[data-cmd_id="#Confort-1_id#"] .eco i.meteo-soleil').css("color","#00FF00");   /// Mode Confort-1
+         }else if (_options.display_value == '5') {
+            $('.cmd[data-cmd_id="#Confort-2_id#"] .eco i.meteo-soleil').css("color","#00FF00");   /// Mode Confort-2
+         }else if (_options.display_value == '1') {
+            $('.cmd[data-cmd_id="#Eco_id#"] .eco i.nature-night2').css("color","#00FF00");        /// Mode Eco
+         }else if (_options.display_value == '2') {
+            $('.cmd[data-cmd_id="#HorsGel_id#"] .horsgel i.nature-snowflake').css("color","#00FF00"); /// Mode HorsGel
+         }else {
+            $('.cmd[data-cmd_id="#Off_id#"] .off i.jeedom-off').css("color","#00FF00");           /// Mode Off
          }
       }
       jeedom.cmd.update['#EtatConsigne_id#']({display_value:'#EtatConsigne_cmd#',collectDate:'#EtatConsigne_CollectDate#'});
 
       jeedom.cmd.update['#plugzy_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('#plugzy_id#') ) ){  
-            if(_options.display_value == 1) {
-               $('.plug[data-cmd_id=#plugzy_id#]').empty().append('<i class="jeedomapp-prise plugzyoff" style="font-size : 1.5em;color: #00FF00;"></i>');
-               $('.plug[data-cmd_id=#plugzy_id#]').attr('title', 'Désactiver Plugzy');
-               $('.plug[data-cmd_id=#plugzy_id#]').parent().attr('data-cmd_id', '#plugzyoff_id#');
-            } else {
-               $('.plug[data-cmd_id=#plugzy_id#]').empty().append('<i class="jeedomapp-prise-off plugzyon" style="font-size : 1.5em;color: #FF0000;"></i>');
-               $('.plug[data-cmd_id=#plugzy_id#]').attr('title', 'Activer Plugzy');
-               $('.plug[data-cmd_id=#plugzy_id#]').parent().attr('data-cmd_id', '#plugzyon_id#');
-            }
+         if(_options.display_value == 1) {
+            $('.plug[data-cmd_id="#plugzy_id#"]').empty().append('<i class="jeedomapp-prise plugzyoff" style="font-size : 1.5em;color: #00FF00;"></i>');
+            $('.plug[data-cmd_id="#plugzy_id#"]').attr('title', 'Désactiver Plugzy');
+            $('.plug[data-cmd_id="#plugzy_id#"]').parent().attr('data-cmd_id', '#plugzyoff_id#');
+         } else {
+            $('.plug[data-cmd_id="#plugzy_id#"]').empty().append('<i class="jeedomapp-prise-off plugzyon" style="font-size : 1.5em;color: #FF0000;"></i>');
+            $('.plug[data-cmd_id="#plugzy_id#"]').attr('title', 'Activer Plugzy');
+            $('.plug[data-cmd_id="#plugzy_id#"]').parent().attr('data-cmd_id', '#plugzyon_id#');
          }
       }
       jeedom.cmd.update['#plugzy_id#']({display_value:'#plugzy_cmd#'});
      
       jeedom.cmd.update['#etatprog_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('#etatprog_id#') ) ){  
-            if(_options.display_value == 1) {
-               $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.2em;color: #00FF00;"></i>');
-               $('.prog[data-cmd_id=#etatprog_id#]').attr('title', 'Désactiver la programmation');
-               $('.prog[data-cmd_id=#etatprog_id#]').parent().attr('data-cmd_id', '#ProgOff_id#');
-            } else {
-               $('.prog[data-cmd_id=#etatprog_id#]').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.2em;color: #FF0000;"></i>');
-               $('.prog[data-cmd_id=#etatprog_id#]').attr('title', 'Activer la programmation');
-               $('.prog[data-cmd_id=#etatprog_id#]').parent().attr('data-cmd_id', '#ProgOn_id#');
-            }
+         if(_options.display_value == 1) {
+            $('.prog[data-cmd_id="#etatprog_id#"]').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.2em;color: #00FF00;"></i>');
+            $('.prog[data-cmd_id="#etatprog_id#"]').attr('title', 'Désactiver la programmation');
+            $('.prog[data-cmd_id="#etatprog_id#"]').parent().attr('data-cmd_id', '#ProgOff_id#');
+         } else {
+            $('.prog[data-cmd_id="#etatprog_id#"]').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.2em;color: #FF0000;"></i>');
+            $('.prog[data-cmd_id="#etatprog_id#"]').attr('title', 'Activer la programmation');
+            $('.prog[data-cmd_id="#etatprog_id#"]').parent().attr('data-cmd_id', '#ProgOn_id#');
          }
       }
       jeedom.cmd.update['#etatprog_id#']({display_value:'#etatprog_cmd#'});
       
-      jeedom.cmd.update['#etatlock_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('#etatlock_id#') ) ){  
-            if(_options.display_value == 1) {
-               $('.lock[data-cmd_id=#etatlock_id#]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.2em;color: #00FF00;"></i>');
-               $('.lock[data-cmd_id=#etatlock_id#]').attr('title', 'Désactiver le verrouillage');
-               $('.lock[data-cmd_id=#etatlock_id#]').parent().attr('data-cmd_id', '#LockOff_id#');
-            } else {
-               $('.lock[data-cmd_id=#etatlock_id#]').empty().append('<i class="fa fa-toggle-off lockon" style="font-size : 1.2em;color: #FF0000;"></i>');
-               $('.lock[data-cmd_id=#etatlock_id#]').attr('title', 'Activer le verrouillage');
-               $('.lock[data-cmd_id=#etatlock_id#]').parent().attr('data-cmd_id', '#LockOn_id#');
-            }
+      jeedom.cmd.update['#etatlock_id#'] = function(_options){ 
+         if(_options.display_value == 1) {
+            $('.lock[data-cmd_id="#etatlock_id#"]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.2em;color: #00FF00;"></i>');
+            $('.lock[data-cmd_id="#etatlock_id#"]').attr('title', 'Désactiver le verrouillage');
+            $('.lock[data-cmd_id="#etatlock_id#"]').parent().attr('data-cmd_id', '#LockOff_id#');
+         } else {
+            $('.lock[data-cmd_id="#etatlock_id#"]').empty().append('<i class="fa fa-toggle-off lockon" style="font-size : 1.2em;color: #FF0000;"></i>');
+            $('.lock[data-cmd_id="#etatlock_id#"]').attr('title', 'Activer le verrouillage');
+            $('.lock[data-cmd_id="#etatlock_id#"]').parent().attr('data-cmd_id', '#LockOn_id#');
          }
       }
       jeedom.cmd.update['#etatlock_id#']({display_value:'#etatlock_cmd#'});
      
-      jeedom.cmd.update['#EtatWindow_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('#EtatWindow_id#') ) ){  
-            if(_options.display_value == 1) {
-               $('.window[data-cmd_id=#EtatWindow_id#]').empty().append('<i class="fa fa-toggle-on windowoff" style="font-size : 1.2em;color: #00FF00;"></i>');
-               $('.window[data-cmd_id=#EtatWindow_id#]').attr('title', 'Désactiver la vérification de fenetre ouverte');
-               $('.window[data-cmd_id=#EtatWindow_id#]').parent().attr('data-cmd_id', '#WindowOff_id#');
-            } else {
-               $('.window[data-cmd_id=#EtatWindow_id#]').empty().append('<i class="fa fa-toggle-off windowon" style="font-size : 1.2em;color: #FF0000;"></i>');
-               $('.window[data-cmd_id=#EtatWindow_id#]').attr('title', 'Activer la vérification de fenetre ouverte');
-               $('.window[data-cmd_id=#EtatWindow_id#]').parent().attr('data-cmd_id', '#WindowOn_id#');
-            }
+      jeedom.cmd.update['#EtatWindow_id#'] = function(_options){ 
+         if(_options.display_value == 1) {
+            $('.window[data-cmd_id="#EtatWindow_id#"]').empty().append('<i class="fa fa-toggle-on windowoff" style="font-size : 1.2em;color: #00FF00;"></i>');
+            $('.window[data-cmd_id="#EtatWindow_id#"]').attr('title', 'Désactiver la vérification de fenetre ouverte');
+            $('.window[data-cmd_id="#EtatWindow_id#"]').parent().attr('data-cmd_id', '#WindowOff_id#');
+         } else {
+            $('.window[data-cmd_id="#EtatWindow_id#"]').empty().append('<i class="fa fa-toggle-off windowon" style="font-size : 1.2em;color: #FF0000;"></i>');
+            $('.window[data-cmd_id="#EtatWindow_id#"]').attr('title', 'Activer la vérification de fenetre ouverte');
+            $('.window[data-cmd_id="#EtatWindow_id#"]').parent().attr('data-cmd_id', '#WindowOn_id#');
          }
       }
       jeedom.cmd.update['#EtatWindow_id#']({display_value:'#EtatWindow_cmd#'});
     
       jeedom.cmd.update['#cur_temp_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('#cur_temp_id#') ) ){ 
-            $('.cmd[data-cmd_id=#cur_temp_id#]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-            $('.cmd[data-cmd_id=#cur_temp_id#] span').value(_options.display_value);
-         }
+         $('.cmd[data-cmd_id="#cur_temp_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         $('.cmd[data-cmd_id="#cur_temp_id#"] span').value(_options.display_value);
       }
       jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd# #cur_temp_unite#',collectDate:'#cur_temp_CollectDate#',valueDate:'#cur_temp_ValueDate#'});
       
       jeedom.cmd.update['#eco_temp_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('#eco_temp_id#') ) ){ 
-            $('.cmd[data-cmd_id=#eco_temp_id#]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-            $('.cmd[data-cmd_id=#eco_temp_id#] span').value(_options.display_value);
-         }
+         $('.cmd[data-cmd_id="#eco_temp_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         $('.cmd[data-cmd_id="#eco_temp_id#"] span').value(_options.display_value);
       }
       jeedom.cmd.update['#eco_temp_id#']({display_value:': #eco_temp_cmd# #eco_temp_unite#',collectDate:'#eco_temp_CollectDate#',valueDate:'#eco_temp_ValueDate#'});
       
       jeedom.cmd.update['#cft_temp_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('#cft_temp_id#') ) ){ 
-            $('.cmd[data-cmd_id=#cft_temp_id#]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-            $('.cmd[data-cmd_id=#cft_temp_id#] span').value(_options.display_value);
-         }
+         $('.cmd[data-cmd_id="#cft_temp_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         $('.cmd[data-cmd_id="#cft_temp_id#"] span').value(_options.display_value);
       }
       jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp_cmd# #cft_temp_unite#',collectDate:'#cft_temp_CollectDate#',valueDate:'#cft_temp_ValueDate#'});
       
       jeedom.cmd.update['#cur_humi_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('#cur_humi_id#') ) ){
-            $('.cmd[data-cmd_id=#cur_humi_id#]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-            $('.cmd[data-cmd_id=#cur_humi_id#] span').value(_options.display_value);
-         }
+         $('.cmd[data-cmd_id="#cur_humi_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         $('.cmd[data-cmd_id="#cur_humi_id#"] span').value(_options.display_value);
       }
       jeedom.cmd.update['#cur_humi_id#']({display_value:'#cur_humi_cmd# #cur_humi_unite#',collectDate:'#cur_humi_CollectDate#',valueDate:'#cur_humi_ValueDate#'});
       
       jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
-         if( !Number.isNaN( Number.parseInt('#EtatConsigne_id#') ) ){
-            $('.cmd[data-cmd_id=#EtatConsigne_id#]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-           if (_options.display_value == '0') {
-               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i>');   /// Mode Confort
-            }else if (_options.display_value == '4') { 
-               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i><i style="font-size:0.5em">-1</i>');   /// Mode Confort-1
-            }else if (_options.display_value == '5') {
-               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i><i style="font-size:0.5em">-2</i>');   /// Mode Confort-2
-            }else if (_options.display_value == '1') {
-               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco" style="font-size:2em"></i>');    /// Mode Eco
-            }else if (_options.display_value == '2') {
-               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg" style="font-size:2em"></i>');     /// Mode HorsGel
-            }else {
-               $('.cmd[data-cmd_id=#EtatConsigne_id#] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-off" style="font-size:2em"></i>');    /// Mode Off
-            }
+         $('.cmd[data-cmd_id="#EtatConsigne_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+        if (_options.display_value == '0') {
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i>');   /// Mode Confort
+         }else if (_options.display_value == '4') { 
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i><i style="font-size:0.5em">-1</i>');   /// Mode Confort-1
+         }else if (_options.display_value == '5') {
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i><i style="font-size:0.5em">-2</i>');   /// Mode Confort-2
+         }else if (_options.display_value == '1') {
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco" style="font-size:2em"></i>');    /// Mode Eco
+         }else if (_options.display_value == '2') {
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg" style="font-size:2em"></i>');     /// Mode HorsGel
+         }else {
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-off" style="font-size:2em"></i>');    /// Mode Off
          }
       }
       jeedom.cmd.update['#EtatConsigne_id#']({display_value:'#EtatConsigne_cmd#',collectDate:'#EtatConsigne_CollectDate#',valueDate:'#EtatConsigne_ValueDate#'});
