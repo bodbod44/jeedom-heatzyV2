@@ -1,3 +1,10 @@
+# 29/05/2025 (dev)
+- Modification de la fonction execute (lisibilité)
+- Prise en charge update+execute+template de LOCK_C pour Shine/Glow
+
+# 28/05/2025 (dev)
+- Correction de l'aff refresh sur template
+
 # 27/05/2025 (dev)
 - Correction info.json
 - Correction template mobile
