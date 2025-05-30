@@ -1503,7 +1503,7 @@ class heatzy extends eqLogic {
 
     /*
      * Fonction exécutée automatiquement tous les jours par Jeedom*/
-    public static function cronDayly() {
+    public static function cronDaily() {
         //$aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
         //$tmp = strtotime( "2025-06-20 20:20:20" ) ;
       	//$token = strtotime( $$UserToken = config::byKey('UserToken','heatzy','none'); ) ;
