@@ -871,7 +871,7 @@ class heatzy extends eqLogic {
 				
 			// Activation de la détection de fenêtre ouverte 
 			if( isset ($aDevice['attr']['window_switch']) )
-				$this->checkAndUpdateCmd('EtatWindow', $aDevice['attr']['window_switch'] );
+				$this->checkAndUpdateCmd('WindowSwitch', $aDevice['attr']['window_switch'] );
         }
         else {                                             
 			log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
@@ -1240,11 +1240,11 @@ class heatzy extends eqLogic {
       
         if( isset ($aDevice['attr']['window_switch']) ){
             /// Creation de la commande Activation de la détection de fenêtre ouverte du pilote_pro
-            $CurWindow = $this->getCmd(null, 'EtatWindow'); 
+            $CurWindow = $this->getCmd(null, 'WindowSwitch'); 
             if (!is_object($CurWindow)) {
                 $CurWindow = new heatzyCmd();
                 $CurWindow->setName(__('Etat fenêtre ouverte', __FILE__));
-                $CurWindow->setLogicalId('EtatWindow');
+                $CurWindow->setLogicalId('WindowSwitch');
                 $CurWindow->setType('info');
                 $CurWindow->setSubType('binary');
                 $CurWindow->setEqLogic_id($this->getId());
@@ -1253,39 +1253,39 @@ class heatzy extends eqLogic {
                 $CurWindow->save();
             }
             // window_switch On/Off
-            $cmd = $this->getCmd(null, 'WindowOn');
+            $cmd = $this->getCmd(null, 'WindowSwitchOn');
             if (!is_object($cmd)) {
                 $cmd = new heatzyCmd();
-                $cmd->setLogicalId('WindowOn');
+                $cmd->setLogicalId('WindowSwitchOn');
                 $cmd->setIsVisible(1);
                 $cmd->setName(__('Activer Fenetre Ouverte', __FILE__));
                 $cmd->setType('action');
                 $cmd->setSubType('other');
-                $cmd->setConfiguration('infoName', 'EtatWindow');
+                $cmd->setConfiguration('infoName', 'WindowSwitch');
                 $cmd->setEqLogic_id($this->getId());
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
                 $cmd->save();
             }
             else{
-                $cmd->setConfiguration('infoName', 'EtatWindow');
+                $cmd->setConfiguration('infoName', 'WindowSwitch');
             }		        
-            $cmd = $this->getCmd(null, 'WindowOff');
+            $cmd = $this->getCmd(null, 'WindowSwitchOff');
             if (!is_object($cmd)) {
                 $cmd = new heatzyCmd();
-                $cmd->setLogicalId('WindowOff');
+                $cmd->setLogicalId('WindowSwitchOff');
                 $cmd->setIsVisible(1);
                 $cmd->setName(__('Désactiver Fenetre Ouverte', __FILE__));
                 $cmd->setType('action');
                 $cmd->setSubType('other');
-                $cmd->setConfiguration('infoName', 'EtatWindow');
+                $cmd->setConfiguration('infoName', 'WindowSwitch');
                 $cmd->setEqLogic_id($this->getId());
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
                 $cmd->save();
             }
             else{
-                $cmd->setConfiguration('infoName', 'EtatWindow');
+                $cmd->setConfiguration('infoName', 'WindowSwitch');
             }     
         } // if window_switch    
       
@@ -1722,11 +1722,11 @@ class heatzyCmd extends cmd {
                 $Consigne = array( 'attrs' => array ( 'LOCK_C' => 0 )  );
                 $ForUpdate = 0 ;
             }
-            else if ($this->getLogicalId() == 'WindowOn') {
+            else if ($this->getLogicalId() == 'WindowSwitchOn') {
                 $Consigne = array( 'attrs' => array ( 'window_switch' => 1 )  );
                 $ForUpdate = 1 ;
             }
-            else if ($this->getLogicalId() == 'WindowOff') {
+            else if ($this->getLogicalId() == 'WindowSwitchOff') {
                 $Consigne = array( 'attrs' => array ( 'window_switch' => 0 )  );
                 $ForUpdate = 0 ;
             }

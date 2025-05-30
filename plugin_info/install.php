@@ -37,20 +37,64 @@ function heatzy_update() {
 		 $cmd->remove(); // pas de save sur un remove
 	  }
 
-	  $cmdetat = $eqLogic->getCmd(null, 'etat');
-	  $cmdEtatConsigne = $eqLogic->getCmd(null, 'EtatConsigne');
-	  if (is_object($cmdetat) && is_object($cmdEtatConsigne) ) {
+	  $cmdAvant = $eqLogic->getCmd(null, 'etat');
+	  $cmdApres = $eqLogic->getCmd(null, 'EtatConsigne');
+	  if (is_object($cmdAvant) && is_object($cmdApres) ) {
 		 // Si les deux existent, supprimer l'ancienne
 		 log::add('heatzy', 'debug',  __METHOD__.': '.$eqLogic->getName().' remove etat');
-		 $cmdetat->remove(); // pas de save sur un remove
+		 $cmdAvant->remove(); // pas de save sur un remove
 	  }
-	  if (is_object($cmdetat) && !is_object($cmdEtatConsigne) ) {
+	  if (is_object($cmdAvant) && !is_object($cmdApres) ) {
 		 // Si la nouvelle n'existe pas, je renomme
 		 log::add('heatzy', 'debug',  __METHOD__.': '.$eqLogic->getName().' rename etat-EtatConsigne');
-		 $cmdetat->setLogicalId('EtatConsigne');
-		 $cmdetat->setName(__('Etat Consigne', __FILE__));
-		 $cmdetat->save();
+		 $cmdAvant->setLogicalId('EtatConsigne');
+		 $cmdAvant->setName(__('Etat Consigne', __FILE__));
+		 $cmdAvant->save();
 	  }
+	  
+	  $cmdAvant = $eqLogic->getCmd(null, 'EtatWindow');
+	  $cmdApres = $eqLogic->getCmd(null, 'WindowSwitch');
+	  if (is_object($cmdAvant) && is_object($cmdApres) ) {
+		 // Si les deux existent, supprimer l'ancienne
+		 log::add('heatzy', 'debug',  __METHOD__.': '.$eqLogic->getName().' remove EtatWindow');
+		 $cmdAvant->remove(); // pas de save sur un remove
+	  }
+	  if (is_object($cmdAvant) && !is_object($cmdApres) ) {
+		 // Si la nouvelle n'existe pas, je renomme
+		 log::add('heatzy', 'debug',  __METHOD__.': '.$eqLogic->getName().' rename EtatWindow-WindowSwitch');
+		 $cmdAvant->setLogicalId('WindowSwitch');
+		 $cmdAvant->setName(__('Etat Activation Fenêtre Ouverte', __FILE__));
+		 $cmdAvant->save();
+	  }
+	  
+	  $cmdAvant = $eqLogic->getCmd(null, 'WindowOn');
+	  $cmdApres = $eqLogic->getCmd(null, 'WindowSwitchOn');
+	  if (is_object($cmdAvant) && is_object($cmdApres) ) {
+		 // Si les deux existent, supprimer l'ancienne
+		 log::add('heatzy', 'debug',  __METHOD__.': '.$eqLogic->getName().' remove WindowOn');
+		 $cmdAvant->remove(); // pas de save sur un remove
+	  }
+	  if (is_object($cmdAvant) && !is_object($cmdApres) ) {
+		 // Si la nouvelle n'existe pas, je renomme
+		 log::add('heatzy', 'debug',  __METHOD__.': '.$eqLogic->getName().' rename WindowOn-WindowSwitchOn');
+		 $cmdAvant->setLogicalId('WindowSwitchOn');
+		 $cmdAvant->save();
+	  }
+	  
+	  $cmdAvant = $eqLogic->getCmd(null, 'WindowOff');
+	  $cmdApres = $eqLogic->getCmd(null, 'WindowSwitchOff');
+	  if (is_object($cmdAvant) && is_object($cmdApres) ) {
+		 // Si les deux existent, supprimer l'ancienne
+		 log::add('heatzy', 'debug',  __METHOD__.': '.$eqLogic->getName().' remove WindowOff');
+		 $cmdAvant->remove(); // pas de save sur un remove
+	  }
+	  if (is_object($cmdAvant) && !is_object($cmdApres) ) {
+		 // Si la nouvelle n'existe pas, je renomme
+		 log::add('heatzy', 'debug',  __METHOD__.': '.$eqLogic->getName().' rename WindowOff-WindowSwitchOff');
+		 $cmdAvant->setLogicalId('WindowSwitchOff');
+		 $cmdAvant->save();
+	  }
+	  
    } // foreach
 }
 
