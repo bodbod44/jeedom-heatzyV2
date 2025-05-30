@@ -1,3 +1,6 @@
+# 30/05/2025 (dev)
+- Affichage d'un message lorsque le token est modifié (+activation crondayly)
+
 # 29/05/2025 (dev)
 - Modification de la fonction execute (lisibilité)
 - Prise en charge update+execute+template de LOCK_C pour Shine/Glow

@@ -629,6 +629,11 @@ class heatzy extends eqLogic {
         $TokenExpire = date('Y-m-d H:i:s', $aResult['expire_at']);
         $UserToken = $aResult['token'];
         
+        if( config::byKey('UserToken', 'heatzy', '') != $UserToken)
+            message::add("Heatzy", 'Génération du token heatzy AVANT='.config::byKey('ExpireToken', 'heatzy', '').'/'.config::byKey('UserToken', 'heatzy', '').' -> '.$TokenExpire.'/'.$UserToken);
+        //else
+        //    message::add("Heatzy", 'Génération du token heatzy -> Pas de changement');
+        
         config::save('UserToken', $UserToken, 'heatzy'); /// => Sauvegarde du token utilisateur
         config::save('ExpireToken', $TokenExpire, 'heatzy'); /// => Sauvegarde de l'expiration du token
         
@@ -1497,11 +1502,16 @@ class heatzy extends eqLogic {
      */
 
     /*
-     * Fonction exécutée automatiquement tous les jours par Jeedom
-      public static function cronDayly() {
+     * Fonction exécutée automatiquement tous les jours par Jeedom*/
+    public static function cronDayly() {
+        //$aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
+        //$tmp = strtotime( "2025-06-20 20:20:20" ) ;
+      	//$token = strtotime( $$UserToken = config::byKey('UserToken','heatzy','none'); ) ;
+    	//message::add("Heatzy", '= '.$aujourdhui." - ".$tmp.' - '.$token );
+        
+        heatzy::Login();
+    }
 
-      }
-     */
 
 
 
