@@ -1,5 +1,15 @@
+# 31/05/2025 (dev)
+- Ajout d'info de les logs execute
+
+# 31/05/2025 (dev)
+- Ajout d'un bouton vers le forum community
+- Mise à jour de la documentation
+
 # 30/05/2025 (dev)
 - Affichage d'un message lorsque le token est modifié (+activation crondayly)
+- Ajout du lien officiel vers les manuels utilisateurs Heatzy
+- Ajout de la doc au format md
+- Renommage de la commande EtatWindow -> WindowSwitch
 
 # 29/05/2025 (dev)
 - Modification de la fonction execute (lisibilité)

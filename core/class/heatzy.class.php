@@ -1506,8 +1506,13 @@ class heatzy extends eqLogic {
     public static function cronDaily() {
         //$aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
         //$tmp = strtotime( "2025-06-20 20:20:20" ) ;
-      	//$token = strtotime( $$UserToken = config::byKey('UserToken','heatzy','none'); ) ;
-    	//message::add("Heatzy", '= '.$aujourdhui." - ".$tmp.' - '.$token );
+      	//$ExpireToken = strtotime( config::byKey('ExpireToken','heatzy','none') );
+    	//message::add("Heatzy", '= '.$aujourdhui." - ".$tmp.' - '.$ExpireToken );
+        /*
+        foreach (update::all() as $update) {
+            if ($update->getLogicalId() == 'heatzy' || $update->getLogicalId() == 'virtual'){
+                log::add('heatzy', 'error', __METHOD__.'updates : '.$update->getLogicalId().' - '.$update->getSource().' - '.$update->getStatus().' - '.$update->getType().':'.$update->getLogicalId().' - '.$update->getLocalVersion().' - '.$update->getRemoteVersion());
+        }*/
         
         heatzy::Login();
     }
@@ -1671,7 +1676,7 @@ class heatzyCmd extends cmd {
         else if($this->getType() == 'action' ) {
             
             $eqLogic = $this->getEqLogic();
-            //log::add('heatzy', 'debug',  __METHOD__.' : $this->getLogicalId()='.$this->getLogicalId());
+            //log::add('heatzy', 'debug',  __METHOD__.' : '.$eqLogic->getName().' - LogicalId='.$this->getLogicalId().' ('.$this->getId().')');
             
             /// Lecture du token
             $UserToken = config::byKey('UserToken','heatzy','none');
@@ -1730,8 +1735,8 @@ class heatzyCmd extends cmd {
                 $Consigne = array( 'attrs' => array ( 'window_switch' => 0 )  );
                 $ForUpdate = 0 ;
             }
-            else {
-
+            else if( in_array($this->getLogicalId() , heatzy::$_HeatzyMode ) ) {
+              
                 $Mode = array_keys(heatzy::$_HeatzyMode, $this->getLogicalId());
               
                 log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' mode = '. var_export($Mode, true));
@@ -1759,7 +1764,12 @@ class heatzyCmd extends cmd {
                     $Consigne = array( 'attrs' => array ( 'mode' => $Mode )  );
                 }
                 $ForUpdate = '' ;
+            }
+            else{
+                log::add('heatzy', 'error',  __METHOD__.' : Commande inconnue : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');
             }/// Le mode
+          
+          	
             
             if( $Consigne != '' ){
                 $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
@@ -1771,7 +1781,7 @@ class heatzyCmd extends cmd {
                     /// Si une erreur de communication et token invalide on se re-synchronise
                     if(isset($Result['error_message']) && isset($Result['error_code'])) {
                         if($Result['error_code'] === '9004') {
-                            log::add('heatzy', 'error',  __METHOD__.' : '.$Result['error_code'].' '.$Result['error_message']);
+                            log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message']);
                             $Nb = $eqLogic->Synchronize();
                             if ($Nb == false) {
                                 log::add('heatzy', 'error',  __METHOD__.' : erreur synchronisation');
@@ -1782,13 +1792,13 @@ class heatzyCmd extends cmd {
                                 $UserToken = config::byKey('UserToken','heatzy','none');
                                 $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
                                 if(isset($Result['error_message']) && isset($Result['error_code'])) {
-                                    log::add('heatzy', 'error',  __METHOD__.' : '.$Result['error_code'].' - '.$Result['error_message']);
+                                    log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message']);
                                     return false;
                                 }
                             }
                         }
                         else {
-                            log::add('heatzy', 'error',  __METHOD__.' : '.$Result['error_code'].' - '.$Result['error_message']);
+                            log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message']);
                             return false;
                         }
                     }

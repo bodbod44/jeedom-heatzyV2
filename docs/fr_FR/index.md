@@ -9,7 +9,6 @@ Les modules gérés sont :
 
 * **Heatzy**
 * **Flam/Plugzy**
-* **INEA**
 * **Pilote seconde génération**
 * **Pilote SoC**
 * **Pilote SoC3**
@@ -17,6 +16,10 @@ Les modules gérés sont :
 * **Elec Pro (Acova version)**
 * **Radiateur Glow**
 * **Radiateur Shine**
+* **Radiateur Onyx**
+* **Radiateur Bloom**
+* **Radiateur Flat**
+* **Radiateur INEA**
 
 Pré-requis
 === 
@@ -148,32 +151,32 @@ Et de commandes de type _numerique_ :
 **Tableau des commandes possible par modules :**
 
 *(les futurs modules qui ne sont pas dans ce tableau seront naturellement pris en charg si l'utilisation de l'APi est la même)*
- | Commande | Type | Pilote_Soc | Pilote_Soc3 | Pilote_Pro | Elec_Pro | Glow | Shine | Flam_Week2 | INEA | Heatzy Cool | 
- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | 
- | Etat Consigne<br>4 ordres : 0/1/2/3<br>6 ordres : 0/1/2/3/4/5 | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
- | Mode<br>4 ordres : Confort/Eco/Hors Gel/Off<br>6 ordres : Confort/Confort-1/Confort-2/Eco/Hors Gel/Off | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
- | Confort | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
- | Confort-1 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | ? | 
- | Confort-2 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | ? | 
- | Eco | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
- | Hors Gel | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
- | Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
- | Température courante | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | ? | 
- | Température Confort | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | ? | 
- | Température Eco | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | ? | 
- | Humidité courante | info | N/A | N/A | Oui | N/A | Oui | Oui | N/A | N/A | ? | 
- | Etat Programmation | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
- | Programmation On | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
- | Programmation Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | ? | 
- | Etat Vérouillage | info | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | ? | 
- | Vérouillage On | action | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | ? | 
- | Vérouillage Off | action | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | ? | 
- | Etat Fenetre Ouverte | info | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | ? | 
- | Fenetre Ouverte On | action | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | ? | 
- | Fenetre Ouverte Off | action | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | ? | 
- | Etat Plugzy | info | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A | ? | 
- | Plugzy On | action | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A | ? | 
- | Plugzy Off | action | N/A | N/A | N/A | N/A | ? | ? | Oui | N/A | ? | 
+ | Commande | Type | Pilote_Soc | Pilote_Soc3 | Pilote_Pro | Elec_Pro | Glow | Shine | Flam_Week2 | INEA | Cool | Relais | 
+ | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | 
+ | Etat Consigne<br>4 ordres : 0/1/2/3<br>6 ordres : 0/1/2/3/4/5 | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
+ | Mode<br>4 ordres : Confort/Eco/Hors Gel/Off<br>6 ordres : Confort/Confort-1/Confort-2/Eco/Hors Gel/Off | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
+ | Confort | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
+ | Confort-1 | action | N/A | N/A | Oui | N/A | Oui | Oui | N/A | N/A | N/A | N/A | 
+ | Confort-2 | action | N/A | N/A | Oui | N/A | Oui | Oui | N/A | N/A | N/A | N/A | 
+ | Eco | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
+ | Hors Gel | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
+ | Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
+ | Température courante | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
+ | Température Confort | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
+ | Température Eco | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
+ | Humidité courante | info | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 
+ | Etat Programmation | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
+ | Programmation On | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
+ | Programmation Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
+ | Etat Vérouillage | info | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | N/A | N/A | 
+ | Vérouillage On | action | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | N/A | N/A | 
+ | Vérouillage Off | action | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | N/A | N/A | 
+ | Etat Fenetre Ouverte | info | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | N/A | N/A | 
+ | Fenetre Ouverte On | action | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | N/A | N/A | 
+ | Fenetre Ouverte Off | action | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | N/A | N/A | 
+ | Etat On_Off (plugzy ou OnOff) | info | N/A | N/A | N/A | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
+ | On | action | N/A | N/A | N/A | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
+ | Off | action | N/A | N/A | N/A | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
 
 
 FAQ
@@ -213,6 +216,11 @@ Le plugin met à jour les 336 tâches associées au module Heatzy ou Flam pour l
 Le token d'accès au cloud change à chaque synchronisation avec une validité d'environ 6 mois.<br>
 Un nouveau token est demandé au cloud automatiquement 24h avant que celui-ci expire.
 
+**Peut-on commander les modules en local (sans cloud) ?**
+
+Malheureusement, cette fonctionnalité n'existe pas sur les modules Heatzy.
+Une requete a été formulée en ce sens aux équipes Heatzy
+
 **Mon équipement n'est pas rafraîchi ?**
 
 Vérifiez si l'équipement est bien activé.
@@ -225,3 +233,9 @@ Il est conseillé de synchroniser les modules via la page de configuration du pl
 
 Le plugin va créer de lui même toutes les commandes qui sont connues dans les autres modules.<br>
 S'il manque des commandes, n'hésitez pas à faire un message sur le forum jeedom pour @bodbod (avec le tag heatzy)
+
+**Mon module n'est plus dans l'application Heatzy, que faire ?**
+
+Dans un premier temps, fermer votre application mobile et revérifiez.
+S'il a été supprimé de l'application, le plugin ne pourra rien faire.
+Reportez vous aux manuels des produits : https://drive.google.com/drive/folders/1pbrZ7RRNZf8yzdbH-cd7Fk9ih2j7WZFd
