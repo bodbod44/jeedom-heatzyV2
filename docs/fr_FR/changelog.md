@@ -1,3 +1,6 @@
+# 12/06/2025 (dev)
+- Ajout d'un message pour basculer sur le market
+
 # 31/05/2025 (dev)
 - Ajout d'info de les logs execute
 

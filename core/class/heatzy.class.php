@@ -1508,11 +1508,43 @@ class heatzy extends eqLogic {
         //$tmp = strtotime( "2025-06-20 20:20:20" ) ;
       	//$ExpireToken = strtotime( config::byKey('ExpireToken','heatzy','none') );
     	//message::add("Heatzy", '= '.$aujourdhui." - ".$tmp.' - '.$ExpireToken );
+        
+        
         /*
-        foreach (update::all() as $update) {
-            if ($update->getLogicalId() == 'heatzy' || $update->getLogicalId() == 'virtual'){
-                log::add('heatzy', 'error', __METHOD__.'updates : '.$update->getLogicalId().' - '.$update->getSource().' - '.$update->getStatus().' - '.$update->getType().':'.$update->getLogicalId().' - '.$update->getLocalVersion().' - '.$update->getRemoteVersion());
-        }*/
+        $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
+        $cible = $tmp = strtotime( "2025-06-25 00:00:00" ) ; 
+        //message::add("Heatzy", '= '.($cible-(7*86400)).' - '.date('w', $aujourdhui).' - '.$aujourdhui.' - '.date('d/m', $aujourdhui) );
+        if( $aujourdhui > $cible ){
+            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : date cible dépassée 25/06' );
+        }
+        else if( $aujourdhui > ($cible - (7 * 86400) ) ){
+            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : tous les jours 25/06-7j' );
+        }
+        else if( $aujourdhui > ($cible - (15 * 86400) ) ){
+            if( (date('w', $aujourdhui )) == '4' )
+                message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui)." : 4 - =Jeudi - 25/06-15j" );
+            else
+                message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui)." : != Jeudi - 25/06-15j" );
+        }
+        else if( $aujourdhui > $cible ){
+            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : date cible dépassée 25/06' );
+        }
+        else
+            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : Pas encore' );
+        */
+        
+        $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
+        $cible = $tmp = strtotime( "2025-07-01 00:00:00" ) ;         
+        if( $aujourdhui > $cible && (date('w', $aujourdhui )) == '7' ){
+            foreach (update::all() as $update) {
+                if ($update->getLogicalId() == 'heatzy'){
+            		if( $update->getSource()  != 'market' ){
+                message::add("Heatzy", 'Votre plugin HEATZY a été installé depuis une version autre que le market (github ou fichier). La version officielle du plugin HEATZY a été mise à jour sur le market il y a peu. Je vous invite à aller sur le market et réinstaller le pugin HEATZY. Votre configuration (compte, appareils et commandes) sera conservée. Merci' );
+                    break;
+                	} //if
+            	} //if
+            } //foreach
+        } //if
         
         heatzy::Login();
     }
@@ -1538,9 +1570,7 @@ class heatzy extends eqLogic {
     }
     /**
      * @brief  Méthode appellée après la sauvegarde de votre objet
-     *         Creation des 4 ordres : Off, Confort, Eco, HorsGel
      *         Creation de la commande refresh
-     *         Creation de la commande info EtatConsigne
      */
     
     public function postSave() {
@@ -1768,7 +1798,6 @@ class heatzyCmd extends cmd {
             else{
                 log::add('heatzy', 'error',  __METHOD__.' : Commande inconnue : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');
             }/// Le mode
-          
           	
             
             if( $Consigne != '' ){
