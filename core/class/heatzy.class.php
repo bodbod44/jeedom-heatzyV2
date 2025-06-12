@@ -1058,11 +1058,21 @@ class heatzy extends eqLogic {
      */
 
     /*
-     * Fonction exécutée automatiquement tous les jours par Jeedom
-      public static function cronDayly() {
-
-      }
-     */
+     * Fonction exécutée automatiquement tous les jours par Jeedom*/
+    public static function cronDaily() {        
+        $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
+        $cible = $tmp = strtotime( "2025-07-01 00:00:00" ) ;         
+        if( $aujourdhui > $cible && (date('w', $aujourdhui )) == '7' ){
+            foreach (update::all() as $update) {
+                if ($update->getLogicalId() == 'heatzy'){
+            		if( $update->getSource()  != 'market' ){
+                message::add("Heatzy", 'Votre plugin HEATZY a été installé depuis une version autre que le market (github ou fichier). La version officielle du plugin HEATZY a été mise à jour sur le market il y a peu. Je vous invite à aller sur le market et réinstaller le pugin HEATZY. Votre configuration (compte, appareils et commandes) sera conservée. Merci' );
+                    break;
+                	} //if
+            	} //if
+            } //foreach
+        } //if
+    }
 
 
 
