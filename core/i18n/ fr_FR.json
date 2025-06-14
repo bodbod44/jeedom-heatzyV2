@@ -32,8 +32,18 @@
     },
     "plugins\/heatzy\/desktop\/js\/heatzy.js": {
         "Santé": "Santé"
+        "Debug": "Debug"
     },
     "plugins\/heatzy\/desktop\/modal\/health.php": {
+        "Module": "Module",
+        "DID": "DID",
+        "MAC": "MAC",
+        "MAC": "MAC",
+	"Dernière mise à jour": "Dernière mise à jour",
+	"Dernière communication": "Dernière communication",
+	"Date création": "Date création"
+    },
+    "plugins\/heatzy\/desktop\/modal\/debug.php": {
         "Module": "Module",
         "DID": "DID",
         "MAC": "MAC",

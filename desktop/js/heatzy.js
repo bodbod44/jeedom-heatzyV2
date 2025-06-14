@@ -18,6 +18,11 @@ $('#bt_healthHeatzy').on('click', function () {
   $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=health').dialog('open');
 });
 
+$('#bt_debugHeatzy').on('click', function () {
+  $('#md_modal').dialog({title: "{{Debug}}"});
+  $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=debug').dialog('open');
+});
+
 $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
 /*
  * Fonction pour l'ajout de commande, appellé automatiquement par plugin.template
