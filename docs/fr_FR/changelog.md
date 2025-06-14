@@ -1,9 +1,7 @@
 
-# 12/06/2025 (beta)
+# 14/06/2025 (stable)
+- Arrivée sur le market
 - Correction du cron Dayly-Daily
-- Préparation de l'arrivée sur le market
-  
-# 21/05/2025 (beta)
 - Mise à jour des templates commun
   - Création du template commun mobile
   - Ajout plugzy dans template commun + correction
