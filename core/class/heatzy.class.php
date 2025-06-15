@@ -910,7 +910,7 @@ class heatzy extends eqLogic {
             $UserToken = config::byKey('UserToken','heatzy','none');
             // Appel API pour SET confort-2
             $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
-            if( $ResultSet['error_code'] == ''){
+            if( $ResultSet['error_code'] == '' || $ResultSet['error_code'] == '9025'){
                 sleep(3); // Attente 3sec
                 // Appel API pour analyser le changement ou non de consigne
                 $ResultGet = HttpGizwits::GetConsigne($UserToken, $this->getLogicalId() ) ;
@@ -919,22 +919,24 @@ class heatzy extends eqLogic {
                         // L'ordre a bien été modifié (donc 6 ordres)
                         $NbOrdres = 6 ;
                     }
-                    else if( $ResultGet['attr']['mode'] == 'cft' ){
+                    else if( $ResultGet['attr']['mode'] == 'cft' || $ResultGet['attr']['mode'] == $aDevice['attr']['mode'] ){
                         // L'ordre n'a pas été modifié (donc 4 ordres)
+                        //  - Les heatzy ne renvoit pas d'erreur mais se positionne sur cft
+                        //  - Les Glow et Shine renvoit une erreur 9025 (GIZ_OPENAPI_ATTR_INVALID) et reste sur le mode précédent
                         $NbOrdres = 4 ;
                     }
                 }
                 else
-                    log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code GET='.$ResultSet['error_code']);
+                    log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code1 GET='.$ResultSet['error_code']);
             }
             else
-                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code SET='.$ResultSet['error_code']);
+                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code2 SET='.$ResultSet['error_code']);
             // On remet l'ordre initial
             sleep(1);
             $Consigne = array( 'attrs' => array ( 'mode' => $aDevice['attr']['mode'] )  );
             $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
             if( $ResultSet['error_code'] != '' )
-                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code SET2='.$ResultSet['error_code']);
+                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code3 SET='.$ResultSet['error_code']);
         }
 
         log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' Nombre d ordre='.$NbOrdres);
@@ -949,8 +951,17 @@ class heatzy extends eqLogic {
   
     public function CheckAndCreateCmd($aDevice) {
         
-        
-        if( isset($aDevice['attr']['mode']) && !is_object( $this->getCmd(null,'EtatConsigne')) ){
+        // Rattrapage 4 ordres 6 ordres
+        // Detection des pilote_pro / shine / glow qui n'auraient que 4 ordres (creation avant la prise en charge des 6 ordres)
+        $Heatzy6Ordres = array("Pilote_Pro","Shine_ble","Glow_Simple_ble");
+      	if( in_array( $this->getConfiguration('product', '') , $Heatzy6Ordres) && is_object( $this->getCmd(null,'Confort')) && !is_object( $this->getCmd(null,'Confort-2')) ){
+            $rattrapage = true ;
+            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' rattrapage 6 ordres');
+        }
+        else
+            $rattrapage = false ;
+      
+        if( (isset($aDevice['attr']['mode']) && !is_object( $this->getCmd(null,'EtatConsigne'))) || $rattrapage ){
 
             // Verifie si module 4 ou 6 ordres
         	$NbOrdres = $this->VerifNbOrdres($aDevice) ;
@@ -1169,6 +1180,7 @@ class heatzy extends eqLogic {
         } // if lock_switch
 
         if( isset ($aDevice['attr']['LOCK_C']) ){
+            
             // Verouillage-lock On/Off
             $cmd = $this->getCmd(null, 'Lock_C_On');
             if (!is_object($cmd)) {

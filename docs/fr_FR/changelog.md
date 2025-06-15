@@ -1,25 +1,30 @@
+# 15/06/2025 (dev)
+- Correction du lien WindowSwitchOn/Off avec WindowSwitch
+- Correction des erreurs 9025 sur les glow/shine pour larecherche des ordres
+- Récupération des infos pour la modal debug (utile pour debuger les problèmes sur le forum)
+
 # 12/06/2025 (dev)
 - Ajout d'un message pour basculer sur le market
 
 # 31/05/2025 (dev)
-- Ajout d'info de les logs execute
+- Ajout d'info dans les logs execute
 
 # 31/05/2025 (dev)
 - Ajout d'un bouton vers le forum community
 - Mise à jour de la documentation
 
 # 30/05/2025 (dev)
-- Affichage d'un message lorsque le token est modifié (+activation crondayly)
+- Affichage d'un message lorsque le token est modifié
 - Ajout du lien officiel vers les manuels utilisateurs Heatzy
 - Ajout de la doc au format md
 - Renommage de la commande EtatWindow -> WindowSwitch
 
 # 29/05/2025 (dev)
-- Modification de la fonction execute (lisibilité)
+- Modification de la fonction execute (lisibilité/maintenance)
 - Prise en charge update+execute+template de LOCK_C pour Shine/Glow
 
 # 28/05/2025 (dev)
-- Correction de l'aff refresh sur template
+- Correction de l'affichage refresh sur template
 
 # 27/05/2025 (dev)
 - Correction info.json
@@ -31,10 +36,12 @@
 
 # 24/05/2025 (dev)
 - Prise en charge des modules GLOW et SHINE
+- Prise en charge des 5e et 6e ordre (pilote_pro)
 - Refonte de la création des commande (à partir du retour API)
-- Prise en charge des 5e et6e ordre (pilote_pro + glow + shine)
 
-# 21/05/2025 (beta)
+# 14/06/2025 (stable)
+- Arrivée sur le market
+- Correction du cron Dayly-Daily
 - Mise à jour des templates commun
   - Création du template commun mobile
   - Ajout plugzy dans template commun + correction
