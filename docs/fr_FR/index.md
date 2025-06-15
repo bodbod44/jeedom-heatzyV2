@@ -156,8 +156,8 @@ Et de commandes de type _numerique_ :
  | Etat Consigne<br>4 ordres : 0/1/2/3<br>6 ordres : 0/1/2/3/4/5 | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
  | Mode<br>4 ordres : Confort/Eco/Hors Gel/Off<br>6 ordres : Confort/Confort-1/Confort-2/Eco/Hors Gel/Off | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
  | Confort | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
- | Confort-1 | action | N/A | N/A | Oui | N/A | Oui | Oui | N/A | N/A | N/A | N/A | 
- | Confort-2 | action | N/A | N/A | Oui | N/A | Oui | Oui | N/A | N/A | N/A | N/A | 
+ | Confort-1 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 
+ | Confort-2 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 
  | Eco | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
  | Hors Gel | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
  | Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
@@ -232,10 +232,16 @@ Il est conseillé de synchroniser les modules via la page de configuration du pl
 **J'ai un type de module qui n'est pas répertorié sur cette page, que faire ?**
 
 Le plugin va créer de lui même toutes les commandes qui sont connues dans les autres modules.<br>
-S'il manque des commandes, n'hésitez pas à faire un message sur le forum jeedom pour @bodbod (avec le tag heatzy)
+S'il manque des commandes, n'hésitez pas à faire un message sur le forum jeedom (avec le tag heatzy)
 
 **Mon module n'est plus dans l'application Heatzy, que faire ?**
 
 Dans un premier temps, fermer votre application mobile et revérifiez.
 S'il a été supprimé de l'application, le plugin ne pourra rien faire.
 Reportez vous aux manuels des produits : https://drive.google.com/drive/folders/1pbrZ7RRNZf8yzdbH-cd7Fk9ih2j7WZFd
+
+**Leplugin renvoit des erreurs 8xxx ou 9xxx, a quoi correspondent-ils ?**
+
+Les erreurs renvoyées par l'API gizwits sont repartoriés ici : https://docs.gizwits.com/en-us/AppDev/APICloudSDK.html#Error-codes
+Ces sont des libellés tchniques et pas forcement compréhensibles par tout le monde.
+N'hésitez pas à faire un message sur le forum jeedom (avec le tag heatzy)
