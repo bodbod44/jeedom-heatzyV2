@@ -953,7 +953,8 @@ class heatzy extends eqLogic {
         
         // Rattrapage 4 ordres 6 ordres
         // Detection des pilote_pro / shine / glow qui n'auraient que 4 ordres (creation avant la prise en charge des 6 ordres)
-        $Heatzy6Ordres = array("Pilote_Pro","Shine_ble","Glow_Simple_ble");
+        //$Heatzy6Ordres = array("Pilote_Pro","Shine_ble","Glow_Simple_ble");
+        $Heatzy6Ordres = array("Pilote_Pro");
       	if( in_array( $this->getConfiguration('product', '') , $Heatzy6Ordres) && is_object( $this->getCmd(null,'Confort')) && !is_object( $this->getCmd(null,'Confort-2')) ){
             $rattrapage = true ;
             log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' rattrapage 6 ordres');
