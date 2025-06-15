@@ -49,7 +49,7 @@
       </span>
       <!--  Fenetre ouverte -->
       <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-        <span title="" class="window cursor action btn" data-cmd_id="#EtatWindow_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#EtatWindow_display#;">
+        <span title="" class="window cursor action btn" data-cmd_id="#WindowSwitch_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#WindowSwitch_display#;">
           <i class="window"></i>
          </span>
       </span>
@@ -143,18 +143,18 @@
        }
      jeedom.cmd.update['#etatlock_id#']({display_value:'#etatlock_cmd#'});
 
-     jeedom.cmd.update['#EtatWindow_id#'] = function(_options){
+     jeedom.cmd.update['#WindowSwitch_id#'] = function(_options){
          if(_options.display_value == 1) {
-           $('.window[data-cmd_id=#EtatWindow_id#]').empty().append('<i class="fa fa-toggle-on windowoff" style="font-size : 1.1em;color: #00FF00;"></i>');
-           $('.window[data-cmd_id=#EtatWindow_id#]').attr('title', 'Désactiver la vérification de fenetre ouverte');
-           $('.window[data-cmd_id=#EtatWindow_id#]').parent().attr('data-cmd_id', '#WindowOff_id#');
+           $('.window[data-cmd_id=#WindowSwitch_id#]').empty().append('<i class="fa fa-toggle-on windowoff" style="font-size : 1.1em;color: #00FF00;"></i>');
+           $('.window[data-cmd_id=#WindowSwitch_id#]').attr('title', 'Désactiver la vérification de fenetre ouverte');
+           $('.window[data-cmd_id=#WindowSwitch_id#]').parent().attr('data-cmd_id', '#WindowSwitchOff_id#');
          } else {
-           $('.window[data-cmd_id=#EtatWindow_id#]').empty().append('<i class="fa fa-toggle-off windowon" style="font-size : 1.1em;color: #FF0000;"></i>');
-           $('.window[data-cmd_id=#EtatWindow_id#]').attr('title', 'Activer la vérification de fenetre ouverte');
-           $('.window[data-cmd_id=#EtatWindow_id#]').parent().attr('data-cmd_id', '#WindowOn_id#');
+           $('.window[data-cmd_id=#WindowSwitch_id#]').empty().append('<i class="fa fa-toggle-off windowon" style="font-size : 1.1em;color: #FF0000;"></i>');
+           $('.window[data-cmd_id=#WindowSwitch_id#]').attr('title', 'Activer la vérification de fenetre ouverte');
+           $('.window[data-cmd_id=#WindowSwitch_id#]').parent().attr('data-cmd_id', '#WindowSwitchOn_id#');
          }
        }
-     jeedom.cmd.update['#EtatWindow_id#']({display_value:'#EtatWindow_cmd#'});
+     jeedom.cmd.update['#WindowSwitch_id#']({display_value:'#WindowSwitch_cmd#'});
 	  
      jeedom.cmd.update['#cur_temp_id#'] = function(_options){
        $('.cmd[data-cmd_id=#cur_temp_id#]').attr('title','Collectée le '+_options.collectDate);
