@@ -182,25 +182,6 @@ Et de commandes de type _numerique_ :
 FAQ
 === 
 
-**Sur le market, je ne trouve pas la version mise à jour, pourquoi ?**
-Le plugin a été créé par @l3flo mais ce dernier ne donne plus de nouvelles et le plugin n'était plus mis à jour.
-J'ai donc décidé de reprendre le développement sur la base de premier (avec correction et évolution)
-Je n'exclue pas une intégration sous un autre nom (heatzy2 par exemple)
-
-**Comme le plugin n'est pas dans le market, comment doit-on l'installer ?**
-En attendant une intégration dans le market, je préconise une instalation depuis le github
-L'installation depuis le github vous permettra d'être notifié par jeedom lors d'une mise à jour du plugin
-En premier lieu, il faut veiller à ce que l'installation depuis le github soit bien autorisé<br>
-![heatzy6](../images/AutorisationPluginGithub.png)
-
-Puis installer le plugin (Plugins -> Gestion des plugins -> +)<br>
-ID : **heatzy** (sans espace et en minuscule)<br>
-Utilisateur : **bodbod44**<br>
-Nom du dépôt : **jeedom-heatzyV2**<br>
-Branche : **master** (ou beta)<br>
-Puis Sauvegarder<br>
-![heatzy6](../images/ParamInstallGithub.png)
-
 **Quelle est la fréquence de rafraîchissement ?**
 
 Le système récupère l'état des modules **toutes les minutes**. L'état de la programmation est rafraîchie toutes les 30 minutes pour les modules Heatzy et Flam.
