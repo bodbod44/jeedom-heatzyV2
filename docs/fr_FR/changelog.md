@@ -1,3 +1,8 @@
+# 20/06/2025 (dev)
+- Experimentation : Ajout de la commande Fenetre ouverte (WindowOpened) - Définie par calcul dans jeedom
+- Ajout du detail_message lors des erreurs d'appels
+- Ajout de la case historiser sur les commandes info/binaire
+
 # 15/06/2025 (beta)
 - Prise en charge des modules GLOW et SHINE
 - Prise en charge des 5e et 6e ordre (pilote_pro)

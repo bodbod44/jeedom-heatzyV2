@@ -744,28 +744,28 @@ class heatzy extends eqLogic {
              ///// --- TEST ----
             else if(isset($aDevice['error_message']) && isset($aDevice['error_code'])) {
                 if($aDevice['error_code'] == '9004') {
-                    log::add('heatzy', 'error',  __METHOD__.' : '.$aDevice['error_code'].' '.$aDevice['error_message']);
+                    log::add('heatzy', 'error',  __METHOD__.' : '.$aDevice['error_code'].' '.$aDevice['error_message'].' - '.$aDevice['detail_message']);
                     $Nb = $this->Synchronize(); //$Nb = $eqLogic->Synchronize();
                     if ($Nb == false) {
                         log::add('heatzy', 'error',  __METHOD__.' : erreur synchronisation');
                         return false;
-                }
-                else{
-                    log::add('heatzy', 'info',  __METHOD__.' : '.$Nb. 'module(s) synchronise(s)');
-                    $UserToken = config::byKey('UserToken','heatzy','none');
-                    $aDevice = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-                    if(isset($aDevice['error_message']) && isset($aDevice['error_code'])) {
-                      log::add('heatzy', 'error',  __METHOD__.' : '.$aDevice['error_code'].' - '.$aDevice['error_message']);
-                      return false;
+                    }
+                    else{
+                        log::add('heatzy', 'info',  __METHOD__.' : '.$Nb. 'module(s) synchronise(s)');
+                        $UserToken = config::byKey('UserToken','heatzy','none');
+                        $aDevice = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+                        if(isset($aDevice['error_message']) && isset($aDevice['error_code'])) {
+                            log::add('heatzy', 'error',  __METHOD__.' : '.$aDevice['error_code'].' - '.$aDevice['error_message'].' - '.$aDevice['detail_message']);
+                            return false;
+                        }
                     }
                 }
+                else {
+                    log::add('heatzy', 'error',  __METHOD__.' : '.$aDevice['error_code'].' - '.$aDevice['error_message'].' - '.$aDevice['detail_message']);
+                    return false;
+                }
             }
-            else {
-                log::add('heatzy', 'error',  __METHOD__.' : '.$aDevice['error_code'].' - '.$aDevice['error_message']);
-                return false;
-            }
-          }
-          ///// --- FIN TEST ----
+            ///// --- FIN TEST ----
         }
       
         /// Mise à jour de la derniere communication
@@ -785,10 +785,10 @@ class heatzy extends eqLogic {
             if( $aDevice['attr']['mode'] == 'cft' ) {        /// Confort
                 $KeyMode = 'Confort';
             }
-            else if( $aDevice['attr']['mode'] == 'cft1' ) {  /// Eco
+            else if( $aDevice['attr']['mode'] == 'cft1' ) {  /// Confort-1
                 $KeyMode = 'Confort-1';
             }
-            else if( $aDevice['attr']['mode'] == 'cft2' ) {  /// Eco
+            else if( $aDevice['attr']['mode'] == 'cft2' ) {  /// Confort-2
                 $KeyMode = 'Confort-2';
             }
             else if( $aDevice['attr']['mode'] == 'eco' ) {   /// Eco
@@ -872,6 +872,29 @@ class heatzy extends eqLogic {
 			// Activation de la détection de fenêtre ouverte 
 			if( isset ($aDevice['attr']['window_switch']) )
 				$this->checkAndUpdateCmd('WindowSwitch', $aDevice['attr']['window_switch'] );
+            
+            // Test WindowOpened
+            $WindowOpened = $this->getCmd(null, 'WindowOpened');
+            if (is_object($WindowOpened) && $this->getConfiguration('product', '') == 'Glow_Simple_ble' ) {
+                $cur_temp = $this->getCmd(null, 'cur_temp');
+                $Chute = 1 ; //°
+                $Delai = 50 ; //5min
+                $startHist = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') .' - '.$Delai.' min'));
+                $tendance = $cur_temp->getTendance( $startHist , date('Y-m-d H:i:s') ) ;
+                
+                //$Mytemp = 20.5 ;
+              	$ValueDate = strtotime( $WindowOpened->getValueDate() ) ;
+                $now = strtotime(date('Y-m-d H:i:s') ) ;
+                if( $tendance <= -($Chute / $Delai ) ) {
+                    $this->checkAndUpdateCmd('WindowOpened', true );
+                }
+                else if( $tendance <= ($Chute / $Delai ) || ($now - $ValueDate) >= 1800 ){
+                    $this->checkAndUpdateCmd('WindowOpened', false );    
+                }
+              	log::add('heatzy', 'debug',  $this->getLogicalId().' : WindowOpened : tendance='.$tendance.' - '.$ValueDate.' - '.$now.' - '.$startHist.' - '.$cur_temp->execCmd().' - '.($now - $ValueDate) );
+                
+            }
+            // Test WindowOpened
         }
         else {                                             
 			log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
@@ -927,16 +950,16 @@ class heatzy extends eqLogic {
                     }
                 }
                 else
-                    log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code1 GET='.$ResultSet['error_code']);
+                    log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code1 GET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
             }
             else
-                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code2 SET='.$ResultSet['error_code']);
+                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code2 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
             // On remet l'ordre initial
             sleep(1);
             $Consigne = array( 'attrs' => array ( 'mode' => $aDevice['attr']['mode'] )  );
             $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
             if( $ResultSet['error_code'] != '' )
-                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code3 SET='.$ResultSet['error_code']);
+                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code3 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
         }
 
         log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' Nombre d ordre='.$NbOrdres);
@@ -1256,13 +1279,17 @@ class heatzy extends eqLogic {
             $CurWindow = $this->getCmd(null, 'WindowSwitch'); 
             if (!is_object($CurWindow)) {
                 $CurWindow = new heatzyCmd();
-                $CurWindow->setName(__('Etat fenêtre ouverte', __FILE__));
+                $CurWindow->setName(__('Etat Activation fenêtre ouverte', __FILE__));
                 $CurWindow->setLogicalId('WindowSwitch');
                 $CurWindow->setType('info');
                 $CurWindow->setSubType('binary');
                 $CurWindow->setEqLogic_id($this->getId());
                 $CurWindow->setIsHistorized(0);
                 $CurWindow->setIsVisible(0);
+                $CurWindow->save();
+            }
+            else{
+                $CurWindow->setName(__('Etat Activation fenêtre ouverte', __FILE__));
                 $CurWindow->save();
             }
             // window_switch On/Off
@@ -1407,105 +1434,106 @@ class heatzy extends eqLogic {
     }
 
     /**
-     * Fonction exécutée automatiquement toutes les minutes par Jeedom
-     * synchronisation
-     */
-      public static function cron() {
-          
-          foreach (eqLogic::byType('heatzy') as $heatzy) {
-              if($heatzy->getIsEnable() == 1 ){ /// Execute la commande refresh des modules activés
-                  
-                  $Cmd =  heatzyCmd::byEqLogicIdCmdName($heatzy->getId(), 'Rafraichir' );
-                  if (! is_object($Cmd)) {
-                      log::add('heatzy', 'error',  ' La commande :refresh n\'a pas été trouvé' );
-                      throw new Exception(__(' La commande refresh n\'a pas été trouvé ', __FILE__));
-                  }
-                  $Cmd->execCmd($_options);
-                  
-                  $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
-                  $mc->remove();
-                  $mc = cache::byKey('heatzyWidgetdashboard' . $heatzy->getId());
-                  $mc->remove();
-                  
-                  $heatzy->toHtml('mobile');
-                  $heatzy->toHtml('dashboard');
-                  $heatzy->refreshWidget();
-              }
-          }
-      }
+    * Fonction exécutée automatiquement toutes les minutes par Jeedom
+    * synchronisation
+    */
+    public static function cron() {
+        //$ExpireToken = strtotime( config::byKey('ExpireToken','heatzy','none') );
+        //$ExpireToken2 = config::byKey('ExpireToken','heatzy','none');
+    	//message::add("Heatzy", __METHOD__.' = '.$ExpireToken.' - '.$ExpireToken2 );
+        
+        foreach (eqLogic::byType('heatzy') as $heatzy) {
+            if($heatzy->getIsEnable() == 1 ){ /// Execute la commande refresh des modules activés
+
+                $Cmd =  heatzyCmd::byEqLogicIdCmdName($heatzy->getId(), 'Rafraichir' );
+                if (! is_object($Cmd)) {
+                    log::add('heatzy', 'error',  ' La commande :refresh n\'a pas été trouvé' );
+                    throw new Exception(__(' La commande refresh n\'a pas été trouvé ', __FILE__));
+                }
+                $Cmd->execCmd($_options);
+
+                $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
+                $mc->remove();
+                $mc = cache::byKey('heatzyWidgetdashboard' . $heatzy->getId());
+                $mc->remove();
+
+                $heatzy->toHtml('mobile');
+                $heatzy->toHtml('dashboard');
+                $heatzy->refreshWidget();
+            }
+        }
+    }
       
-      /**
-       * Fonction exécutée automatiquement toutes les 30minutes par Jeedom
-       * seulement pour les modules Heatzy et Flam_Week2
-       * */
-       public static function cron30() {
-           
-           foreach (eqLogic::byType('heatzy') as $heatzy) {
-           	
-               if($heatzy->getIsEnable() != 1 )
-               	continue;
-               
-               if($heatzy->getConfiguration('product', 'Heatzy') != 'Flam_Week2' &&
-    							$heatzy->getConfiguration('product', 'Heatzy') != 'Heatzy' )
-               	continue;
-               
-                $EtatProg='1'; /// Par defaut les taches sont actives
-              
-                /// Si le module est en timeout on ne verifie pas la programmation
-								if ( $heatzy->getStatus('timeout', '0') == '1' ) {
-                    /// Mise à jour de l'etat de la programmation désactivé
-                    $EtatProg='0';
-                }
-                else {
-                  /// Lecture des taches de ce module
-                  $Skip = 0;            /// Nombre d'element sauté
-                  $Limit = 100;        /// Limite du nombre de tache
+    /**
+    * Fonction exécutée automatiquement toutes les 30minutes par Jeedom
+    * seulement pour les modules Heatzy et Flam_Week2
+    * */
+    public static function cron30() {
 
-                  /// Lecture du token
-                  $UserToken = config::byKey('UserToken','heatzy','none');
+        foreach (eqLogic::byType('heatzy') as $heatzy) {
 
-                  do {
-                      /// Lecture des taches par pas de $Limit
-                      $aTasks = HttpGizwits::GetSchedulerList($UserToken, $heatzy->getLogicalId(), $Skip, $Limit);
+            if($heatzy->getIsEnable() != 1 )
+                continue;
 
-                      /// Boucle des taches
-                      foreach ($aTasks as $TaskNum => $aTask) {
+            if($heatzy->getConfiguration('product', 'Heatzy') != 'Flam_Week2' &&
+            $heatzy->getConfiguration('product', 'Heatzy') != 'Heatzy' )
+                continue;
 
-                          if($aTask['enabled'] === false ) {    /// Sort de la boucle des taches à la premiere tache trouvée
-                              $EtatProg='0';
-                              break;
-                          }
-                      }
-                      $Skip += count($aTasks);
+            $EtatProg='1'; /// Par defaut les taches sont actives
 
-                      if($EtatProg === '0' ) {/// Sort de la boucle des recherches des taches si au moins une est désactivée
-                          break;
-                      }
+            /// Si le module est en timeout on ne verifie pas la programmation
+            if ( $heatzy->getStatus('timeout', '0') == '1' ) {
+            /// Mise à jour de l'etat de la programmation désactivé
+                $EtatProg='0';
+            }
+            else {
+                /// Lecture des taches de ce module
+                $Skip = 0;            /// Nombre d'element sauté
+                $Limit = 100;        /// Limite du nombre de tache
 
-                  } while(!empty($aTasks) && count($aTasks) >= $Limit);
-                  
-                  if($Skip === 0 && empty($aTasks)) /// Si pas de saut c'est qu'il n'y a pas de programmation
+                /// Lecture du token
+                $UserToken = config::byKey('UserToken','heatzy','none');
+
+                do {
+                    /// Lecture des taches par pas de $Limit
+                    $aTasks = HttpGizwits::GetSchedulerList($UserToken, $heatzy->getLogicalId(), $Skip, $Limit);
+
+                    /// Boucle des taches
+                    foreach ($aTasks as $TaskNum => $aTask) {
+                        if($aTask['enabled'] === false ) {    /// Sort de la boucle des taches à la premiere tache trouvée
+                            $EtatProg='0';
+                            break;
+                        }
+                    }
+                    $Skip += count($aTasks);
+
+                    if($EtatProg === '0' ) {/// Sort de la boucle des recherches des taches si au moins une est désactivée
+                        break;
+                    }
+                } while(!empty($aTasks) && count($aTasks) >= $Limit);
+
+                if($Skip === 0 && empty($aTasks)) /// Si pas de saut c'est qu'il n'y a pas de programmation
                     $EtatProg = '0';
-                }
-                   /// Mise à jour de l'etat EtatProg
-                   $heatzy->checkAndUpdateCmd('etatprog', $EtatProg);
-                   
-                   if( $EtatProg === '0' )
-                       log::add('heatzy', 'debug',   $heatzy->getLogicalId() .  ' : programmation desactive');
-                   else
-                       log::add('heatzy', 'debug',   $heatzy->getLogicalId() . ' : programmation active');
-                   
-                   $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
-                   $mc->remove();
-                   $mc = cache::byKey('heatzyWidgetdashboard' . $heatzy->getId());
-                   $mc->remove();
-                    
-                   $heatzy->toHtml('mobile');
-                   $heatzy->toHtml('dashboard');
-                   $heatzy->refreshWidget();
+            }
+            /// Mise à jour de l'etat EtatProg
+            $heatzy->checkAndUpdateCmd('etatprog', $EtatProg);
 
-               }/// Fin boucle des modules
-       }
+            if( $EtatProg === '0' )
+                log::add('heatzy', 'debug',   $heatzy->getLogicalId() .  ' : programmation desactive');
+            else
+                log::add('heatzy', 'debug',   $heatzy->getLogicalId() . ' : programmation active');
+
+            $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
+            $mc->remove();
+            $mc = cache::byKey('heatzyWidgetdashboard' . $heatzy->getId());
+            $mc->remove();
+
+            $heatzy->toHtml('mobile');
+            $heatzy->toHtml('dashboard');
+            $heatzy->refreshWidget();
+
+        }/// Fin boucle des modules
+    }
 
     /*
      * Fonction exécutée automatiquement toutes les heures par Jeedom
@@ -1552,7 +1580,7 @@ class heatzy extends eqLogic {
             foreach (update::all() as $update) {
                 if ($update->getLogicalId() == 'heatzy'){
             		if( $update->getSource()  != 'market' ){
-                message::add("Heatzy", 'Votre plugin HEATZY a été installé depuis une version autre que le market (github ou fichier). La version officielle du plugin HEATZY a été mise à jour sur le market il y a peu. Je vous invite à aller sur le market et réinstaller le pugin HEATZY. Votre configuration (compte, appareils et commandes) sera conservée. Merci' );
+                        message::add("Heatzy", 'Votre plugin HEATZY a été installé depuis une version autre que le market (github ou fichier). La version officielle du plugin HEATZY a été mise à jour sur le market il y a peu. Je vous invite à aller sur le market et réinstaller le pugin HEATZY. Votre configuration (compte, appareils et commandes) sera conservée. Merci' );
                     break;
                 	} //if
             	} //if
@@ -1600,6 +1628,21 @@ class heatzy extends eqLogic {
             $refresh->setIsVisible(1);
             $refresh->save();
         }
+        
+        /// Creation de la commande window_opened
+        $Window = $this->getCmd(null, 'WindowOpened'); 
+        if (!is_object($Window) && $this->getConfiguration('product', '') == 'Glow_Simple_ble' ) {
+            $Window = new heatzyCmd();
+            $Window->setName(__('Fenetre Ouverte', __FILE__));
+            $Window->setLogicalId('WindowOpened');
+            $Window->setType('info');
+            $Window->setSubType('binary');
+            $Window->setEqLogic_id($this->getId());
+            $Window->setIsHistorized(0);
+            $Window->setIsVisible(1);
+            $Window->save();
+        }
+        
     }
 
     /**
@@ -1662,7 +1705,7 @@ class heatzy extends eqLogic {
                     $replace['none;#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
                     break;
                 default :
-                    //log::add('heatzy', 'error',  __METHOD__.' : Type de commande ($cmd->getType()='.$cmd->getType().') inconnu');
+                    log::add('heatzy', 'error',  __METHOD__.' : Type de commande ($cmd->getType()='.$cmd->getType().') inconnu');
                     break;
             }
         }
@@ -1823,7 +1866,7 @@ class heatzyCmd extends cmd {
                     /// Si une erreur de communication et token invalide on se re-synchronise
                     if(isset($Result['error_message']) && isset($Result['error_code'])) {
                         if($Result['error_code'] === '9004') {
-                            log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message']);
+                            log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
                             $Nb = $eqLogic->Synchronize();
                             if ($Nb == false) {
                                 log::add('heatzy', 'error',  __METHOD__.' : erreur synchronisation');
@@ -1834,13 +1877,13 @@ class heatzyCmd extends cmd {
                                 $UserToken = config::byKey('UserToken','heatzy','none');
                                 $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
                                 if(isset($Result['error_message']) && isset($Result['error_code'])) {
-                                    log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message']);
+                                    log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
                                     return false;
                                 }
                             }
                         }
                         else {
-                            log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message']);
+                            log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
                             return false;
                         }
                     }
