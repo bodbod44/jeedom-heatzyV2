@@ -1590,9 +1590,6 @@ class heatzy extends eqLogic {
         heatzy::Login();
     }
 
-
-
-
     /*     * *********************Méthodes d'instance************************* */
 
     /**
