@@ -1,5 +1,6 @@
 # 22/06/2025 (dev)
 - Refonte de la regénération du token (si expiré ou invalide)
+- Suppression du cron pour la regénération du token
 
 # 21/06/2025 (dev)
 - Experimentation : Ajout de la commande Fenetre ouverte (WindowOpened) - Définie par calcul dans jeedom

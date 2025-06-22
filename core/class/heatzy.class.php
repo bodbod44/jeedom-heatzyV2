@@ -745,6 +745,7 @@ class heatzy extends eqLogic {
         config::save('UserToken', $UserToken, 'heatzy'); /// => Sauvegarde du token utilisateur
         config::save('ExpireToken', $TokenExpire, 'heatzy'); /// => Sauvegarde de l'expiration du token
         
+        /*
         /// Prepare le prochain cron
         $cron = cron::byClassAndFunction('heatzy', 'Login');
         if (!is_object($cron)) {
@@ -758,6 +759,7 @@ class heatzy extends eqLogic {
         log::add('heatzy', 'debug',  'cron prochain Login :'.$nextLogin);
         $cron->setSchedule($nextLogin);
         $cron->save();
+        */
         
         return true ;
     }
