@@ -89,7 +89,7 @@ Configuration des commandes des objets connectés Heatzy
 ![heatzy5](../images/WidgetMobile.png)
 
 
-Chaque équipement dispose des commandes actions :
+Chaque équipement dispose des commandes actions suivantes :
 
 * **Off** : permet de passer en mode off
 * **Confort** : permet de passer en mode confort
@@ -105,7 +105,7 @@ Chaque équipement dispose des commandes actions :
 * **Plugzy OFF** : Permet d'éteindre le plugzy *(seulement pour l'équipement de type flam)*
 * **Plugzy ON** : Permet d'allumer le plugzy *(seulement pour l'équipement de type flam)*
 
-D'une commande **Etat Consigne** de type _numerique_ :
+D'une commande info **Etat Consigne** de type _numerique_ :
 
 * **0** : Mode Confort
 * **4** : Mode Confort-1 (uniquement pour les modules 6 ordres)
@@ -114,7 +114,7 @@ D'une commande **Etat Consigne** de type _numerique_ :
 * **2** : Mode Hors-gel
 * **3** : Mode Off
 
-Et d'une commande **Mode** de type _string_ :
+Et d'une commande info **Mode** de type _string_ :
 
 * **Confort**
 * **Confort-1** (uniquement pour les modules 6 ordres)
@@ -123,22 +123,29 @@ Et d'une commande **Mode** de type _string_ :
 * **HorsGel**
 * **Off**
 
-Et d'une commande **Etat programmation** de type _binaire_ :
+Et d'une commande info **Etat programmation** de type _binaire_ :
 
 * **1** : La programmation est activée
 * **0** : La programmation est désactivée
 
-Et d'une commande **Etat Verrouillage** de type _binaire_ :
+Et d'une commande info **Etat Verrouillage** de type _binaire_ :
 
 * **1** : Le verrouillage est activé
 * **0** : Le verrouillage est désactivé
 
-Et d'une commande **Détéction fenetre ouverte** de type _binaire_ :
+Et d'une commande info **Etat Activation fenêtre ouverte** de type _binaire_ :
 
 * **1** : La détéction est activée
 * **0** : La détéction est désactivée
+
+Et d'une commande info **Fenetre Ouverte** de type _binaire_ :
+
+**EXPERIMENTAL**
+* **1** : Le plugin a détécté qu'une fenetre était ouverte (détéction chute de température)
+* **0** : Fenetre fermée (après hausse de température ou après 60 min)
+**EXPERIMENTAL**
                                   
-Et de commandes de type _numerique_ :
+Et de commandes info de type _numerique_ :
 
 * **Temp. confort** : la température de consigne du mode confort
 * **Temp. eco**   : la température de consigne du mode eco

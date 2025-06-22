@@ -1,4 +1,7 @@
-# 20/06/2025 (dev)
+# 22/06/2025 (dev)
+- Refonte de la regénération du token (si expiré ou invalide)
+
+# 21/06/2025 (dev)
 - Experimentation : Ajout de la commande Fenetre ouverte (WindowOpened) - Définie par calcul dans jeedom
 - Ajout du detail_message lors des erreurs d'appels
 - Ajout de la case historiser sur les commandes info/binaire

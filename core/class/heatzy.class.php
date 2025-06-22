@@ -468,11 +468,68 @@ class HttpGizwits {
 
         ///Décodage de la réponse
         $aRep = json_decode($result, true);
-     //   if(isset($aRep['error_message'])) {
-     //       throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
-     //   }
+        //   if(isset($aRep['error_message'])) {
+        //       throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
+        //   }
+     
+     
+        if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
+
+            if( heatzy::Login() ){
+              
+                $UserToken = config::byKey('UserToken','heatzy','none');
+                
+                log::add('heatzy', 'debug',  __METHOD__.': Login() OK - Nouveau Token ('.$UserToken.')');
+              
+                /// Parametres cUrl
+                $params = array(
+                    CURLOPT_POST => 1,
+                    CURLOPT_HTTPHEADER => array(
+                            'Accept: application/json',
+                            'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                            'X-Gizwits-User-token: '.$UserToken
+                    ),
+                    CURLOPT_URL => self::$UrlGizwits.'/app/control/'.$Did,
+                    CURLOPT_FRESH_CONNECT => 1,
+                    CURLOPT_RETURNTRANSFER => 1,
+                    CURLOPT_FORBID_REUSE => 1,
+                    CURLOPT_TIMEOUT => 10,
+                    CURLOPT_POSTFIELDS => $data
+                );
+
+                /// Initialisation de la ressources curl
+                $gizwits = curl_init();
+                if ($gizwits === false)
+                  return false;
+
+                /// Configuration des options
+                curl_setopt_array($gizwits, $params);
+            
+                /// Excute la requete
+                $result = curl_exec($gizwits);
+            
+                /// Test le code retour http
+                $httpcode = curl_getinfo($gizwits, CURLINFO_HTTP_CODE);
+
+                /// Ferme la connexion
+                curl_close($gizwits);
+
+                if( $httpcode == 500 ){
+                    log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+                    return false;
+                }
+
+                ///Décodage de la réponse
+                $aRep = json_decode($result, true);
+            }
+            else{
+                log::add('heatzy', 'debug',  __METHOD__.': Login() KO');
+                return false;
+            }
+        }
         return $aRep;
     }
+    
     /**
      * @brief Fonction qui permet de récuperer le dernier status du device did
      * 
@@ -480,8 +537,8 @@ class HttpGizwits {
      * 
      * @return Un tableau associatif ou false en cas d'erreur
      */
-    public static function GetConsigne($UserToken, $Did) {
-        
+    public static function GetConsigne($UserToken, $Did ) {
+              
         if(empty($Did)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
             return false;
@@ -524,6 +581,57 @@ class HttpGizwits {
         //if(isset($aRep['error_message'])) {
         //    throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         // }
+      
+        if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
+
+            if( heatzy::Login() ){
+              
+                $UserToken = config::byKey('UserToken','heatzy','none');
+                
+                log::add('heatzy', 'debug',  __METHOD__.': Login() OK - Nouveau Token ('.$UserToken.')');
+              
+                /// Parametres cUrl
+                $params = array(
+                    CURLOPT_HTTPHEADER => array(
+                        'Accept: application/json',
+                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                        'X-Gizwits-User-token: '.$UserToken
+                    ),
+                    CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
+                    CURLOPT_RETURNTRANSFER => 1,
+                    CURLOPT_TIMEOUT => 10
+                );
+              
+                /// Initialisation de la ressources curl
+                $gizwits = curl_init();
+                if ($gizwits === false)
+                    return false;
+                /// Configuration des options
+                curl_setopt_array($gizwits, $params);
+
+                /// Excute la requete
+                $result = curl_exec($gizwits);
+
+                /// Test le code retour http
+                $httpcode = curl_getinfo($gizwits, CURLINFO_HTTP_CODE);
+
+                /// Ferme la connexion
+                curl_close($gizwits);
+
+                if( $httpcode == 500 ){
+                    log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+                    return false;
+                }
+
+                ///Décodage de la réponse
+                $aRep = json_decode($result, true);
+            }
+            else{
+                log::add('heatzy', 'debug',  __METHOD__.': Login() KO');
+                return false;
+            }
+        }
+      
         log::add('heatzy', 'debug',  __METHOD__.':'.var_export($params, true));
         log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
         return $aRep;
@@ -629,8 +737,8 @@ class heatzy extends eqLogic {
         $TokenExpire = date('Y-m-d H:i:s', $aResult['expire_at']);
         $UserToken = $aResult['token'];
         
-        if( config::byKey('UserToken', 'heatzy', '') != $UserToken)
-            message::add("Heatzy", 'Génération du token heatzy AVANT='.config::byKey('ExpireToken', 'heatzy', '').'/'.config::byKey('UserToken', 'heatzy', '').' -> '.$TokenExpire.'/'.$UserToken);
+        if( config::byKey('UserToken', 'heatzy', '') != $UserToken || config::byKey('ExpireToken', 'heatzy', '') != $TokenExpire)
+            message::add("Heatzy", 'Génération du token heatzy : '.config::byKey('ExpireToken', 'heatzy', '').'/'.config::byKey('UserToken', 'heatzy', '').' -> '.$TokenExpire.'/'.$UserToken);
         //else
         //    message::add("Heatzy", 'Génération du token heatzy -> Pas de changement');
         
@@ -650,6 +758,8 @@ class heatzy extends eqLogic {
         log::add('heatzy', 'debug',  'cron prochain Login :'.$nextLogin);
         $cron->setSchedule($nextLogin);
         $cron->save();
+        
+        return true ;
     }
     
     /**
@@ -741,32 +851,11 @@ class heatzy extends eqLogic {
                 $this->save();
                 return false;
             }
-             ///// --- TEST ----
             else if(isset($aDevice['error_message']) && isset($aDevice['error_code'])) {
-                if($aDevice['error_code'] == '9004') {
-                    log::add('heatzy', 'error',  __METHOD__.' : '.$aDevice['error_code'].' '.$aDevice['error_message'].' - '.$aDevice['detail_message']);
-                    $Nb = $this->Synchronize(); //$Nb = $eqLogic->Synchronize();
-                    if ($Nb == false) {
-                        log::add('heatzy', 'error',  __METHOD__.' : erreur synchronisation');
-                        return false;
-                    }
-                    else{
-                        log::add('heatzy', 'info',  __METHOD__.' : '.$Nb. 'module(s) synchronise(s)');
-                        $UserToken = config::byKey('UserToken','heatzy','none');
-                        $aDevice = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-                        if(isset($aDevice['error_message']) && isset($aDevice['error_code'])) {
-                            log::add('heatzy', 'error',  __METHOD__.' : '.$aDevice['error_code'].' - '.$aDevice['error_message'].' - '.$aDevice['detail_message']);
-                            return false;
-                        }
-                    }
-                }
-                else {
-                    log::add('heatzy', 'error',  __METHOD__.' : '.$aDevice['error_code'].' - '.$aDevice['error_message'].' - '.$aDevice['detail_message']);
-                    return false;
-                }
+                log::add('heatzy', 'error',  __METHOD__.' : '.$this->getLogicalId().' - '.$aDevice['error_code'].' - '.$aDevice['error_message'].' - '.$aDevice['detail_message']);
+                return false;
             }
-            ///// --- FIN TEST ----
-        }
+        } // if empty
       
         /// Mise à jour de la derniere communication
 		if(isset($aDevice['updated_at']) && $aDevice['updated_at'] != 0 ) {
@@ -1438,12 +1527,28 @@ class heatzy extends eqLogic {
     * synchronisation
     */
     public static function cron() {
-        //$ExpireToken = strtotime( config::byKey('ExpireToken','heatzy','none') );
-        //$ExpireToken2 = config::byKey('ExpireToken','heatzy','none');
-    	//message::add("Heatzy", __METHOD__.' = '.$ExpireToken.' - '.$ExpireToken2 );
+      
+      	//config::save('UserToken', 'b6a060c70f0a4e369ba9305aff48d8fe', 'heatzy'); /// => Sauvegarde du token utilisateur
+      
+        $ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
+        $ExpireTokenTime = strtotime( $ExpireToken ) ;
+        
+        if( $ExpireTokenTime <= time() ){ // Si token expiré
+            log::add('heatzy', 'debug',  __METHOD__.': Token expiré ('.$ExpireToken.') - Récupération d un nouveau token' );
+                    
+          	if ( heatzy::Login() ){
+              	$ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
+              	$ExpireTokenTime = strtotime( $ExpireToken ) ;
+              	log::add('heatzy', 'debug',  __METHOD__.': Récupération du token OK ('.$ExpireToken.')' );
+            }
+          	else{
+          		log::add('heatzy', 'debug',  __METHOD__.': Récupération token KO' );	
+             	return false ;
+            }
+        }
         
         foreach (eqLogic::byType('heatzy') as $heatzy) {
-            if($heatzy->getIsEnable() == 1 ){ /// Execute la commande refresh des modules activés
+            if($heatzy->getIsEnable() == 1 && ($ExpireTokenTime - 120) > time() ){ /// Execute la commande refresh des modules activés
 
                 $Cmd =  heatzyCmd::byEqLogicIdCmdName($heatzy->getId(), 'Rafraichir' );
                 if (! is_object($Cmd)) {
@@ -1860,29 +1965,10 @@ class heatzyCmd extends cmd {
                     return false;
                 }
                 else{
-                    /// Si une erreur de communication et token invalide on se re-synchronise
+                    /// Si une erreur de communication
                     if(isset($Result['error_message']) && isset($Result['error_code'])) {
-                        if($Result['error_code'] === '9004') {
-                            log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
-                            $Nb = $eqLogic->Synchronize();
-                            if ($Nb == false) {
-                                log::add('heatzy', 'error',  __METHOD__.' : erreur synchronisation');
-                                return false;
-                            }
-                            else{
-                                log::add('heatzy', 'info',  __METHOD__.' : '.$Nb. 'module(s) synchronise(s)');
-                                $UserToken = config::byKey('UserToken','heatzy','none');
-                                $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-                                if(isset($Result['error_message']) && isset($Result['error_code'])) {
-                                    log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
-                                    return false;
-                                }
-                            }
-                        }
-                        else {
-                            log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
-                            return false;
-                        }
+                        log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
+                        return false;
                     }
                     else if($ForUpdate != '') {
                         $eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), $ForUpdate);
@@ -1903,6 +1989,8 @@ class heatzyCmd extends cmd {
         $this->getEqLogic()->toHtml('mobile');
         $this->getEqLogic()->toHtml('dashboard');
         $this->getEqLogic()->refreshWidget();
+		
+  		return true;
     }
 
     /*     * **********************Getteur Setteur*************************** */
