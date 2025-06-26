@@ -998,7 +998,6 @@ class heatzy extends eqLogic {
                 if( is_numeric($humi) ){
                   $this->CheckAndCreateCmd( array( "attr" => array( "cur_humi" => "0" ) ) ) ; // $aDevice['attr']['cur_humi']
                   $this->checkAndUpdateCmd('cur_humi', $humi );
-                  log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' $CapteurExtHumi=>'.$humi);
                 }
             }
         }
@@ -1009,40 +1008,42 @@ class heatzy extends eqLogic {
             if (count($matches[1]) == 1) {
                 $Temp = cmd::byId( $matches[1][0] )->execCmd() ;
                 if( is_numeric($Temp) ){
-                  $this->CheckAndCreateCmd( array( "attr" => array( "cur_temp" => "0" ) ) ) ; // $aDevice['attr']['cur_humi']
+                  $this->CheckAndCreateCmd( array( "attr" => array( "cur_temp" => "0" ) ) ) ; // $aDevice['attr']['cur_temp']
                   $this->checkAndUpdateCmd('cur_temp', $Temp );
-                  log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' $CapteurExtTemp=>'.$Temp);
                 }
             }
         }
-      	
+      
         
-        return false ;
-        
-        // Test WindowOpened
-        $WindowOpened = $this->getCmd(null, 'WindowOpened');
-        if (is_object($WindowOpened) && $this->getConfiguration('product', '') == 'Glow_Simple_ble' ) {
-            $cur_temp = $this->getCmd(null, 'cur_temp');
-            $Chute = 1 ; //°
-            $Delai = 50 ; //5min
-          log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' $CapteurExtTemp=>'.$Temp);
-            $startHist = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') .' - '.$Delai.' min'));
-            $tendance = $cur_temp->getTendance( $startHist , date('Y-m-d H:i:s') ) ;
+        //return false ;
 
-            //$Mytemp = 20.5 ;
-            $ValueDate = strtotime( $WindowOpened->getValueDate() ) ;
-            $now = strtotime(date('Y-m-d H:i:s') ) ;
-            if( $tendance <= -($Chute / $Delai ) ) {
-                $this->checkAndUpdateCmd('WindowOpened', true );
-            }
-            else if( $tendance <= ($Chute / $Delai ) || ($now - $ValueDate) >= 1800 ){
-                $this->checkAndUpdateCmd('WindowOpened', false );    
-            }
-            log::add('heatzy', 'debug',  $this->getLogicalId().' : WindowOpened : tendance='.$tendance.' - '.$ValueDate.' - '.$now.' - '.$startHist.' - '.$cur_temp->execCmd().' - '.($now - $ValueDate) );
+        $TendanceDegre = $this->getConfiguration('TendanceDegre', '');
+        $TendanceDuree = $this->getConfiguration('TendanceDuree', '');
+        $cur_temp = $this->getCmd(null, 'cur_temp');
 
+        if ( is_object($cur_temp) && is_numeric($TendanceDegre) && is_numeric($TendanceDuree) ){
+            $Temp = $cur_temp->execCmd() ;
+            if( $Temp > -50 && $Temp < 100 ){
+                $this->CheckAndCreateCmd( array( "attr" => array( "WindowOpened" => "0" ) ) ) ; // $aDevice['attr']['WindowOpened']
+                $this->CheckAndCreateCmd( array( "attr" => array( "Tendance" => "0" ) ) ) ; // $aDevice['attr']['Tendance']
+                $startTendance = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') .' - '.$TendanceDuree.' min'));
+                $tendance = Round( $cur_temp->getTendance( $startTendance , date('Y-m-d H:i:s') ) , 4 ) ;
+                $this->checkAndUpdateCmd('Tendance', $tendance );
+                //log::add('heatzy', 'debug',  $this->getLogicalId().' : WindowOpened : tendance='.$tendance );
+                if( $tendance <= -($TendanceDegre / $TendanceDuree ) ) {
+                    $this->checkAndUpdateCmd('WindowOpened', true );
+                }
+                else{
+                    $WindowOpened = $this->getCmd(null, 'WindowOpened');
+                    $ValueDate = strtotime( $WindowOpened->getValueDate() ) ;
+                    $now = strtotime(date('Y-m-d H:i:s') ) ;
+                    //log::add('heatzy', 'debug',  $this->getLogicalId().' : WindowOpened : tendance='.$tendance.' - '.$ValueDate.' - '.$now );
+                    if( $tendance <= ($TendanceDegre / $TendanceDuree ) || ($now - $ValueDate) >= 1800 ){  // tendance inverse ou 30min
+                        $this->checkAndUpdateCmd('WindowOpened', false );    
+                    }
+                }
+            }
         }
-        // Test WindowOpened
-        
     }
     
       /**
