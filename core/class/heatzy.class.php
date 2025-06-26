@@ -964,28 +964,7 @@ class heatzy extends eqLogic {
 			if( isset ($aDevice['attr']['window_switch']) )
 				$this->checkAndUpdateCmd('WindowSwitch', $aDevice['attr']['window_switch'] );
             
-            // Test WindowOpened
-            $WindowOpened = $this->getCmd(null, 'WindowOpened');
-            if (is_object($WindowOpened) && $this->getConfiguration('product', '') == 'Glow_Simple_ble' ) {
-                $cur_temp = $this->getCmd(null, 'cur_temp');
-                $Chute = 1 ; //°
-                $Delai = 50 ; //5min
-                $startHist = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') .' - '.$Delai.' min'));
-                $tendance = $cur_temp->getTendance( $startHist , date('Y-m-d H:i:s') ) ;
-                
-                //$Mytemp = 20.5 ;
-              	$ValueDate = strtotime( $WindowOpened->getValueDate() ) ;
-                $now = strtotime(date('Y-m-d H:i:s') ) ;
-                if( $tendance <= -($Chute / $Delai ) ) {
-                    $this->checkAndUpdateCmd('WindowOpened', true );
-                }
-                else if( $tendance <= ($Chute / $Delai ) || ($now - $ValueDate) >= 1800 ){
-                    $this->checkAndUpdateCmd('WindowOpened', false );    
-                }
-              	log::add('heatzy', 'debug',  $this->getLogicalId().' : WindowOpened : tendance='.$tendance.' - '.$ValueDate.' - '.$now.' - '.$startHist.' - '.$cur_temp->execCmd().' - '.($now - $ValueDate) );
-                
-            }
-            // Test WindowOpened
+            $this->CalculExterne( $aDevice ) ;
         }
         else {                                             
 			log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
@@ -1002,7 +981,70 @@ class heatzy extends eqLogic {
         $this->checkAndUpdateCmd('mode', $KeyMode);
         return true;
     }
-  
+
+
+      /**
+     * @brief Fonction qui permet de gerer les parametres et calcul externe a heatzy
+     * 
+     * @param tableau retour API
+     */
+    public function CalculExterne($aDevice) {
+                
+        $CapteurExtHumi = $this->getConfiguration('CapteurExtHumi', '');
+        if( $CapteurExtHumi != '' ){
+            preg_match_all("/#([0-9]*)#/", $CapteurExtHumi, $matches);
+            if (count($matches[1]) == 1) {
+                $humi = cmd::byId( $matches[1][0] )->execCmd() ;
+                if( is_numeric($humi) ){
+                  $this->CheckAndCreateCmd( array( "attr" => array( "cur_humi" => "0" ) ) ) ; // $aDevice['attr']['cur_humi']
+                  $this->checkAndUpdateCmd('cur_humi', $humi );
+                  log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' $CapteurExtHumi=>'.$humi);
+                }
+            }
+        }
+      
+        $CapteurExtTemp = $this->getConfiguration('CapteurExtTemp', '');
+        if( $CapteurExtTemp != '' ){
+            preg_match_all("/#([0-9]*)#/", $CapteurExtTemp, $matches);
+            if (count($matches[1]) == 1) {
+                $Temp = cmd::byId( $matches[1][0] )->execCmd() ;
+                if( is_numeric($Temp) ){
+                  $this->CheckAndCreateCmd( array( "attr" => array( "cur_temp" => "0" ) ) ) ; // $aDevice['attr']['cur_humi']
+                  $this->checkAndUpdateCmd('cur_temp', $Temp );
+                  log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' $CapteurExtTemp=>'.$Temp);
+                }
+            }
+        }
+      	
+        
+        return false ;
+        
+        // Test WindowOpened
+        $WindowOpened = $this->getCmd(null, 'WindowOpened');
+        if (is_object($WindowOpened) && $this->getConfiguration('product', '') == 'Glow_Simple_ble' ) {
+            $cur_temp = $this->getCmd(null, 'cur_temp');
+            $Chute = 1 ; //°
+            $Delai = 50 ; //5min
+          log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' $CapteurExtTemp=>'.$Temp);
+            $startHist = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') .' - '.$Delai.' min'));
+            $tendance = $cur_temp->getTendance( $startHist , date('Y-m-d H:i:s') ) ;
+
+            //$Mytemp = 20.5 ;
+            $ValueDate = strtotime( $WindowOpened->getValueDate() ) ;
+            $now = strtotime(date('Y-m-d H:i:s') ) ;
+            if( $tendance <= -($Chute / $Delai ) ) {
+                $this->checkAndUpdateCmd('WindowOpened', true );
+            }
+            else if( $tendance <= ($Chute / $Delai ) || ($now - $ValueDate) >= 1800 ){
+                $this->checkAndUpdateCmd('WindowOpened', false );    
+            }
+            log::add('heatzy', 'debug',  $this->getLogicalId().' : WindowOpened : tendance='.$tendance.' - '.$ValueDate.' - '.$now.' - '.$startHist.' - '.$cur_temp->execCmd().' - '.($now - $ValueDate) );
+
+        }
+        // Test WindowOpened
+        
+    }
+    
       /**
      * @brief Fonction qui permet de savoir si le module gère 4 ou 6 ordres
      * 
@@ -1467,6 +1509,38 @@ class heatzy extends eqLogic {
 				$cmd->save();
 			}
         } // if on_off
+ 
+        /// Creation de la commande window_opened
+      	if( isset ($aDevice['attr']['Tendance']) ){
+          $cmd = $this->getCmd(null, 'Tendance'); 
+          if (!is_object($cmd) ) {
+              $cmd = new heatzyCmd();
+              $cmd->setName(__('Tendance Température', __FILE__));
+              $cmd->setLogicalId('Tendance');
+              $cmd->setType('info');
+              $cmd->setSubType('numeric');
+              $cmd->setEqLogic_id($this->getId());
+              $cmd->setIsHistorized(0);
+              $cmd->setIsVisible(0);
+              $cmd->save();
+          }
+        }
+      
+        /// Creation de la commande window_opened
+      	if( isset ($aDevice['attr']['WindowOpened']) ){
+          $cmd = $this->getCmd(null, 'WindowOpened'); 
+          if (!is_object($cmd) ) {
+              $cmd = new heatzyCmd();
+              $cmd->setName(__('Fenetre Ouverte', __FILE__));
+              $cmd->setLogicalId('WindowOpened');
+              $cmd->setType('info');
+              $cmd->setSubType('binary');
+              $cmd->setEqLogic_id($this->getId());
+              $cmd->setIsHistorized(0);
+              $cmd->setIsVisible(1);
+              $cmd->save();
+          }
+        }
     }
     
     /**
@@ -1732,21 +1806,6 @@ class heatzy extends eqLogic {
             $refresh->setIsVisible(1);
             $refresh->save();
         }
-        
-        /// Creation de la commande window_opened
-        $Window = $this->getCmd(null, 'WindowOpened'); 
-        if (!is_object($Window) && $this->getConfiguration('product', '') == 'Glow_Simple_ble' ) {
-            $Window = new heatzyCmd();
-            $Window->setName(__('Fenetre Ouverte', __FILE__));
-            $Window->setLogicalId('WindowOpened');
-            $Window->setType('info');
-            $Window->setSubType('binary');
-            $Window->setEqLogic_id($this->getId());
-            $Window->setIsHistorized(0);
-            $Window->setIsVisible(1);
-            $Window->save();
-        }
-        
     }
 
     /**

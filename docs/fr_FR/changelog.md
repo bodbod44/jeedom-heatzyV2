@@ -1,9 +1,19 @@
+# xx/06/2025 (dev)
+- TODO : Garde fou sur les appels API KO
+- TODO : Commande alerte fenetre ouverte
+
+# 26/06/2025 (dev)
+- Ajout d'un onglet Parametres dans chaque équipement
+- Prise en charge d'un capteur de temperature externe
+- Prise en charge d'un capteur d'humidité externe
+- Ajout d'une information sur la tendance de la température
+- Ajout d'une detection d'une fenetre ouverte (detection chute de temperature)
+
 # 22/06/2025 (dev)
 - Refonte de la regénération du token (si expiré ou invalide)
 - Suppression du cron pour la regénération du token
 
 # 21/06/2025 (dev)
-- Experimentation : Ajout de la commande Fenetre ouverte (WindowOpened) - Définie par calcul dans jeedom
 - Ajout du detail_message lors des erreurs d'appels
 - Ajout de la case historiser sur les commandes info/binaire
 

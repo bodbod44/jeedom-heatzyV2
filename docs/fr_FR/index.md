@@ -62,10 +62,6 @@ Vous retrouvez dans la section **Général**
 * **Catégorie** : catégorie de l'équipement, par défaut chauffage
 * **Activer** : permet de rendre votre équipement actif
 * **Visible** : le rend visible sur le dashboard
-* **Template** : Choix du template d'affichage
-  * template **bodbod** : Nouveau template unique et commun à tous les modules *(les commandes non prises en charge par le module ne sont pas affichées)*
-  * template **l3flo** : Template d'origine créé par l3flo (<span style="color: #FF0000">/!\ Ces templates n'est plus maintenu et disparaitra des une future version</span>)
-  * template **jeedom** : Laisse jeedom créer les commandes et informations par défaut
 * **MAC** : l'adresse MAC du module Heatzy
 * **DID** : l'identifiant du module Heatzy
 
@@ -144,7 +140,15 @@ Et d'une commande info **Fenetre Ouverte** de type _binaire_ :
 * **1** : Le plugin a détécté qu'une fenetre était ouverte (détéction chute de température)
 * **0** : Fenetre fermée (après hausse de température ou après 60 min)
 **EXPERIMENTAL**
-                                  
+             
+Et d'une commande info **Tendance Température** de type _numeric_ :
+
+**EXPERIMENTAL**
+* **-x** : La température à tendance à diminuer (à hauteur du coeficient par minute)
+* **0** : La température est stable
+* **+x** : La température à tendance à augmenter (à hauteur du coeficient par minute)
+**EXPERIMENTAL**
+             
 Et de commandes info de type _numerique_ :
 
 * **Temp. confort** : la température de consigne du mode confort
@@ -152,8 +156,25 @@ Et de commandes info de type _numerique_ :
 * **Temperature** : la température relevé par le module
 * **Taux Humidité** : le taux d'humidité relevé par le module
 
->Vous pouvez tester la valeur de la commande info *Etat* ou *Mode* dans vos scénarios.
+>Vous pouvez tester les valeurs des commandes info dans vos scénarios.
 
+**Parametres complémentaires par équipement**
+
+* **Template** : Choix du template d'affichage
+  * template **bodbod** : Nouveau template unique et commun à tous les modules *(les commandes non prises en charge par le module ne sont pas affichées)*
+  * template **l3flo** : Template d'origine créé par l3flo (<span style="color: #FF0000">/!\ Ces templates n'est plus maintenu et disparaitra des une future version</span>)
+  * template **jeedom** : Laisse jeedom créer les commandes et informations par défaut
+* Capteur de température externe (facultatif)
+  * Cela permet d'avoir la température pour les modules qui n'ont pas de capteur
+  * Pour les modules qui possède un capteur interne, le capteur externe sera utilisé par le plugin
+* Capteur d'humidité externe (facultatif)
+  * Cela permet d'avoir le taux d'humidité pour les modules qui n'ont pas de capteur
+  * Pour les modules qui possède un capteur interne, le capteur externe sera utilisé par le plugin
+* Calcul de tendance pour la detection d'une fenetre ouverte avec :
+  * **Nombre de degré (°c)**
+  * **Durée (min)**
+  * Pour détécter une chute de 2° en moins de 5min, mettre 2 (°) et 5 (min)
+  * **Commande d'alerte** : Alerte en cas de detection de fenetre ouverte
 
 **Tableau des commandes possible par modules :**
 
