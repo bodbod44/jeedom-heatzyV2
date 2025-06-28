@@ -10,7 +10,7 @@
 - Optimisation de la fonction synchronize (suppression de l'appel datapoint)
 - Ajout du detail_message lors des erreurs d'appels
 
-# 29/06/2025 (stable)
+# 28/06/2025 (stable)
 - Prise en charge des modules GLOW et SHINE
 - Prise en charge des 5e et 6e ordre (pilote_pro)
 - Ajout d'un bouton vers le forum community
