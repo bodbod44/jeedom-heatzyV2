@@ -1,13 +1,13 @@
-# 15/06/2025 (beta)
+# 28/06/2025 (stable)
 - Prise en charge des modules GLOW et SHINE
 - Prise en charge des 5e et 6e ordre (pilote_pro)
 - Ajout d'un bouton vers le forum community
 - Ajout d'un bouton vers les manuels utilisateurs oficiels Heatzy
 - Ajout de la doc heatzy au format md
-- Refonte de la création des commande (à partir du retour API)
+- Refonte de la création des commandes (dynamique à partir du retour API)
 - Refonte de la fonction execute (lisibilité/maintenance) + Ajout info debug
 - Récupération des infos pour la modal debug (utile pour debuger les problèmes sur le forum)
-- Ajout d'un message pour basculer sur le market (si installé ar fichier/github)
+- Ajout d'un message pour basculer sur le market (si installé par fichier/github)
 - Affichage d'un message lorsque le token est modifié
 - Renommage de la commande EtatWindow -> WindowSwitch
 - Correction du lien WindowSwitchOn/Off avec WindowSwitch
