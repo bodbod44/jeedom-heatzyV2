@@ -3,7 +3,7 @@
 - Ajout d'un onglet Parametres dans chaque équipement
 - Prise en charge d'un capteur de température externe
 - Prise en charge d'un capteur d'humidité externe
-- Ajout d'une information sur la tendance de la température (non affichée)
+- Ajout d'une commande information sur la tendance de la température (non affichée)
 - Ajout de la case historiser sur les commandes info/binaire
 - Refonte de la regénération du token (si expiré ou invalide)
 - Suppression du cron pour la regénération du token

@@ -49,11 +49,12 @@ Configuration des objets connectés Heatzy
 -------------
 La configuration des modules Heatzy est accessible à partir du menu 'Plugins' > 'Objets connectés'.
 
-![heatzy2](../images/configuration_equipement2.png)
+![heatzy2](../images/configuration_equipement_Gestion.png)
+![heatzy3](../images/configuration_equipement_ListeEqLogic.png)
 
 Une fois que vous cliquez sur un équipement vous retrouvez la configuration de l'équipement :
 
-![heatzy3](../images/detail_equipement2.png)
+![heatzy4](../images/detail_equipement3.png)
 
 Vous retrouvez dans la section **Général**
 
@@ -78,11 +79,11 @@ Configuration des commandes des objets connectés Heatzy
 
 ### Wigdet dashboard desktop
 
-![heatzy4](../images/WidgetDesktop.png)
+![heatzy5](../images/WidgetDesktop_PiloteSoc.png)![heatzy6](../images/WidgetDesktop_PilotePro.png)![heatzy7](../images/WidgetDesktop_Glow.png)![heatzy8](../images/WidgetDesktop_Shine.png)![heatzy9](../images/WidgetDesktop_Flam.png)
 
 ### Wigdet dashboard mobile
 
-![heatzy5](../images/WidgetMobile.png)
+![heatzy10](../images/WidgetMobile.png)
 
 
 Chaque équipement dispose des commandes actions suivantes :
