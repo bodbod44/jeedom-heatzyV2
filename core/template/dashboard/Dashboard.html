@@ -43,6 +43,13 @@
                <span class="iconCmd"></span>
                </span>
                </span>
+
+              <!-- WindowOpened -->
+               <span class="float:right" style="margin-right: 0px;margin-top: 0px;">
+               <span class="cmd cmd-widget #WindowOpened_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#WindowOpened_id#" style="margin-left:5px;display:none;#WindowOpened_display#;" title="#WindowOpened_CollectDate#" data-version="#version#">
+               <span class="iconWindow"></span>
+               </span>
+               </span>
             </center>
          </span>
          <span style="margin-left: 20px;margin-top: 0px;">
@@ -260,6 +267,16 @@
          }
       }
       jeedom.cmd.update['#EtatConsigne_id#']({display_value:'#EtatConsigne_cmd#',collectDate:'#EtatConsigne_CollectDate#',valueDate:'#EtatConsigne_ValueDate#'});
+
+      jeedom.cmd.update['#WindowOpened_id#'] = function(_options){
+         $('.cmd[data-cmd_id="#WindowOpened_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+        if (_options.display_value == '1') {
+            $('.cmd[data-cmd_id="#WindowOpened_id#"] > span.iconWindow').empty().append('<i class="icon jeedom-fenetre-ouverte" style="font-size:2em;color: #FF0000;"></i>');   /// Ouverte
+         }else{
+            $('.cmd[data-cmd_id="#WindowOpened_id#"] > span.iconWindow').empty().append('<i class="icon jeedom-fenetre-ferme2" style="font-size:2em;color: #034203;"></i>');    /// Fermée
+         }
+      }
+      jeedom.cmd.update['#WindowOpened_id#']({display_value:'#WindowOpened_cmd#',collectDate:'#WindowOpened_CollectDate#',valueDate:'#WindowOpened_ValueDate#'});
 
    </script>
 </div>

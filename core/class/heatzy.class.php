@@ -805,6 +805,13 @@ class heatzy extends eqLogic {
             if(isset($aDevice['mac']))
                 $eqLogic->setConfiguration('mac',implode(':',str_split($aDevice['mac'], 2)));
 
+            if(isset($aDevice['product_name']))
+                $eqLogic->setConfiguration('product',$aDevice['product_name']);
+
+            if(isset($aDevice['product_key']))
+                $eqLogic->setConfiguration('product_key',$aDevice['product_key']);
+          
+            /*
             /// Retourne les informations sur le produit
             $aProductInfo = HttpGizwits::GetProduitInfo($aDevice['product_key']) ;
             
@@ -818,7 +825,7 @@ class heatzy extends eqLogic {
 	        else if ( strncmp ( $aProductInfo['name'] , "Flam" , 4 ) === 0 )
                  $eqLogic->setConfiguration('heatzytype','flam');
             else
-                 $eqLogic->setConfiguration('heatzytype','pilote');
+                 $eqLogic->setConfiguration('heatzytype','pilote');*/
           
             /// Si connecté ou pas
             if(isset($aDevice['is_online'])) {
@@ -991,34 +998,42 @@ class heatzy extends eqLogic {
     public function CalculExterne($aDevice) {
                 
         $CapteurExtHumi = $this->getConfiguration('CapteurExtHumi', '');
+      	$humi = -99 ;
         if( $CapteurExtHumi != '' ){
             preg_match_all("/#([0-9]*)#/", $CapteurExtHumi, $matches);
             if (count($matches[1]) == 1) {
-                $humi = cmd::byId( $matches[1][0] )->execCmd() ;
-                if( is_numeric($humi) ){
+                $res = cmd::byId( $matches[1][0] )->execCmd() ;
+                if( is_numeric($res) ){
+                  $humi = $res ;
                   $this->CheckAndCreateCmd( array( "attr" => array( "cur_humi" => "0" ) ) ) ; // $aDevice['attr']['cur_humi']
                   $this->checkAndUpdateCmd('cur_humi', $humi );
                 }
             }
         }
+        if( !isset($aDevice['attr']['cur_humi']) && $humi == -99 )
+        	$this->checkAndUpdateCmd('cur_humi', $humi );
+        
       
         $CapteurExtTemp = $this->getConfiguration('CapteurExtTemp', '');
+      	$Temp = -99 ;
         if( $CapteurExtTemp != '' ){
             preg_match_all("/#([0-9]*)#/", $CapteurExtTemp, $matches);
             if (count($matches[1]) == 1) {
-                $Temp = cmd::byId( $matches[1][0] )->execCmd() ;
+                $res = cmd::byId( $matches[1][0] )->execCmd() ;
                 if( is_numeric($Temp) ){
+                  $Temp = $res ;
                   $this->CheckAndCreateCmd( array( "attr" => array( "cur_temp" => "0" ) ) ) ; // $aDevice['attr']['cur_temp']
                   $this->checkAndUpdateCmd('cur_temp', $Temp );
                 }
             }
         }
+        if( !isset($aDevice['attr']['cur_temp']) && $Temp == -99 )
+        	$this->checkAndUpdateCmd('cur_temp', $Temp );
       
         
         //return false ;
-
-        $TendanceDegre = $this->getConfiguration('TendanceDegre', '');
-        $TendanceDuree = $this->getConfiguration('TendanceDuree', '');
+        $TendanceDegre = $this->getConfiguration('TendanceDegre', '2');
+        $TendanceDuree = $this->getConfiguration('TendanceDuree', '5');
         $cur_temp = $this->getCmd(null, 'cur_temp');
 
         if ( is_object($cur_temp) && is_numeric($TendanceDegre) && is_numeric($TendanceDuree) ){
@@ -1038,7 +1053,7 @@ class heatzy extends eqLogic {
                     $ValueDate = strtotime( $WindowOpened->getValueDate() ) ;
                     $now = strtotime(date('Y-m-d H:i:s') ) ;
                     //log::add('heatzy', 'debug',  $this->getLogicalId().' : WindowOpened : tendance='.$tendance.' - '.$ValueDate.' - '.$now );
-                    if( $tendance <= ($TendanceDegre / $TendanceDuree ) || ($now - $ValueDate) >= 1800 ){  // tendance inverse ou 30min
+                    if( $tendance >= ($TendanceDegre / $TendanceDuree ) || ($now - $ValueDate) >= 1800 ){  // tendance inverse ou 30min
                         $this->checkAndUpdateCmd('WindowOpened', false );    
                     }
                 }
@@ -1419,7 +1434,7 @@ class heatzy extends eqLogic {
                 $CurWindow->setSubType('binary');
                 $CurWindow->setEqLogic_id($this->getId());
                 $CurWindow->setIsHistorized(0);
-                $CurWindow->setIsVisible(0);
+                $CurWindow->setIsVisible(1);
                 $CurWindow->save();
             }
             else{
@@ -1859,8 +1874,8 @@ class heatzy extends eqLogic {
                     $replace['#'.$cmd->getLogicalId().'_unite#'] = $cmd->getUnite();
                     $replace['#'.$cmd->getLogicalId().'_CollectDate#'] = $cmd->getCollectDate() ; 
                     $replace['#'.$cmd->getLogicalId().'_ValueDate#'] = $cmd->getValueDate() ; 
-                    $replace['#'.$cmd->getLogicalId().'_history#'] = (is_object($cmd) && $cmd->getIsHistorized()) ? 'history cursor' : '';
-                    $replace['none;#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
+                    $replace['#'.$cmd->getLogicalId().'_history#'] = ($cmd->getIsHistorized()) ? 'history cursor' : '';
+                    $replace['none;#'.$cmd->getLogicalId().'_display#'] = ($cmd->getIsVisible() && $cmd->execCmd() != -99) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
                     break;
                 case 'action':
                     //log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());

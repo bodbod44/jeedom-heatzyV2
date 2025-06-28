@@ -194,169 +194,227 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 </div>
     </div>
 
-  </div>
-					 <div role="tabpanel" class="tab-pane" id="commandtab">
-						<table id="table_cmd" class="table table-bordered table-condensed">
-							<thead>
-								<tr>
-									<th style="width: 50px;">
-										#
-									</th>
-									<th style="width: 150px;">
-										{{Nom}}
-									</th>
-									<th style="width: 110px;">
-										{{Type}}
-									</th>
-									<th style="width: 50px;">
-										{{Etat}}
-									</th>
-									<th style="width: 200px;">
-										{{Paramètres}}
-									</th>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</table>
+  </div><div role="tabpanel" class="tab-pane" id="commandtab">
+	<table id="table_cmd" class="table table-bordered table-condensed">
+		<thead>
+			<tr>
+				<th style="width: 50px;">
+					#
+				</th>
+				<th style="width: 150px;">
+					{{Nom}}
+				</th>
+				<th style="width: 110px;">
+					{{Type}}
+				</th>
+				<th style="width: 50px;">
+					{{Etat}}
+				</th>
+				<th style="width: 200px;">
+					{{Paramètres}}
+				</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+</div>
+<div role="tabpanel" class="tab-pane" id="paramtab">
+	<br>
+	<table style="border:1px solid black; width:100%" id="table_param2">
+		<thead>
+			<tr>
+				<th>
+					Choix du template d'affichage
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" style="width:120px;"><i class="fas fa-info"></i>&nbsp;{{Information}}</label>
+						<div class="col-sm-2 alert alert-info" style="width:100%;">
+							Ce parametre permet de choisir le template pemettant d'affiche les modules dans jeedom (bouton, image ...)
+							<ul>
+								<li>bodbod : Nouveau template commun à tous les modules</li>
+								<li>l3flo : Template issu de la version d'origine de l3flo (Ces templates ne sont plus maintenus. Il seront supprimés dans une prochaine version du plugin)</li>
+								<li>Jeedom : Utilisation du template de base jeedom</li>
+							</ul>
+						</div>
 					</div>
-					<div role="tabpanel" class="tab-pane" id="paramtab">
-						<br>
-						<table style="border:1px solid black; width:100%" id="table_param2">
-							<thead>
-								<tr>
-									<th>
-										Choix du template d'affichage
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-sm-2 control-label" style="width:120px;"><i class="fas fa-info"></i>&nbsp;{{Information}}</label>
-											<div class="col-sm-2 alert alert-info" style="width:100%;">
-												Ce parametre permet de choisir le template pemettant d'affiche les modules dans jeedom (bouton, image ...)
-												<ul>
-													<li>bodbod : Nouveau template commun à tous les modules</li>
-													<li>l3flo : Template issu de la version d'origine de l3flo (Ces templates ne sont plus maintenus. Il seront supprimés dans une prochaine version du plugin)</li>
-													<li>Jeedom : Utilisation du template de base jeedom</li>
-												</ul>
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-sm-4 control-label" style="width:120px;">Template</label>
-											<div class="col-sm-6">
-												<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title=""  style="width:300px;">
-													<option value="0">{{Template heatzy bodbod}}</option>
-													<option value="1">{{Template heatzy l3flo (bientôt obselète)}}</option>
-													<option value="2">{{Template jeedom}}</option>
-												</select>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<br>
-						<table style="border:1px solid black; width:100%" id="table_param">
-							<thead>
-								<tr>
-									<th>
-										Utilisation de capteurs externes
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-sm-5 control-label" style="width:110px;"><i class="fas fa-info"></i>&nbsp;{{Important}}</label>
-											<div class="col-sm-5 alert alert-info" style="width:100%">
-												Pour les modules qui ne possèdent pas de capteur de température, il est possible d'utiliser ce parametre pour utilisateur un autre capteur présent dans jeedom.
-												<br>
-												Pour les modules qui possèdent déjà un capteur de température interne (Pro, Glow, Shine ...), le capteur externe sera pris par le plugin et le capteur interne sera ignoré (le module lui même continuera de fonctionner avec son propre catpeur interne).
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="col-sm-2 control-label" style="width:250px;">{{Capteur de température (facultatif)}}</label>
-											<div class="input-group col-sm-2">
-												<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtTemp" style="width:400px;">
-												<span class="input-group-btn">
-													<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
-												</span>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="col-sm-2 control-label" style="width:250px;">{{Capteur d'humidité (facultatif)}}</label>
-											<div class="input-group col-sm-2">
-												<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtHumi" style="width:400px;">
-												<span class="input-group-btn">
-													<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
-												</span>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<br>
-						<table style="border:1px solid black; width:100%" id="table_param2">
-							<thead>
-								<tr>
-									<th>
-										Détéction de fenetre ouverte
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-sm-5 control-label" style="width:110px;"><i class="fas fa-info"></i>&nbsp;{{Important}}</label>
-											<div class="col-sm-5 alert alert-info" style="width:100%">
-												La detection ne peut fonctionner que si un capteur interne ou externe est parametré.
-												<br>
-												L'historisation de la commande de température doit impérativement être active pour pouvoir faire les calculs (à cocher dans la liste des commandes sur "température").
-												<br>
-												Pour les modules qui ont cette fonctionnalité en propre, le reglage est une chute de 2° en moins de 5 min (coef tendance = 2/5 = 0.4)
-												<br>
-												La commande d'alerte sert a être alerté en cas de chute de température (fenêtre ouverte en hiver)
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="col-sm-2 control-label" style="width:200px;">{{Nombre de degré (°c)}}</label>
-											<div class="col-sm-2" style="width:70px;">
-												<input type="number" class="form-control eqLogicAttr" min="1" max="5" data-l1key="configuration" data-l2key="TendanceDegre"/>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="col-sm-2 control-label"  style="width:110px;">{{Durée (min)}}</label>
-											<div class="col-sm-2" style="width:70px;">
-												<input type="text" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="TendanceDuree"/>
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<div class="form-group">
-											<label class="col-sm-2 control-label" style="width:180px;">{{Commande d'alerte}}</label>
-											<div class="input-group col-sm-2">
-												<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CmdAlerte" style="width:400px;">
-												<span class="input-group-btn">
-													<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
-												</span>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="form-group">
+						<label class="col-sm-4 control-label" style="width:120px;">Template</label>
+						<div class="col-sm-6">
+							<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title=""  style="width:300px;">
+								<option value="0">{{Template heatzy bodbod}}</option>
+								<option value="1">{{Template heatzy l3flo (bientôt obselète)}}</option>
+								<option value="2">{{Template jeedom}}</option>
+							</select>
+						</div>
 					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br>
+	<table style="border:1px solid black; width:100%" id="table_param">
+		<thead>
+			<tr>
+				<th>
+					Utilisation de capteurs externes
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<div class="form-group">
+						<label class="col-sm-5 control-label" style="width:110px;"><i class="fas fa-info"></i>&nbsp;{{Important}}</label>
+						<div class="col-sm-5 alert alert-info" style="width:100%">
+							Pour les modules qui ne possèdent pas de capteur de température, il est possible d'utiliser ce parametre pour utilisateur un autre capteur présent dans jeedom.
+							<br>
+							Pour les modules qui possèdent déjà un capteur de température interne (Pro, Glow, Shine ...), le capteur externe sera pris par le plugin et le capteur interne sera ignoré (le module lui même continuera de fonctionner avec son propre catpeur interne).
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" style="width:250px;">{{Capteur de température (facultatif)}}</label>
+						<div class="input-group col-sm-2">
+							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtTemp" style="width:400px;">
+							<span class="input-group-btn">
+								<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
+							</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" style="width:250px;">{{Capteur d'humidité (facultatif)}}</label>
+						<div class="input-group col-sm-2">
+							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtHumi" style="width:400px;">
+							<span class="input-group-btn">
+								<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
+							</span>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br>
+	<table style="border:1px solid black; width:100%" id="table_param2">
+		<thead>
+			<tr>
+				<th>
+					Détéction de fenetre ouverte / Tendance température - <span style="color:red;">EXPERIMENTAL</span>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<div class="form-group">
+						<label class="col-sm-5 control-label" style="width:110px;"><i class="fas fa-info"></i>&nbsp;{{Important}}</label>
+						<div class="col-sm-5 alert alert-info" style="width:100%">
+							La detection ne peut fonctionner que si un capteur interne ou externe est parametré.
+							<br>
+							L'historisation de la commande de température doit impérativement être active pour pouvoir faire les calculs (à cocher dans la liste des commandes sur "température").
+							<br>
+							Pour les modules qui ont cette fonctionnalité en propre, le reglage est une chute de 2° en moins de 5 min (coef tendance = 2/5 = 0.4)
+							<br>
+							La commande d'alerte sert a être alerté en cas de chute de température (fenêtre ouverte en hiver)
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" style="width:200px;">{{Nombre de degré (°c)}}</label>
+						<div class="col-sm-2" style="width:70px;">
+							<input type="number" class="form-control eqLogicAttr" min="1" max="5" data-l1key="configuration" data-l2key="TendanceDegre"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label"  style="width:110px;">{{Durée (min)}}</label>
+						<div class="col-sm-2" style="width:70px;">
+							<input type="text" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="TendanceDuree"/>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br>
+	<table style="border:1px solid black; width:100%;display:none;" id="table_param2">
+		<thead>
+			<tr>
+				<th>
+					Alertes
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<div class="form-group">
+						<label class="col-sm-5 control-label" style="width:110px;"><i class="fas fa-info"></i>&nbsp;{{Important}}</label>
+						<div class="col-sm-5 alert alert-info" style="width:100%">
+							La detection ne peut fonctionner que si un capteur interne ou externe est parametré.
+							<br>
+							L'historisation de la commande de température doit impérativement être active pour pouvoir faire les calculs (à cocher dans la liste des commandes sur "température").
+							<br>
+							Pour les modules qui ont cette fonctionnalité en propre, le reglage est une chute de 2° en moins de 5 min (coef tendance = 2/5 = 0.4)
+							<br>
+							La commande d'alerte sert a être alerté en cas de chute de température (fenêtre ouverte en hiver)
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" style="width:280px;">{{Commande d'alerte Fenetre ouverte}}</label>
+						<div class="input-group col-sm-2">
+							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CmdAlerteFenetre" style="width:400px;">
+							<span class="input-group-btn">
+								<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
+							</span>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" style="width:280px;">{{Commande d'alerte module offline}}</label>
+						<div class="input-group col-sm-2">
+							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CmdAlerteOffline" style="width:400px;">
+							<span class="input-group-btn">
+								<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
+							</span>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+ 						<form class="form-horizontal">
+							<fieldset>
+								<div class="alert alert-info col-xs-10 col-xs-offset-1">
+									{{Décider des actions à entreprendre en cas de défaillance du chauffage/climatisation.}}
+									<br>{{Le système de chauffage/climatisation est considéré défaillant quand les températures minimales ou maximales définies sur l'onglet}} <strong>{{Équipement}}</strong> {{sont dépassées ou en fonction des marges de défaillance définies dans l'onglet}} <strong>{{Avancé}}</strong>.
+								</div>
+								<a class="btn btn-success addFailureActuator col-xs-6 col-xs-offset-3" data-type="failureActuator"><i class="fas fa-plus-circle"></i> {{Ajouter une action de défaillance}}</a>
+								<div id="div_failureActuator"></div>
+							</fieldset>
+						</form>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
       
       
     </div>

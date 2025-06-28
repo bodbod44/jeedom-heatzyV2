@@ -1,32 +1,25 @@
-# xx/06/2025 (dev)
-- TODO : Garde fou sur les appels API KO
-- TODO : Commande alerte fenetre ouverte
-
-# 26/06/2025 (dev)
-- Ajout d'un onglet Parametres dans chaque équipement
-- Prise en charge d'un capteur de temperature externe
-- Prise en charge d'un capteur d'humidité externe
-- Ajout d'une information sur la tendance de la température
+# 29/06/2025 (beta)
 - Ajout d'une detection d'une fenetre ouverte (detection chute de temperature)
-
-# 22/06/2025 (dev)
+- Ajout d'un onglet Parametres dans chaque équipement
+- Prise en charge d'un capteur de température externe
+- Prise en charge d'un capteur d'humidité externe
+- Ajout d'une information sur la tendance de la température (non affichée)
+- Ajout de la case historiser sur les commandes info/binaire
 - Refonte de la regénération du token (si expiré ou invalide)
 - Suppression du cron pour la regénération du token
-
-# 21/06/2025 (dev)
+- Optimisation de la fonction synchronize (suppression de l'appel datapoint)
 - Ajout du detail_message lors des erreurs d'appels
-- Ajout de la case historiser sur les commandes info/binaire
 
-# 15/06/2025 (beta)
+# 29/06/2025 (stable)
 - Prise en charge des modules GLOW et SHINE
 - Prise en charge des 5e et 6e ordre (pilote_pro)
 - Ajout d'un bouton vers le forum community
 - Ajout d'un bouton vers les manuels utilisateurs oficiels Heatzy
 - Ajout de la doc heatzy au format md
-- Refonte de la création des commande (à partir du retour API)
+- Refonte de la création des commandes (dynamique à partir du retour API)
 - Refonte de la fonction execute (lisibilité/maintenance) + Ajout info debug
 - Récupération des infos pour la modal debug (utile pour debuger les problèmes sur le forum)
-- Ajout d'un message pour basculer sur le market (si installé ar fichier/github)
+- Ajout d'un message pour basculer sur le market (si installé par fichier/github)
 - Affichage d'un message lorsque le token est modifié
 - Renommage de la commande EtatWindow -> WindowSwitch
 - Correction du lien WindowSwitchOn/Off avec WindowSwitch
