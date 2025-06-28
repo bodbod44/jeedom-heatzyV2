@@ -1,3 +1,15 @@
+# 29/06/2025 (beta)
+- Ajout d'une detection d'une fenetre ouverte (detection chute de temperature)
+- Ajout d'un onglet Parametres dans chaque équipement
+- Prise en charge d'un capteur de température externe
+- Prise en charge d'un capteur d'humidité externe
+- Ajout d'une commande information sur la tendance de la température (non affichée)
+- Ajout de la case historiser sur les commandes info/binaire
+- Refonte de la regénération du token (si expiré ou invalide)
+- Suppression du cron pour la regénération du token
+- Optimisation de la fonction synchronize (suppression de l'appel datapoint)
+- Ajout du detail_message lors des erreurs d'appels
+
 # 28/06/2025 (stable)
 - Prise en charge des modules GLOW et SHINE
 - Prise en charge des 5e et 6e ordre (pilote_pro)
