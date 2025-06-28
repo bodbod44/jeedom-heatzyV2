@@ -41,62 +41,60 @@ class HttpGizwits {
      * @return Un tableau associatif ou false en cas d'erreur       
      */
     public static function Login($User, $Passwd, $Lang='en') {
-         
-            if(empty($User) || empty($Passwd))
-                {
-                log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
-                return false;
-                }
-    
-            /// Preparation de la requete : json
-            $data = json_encode( array('username' => $User, 'password' => $Passwd, 'lang' => $Lang) ) ;
-    
-            /// Parametres cUrl
-            $params = array(
-                    CURLOPT_POST => 1,
-                    CURLOPT_HTTPHEADER => array(
-                            'Content-Type: application/json',
-                            'Accept: application/json',
-                            'X-Gizwits-Application-Id: '.self::$HeatzyAppId
-                    ),
-                    CURLOPT_URL => self::$UrlGizwits."/app/login",
-                    CURLOPT_FRESH_CONNECT => 1,
-                    CURLOPT_RETURNTRANSFER => 1,
-                    CURLOPT_FORBID_REUSE => 1,
-                    CURLOPT_TIMEOUT => 10,
-                    CURLOPT_POSTFIELDS => $data
-            );
-    
-            /// Initialisation de la ressources curl
-            $gizwits = curl_init();
-            if ($gizwits === false)
-                return false;
-                 
-            /// Configuration des options
-            curl_setopt_array($gizwits, $params);
-            
-            /// Excute la requete
-            $result = curl_exec($gizwits);
+     
+        if(empty($User) || empty($Passwd)){
+            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            return false;
+        }
 
-            /// Test le code retour http
-            $httpcode = curl_getinfo($gizwits, CURLINFO_HTTP_CODE);
+        /// Preparation de la requete : json
+        $data = json_encode( array('username' => $User, 'password' => $Passwd, 'lang' => $Lang) ) ;
 
-            /// Ferme la connexion
-            curl_close($gizwits);
+        /// Parametres cUrl
+        $params = array(
+            CURLOPT_POST => 1,
+            CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'X-Gizwits-Application-Id: '.self::$HeatzyAppId
+            ),
+            CURLOPT_URL => self::$UrlGizwits."/app/login",
+            CURLOPT_FRESH_CONNECT => 1,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FORBID_REUSE => 1,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_POSTFIELDS => $data
+        );
 
-            if( $httpcode == 500 )
-              {
-              log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
-              return false;
-              }
-            
-            ///Décodage de la réponse
-            $aRep = json_decode($result, true);
-            if(isset($aRep['error_message'])) {
-                throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
-            }
-            log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
-            return $aRep;
+        /// Initialisation de la ressources curl
+        $gizwits = curl_init();
+        if ($gizwits === false)
+            return false;
+             
+        /// Configuration des options
+        curl_setopt_array($gizwits, $params);
+        
+        /// Excute la requete
+        $result = curl_exec($gizwits);
+
+        /// Test le code retour http
+        $httpcode = curl_getinfo($gizwits, CURLINFO_HTTP_CODE);
+
+        /// Ferme la connexion
+        curl_close($gizwits);
+
+        if( $httpcode == 500 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+            return false;
+        }
+        
+        ///Décodage de la réponse
+        $aRep = json_decode($result, true);
+        if(isset($aRep['error_message'])) {
+            throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
+        }
+        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        return $aRep;
     }
   
    /**
@@ -108,21 +106,20 @@ class HttpGizwits {
      */
     public static function GetProduitInfo($ProductKey) {
         
-        if(empty($ProductKey))
-            {
+        if(empty($ProductKey)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
             return false;
-            }
+        }
         
         /// Parametres cUrl
         $params = array(
-                CURLOPT_HTTPHEADER => array(
-                        'Accept: application/json',
-                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId
-                ),
-                CURLOPT_URL => self::$UrlGizwits.'/app/datapoint?product_key='.$ProductKey,
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_TIMEOUT => 10
+            CURLOPT_HTTPHEADER => array(
+                    'Accept: application/json',
+                    'X-Gizwits-Application-Id: '.self::$HeatzyAppId
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/datapoint?product_key='.$ProductKey,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_TIMEOUT => 10
         );
 
         /// Initialisation de la ressources curl
@@ -142,11 +139,10 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 )
-              {
-              log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
-              return false;
-              }
+        if( $httpcode == 500 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+            return false;
+        }
 
         ///Décodage de la réponse
         $aRep = json_decode($result, true);
@@ -166,22 +162,21 @@ class HttpGizwits {
      */
     public static function Bindings($UserToken) {
         
-        if(empty($UserToken))
-            {
+        if(empty($UserToken)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
             return false;
-            }
+        }
         
         /// Parametres cUrl
         $params = array(
-                CURLOPT_HTTPHEADER => array(
-                        'Accept: application/json',
-                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
-                        'X-Gizwits-User-token: '.$UserToken
-                ),
-                CURLOPT_URL => self::$UrlGizwits.'/app/bindings?limit=20&amp;skip=0',
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_TIMEOUT => 10
+            CURLOPT_HTTPHEADER => array(
+                    'Accept: application/json',
+                    'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                    'X-Gizwits-User-token: '.$UserToken
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/bindings?limit=20&amp;skip=0',
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_TIMEOUT => 10
         );
     
         /// Initialisation de la ressources curl
@@ -201,11 +196,10 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 )
-              {
-              log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
-              return false;
-              }
+        if( $httpcode == 500 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+            return false;
+        }
 
         ///Décodage de la réponse
         $aRep = json_decode($result, true);
@@ -227,23 +221,22 @@ class HttpGizwits {
      */
     public static function GetSchedulerList($UserToken, $Did, $Skip = 0, $Limit = 20) {
     
-        if(empty($UserToken) || empty($Did))
-            {
+        if(empty($UserToken) || empty($Did)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
             return false;
-            }
+        }
     
         log::add('heatzy', 'debug',  __METHOD__.':skip '.$Skip);
         /// Parametres cUrl
         $params = array(
-                CURLOPT_HTTPHEADER => array(
-                        'Accept: application/json',
-                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
-                        'X-Gizwits-User-token: '.$UserToken
-                ),
-                CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did.'/scheduler?limit='.$Limit.'&amp;skip='.$Skip,
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_TIMEOUT => 10
+            CURLOPT_HTTPHEADER => array(
+                    'Accept: application/json',
+                    'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                    'X-Gizwits-User-token: '.$UserToken
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did.'/scheduler?limit='.$Limit.'&amp;skip='.$Skip,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_TIMEOUT => 10
         );
 
         /// Initialisation de la ressources curl
@@ -263,11 +256,10 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 )
-              {
-              log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
-              return false;
-              }
+        if( $httpcode == 500 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+            return false;
+        }
 
         ///Décodage de la réponse
         $aRep = json_decode($result, true);
@@ -290,31 +282,30 @@ class HttpGizwits {
      */
     public static function SetScheduler($UserToken, $Did, $Id, $Param) {
     
-        if(empty($UserToken) || empty($Did) || empty($Id) || empty($Param))
-            {
+        if(empty($UserToken) || empty($Did) || empty($Id) || empty($Param)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
             return false;
-            }
+        }
     
         /// Preparation de la requete : json
         $data = json_encode( $Param ) ;
         
         /// Parametres cUrl
         $params = array(
-                CURLOPT_POST => 1,
-                CURLOPT_CUSTOMREQUEST => 'PUT',
-                CURLOPT_HTTPHEADER => array(
-                        'Content-Type: application/json',
-                        'Accept: application/json',
-                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
-                        'X-Gizwits-User-token: '.$UserToken
-                ),
-                CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did.'/scheduler/'.$Id,
-                CURLOPT_FRESH_CONNECT => 1,
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_FORBID_REUSE => 1,
-                CURLOPT_TIMEOUT => 10,
-                CURLOPT_POSTFIELDS => $data
+            CURLOPT_POST => 1,
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                    'X-Gizwits-User-token: '.$UserToken
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did.'/scheduler/'.$Id,
+            CURLOPT_FRESH_CONNECT => 1,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FORBID_REUSE => 1,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_POSTFIELDS => $data
         );
         
         /// Initialisation de la ressources curl
@@ -334,11 +325,10 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 )
-              {
-              log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
-              return false;
-              }
+        if( $httpcode == 500 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+            return false;
+        }
         
         ///Décodage de la réponse
         $aRep = json_decode($result, true);
@@ -360,31 +350,30 @@ class HttpGizwits {
      */
     public static function SetBindingInformation($UserToken, $Did, $DevAlias) {
     
-        if(empty($UserToken) || empty($Did) || empty($DevAlias))
-            {
+        if(empty($UserToken) || empty($Did) || empty($DevAlias)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
             return false;
-            }
+        }
 
         /// Preparation de la requete : json
         $data = json_encode( array('dev_alias' => $DevAlias ) ) ;
         
         /// Parametres cUrl
         $params = array(
-                CURLOPT_POST => 1,
-                CURLOPT_CUSTOMREQUEST => 'PUT',
-                CURLOPT_HTTPHEADER => array(
-                        'Content-Type: application/json',
-                        'Accept: application/json',
-                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
-                        'X-Gizwits-User-token: '.$UserToken
-                ),
-                CURLOPT_URL => self::$UrlGizwits.'/app/bindings/'.$Did,
-                CURLOPT_FRESH_CONNECT => 1,
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_FORBID_REUSE => 1,
-                CURLOPT_TIMEOUT => 10,
-                CURLOPT_POSTFIELDS => $data
+            CURLOPT_POST => 1,
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                    'X-Gizwits-User-token: '.$UserToken
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/bindings/'.$Did,
+            CURLOPT_FRESH_CONNECT => 1,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FORBID_REUSE => 1,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_POSTFIELDS => $data
         );
         
         /// Initialisation de la ressources curl
@@ -404,11 +393,10 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 )
-              {
-              log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
-              return false;
-              }
+        if( $httpcode == 500 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+            return false;
+        }
 
         ///Décodage de la réponse
         $aRep = json_decode($result, true);
@@ -430,11 +418,10 @@ class HttpGizwits {
      */
     public static function SetConsigne($UserToken, $Did, $Consigne) {
         
-        if(empty($UserToken) || empty($Did) || empty($Consigne))
-            {
+        if(empty($UserToken) || empty($Did) || empty($Consigne)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
             return false;
-            }
+        }
 
         /// Preparation de la requete : json
         $data = json_encode( $Consigne ) ;
@@ -443,18 +430,18 @@ class HttpGizwits {
         
         /// Parametres cUrl
         $params = array(
-                CURLOPT_POST => 1,
-                CURLOPT_HTTPHEADER => array(
-                        'Accept: application/json',
-                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
-                        'X-Gizwits-User-token: '.$UserToken
-                ),
-                CURLOPT_URL => self::$UrlGizwits.'/app/control/'.$Did,
-                CURLOPT_FRESH_CONNECT => 1,
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_FORBID_REUSE => 1,
-                CURLOPT_TIMEOUT => 10,
-                CURLOPT_POSTFIELDS => $data
+            CURLOPT_POST => 1,
+            CURLOPT_HTTPHEADER => array(
+                    'Accept: application/json',
+                    'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                    'X-Gizwits-User-token: '.$UserToken
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/control/'.$Did,
+            CURLOPT_FRESH_CONNECT => 1,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FORBID_REUSE => 1,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_POSTFIELDS => $data
         );
 
         /// Initialisation de la ressources curl
@@ -474,11 +461,10 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 )
-              {
-              log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
-              return false;
-              }
+        if( $httpcode == 500 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+            return false;
+        }
 
         ///Décodage de la réponse
         $aRep = json_decode($result, true);
@@ -496,22 +482,21 @@ class HttpGizwits {
      */
     public static function GetConsigne($UserToken, $Did) {
         
-        if(empty($Did))
-            {
+        if(empty($Did)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
             return false;
-            }
+        }
         
         /// Parametres cUrl
         $params = array(
-                CURLOPT_HTTPHEADER => array(
-                        'Accept: application/json',
-                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
-			'X-Gizwits-User-token: '.$UserToken
-                ),
-                CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_TIMEOUT => 10
+            CURLOPT_HTTPHEADER => array(
+                'Accept: application/json',
+                'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                'X-Gizwits-User-token: '.$UserToken
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_TIMEOUT => 10
         );
         /// Initialisation de la ressources curl
         $gizwits = curl_init();
@@ -529,18 +514,17 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 )
-              {
-              log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
-              return false;
-              }
+        if( $httpcode == 500 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+            return false;
+        }
       
         ///Décodage de la réponse
         $aRep = json_decode($result, true);
         //if(isset($aRep['error_message'])) {
         //    throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
-       // }
-	log::add('heatzy', 'debug',  __METHOD__.':'.var_export($params, true));
+        // }
+        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($params, true));
         log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
         return $aRep;
     }
@@ -555,22 +539,21 @@ class HttpGizwits {
      */
     public static function GetDeviceDetails($UserToken, $Did) {
     
-        if(empty($Did))
-            {
+        if(empty($Did)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
             return false;
-            }
+        }
     
         /// Parametres cUrl
         $params = array(
-                CURLOPT_HTTPHEADER => array(
-                        'Accept: application/json',
-                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
-                        'X-Gizwits-User-token: '.$UserToken
-                ),
-                CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did,
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_TIMEOUT => 10
+            CURLOPT_HTTPHEADER => array(
+                'Accept: application/json',
+                'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                'X-Gizwits-User-token: '.$UserToken
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_TIMEOUT => 10
         );
         
         /// Initialisation de la ressources curl
@@ -590,11 +573,10 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 )
-              {
-              log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
-              return false;
-              }
+        if( $httpcode == 500 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+            return false;
+        }
         
         /// Décodage de la réponse
         $aRep = json_decode($result, true);
@@ -626,7 +608,7 @@ class heatzy extends eqLogic {
      *      /!\ Les clefs des valeurs du tableau correspond
      *      aux valeurs supportées par les devices
      */
-    public static $_HeatzyMode = array('Confort', 'Eco', 'HorsGel', 'Off');
+    public static $_HeatzyMode = array('Confort', 'Eco', 'HorsGel', 'Off','Confort-1','Confort-2');
     
     /**
      * @brief Fonction qui permet de tirer un nouveau token utilisateur
@@ -646,6 +628,11 @@ class heatzy extends eqLogic {
          
         $TokenExpire = date('Y-m-d H:i:s', $aResult['expire_at']);
         $UserToken = $aResult['token'];
+        
+        if( config::byKey('UserToken', 'heatzy', '') != $UserToken)
+            message::add("Heatzy", 'Génération du token heatzy AVANT='.config::byKey('ExpireToken', 'heatzy', '').'/'.config::byKey('UserToken', 'heatzy', '').' -> '.$TokenExpire.'/'.$UserToken);
+        //else
+        //    message::add("Heatzy", 'Génération du token heatzy -> Pas de changement');
         
         config::save('UserToken', $UserToken, 'heatzy'); /// => Sauvegarde du token utilisateur
         config::save('ExpireToken', $TokenExpire, 'heatzy'); /// => Sauvegarde de l'expiration du token
@@ -736,6 +723,7 @@ class heatzy extends eqLogic {
         }
         
         log::add('heatzy', 'info', 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
+        //message::add("Heatzy", 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
         return count($aDevices ['devices']);    
     }
     /**
@@ -786,24 +774,33 @@ class heatzy extends eqLogic {
             log::add('heatzy', 'debug',  'lastCommunication :'.date('Y-m-d H:i:s', $aDevice['updated_at']));
             $this->setConfiguration('lastCommunication', date('Y-m-d H:i:s', $aDevice['updated_at']));
         }
-
+      
 		// Modes de chauffe
 		// Note : Théoriquement pilote_pro doit être lu avec cur_mode (mais le retour contient quand même mode
         if(isset($aDevice['attr']['mode'])) {
+
+            // Créer les commandes en fonction du contenu de la réponse
+            $this->CheckAndCreateCmd($aDevice) ;
           
-            if( $aDevice['attr']['mode'] == 'cft' ) {  /// Confort
+            if( $aDevice['attr']['mode'] == 'cft' ) {        /// Confort
                 $KeyMode = 'Confort';
             }
-            else if( $aDevice['attr']['mode'] == 'eco' ) { /// Eco
+            else if( $aDevice['attr']['mode'] == 'cft1' ) {  /// Eco
+                $KeyMode = 'Confort-1';
+            }
+            else if( $aDevice['attr']['mode'] == 'cft2' ) {  /// Eco
+                $KeyMode = 'Confort-2';
+            }
+            else if( $aDevice['attr']['mode'] == 'eco' ) {   /// Eco
                 $KeyMode = 'Eco';
             }
-            else if( $aDevice['attr']['mode'] == 'fro' ) { /// HorsGel
+            else if( $aDevice['attr']['mode'] == 'fro' ) {   /// HorsGel
                 $KeyMode = 'HorsGel';
             }
-            else if( $aDevice['attr']['mode'] == 'stop' ) { /// Off
+            else if( $aDevice['attr']['mode'] == 'stop' ) {  /// Off
                 $KeyMode = 'Off';
             }
-            else {                                            /// Premiere version du module pilote
+            else {       /// Premiere version du module pilote
                 $mode1 = $mode2 = 0;
                 $mode1=ord(substr($aDevice['attr']['mode'], 1,1));
                 $mode2=ord(substr($aDevice['attr']['mode'], 2,1));
@@ -828,55 +825,53 @@ class heatzy extends eqLogic {
                 }
             }
           
-			// Consigne de température du mode éco
-			if( isset ($aDevice['attr']['eco_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('eco_temp', floatval( $aDevice['attr']['eco_temp'] / 10 ) );
-
-			// Consigne de température du mode éco
+			// Consigne de température du mode éco (eco_temp ou eco_tempH+eco_tempL selon type de module)
 			// L : La température est exprimée en dixièmes de degrés
 			// H : La température est exprimée en dizaines de degrés
+			if( isset ($aDevice['attr']['eco_temp']) )
+				$this->checkAndUpdateCmd('eco_temp', floatval( $aDevice['attr']['eco_temp'] / 10 ) );
 			if( isset ($aDevice['attr']['eco_tempH']) && isset ($aDevice['attr']['eco_tempL']) )
 				$this->checkAndUpdateCmd('eco_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['eco_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['eco_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
 
-			// Consigne de température du mode confort
-			if( isset ($aDevice['attr']['cft_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('cft_temp', floatval( $aDevice['attr']['cft_temp'] / 10 ) );
-
-			// Consigne de température du mode confort
+			// Consigne de température du mode confort (cft_temp ou cft_tempH+cft_tempL selon type de module)
 			// L : La température est exprimée en dixièmes de degrés
 			// H : La température est exprimée en dizaines de degrés
+			if( isset ($aDevice['attr']['cft_temp']) )
+				$this->checkAndUpdateCmd('cft_temp', floatval( $aDevice['attr']['cft_temp'] / 10 ) );
 			if( isset ($aDevice['attr']['cft_tempH']) && isset ($aDevice['attr']['cft_tempL']) )
 				$this->checkAndUpdateCmd('cft_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cft_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cft_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
 
-			// cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
-			if( isset ($aDevice['attr']['cur_temp']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('cur_temp', floatval( $aDevice['attr']['cur_temp'] / 10 ) );
-
-			// cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. 
+			// cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. (cur_temp ou cur_tempH+cur_tempL selon type de module)
 			// L : La température est exprimée en dixièmes de degrés
 			// H : La température est exprimée en dizaines de degrés
+			if( isset ($aDevice['attr']['cur_temp']) )
+				$this->checkAndUpdateCmd('cur_temp', floatval( $aDevice['attr']['cur_temp'] / 10 ) );
 			if( isset ($aDevice['attr']['cur_tempH']) && isset ($aDevice['attr']['cur_tempL']) )
 				$this->checkAndUpdateCmd('cur_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cur_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cur_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
 
 			// Taux d’humidité de l’air dans la pièce (%). 
-			if( isset ($aDevice['attr']['cur_humi']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
+			if( isset ($aDevice['attr']['cur_humi']) )
 				$this->checkAndUpdateCmd('cur_humi', $aDevice['attr']['cur_humi'] );
 
 			// Allumage du radiateur
-			if( isset ($aDevice['attr']['on_off']) && $this->getConfiguration('product', '') == 'Flam_Week2' )
+			if( isset ($aDevice['attr']['on_off']) )
 				$this->checkAndUpdateCmd('plugzy', $aDevice['attr']['on_off'] );
 
 			// Activation du mode programmation
 			if( isset ($aDevice['attr']['timer_switch']) )
 				$this->checkAndUpdateCmd('etatprog', $aDevice['attr']['timer_switch'] );
 
-			// Activation du verrouillage
+			// Activation du verrouillage (lock_switch)
 			if( isset ($aDevice['attr']['lock_switch']) )
 				$this->checkAndUpdateCmd('etatlock', $aDevice['attr']['lock_switch'] );
+
+			// Activation du verrouillage (LOCK_C)
+			if( isset ($aDevice['attr']['LOCK_C']) )//Lock_C_State
+				$this->checkAndUpdateCmd('Lock_C_State', $aDevice['attr']['LOCK_C'] );
 				
 			// Activation de la détection de fenêtre ouverte 
-			if( isset ($aDevice['attr']['window_switch']) && $this->getConfiguration('product', '') == 'Pilote_Pro' )
-				$this->checkAndUpdateCmd('EtatWindow', $aDevice['attr']['window_switch'] );
+			if( isset ($aDevice['attr']['window_switch']) )
+				$this->checkAndUpdateCmd('WindowSwitch', $aDevice['attr']['window_switch'] );
         }
         else {                                             
 			log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
@@ -892,6 +887,468 @@ class heatzy extends eqLogic {
         $this->checkAndUpdateCmd('EtatConsigne', $aKeyVal[0]);
         $this->checkAndUpdateCmd('mode', $KeyMode);
         return true;
+    }
+  
+      /**
+     * @brief Fonction qui permet de savoir si le module gère 4 ou 6 ordres
+     * 
+     * @param tableau retour API
+     */
+  
+    public function VerifNbOrdres($aDevice) {
+        // Par test, l'envoi d'une consigne cft1 ou cft2 sur un module 4 ordres ne renvoit pas d'erreur (mais pas prise en compte)
+        $NbOrdres = 0 ;
+        if( $aDevice['attr']['mode'] == 'cft1' || $aDevice['attr']['mode'] == 'cft2' ){
+            // SI l'ordre est cft1 ou cfrt2, c'est forcement un module 6 ordres
+            $NbOrdres = 6 ;
+        }
+        else{
+            // On tente de mettre le 6e ordre
+            //    - Si OK : 6 ordres
+            //    - Si KO : 4 ordres
+            $Consigne = array( 'attrs' => array ( 'mode' => 'cft2' )  );
+            $UserToken = config::byKey('UserToken','heatzy','none');
+            // Appel API pour SET confort-2
+            $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
+            if( $ResultSet['error_code'] == '' || $ResultSet['error_code'] == '9025'){
+                sleep(3); // Attente 3sec
+                // Appel API pour analyser le changement ou non de consigne
+                $ResultGet = HttpGizwits::GetConsigne($UserToken, $this->getLogicalId() ) ;
+                if( $ResultGet['error_code'] == ''){
+                    if( $ResultGet['attr']['mode'] == 'cft2'){
+                        // L'ordre a bien été modifié (donc 6 ordres)
+                        $NbOrdres = 6 ;
+                    }
+                    else if( $ResultGet['attr']['mode'] == 'cft' || $ResultGet['attr']['mode'] == $aDevice['attr']['mode'] ){
+                        // L'ordre n'a pas été modifié (donc 4 ordres)
+                        //  - Les heatzy ne renvoit pas d'erreur mais se positionne sur cft
+                        //  - Les Glow et Shine renvoit une erreur 9025 (GIZ_OPENAPI_ATTR_INVALID) et reste sur le mode précédent
+                        $NbOrdres = 4 ;
+                    }
+                }
+                else
+                    log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code1 GET='.$ResultSet['error_code']);
+            }
+            else
+                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code2 SET='.$ResultSet['error_code']);
+            // On remet l'ordre initial
+            sleep(1);
+            $Consigne = array( 'attrs' => array ( 'mode' => $aDevice['attr']['mode'] )  );
+            $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
+            if( $ResultSet['error_code'] != '' )
+                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code3 SET='.$ResultSet['error_code']);
+        }
+
+        log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' Nombre d ordre='.$NbOrdres);
+      	return $NbOrdres ;
+    }
+  
+    /**
+     * @brief Fonction qui permet de créer les commandes en fonction du retour de l'API
+     * 
+     * @param tableau retour API
+     */
+  
+    public function CheckAndCreateCmd($aDevice) {
+        
+        // Rattrapage 4 ordres 6 ordres
+        // Detection des pilote_pro / shine / glow qui n'auraient que 4 ordres (creation avant la prise en charge des 6 ordres)
+        //$Heatzy6Ordres = array("Pilote_Pro","Shine_ble","Glow_Simple_ble");
+        $Heatzy6Ordres = array("Pilote_Pro");
+      	if( in_array( $this->getConfiguration('product', '') , $Heatzy6Ordres) && is_object( $this->getCmd(null,'Confort')) && !is_object( $this->getCmd(null,'Confort-2')) ){
+            $rattrapage = true ;
+            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' rattrapage 6 ordres');
+        }
+        else
+            $rattrapage = false ;
+      
+        if( (isset($aDevice['attr']['mode']) && !is_object( $this->getCmd(null,'EtatConsigne'))) || $rattrapage ){
+
+            // Verifie si module 4 ou 6 ordres
+        	$NbOrdres = $this->VerifNbOrdres($aDevice) ;
+          
+          	if( $NbOrdres > 0 ){
+                foreach (self::$_HeatzyMode as $Key => $Mode ) {
+                    if($Key < $NbOrdres){ // On arrêt la création selon le nombre d'ordres du module
+                        /// Creation de la commande action $Mode : $Key
+                        $cmd = $this->getCmd(null, $Mode);
+                        if (!is_object($cmd)) {
+                            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' creation commande :'.$Key.'=>'.$Mode);
+                            $cmd = new heatzyCmd();
+                            $cmd->setLogicalId($Mode);
+                            $cmd->setIsVisible(1);
+                            $cmd->setName(__($Mode, __FILE__));
+                            $cmd->setType('action');
+                            $cmd->setSubType('other');
+                            $cmd->setConfiguration('infoName', 'EtatConsigne');
+                            $cmd->setEqLogic_id($this->getId());
+                            $cmd->setIsHistorized(0);
+                            $cmd->setIsVisible(1);
+                            $cmd->save();
+                        }
+                        else{
+                            $cmd->setConfiguration('infoName', 'EtatConsigne');
+                        }
+                    }
+                } // for
+
+                /// Creation de la commande info Etat numeric
+                $etat = $this->getCmd(null, 'EtatConsigne');
+                if (!is_object($etat)) {
+                    $etat = new heatzyCmd();
+                    $etat->setName(__('Etat Consigne', __FILE__));
+                    $etat->setLogicalId('EtatConsigne');
+                    $etat->setType('info');
+                    $etat->setSubType('numeric');
+                    $etat->setEqLogic_id($this->getId());
+                    $etat->setIsHistorized(0);
+                    $etat->setIsVisible(1);
+                    $etat->save();
+                }
+                
+                /// Creation de la commande info mode (correspond à l'état sous forme d'une chaine de carcateres)
+                $mode = $this->getCmd(null, 'mode');
+                if (!is_object($mode)) {
+                    $mode = new heatzyCmd();
+                    $mode->setName(__('Mode', __FILE__));
+                    $mode->setLogicalId('mode');
+                    $mode->setType('info');
+                    $mode->setSubType('string');
+                    $mode->setEqLogic_id($this->getId());
+                    $mode->setIsHistorized(0);
+                    $mode->setIsVisible(1);
+                    $mode->save();
+                }
+            } // if nb ordre > 0
+          
+        } // if mode 
+        
+		if( isset ($aDevice['attr']['cft_temp']) || isset ($aDevice['attr']['cft_tempH']) ){
+      			/// Creation de la commande info de la temperature de confort
+			$CftTemp = $this->getCmd(null, 'cft_temp'); 
+			if (!is_object($CftTemp)) {
+				$CftTemp = new heatzyCmd();
+				$CftTemp->setName(__('Temp. confort', __FILE__));
+				$CftTemp->setLogicalId('cft_temp');
+				$CftTemp->setType('info');
+				$CftTemp->setUnite('°C');
+				$CftTemp->setSubType('numeric');
+				$CftTemp->setEqLogic_id($this->getId());
+				$CftTemp->setIsHistorized(0);
+				$CftTemp->setIsVisible(1);
+				$CftTemp->save();
+			}
+        } // cft_temp - cft_tempH
+          
+     	if( isset ($aDevice['attr']['eco_temp']) || isset ($aDevice['attr']['eco_tempH']) ){
+			/// Creation de la commande info de la temperature eco
+			$EcoTemp = $this->getCmd(null, 'eco_temp'); 
+			if (!is_object($EcoTemp)) {
+				$EcoTemp = new heatzyCmd();
+				$EcoTemp->setName(__('Temp. eco', __FILE__));
+				$EcoTemp->setLogicalId('eco_temp');
+				$EcoTemp->setType('info');
+				$EcoTemp->setUnite('°C');
+				$EcoTemp->setSubType('numeric');
+				$EcoTemp->setEqLogic_id($this->getId());
+				$EcoTemp->setIsHistorized(0);
+				$EcoTemp->setIsVisible(1);
+				$EcoTemp->save();
+			}
+        } // if eco_temp - eco_tempH
+          
+        if( isset ($aDevice['attr']['cur_temp']) || isset ($aDevice['attr']['cur_tempH']) ){
+			/// Creation de la commande info de la temperature courante
+			$CurTemp = $this->getCmd(null, 'cur_temp'); 
+			if (!is_object($CurTemp)) {
+				$CurTemp = new heatzyCmd();
+				$CurTemp->setName(__('Temperature', __FILE__));
+				$CurTemp->setLogicalId('cur_temp');
+				$CurTemp->setType('info');
+				$CurTemp->setUnite('°C');
+				$CurTemp->setSubType('numeric');
+				$CurTemp->setEqLogic_id($this->getId());
+				$CurTemp->setIsHistorized(0);
+				$CurTemp->setIsVisible(1);
+				$CurTemp->save();
+			}
+        } // if cur_temp - cur_tempH
+            
+        if( isset ($aDevice['attr']['timer_switch']) ){
+            // Programmation On/Off
+            $cmd = $this->getCmd(null, 'ProgOn');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('ProgOn');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Activer Programmation', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'etatprog');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            else{
+                $cmd->setConfiguration('infoName', 'etatprog');
+            }
+                
+            $cmd = $this->getCmd(null, 'ProgOff');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('ProgOff');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Désactiver Programmation', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'etatprog');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+              else{
+                $cmd->setConfiguration('infoName', 'etatprog');
+            }
+                
+            /// Creation de la commande info etatprog binaire
+            $etat = $this->getCmd(null, 'etatprog');
+            if (!is_object($etat)) {
+                $etat = new heatzyCmd();
+                $etat->setName(__('Etat programmation', __FILE__));
+                $etat->setLogicalId('etatprog');
+                $etat->setType('info');
+                $etat->setSubType('binary');
+                $etat->setEqLogic_id($this->getId());
+                $etat->setIsHistorized(0);
+                $etat->setIsVisible(1);
+                $etat->save();
+            }
+        } // if timer switch
+      
+        if( isset ($aDevice['attr']['lock_switch']) ){
+            // Verouillage-lock On/Off
+            $cmd = $this->getCmd(null, 'LockOn');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('LockOn');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Activer Verrouillage', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'etatlock');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+              else{
+                $cmd->setConfiguration('infoName', 'etatlock');
+            }
+                
+            $cmd = $this->getCmd(null, 'LockOff');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('LockOff');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Désactiver Verrouillage', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'etatlock');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+              else{
+                $cmd->setConfiguration('infoName', 'etatlock');
+            }
+                
+            /// Creation de la commande info etatlock binaire
+            $etat = $this->getCmd(null, 'etatlock');
+            if (!is_object($etat)) {
+                $etat = new heatzyCmd();
+                $etat->setName(__('Etat Verrouillage', __FILE__));
+                $etat->setLogicalId('etatlock');
+                $etat->setType('info');
+                $etat->setSubType('binary');
+                $etat->setEqLogic_id($this->getId());
+                $etat->setIsHistorized(0);
+                $etat->setIsVisible(1);
+                $etat->save();
+            }
+        } // if lock_switch
+
+        if( isset ($aDevice['attr']['LOCK_C']) ){
+            
+            // Verouillage-lock On/Off
+            $cmd = $this->getCmd(null, 'Lock_C_On');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('Lock_C_On');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Activer Verrouillage', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'Lock_C_State');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+              else{
+                $cmd->setConfiguration('infoName', 'Lock_C_State');
+            }
+                
+            $cmd = $this->getCmd(null, 'Lock_C_Off');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('Lock_C_Off');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Désactiver Verrouillage', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'Lock_C_State');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+              else{
+                $cmd->setConfiguration('infoName', 'Lock_C_State');
+            }
+                
+            /// Creation de la commande info Lock_C_State binaire
+            $etat = $this->getCmd(null, 'Lock_C_State');
+            if (!is_object($etat)) {
+                $etat = new heatzyCmd();
+                $etat->setName(__('Etat Verrouillage', __FILE__));
+                $etat->setLogicalId('Lock_C_State');
+                $etat->setType('info');
+                $etat->setSubType('binary');
+                $etat->setEqLogic_id($this->getId());
+                $etat->setIsHistorized(0);
+                $etat->setIsVisible(1);
+                $etat->save();
+            }
+        } // if lock_switch
+      
+        if( isset ($aDevice['attr']['cur_humi']) ){
+            /// Creation de la commande humidité du pilote_pro
+            $CurHumi = $this->getCmd(null, 'cur_humi'); 
+            if (!is_object($CurHumi)) {
+              $CurHumi = new heatzyCmd();
+              $CurHumi->setName(__('Taux Humidité', __FILE__));
+              $CurHumi->setLogicalId('cur_humi');
+              $CurHumi->setType('info');
+              $CurHumi->setUnite('%');
+              $CurHumi->setSubType('numeric');
+              $CurHumi->setEqLogic_id($this->getId());
+              $CurHumi->setIsHistorized(0);
+              $CurHumi->setIsVisible(1);
+              $CurHumi->save();
+            }
+        } // cur_humi
+      
+        if( isset ($aDevice['attr']['window_switch']) ){
+            /// Creation de la commande Activation de la détection de fenêtre ouverte du pilote_pro
+            $CurWindow = $this->getCmd(null, 'WindowSwitch'); 
+            if (!is_object($CurWindow)) {
+                $CurWindow = new heatzyCmd();
+                $CurWindow->setName(__('Etat fenêtre ouverte', __FILE__));
+                $CurWindow->setLogicalId('WindowSwitch');
+                $CurWindow->setType('info');
+                $CurWindow->setSubType('binary');
+                $CurWindow->setEqLogic_id($this->getId());
+                $CurWindow->setIsHistorized(0);
+                $CurWindow->setIsVisible(0);
+                $CurWindow->save();
+            }
+            // window_switch On/Off
+            $cmd = $this->getCmd(null, 'WindowSwitchOn');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('WindowSwitchOn');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Activer Fenetre Ouverte', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'WindowSwitch');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            else{
+                $cmd->setConfiguration('infoName', 'WindowSwitch');
+            }		        
+            $cmd = $this->getCmd(null, 'WindowSwitchOff');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('WindowSwitchOff');
+                $cmd->setIsVisible(1);
+                $cmd->setName(__('Désactiver Fenetre Ouverte', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setConfiguration('infoName', 'WindowSwitch');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            else{
+                $cmd->setConfiguration('infoName', 'WindowSwitch');
+            }     
+        } // if window_switch    
+      
+        if( isset ($aDevice['attr']['on_off']) ){
+			/// Creation de la commande info du plugzy
+			$Plugzy = $this->getCmd(null, 'plugzy'); 
+			if (!is_object($Plugzy)) {
+				$Plugzy = new heatzyCmd();
+				$Plugzy->setName(__('Plugzy', __FILE__));
+				$Plugzy->setLogicalId('plugzy');
+				$Plugzy->setType('info');
+				$Plugzy->setSubType('binary');
+				$Plugzy->setEqLogic_id($this->getId());
+				$Plugzy->setIsHistorized(0);
+				$Plugzy->setIsVisible(1);
+				$Plugzy->save();
+			}
+	          
+			/// Creation de la commande plugzy on
+			$cmd = $this->getCmd(null, 'plugzyon');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('plugzyon');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Plugzy ON', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'plugzy');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
+			}
+			  
+			/// Creation de la commande plugzy off
+			$cmd = $this->getCmd(null, 'plugzyoff');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('plugzyoff');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Plugzy OFF', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'plugzy');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
+			}
+        } // if on_off
     }
     
     /**
@@ -1059,7 +1516,36 @@ class heatzy extends eqLogic {
 
     /*
      * Fonction exécutée automatiquement tous les jours par Jeedom*/
-    public static function cronDaily() {        
+    public static function cronDaily() {
+        //$aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
+        //$tmp = strtotime( "2025-06-20 20:20:20" ) ;
+      	//$ExpireToken = strtotime( config::byKey('ExpireToken','heatzy','none') );
+    	//message::add("Heatzy", '= '.$aujourdhui." - ".$tmp.' - '.$ExpireToken );
+        
+        
+        /*
+        $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
+        $cible = $tmp = strtotime( "2025-06-25 00:00:00" ) ; 
+        //message::add("Heatzy", '= '.($cible-(7*86400)).' - '.date('w', $aujourdhui).' - '.$aujourdhui.' - '.date('d/m', $aujourdhui) );
+        if( $aujourdhui > $cible ){
+            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : date cible dépassée 25/06' );
+        }
+        else if( $aujourdhui > ($cible - (7 * 86400) ) ){
+            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : tous les jours 25/06-7j' );
+        }
+        else if( $aujourdhui > ($cible - (15 * 86400) ) ){
+            if( (date('w', $aujourdhui )) == '4' )
+                message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui)." : 4 - =Jeudi - 25/06-15j" );
+            else
+                message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui)." : != Jeudi - 25/06-15j" );
+        }
+        else if( $aujourdhui > $cible ){
+            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : date cible dépassée 25/06' );
+        }
+        else
+            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : Pas encore' );
+        */
+        
         $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
         $cible = $tmp = strtotime( "2025-07-01 00:00:00" ) ;         
         if( $aujourdhui > $cible && (date('w', $aujourdhui )) == '7' ){
@@ -1072,9 +1558,9 @@ class heatzy extends eqLogic {
             	} //if
             } //foreach
         } //if
+        
+        heatzy::Login();
     }
-
-
 
     /*     * *********************Méthodes d'instance************************* */
 
@@ -1094,156 +1580,10 @@ class heatzy extends eqLogic {
     }
     /**
      * @brief  Méthode appellée après la sauvegarde de votre objet
-     *         Creation des 4 ordres : Off, Confort, Eco, HorsGel
      *         Creation de la commande refresh
-     *         Creation de la commande info EtatConsigne
      */
     
     public function postSave() {
-      
-      // Menage sur d'ancienne commande
-	  /*
-      $cmd = $this->getCmd(null, 'window_switch');
-      if (is_object($cmd)) {
-        	log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
-			$cmd->remove();
-      }
-      $cmd = $this->getCmd(null, 'etat');
-      if (is_object($cmd)) {
-        	log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
-			$cmd->remove();
-      }
-      $cmd = $this->getCmd(null, 'Etat');
-      if (is_object($cmd)) {
-        	log::add('heatzy', 'debug',  $this->getName().' -> Suppression de la commande '.$cmd->getLogicalId() );
-			$cmd->remove();
-      }*/
-      
-        
-        foreach (self::$_HeatzyMode as $Key => $Mode ) {
-            /// Creation de la commande action $Mode : $Key
-            $cmd = $this->getCmd(null, $Mode);
-            if (!is_object($cmd)) {
-                log::add('heatzy', 'debug',  $this->getLogicalId().' creation commande :'.$Key.'=>'.$Mode);
-                $cmd = new heatzyCmd();
-                $cmd->setLogicalId($Mode);
-                $cmd->setIsVisible(1);
-                $cmd->setName(__($Mode, __FILE__));
-                $cmd->setType('action');
-                $cmd->setSubType('other');
-                $cmd->setConfiguration('infoName', 'EtatConsigne');
-                $cmd->setEqLogic_id($this->getId());
-                $cmd->setIsHistorized(0);
-                $cmd->setIsVisible(1);
-                $cmd->save();
-            }
-          else{
-            $cmd->setConfiguration('infoName', 'EtatConsigne');
-          }
-        }
-		
-		// Programmation On/Off
-		$cmd = $this->getCmd(null, 'ProgOn');
-		if (!is_object($cmd)) {
-			$cmd = new heatzyCmd();
-			$cmd->setLogicalId('ProgOn');
-			$cmd->setIsVisible(1);
-			$cmd->setName(__('Activer Programmation', __FILE__));
-			$cmd->setType('action');
-			$cmd->setSubType('other');
-			$cmd->setConfiguration('infoName', 'etatprog');
-			$cmd->setEqLogic_id($this->getId());
-			$cmd->setIsHistorized(0);
-			$cmd->setIsVisible(1);
-			$cmd->save();
-		}
-          else{
-            $cmd->setConfiguration('infoName', 'etatprog');
-          }
-	        
-		$cmd = $this->getCmd(null, 'ProgOff');
-		if (!is_object($cmd)) {
-			$cmd = new heatzyCmd();
-			$cmd->setLogicalId('ProgOff');
-			$cmd->setIsVisible(1);
-			$cmd->setName(__('Désactiver Programmation', __FILE__));
-			$cmd->setType('action');
-			$cmd->setSubType('other');
-			$cmd->setConfiguration('infoName', 'etatprog');
-			$cmd->setEqLogic_id($this->getId());
-			$cmd->setIsHistorized(0);
-			$cmd->setIsVisible(1);
-			$cmd->save();
-		}
-          else{
-            $cmd->setConfiguration('infoName', 'etatprog');
-          }
-	        
-		/// Creation de la commande info etatprog binaire
-		$etat = $this->getCmd(null, 'etatprog');
-		if (!is_object($etat)) {
-			$etat = new heatzyCmd();
-			$etat->setName(__('Etat programmation', __FILE__));
-			$etat->setLogicalId('etatprog');
-			$etat->setType('info');
-			$etat->setSubType('binary');
-			$etat->setEqLogic_id($this->getId());
-			$etat->setIsHistorized(0);
-			$etat->setIsVisible(1);
-			$etat->save();
-		}
-
-		// Verouillage-lock On/Off
-		$cmd = $this->getCmd(null, 'LockOn');
-		if (!is_object($cmd)) {
-			$cmd = new heatzyCmd();
-			$cmd->setLogicalId('LockOn');
-			$cmd->setIsVisible(1);
-			$cmd->setName(__('Activer Verrouillage', __FILE__));
-			$cmd->setType('action');
-			$cmd->setSubType('other');
-			$cmd->setConfiguration('infoName', 'etatlock');
-			$cmd->setEqLogic_id($this->getId());
-			$cmd->setIsHistorized(0);
-			$cmd->setIsVisible(1);
-			$cmd->save();
-		}
-          else{
-            $cmd->setConfiguration('infoName', 'etatlock');
-          }
-	        
-		$cmd = $this->getCmd(null, 'LockOff');
-		if (!is_object($cmd)) {
-			$cmd = new heatzyCmd();
-			$cmd->setLogicalId('LockOff');
-			$cmd->setIsVisible(1);
-			$cmd->setName(__('Désactiver Verrouillage', __FILE__));
-			$cmd->setType('action');
-			$cmd->setSubType('other');
-			$cmd->setConfiguration('infoName', 'etatlock');
-			$cmd->setEqLogic_id($this->getId());
-			$cmd->setIsHistorized(0);
-			$cmd->setIsVisible(1);
-			$cmd->save();
-		}
-          else{
-            $cmd->setConfiguration('infoName', 'etatlock');
-          }
-	        
-		/// Creation de la commande info etatlock binaire
-		$etat = $this->getCmd(null, 'etatlock');
-		if (!is_object($etat)) {
-			$etat = new heatzyCmd();
-			$etat->setName(__('Etat Verrouillage', __FILE__));
-			$etat->setLogicalId('etatlock');
-			$etat->setType('info');
-			$etat->setSubType('binary');
-			$etat->setEqLogic_id($this->getId());
-			$etat->setIsHistorized(0);
-			$etat->setIsVisible(1);
-			$etat->save();
-		}
-
         /// Creation de la commande de rafraichissement
         $refresh = $this->getCmd(null, 'refresh');
         if (!is_object($refresh)) {
@@ -1257,202 +1597,6 @@ class heatzy extends eqLogic {
             $refresh->setIsVisible(1);
             $refresh->save();
         }
-
-        /// Creation de la commande info Etat numeric
-        $etat = $this->getCmd(null, 'EtatConsigne');
-        if (!is_object($etat)) {
-            $etat = new heatzyCmd();
-            $etat->setName(__('Etat Consigne', __FILE__));
-            $etat->setLogicalId('EtatConsigne');
-            $etat->setType('info');
-            $etat->setSubType('numeric');
-            $etat->setEqLogic_id($this->getId());
-            $etat->setIsHistorized(0);
-            $etat->setIsVisible(1);
-            $etat->save();
-        }
-        
-        /// Creation de la commande info mode (correspond à l'état sous forme d'une chaine de carcateres)
-        $mode = $this->getCmd(null, 'mode');
-        if (!is_object($mode)) {
-            $mode = new heatzyCmd();
-            $mode->setName(__('Mode', __FILE__));
-            $mode->setLogicalId('mode');
-            $mode->setType('info');
-            $mode->setSubType('string');
-            $mode->setEqLogic_id($this->getId());
-            $mode->setIsHistorized(0);
-            $mode->setIsVisible(1);
-            $mode->save();
-        }
-        
-		if ( $this->getConfiguration('product', '') == 'Flam_Week2' ) {
-			/// Creation de la commande info du plugzy
-			$Plugzy = $this->getCmd(null, 'plugzy'); 
-			if (!is_object($Plugzy)) {
-				$Plugzy = new heatzyCmd();
-				$Plugzy->setName(__('Plugzy', __FILE__));
-				$Plugzy->setLogicalId('plugzy');
-				$Plugzy->setType('info');
-				$Plugzy->setSubType('binary');
-				$Plugzy->setEqLogic_id($this->getId());
-				$Plugzy->setIsHistorized(0);
-				$Plugzy->setIsVisible(1);
-				$Plugzy->save();
-			}
-	          
-			/// Creation de la commande plugzy on
-			$cmd = $this->getCmd(null, 'plugzyon');
-			if (!is_object($cmd)) {
-				$cmd = new heatzyCmd();
-				$cmd->setLogicalId('plugzyon');
-				$cmd->setIsVisible(1);
-				$cmd->setName(__('Plugzy ON', __FILE__));
-				$cmd->setType('action');
-				$cmd->setSubType('other');
-				$cmd->setConfiguration('infoName', 'plugzy');
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setIsHistorized(0);
-				$cmd->setIsVisible(1);
-				$cmd->save();
-			}
-			  
-			/// Creation de la commande plugzy off
-			$cmd = $this->getCmd(null, 'plugzyoff');
-			if (!is_object($cmd)) {
-				$cmd = new heatzyCmd();
-				$cmd->setLogicalId('plugzyoff');
-				$cmd->setIsVisible(1);
-				$cmd->setName(__('Plugzy OFF', __FILE__));
-				$cmd->setType('action');
-				$cmd->setSubType('other');
-				$cmd->setConfiguration('infoName', 'plugzy');
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setIsHistorized(0);
-				$cmd->setIsVisible(1);
-				$cmd->save();
-			}
-        }
-        
-        if( $this->getConfiguration('product', '') == 'Flam_Week2' ||
-            $this->getConfiguration('product', '') == 'INEA' ||
-            $this->getConfiguration('product', '') == 'Pilote_Pro') {    /// Pour heatzy flam ou inea ou pilote_pro
-          
-			/// Creation de la commande info de la temperature de confort
-			$CftTemp = $this->getCmd(null, 'cft_temp'); 
-			if (!is_object($CftTemp)) {
-				$CftTemp = new heatzyCmd();
-				$CftTemp->setName(__('Temp. confort', __FILE__));
-				$CftTemp->setLogicalId('cft_temp');
-				$CftTemp->setType('info');
-				$CftTemp->setUnite('°C');
-				$CftTemp->setSubType('numeric');
-				$CftTemp->setEqLogic_id($this->getId());
-				$CftTemp->setIsHistorized(0);
-				$CftTemp->setIsVisible(1);
-				$CftTemp->save();
-			}
-          
-			/// Creation de la commande info de la temperature eco
-			$EcoTemp = $this->getCmd(null, 'eco_temp'); 
-			if (!is_object($EcoTemp)) {
-				$EcoTemp = new heatzyCmd();
-				$EcoTemp->setName(__('Temp. eco', __FILE__));
-				$EcoTemp->setLogicalId('eco_temp');
-				$EcoTemp->setType('info');
-				$EcoTemp->setUnite('°C');
-				$EcoTemp->setSubType('numeric');
-				$EcoTemp->setEqLogic_id($this->getId());
-				$EcoTemp->setIsHistorized(0);
-				$EcoTemp->setIsVisible(1);
-				$EcoTemp->save();
-			}
-          
-			/// Creation de la commande info de la temperature courante
-			$CurTemp = $this->getCmd(null, 'cur_temp'); 
-			if (!is_object($CurTemp)) {
-				$CurTemp = new heatzyCmd();
-				$CurTemp->setName(__('Temperature', __FILE__));
-				$CurTemp->setLogicalId('cur_temp');
-				$CurTemp->setType('info');
-				$CurTemp->setUnite('°C');
-				$CurTemp->setSubType('numeric');
-				$CurTemp->setEqLogic_id($this->getId());
-				$CurTemp->setIsHistorized(0);
-				$CurTemp->setIsVisible(1);
-				$CurTemp->save();
-			}
-        } // if flam/inea/pro
-		
-		if ( $this->getConfiguration('product', '') == 'Pilote_Pro' ) {
-			
-			/// Creation de la commande humidité du pilote_pro
-			$CurHumi = $this->getCmd(null, 'cur_humi'); 
-			if (!is_object($CurHumi)) {
-				$CurHumi = new heatzyCmd();
-				$CurHumi->setName(__('Taux Humidité', __FILE__));
-				$CurHumi->setLogicalId('cur_humi');
-				$CurHumi->setType('info');
-				$CurHumi->setUnite('%');
-				$CurHumi->setSubType('numeric');
-				$CurHumi->setEqLogic_id($this->getId());
-				$CurHumi->setIsHistorized(0);
-				$CurHumi->setIsVisible(1);
-				$CurHumi->save();
-			}
-			
-			/// Creation de la commande Activation de la détection de fenêtre ouverte du pilote_pro
-			$CurWindow = $this->getCmd(null, 'EtatWindow'); 
-			if (!is_object($CurWindow)) {
-				$CurWindow = new heatzyCmd();
-				$CurWindow->setName(__('Etat fenêtre ouverte', __FILE__));
-				$CurWindow->setLogicalId('EtatWindow');
-				$CurWindow->setType('info');
-				$CurWindow->setSubType('binary');
-				$CurWindow->setEqLogic_id($this->getId());
-				$CurWindow->setIsHistorized(0);
-				$CurWindow->setIsVisible(0);
-				$CurWindow->save();
-			}
-
-			// window_switch On/Off
-			$cmd = $this->getCmd(null, 'WindowOn');
-			if (!is_object($cmd)) {
-				$cmd = new heatzyCmd();
-				$cmd->setLogicalId('WindowOn');
-				$cmd->setIsVisible(1);
-				$cmd->setName(__('Activer Fenetre Ouverte', __FILE__));
-				$cmd->setType('action');
-				$cmd->setSubType('other');
-				$cmd->setConfiguration('infoName', 'EtatWindow');
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setIsHistorized(0);
-				$cmd->setIsVisible(1);
-				$cmd->save();
-			}
-          else{
-            $cmd->setConfiguration('infoName', 'EtatWindow');
-          }
-		        
-			$cmd = $this->getCmd(null, 'WindowOff');
-			if (!is_object($cmd)) {
-				$cmd = new heatzyCmd();
-				$cmd->setLogicalId('WindowOff');
-				$cmd->setIsVisible(1);
-				$cmd->setName(__('Désactiver Fenetre Ouverte', __FILE__));
-				$cmd->setType('action');
-				$cmd->setSubType('other');
-				$cmd->setConfiguration('infoName', 'EtatWindow');
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setIsHistorized(0);
-				$cmd->setIsVisible(1);
-				$cmd->save();
-			}
-          else{
-            $cmd->setConfiguration('infoName', 'EtatWindow');
-          }
-		} // if pilote_pro
-
     }
 
     /**
@@ -1494,123 +1638,6 @@ class heatzy extends eqLogic {
         $_version = jeedom::versionAlias($_version);
         $product = $this->getConfiguration('product', '');
     
-        //$refresh = $this->getCmd(null, 'refresh');
-        //$replace['#refresh_id#'] = is_object($refresh) ? $refresh->getId() : '';
-        
-        //$Etat = $this->getCmd(null,'EtatConsigne');
-        //$replace['#Etat#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
-        //$replace['#Etatid#'] = (is_object($Etat)) ? $Etat->getId() : '';
-        //$replace['#Etat_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Etat_display#' : 'none';
-        //$replace['#history#'] = (is_object($Etat) && $Etat->getIsHistorized())? 'history cursor' : '';
-        
-        //$Confort = $this->getCmd(null,'Confort');
-        //$replace['#cmd_confort_id#'] = (is_object($Confort)) ? $Confort->getId() : '';
-        
-        //$Eco = $this->getCmd(null,'Eco');
-        //$replace['#cmd_eco_id#'] = (is_object($Eco)) ? $Eco->getId() : '';
-        
-        //$HorsGel = $this->getCmd(null,'HorsGel');
-        //$replace['#cmd_hg_id#'] = (is_object($HorsGel)) ? $HorsGel->getId() : '';
-        
-        //$Off = $this->getCmd(null,'Off');
-        //$replace['#cmd_off_id#'] = (is_object($Off)) ? $Off->getId() : '';
-
-        //$Etat = $this->getCmd(null,'etatprog');
-        //$replace['#info_prog#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
-        //$replace['#cmd_prog_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
-        //$replace['#Prog_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Prog_display#' : 'none';
-      
-        //$ProgOff = $this->getCmd(null,'ProgOff');
-        //$replace['#cmd_progoff_id#'] = (is_object($ProgOff)) ? $ProgOff->getId() : '';
-      
-        //$ProgOn = $this->getCmd(null,'ProgOn');
-        //$replace['#cmd_progon_id#'] = (is_object($ProgOn)) ? $ProgOn->getId() : '';
-
-        //$Etat = $this->getCmd(null,'etatlock');
-        //$replace['#info_lock#'] = (is_object($Etat)) ? $Etat->execCmd() : '';
-        //$replace['#cmd_lock_id#'] = (is_object($Etat)) ? $Etat->getId() : '';
-        //$replace['#Lock_display#'] = (is_object($Etat) && $Etat->getIsVisible()) ? '#Lock_display#' : 'none';
-      
-        //$LockOff = $this->getCmd(null,'LockOff');
-        //$replace['#cmd_lockoff_id#'] = (is_object($LockOff)) ? $LockOff->getId() : '';
-      
-        //$LockOn = $this->getCmd(null,'LockOn');
-        //$replace['#cmd_lockon_id#'] = (is_object($LockOn)) ? $LockOn->getId() : '';    
-      
-        //if( $product == 'Flam_Week2' ||
-            //$product == 'INEA' ||
-            //$product == 'Pilote_Pro') {     /// Pour heatzy flam ou inea mais par defaut le pilote
-
-            //if($product == 'Flam_Week2') {
-                //$plugzy = $this->getCmd(null,'plugzy');
-                //$replace['#info_plugzy#'] = (is_object($plugzy)) ? $plugzy->execCmd() : '';
-                //$replace['#cmd_plugzy_id#'] = (is_object($plugzy)) ? $plugzy->getId() : '';
-    
-                //$plugzyon = $this->getCmd(null,'plugzyon');
-                //$replace['#cmd_plugzyon_id#'] = (is_object($plugzyon)) ? $plugzyon->getId() : '';
-    
-                //$plugzyoff = $this->getCmd(null,'plugzyoff');
-                //$replace['#cmd_plugzyoff_id#'] = (is_object($plugzyoff)) ? $plugzyoff->getId() : '';
-            //}
-            
-            //$CurTemp = $this->getCmd(null,'cur_temp');
-            //if( is_object($CurTemp)) {
-                //$replace['#history_cur_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-                //$replace['#cur_temp_id#'] = $CurTemp->getId();
-                //$replace['#cur_temp#'] = $CurTemp->execCmd();
-                //$replace['#unite_cur_temp#'] = $CurTemp->getUnite();
-                //$replace['#cur_temp_display#'] = (is_object($CurTemp) && $CurTemp->getIsVisible()) ? '#cur_temp_display#' : 'none';
-            //}
-          
-            //$EcoTemp = $this->getCmd(null,'eco_temp');
-            //if( is_object($EcoTemp)) {
-                //$replace['#history_eco_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-                //$replace['#eco_temp_id#'] = $EcoTemp->getId();
-                //$replace['#eco_temp#'] = $EcoTemp->execCmd();
-                //$replace['#unite_eco_temp#'] = $EcoTemp->getUnite();
-				//$replace['#eco_temp_display#'] = (is_object($EcoTemp) && $EcoTemp->getIsVisible()) ? '#eco_temp_display#' : 'none';
-            //}
-
-            //$CftTemp = $this->getCmd(null,'cft_temp');
-            //if( is_object($CftTemp)) {
-                //$replace['#history_cft_temp#'] = ($CurTemp->getIsHistorized())? 'history cursor' : '';
-                //$replace['#cft_temp_id#'] = $CftTemp->getId();
-                //$replace['#cft_temp#'] = $CftTemp->execCmd();
-                //$replace['#unite_cft_temp#'] = $CftTemp->getUnite();
-				//$replace['#cft_temp_display#'] = (is_object($CftTemp) && $CftTemp->getIsVisible()) ? '#cft_temp_display#' : 'none';
-            //}    
-        //} // if flam/inea/pro
-
-        //if( $product == 'Pilote_Pro') {     /// Pour pro
-
-            //$CurHumi = $this->getCmd(null,'cur_humi');
-            //if( is_object($CurHumi)) {
-                //$replace['#history_cur_humi#'] = ($CurHumi->getIsHistorized())? 'history cursor' : '';
-              
-                //$replace['#cur_humi_id#'] = $CurHumi->getId();
-                //$replace['#cur_humi#'] = $CurHumi->execCmd();
-                //$replace['#unite_cur_humi#'] = $CurHumi->getUnite();
-                //$replace['none;#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none;';	
-                //$replace['#Humidity_display#'] = (is_object($CurHumi) && $CurHumi->getIsVisible()) ? '#Humidity_display#' : 'none';
-            //}
-            
-            //$EtatWindow = $this->getCmd(null,'EtatWindow');
-            //if( is_object($EtatWindow)) {
-                //$replace['#info_window#'] = (is_object($EtatWindow)) ? $EtatWindow->execCmd() : '';
-                //$replace['#cmd_window_id#'] = (is_object($EtatWindow)) ? $EtatWindow->getId() : '';
-                //$replace['#window_display#'] = (is_object($EtatWindow) && $EtatWindow->getIsVisible()) ? '#window_display#' : 'none';
-              
-                //$WindowOff = $this->getCmd(null,'WindowOff');
-                //$replace['#cmd_windowoff_id#'] = (is_object($WindowOff)) ? $WindowOff->getId() : '';
-              
-                //$WindowOn = $this->getCmd(null,'WindowOn');
-                //$replace['#cmd_windowon_id#'] = (is_object($WindowOn)) ? $WindowOn->getId() : '';  
-            //}  
-        //} // if pro
-		
-		//$replace['#collectDate#'] = $this->getConfiguration('updatetime', '');
-        
-        // ****** TODO : Generer les cmd a mettre a jour directement depuis la liste de l'equipement ******
         //log::add('heatzy', 'debug',  __METHOD__.' : Liste commandes - '.$this->getName());
         foreach ($this->getCmd() as $cmd) {	
             switch($cmd->getType()){
@@ -1689,121 +1716,67 @@ class heatzyCmd extends cmd {
         else if($this->getType() == 'action' ) {
             
             $eqLogic = $this->getEqLogic();
-            //log::add('heatzy', 'debug',  __METHOD__.' : $this->getLogicalId()='.$this->getLogicalId());
+            //log::add('heatzy', 'debug',  __METHOD__.' : '.$eqLogic->getName().' - LogicalId='.$this->getLogicalId().' ('.$this->getId().')');
             
             /// Lecture du token
             $UserToken = config::byKey('UserToken','heatzy','none');
-          
+            
+            $Consigne = '' ;
+            $ForUpdate = '' ;
             if ($this->getLogicalId() == 'plugzyon') {
         
                 $Consigne = array( 'attrs' => array ( 'on_off' => 1 )  );
-
-                $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-                if($Result === false) {
-                    log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-                    return false;
-                }
-                else
-                	$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
+                $ForUpdate = 1 ;
             }
             else if ($this->getLogicalId() == 'plugzyoff') {
               
                 $Consigne = array( 'attrs' => array ( 'on_off' => 0 )  );
-              
-                $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-                if($Result === false) {
-                    log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-                    return false;
-                }
-              	else 
-                	$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
+                $ForUpdate = 0 ;
             }
-	else if ($this->getLogicalId() == 'ProgOn') {
-		if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
-			$eqLogic->GestProg(true);
-		else {
-			$Consigne = array( 'attrs' => array ( 'timer_switch' => 1 )  );
-		
-			$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-			if($Result === false) {
-				log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-				return false;
-			}
-		}
-			$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
-		}
-		else if ($this->getLogicalId() == 'ProgOff') {
-				if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
+            else if ($this->getLogicalId() == 'ProgOn') {
+                if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2'){
+                    $eqLogic->GestProg(true);
+                }
+                else {
+                    $Consigne = array( 'attrs' => array ( 'timer_switch' => 1 )  );
+                }
+                $ForUpdate = 1 ;
+            }
+            else if ($this->getLogicalId() == 'ProgOff') {
+				if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2'){
 					$eqLogic->GestProg(false);
+                }
 				else {
 					$Consigne = array( 'attrs' => array ( 'timer_switch' => 0 )  );
-		
-					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-					if($Result === false) {
-						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-						return false;
-					}
 				}
-				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
-		}
-		else if ($this->getLogicalId() == 'LockOn') {
-			if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
-					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'LockOn KO pour Heatzy/Flam_Week2');
-				else {
-					$Consigne = array( 'attrs' => array ( 'lock_switch' => 1 )  );
-		
-					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-					if($Result === false) {
-						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-						return false;
-					}
-				}
-				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
+                $ForUpdate = 0 ;
+            }
+            else if ($this->getLogicalId() == 'LockOn') {
+                $Consigne = array( 'attrs' => array ( 'lock_switch' => 1 )  );
+                $ForUpdate = 1 ;
             }
             else if ($this->getLogicalId() == 'LockOff') {
-				if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
-					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'LockOff KO pour Heatzy/Flam_Week2');
-				else {
-					$Consigne = array( 'attrs' => array ( 'lock_switch' => 0 )  );
-					
-					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-					if($Result === false) {
-						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-						return false;
-					}
-				}
-				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
+                $Consigne = array( 'attrs' => array ( 'lock_switch' => 0 )  );
+                $ForUpdate = 0 ;
             }
-		else if ($this->getLogicalId() == 'WindowOn') {
-            		if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
-					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'WindowOn KO pour Heatzy/Flam_Week2');
-				else {
-					$Consigne = array( 'attrs' => array ( 'window_switch' => 1 )  );
-              	
-					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-					if($Result === false) {
-						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-						return false;
-					}
-				}
-				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 1);
+            else if ($this->getLogicalId() == 'Lock_C_On') {
+                $Consigne = array( 'attrs' => array ( 'LOCK_C' => 1 )  );
+                $ForUpdate = 1 ;
             }
-            else if ($this->getLogicalId() == 'WindowOff') {
-				if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2')
-					log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId().'WindowOff KO pour Heatzy/Flam_Week2');
-				else {
-					$Consigne = array( 'attrs' => array ( 'window_switch' => 0 )  );
-					
-					$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-					if($Result === false) {
-						log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-						return false;
-					}
-				}
-				$eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), 0);
-	    }
-            else {
-
+            else if ($this->getLogicalId() == 'Lock_C_Off') {
+                $Consigne = array( 'attrs' => array ( 'LOCK_C' => 0 )  );
+                $ForUpdate = 0 ;
+            }
+            else if ($this->getLogicalId() == 'WindowSwitchOn') {
+                $Consigne = array( 'attrs' => array ( 'window_switch' => 1 )  );
+                $ForUpdate = 1 ;
+            }
+            else if ($this->getLogicalId() == 'WindowSwitchOff') {
+                $Consigne = array( 'attrs' => array ( 'window_switch' => 0 )  );
+                $ForUpdate = 0 ;
+            }
+            else if( in_array($this->getLogicalId() , heatzy::$_HeatzyMode ) ) {
+              
                 $Mode = array_keys(heatzy::$_HeatzyMode, $this->getLogicalId());
               
                 log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' mode = '. var_export($Mode, true));
@@ -1822,45 +1795,61 @@ class heatzyCmd extends cmd {
 					   $Mode = 'fro'; break;
 					case 3:
 					   $Mode = 'stop'; break;
+					case 4:
+					   $Mode = 'cft1'; break;
+					case 5:
+					   $Mode = 'cft2'; break;
 					}
                   
                     $Consigne = array( 'attrs' => array ( 'mode' => $Mode )  );
                 }
+                $ForUpdate = '' ;
+            }
+            else{
+                log::add('heatzy', 'error',  __METHOD__.' : Commande inconnue : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');
+            }/// Le mode
+          	
+            
+            if( $Consigne != '' ){
                 $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
                 if($Result === false) {
                     log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
                     return false;
                 }
-            }/// Le mode
-            
-            /// Si une erreur de communication et token invalide on se re-synchronise
-            if(isset($Result['error_message']) && isset($Result['error_code'])) {
-            	if($Result['error_code'] === '9004') {
-            		log::add('heatzy', 'error',  __METHOD__.' : '.$Result['error_code'].' '.$Result['error_message']);
-            		$Nb = $eqLogic->Synchronize();
-            		if ($Nb == false) {
-            			log::add('heatzy', 'error',  __METHOD__.' : erreur synchronisation');
-            			return false;
-            		}
-            		else{
-            			log::add('heatzy', 'info',  __METHOD__.' : '.$Nb. 'module(s) synchronise(s)');
-            			$UserToken = config::byKey('UserToken','heatzy','none');
-            			$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-            			if(isset($Result['error_message']) && isset($Result['error_code'])) {
-            				log::add('heatzy', 'error',  __METHOD__.' : '.$Result['error_code'].' - '.$Result['error_message']);
-            				return false;
-            			}
-            		}
-            	}
-            	else {
-            		log::add('heatzy', 'error',  __METHOD__.' : '.$Result['error_code'].' - '.$Result['error_message']);
-            		return false;
-            	}
+                else{
+                    /// Si une erreur de communication et token invalide on se re-synchronise
+                    if(isset($Result['error_message']) && isset($Result['error_code'])) {
+                        if($Result['error_code'] === '9004') {
+                            log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message']);
+                            $Nb = $eqLogic->Synchronize();
+                            if ($Nb == false) {
+                                log::add('heatzy', 'error',  __METHOD__.' : erreur synchronisation');
+                                return false;
+                            }
+                            else{
+                                log::add('heatzy', 'info',  __METHOD__.' : '.$Nb. 'module(s) synchronise(s)');
+                                $UserToken = config::byKey('UserToken','heatzy','none');
+                                $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+                                if(isset($Result['error_message']) && isset($Result['error_code'])) {
+                                    log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message']);
+                                    return false;
+                                }
+                            }
+                        }
+                        else {
+                            log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message']);
+                            return false;
+                        }
+                    }
+                    else if($ForUpdate != '') {
+                        $eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), $ForUpdate);
+                    }
+                }
             }
             
             /// Mise à jour de l'état
             sleep(1); // tempo de 1sec pour laisser le temps a l'API de le prendre en compte et le restituer
-	    $this->getEqLogic()->updateHeatzyDid($UserToken);
+            $this->getEqLogic()->updateHeatzyDid($UserToken);
             
         } /// Fin action
         $mc = cache::byKey('heatzyWidgetmobile' . $this->getEqLogic()->getId());
