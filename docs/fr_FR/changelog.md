@@ -1,3 +1,11 @@
+# 02/07/2025 (dev)
+- Prise en compte des ereurs http !=500
+- Mise en place d'un garde fou pour limiter les appels gizwits en cas d'erreur 9xxx
+
+# 30/06/2025 (dev)
+- Détéction et désactivation des équipements qui ne sont plus rattachés au compte heatzy (err 9017)
+- Ajout d'une commande info sur l'état OnLine/Offline
+
 # 29/06/2025 (beta)
 - Ajout d'une detection d'une fenetre ouverte (detection chute de temperature)
 - Ajout d'un onglet Parametres dans chaque équipement
@@ -10,7 +18,7 @@
 - Optimisation de la fonction synchronize (suppression de l'appel datapoint)
 - Ajout du detail_message lors des erreurs d'appels
 
-# 29/06/2025 (stable)
+# 28/06/2025 (stable)
 - Prise en charge des modules GLOW et SHINE
 - Prise en charge des 5e et 6e ordre (pilote_pro)
 - Ajout d'un bouton vers le forum community

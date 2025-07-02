@@ -28,6 +28,8 @@ class HttpGizwits {
     /*     * *************************Attributs****************************** */
     public static $HeatzyAppId = "c70a66ff039d41b4a220e198b0fcc8b3";
     public static $UrlGizwits = "https://euapi.gizwits.com";
+    
+    public static $_MaxError = 200 ;
 
     /*     * ***********************Methode static*************************** */
     /**
@@ -83,8 +85,8 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+        if( $httpcode != 200 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
         
@@ -139,8 +141,8 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+        if( $httpcode != 200 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
 
@@ -196,8 +198,8 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+        if( $httpcode != 200 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
 
@@ -256,8 +258,8 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+        if( $httpcode != 200 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
 
@@ -325,8 +327,8 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+        if( $httpcode != 200 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
         
@@ -393,8 +395,8 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+        if( $httpcode != 200 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
 
@@ -461,8 +463,8 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+        if( $httpcode != 200 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
 
@@ -514,8 +516,8 @@ class HttpGizwits {
                 /// Ferme la connexion
                 curl_close($gizwits);
 
-                if( $httpcode == 500 ){
-                    log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+                if( $httpcode != 200 ){
+                    log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
                     return false;
                 }
 
@@ -571,8 +573,8 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+        if( $httpcode != 200 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
       
@@ -618,8 +620,8 @@ class HttpGizwits {
                 /// Ferme la connexion
                 curl_close($gizwits);
 
-                if( $httpcode == 500 ){
-                    log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+                if( $httpcode != 200 ){
+                    log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
                     return false;
                 }
 
@@ -681,8 +683,8 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur 500');
+        if( $httpcode != 200 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
         
@@ -717,6 +719,7 @@ class heatzy extends eqLogic {
      *      aux valeurs supportées par les devices
      */
     public static $_HeatzyMode = array('Confort', 'Eco', 'HorsGel', 'Off','Confort-1','Confort-2');
+
     
     /**
      * @brief Fonction qui permet de tirer un nouveau token utilisateur
@@ -782,12 +785,16 @@ class heatzy extends eqLogic {
             return false;
         }
         
-        log::add('heatzy', 'debug',  '$aDevice :'.var_export($aDevices, true));
+      	log::add('heatzy', 'debug', __METHOD__.' '.count($aDevices ['devices']).'  module(s) trouvé');
+        //log::add('heatzy', 'debug', __METHOD__.' $aDevice :'.var_export($aDevices, true));
+      	$Nb_Add = 0;
+      	$aSearchDid = [] ;
         foreach ($aDevices ['devices'] as $DeviceNum => $aDevice) {
-            
+            $aSearchDid[] = $aDevice['did'] ;
             $eqLogic = self::byLogicalId( $aDevice['did'] , 'heatzy', false);
             if (! is_object($eqLogic)) {   /// Creation des dids inexistants
                 $eqLogic = new heatzy();
+              	$Nb_Add++ ;
             }
             $eqLogic->setEqType_name('heatzy');
             $eqLogic->setLogicalId($aDevice['did']);
@@ -829,26 +836,57 @@ class heatzy extends eqLogic {
           
             /// Si connecté ou pas
             if(isset($aDevice['is_online'])) {
-                if($aDevice['is_online'] == 'true')
+                if($aDevice['is_online'] == 'true'){
                     $eqLogic->setStatus('timeout','0');
-                else
+                  	$eqLogic->checkAndUpdateCmd('IsOnLine', 1 );
+                }
+                else{
                     $eqLogic->setStatus('timeout','1');
-            }            
+                  	$eqLogic->checkAndUpdateCmd('IsOnLine', 0 );
+                }
+            }           
             $eqLogic->save();
+          
+            log::add('heatzy', 'debug', __METHOD__.' Count($aSearchDid)='.count($aSearchDid).' Count($aDevice)='.count($aDevices ['devices']));
                           
             if ($eqLogic->getIsEnable() == 1) { /// mise à jour du did
                  $eqLogic->updateHeatzyDid($UserToken,$aStatus);
             }
         }
         
-        log::add('heatzy', 'info', 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
+        //log::add('heatzy', 'info', 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
+      	if( $Nb_Add > 0)
+        	log::add('heatzy', 'info', $Nb_Add.' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s) Heatzy rattaché(s) au compte');
+      	log::add('heatzy', 'debug', __METHOD__.' '.$Nb_Add.' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s)');
         //message::add("Heatzy", 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
-        return count($aDevices ['devices']);    
+      
+      	// Recherche des équipements qui ne sont plus rattaché au compte
+      	foreach (eqLogic::byType('heatzy') as $heatzy) {
+            if( !in_array($heatzy->getLogicalId() , $aSearchDid ) ){
+                if( $heatzy->getIsEnable() == 1 ){
+                    $heatzy->setStatus('timeout','1');
+                    $heatzy->setIsEnable(0);
+                    $heatzy->setIsVisible(0) ;
+                    $heatzy->save();
+                    $heatzy->checkAndUpdateCmd('IsOnLine', 0 );   
+                    log::add('heatzy', 'error', 'Le module -'.$heatzy->getName().'- ('.$heatzy->getLogicalId().') n est plus rattaché au compte. Il est maintenant désactivé et non visible (mais pas supprimé)' );   
+                }
+            }
+        }
+      	//log::add('heatzy', 'debug', 'array_diff='.var_export( array_diff(eqLogic::byType('heatzy'), $aDevices ['devices']), true) );
+      
+        return count($aDevices['devices']);    
     }
     /**
      * @brief Fonction de mise à jour du device did
      */
     public function updateHeatzyDid($UserToken, $aDevice = array()) {
+      
+      if( !cache::exist('Heatzy_CptError') ){
+        cache::set( 'Heatzy_CptError' , 0) ;
+        log::add('heatzy', 'debug',  __METHOD__.': INIT cache' );
+      }
+      //log::add('heatzy', 'debug',  __METHOD__.' : cache='.cache::byKey('Heatzy_CptError')->getValue() );
       
         if(empty($aDevice)) {
             /// Lecture de l'etat
@@ -858,17 +896,22 @@ class heatzy extends eqLogic {
                 log::add('heatzy', 'warning',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
                 $this->setStatus('timeout','1');
                 $this->save();
+              	cache::set('Heatzy_CptError', cache::byKey('Heatzy_CptError')->getValue() + 1 );
                 return false;
             }
             else if(isset($aDevice['error_message']) && isset($aDevice['error_code'])) {
                 log::add('heatzy', 'error',  __METHOD__.' : '.$this->getLogicalId().' - '.$aDevice['error_code'].' - '.$aDevice['error_message'].' - '.$aDevice['detail_message']);
+              	cache::set('Heatzy_CptError', cache::byKey('Heatzy_CptError')->getValue() + 1 );
                 return false;
             }
+          
+          	// Si pas d'erreur, on réinitialise le garde fou
+      		cache::set('Heatzy_CptError', 0 );
         } // if empty
       
         /// Mise à jour de la derniere communication
 		if(isset($aDevice['updated_at']) && $aDevice['updated_at'] != 0 ) {
-            $this->setStatus('timeout','0');
+            //$this->setStatus('timeout','0');
             log::add('heatzy', 'debug',  'lastCommunication :'.date('Y-m-d H:i:s', $aDevice['updated_at']));
             $this->setConfiguration('lastCommunication', date('Y-m-d H:i:s', $aDevice['updated_at']));
         }
@@ -1620,7 +1663,15 @@ class heatzy extends eqLogic {
     */
     public static function cron() {
       
-      	//config::save('UserToken', 'b6a060c70f0a4e369ba9305aff48d8fe', 'heatzy'); /// => Sauvegarde du token utilisateur
+      if( !cache::exist('Heatzy_CptError') ){
+        cache::set( 'Heatzy_CptError' , 0) ;
+        log::add('heatzy', 'debug',  __METHOD__.': INIT cache' );
+      }
+
+      if( cache::byKey('Heatzy_CptError')->getValue() > HttpGizwits::$_MaxError){
+        log::add('heatzy', 'debug',  __METHOD__.': cache::Compteur erreur > '.HttpGizwits::$_MaxError.' - Mode dégradé' );
+        return false ;      	
+      }
       
         $ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
         $ExpireTokenTime = strtotime( $ExpireToken ) ;
@@ -1640,9 +1691,13 @@ class heatzy extends eqLogic {
         }
         
         foreach (eqLogic::byType('heatzy') as $heatzy) {
-            if($heatzy->getIsEnable() == 1 && ($ExpireTokenTime - 120) > time() ){ /// Execute la commande refresh des modules activés
 
-                $Cmd =  heatzyCmd::byEqLogicIdCmdName($heatzy->getId(), 'Rafraichir' );
+            $Cmd = $heatzy->getCmd('info', 'IsOnLine') ;
+            $IsOnLine = (is_object($Cmd)) ? $Cmd->execCmd() : 1 ;
+          
+            if($heatzy->getIsEnable() == 1 && ($ExpireTokenTime - 120) > time() && $IsOnLine == 1){ /// Execute la commande refresh des modules activés
+
+                $Cmd = heatzyCmd::byEqLogicIdCmdName($heatzy->getId(), 'Rafraichir' );
                 if (! is_object($Cmd)) {
                     log::add('heatzy', 'error',  ' La commande :refresh n\'a pas été trouvé' );
                     throw new Exception(__(' La commande refresh n\'a pas été trouvé ', __FILE__));
@@ -1660,7 +1715,17 @@ class heatzy extends eqLogic {
             }
         }
     }
-      
+
+    /**
+    * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
+    * synchronisation
+    */
+    public static function cron5() {        
+      $res = heatzy::Synchronize() ;
+      log::add('heatzy', 'debug',  __METHOD__.': Synchronize cron5 = '.$res );
+    }
+  
+  
     /**
     * Fonction exécutée automatiquement toutes les 30minutes par Jeedom
     * seulement pour les modules Heatzy et Flam_Week2
@@ -1822,6 +1887,20 @@ class heatzy extends eqLogic {
             $refresh->setIsVisible(1);
             $refresh->save();
         }
+      
+      /// Creation de la commande OnLine (pour savoir si le omdule est toujours connecté ou rattaché au compte
+      $cmd = $this->getCmd(null, 'IsOnLine'); 
+      if (!is_object($cmd)) {
+        $cmd = new heatzyCmd();
+        $cmd->setName(__('Online', __FILE__));
+        $cmd->setLogicalId('IsOnLine');
+        $cmd->setType('info');
+        $cmd->setSubType('binary');
+        $cmd->setEqLogic_id($this->getId());
+        $cmd->setIsHistorized(0);
+        $cmd->setIsVisible(0);
+        $cmd->save();
+      }
     }
 
     /**
@@ -2045,10 +2124,18 @@ class heatzyCmd extends cmd {
                     /// Si une erreur de communication
                     if(isset($Result['error_message']) && isset($Result['error_code'])) {
                         log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
+                      
+                      	if( $Result['error_code'] == '9017' || $Result['error_code'] == '9042' ){
+                          	// 9017 = Détaché du compte
+                          	// 9042 = Offline
+                          	$eqLogic->setStatus('timeout','1');
+                            $this->checkAndUpdateCmd('IsOnLine', 0 );
+                        }
                         return false;
                     }
                     else if($ForUpdate != '') {
                         $eqLogic->checkAndUpdateCmd($this->getConfiguration('infoName'), $ForUpdate);
+                        $this->checkAndUpdateCmd('IsOnLine', 1 );
                     }
                 }
             }

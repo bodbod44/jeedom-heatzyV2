@@ -135,6 +135,11 @@ Et d'une commande info **Etat Activation fenêtre ouverte** de type _binaire_ :
 * **1** : La détéction est activée
 * **0** : La détéction est désactivée
 
+Et d'une commande info **OnLine** de type _binaire_ :
+
+* **1** : Le module est Online (connecté à internet et fonctionnel)
+* **0** : Le module est Offline (déconnecté ou détaché du compte heatzy. N'est plus pilotable)
+
 Et d'une commande info **Fenetre Ouverte** de type _binaire_ :
 
 **EXPERIMENTAL**

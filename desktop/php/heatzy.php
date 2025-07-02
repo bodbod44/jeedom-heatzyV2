@@ -323,7 +323,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 							<br>
 							Pour les modules qui ont cette fonctionnalité en propre, le reglage est une chute de 2° en moins de 5 min (coef tendance = 2/5 = 0.4)
 							<br>
-							La commande d'alerte sert a être alerté en cas de chute de température (fenêtre ouverte en hiver)
+							Si non renseigné, les valeurs 2° et 5min sont prise en compte
 						</div>
 					</div>
 				</td>
