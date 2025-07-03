@@ -1,5 +1,10 @@
+# 03/07/2025 (dev)
+- Retour arrière sur la gestions des errurs http !=500
+- Amélioration de la gestion du timeout/offline
+- Préparation du mode dérogation
+
 # 02/07/2025 (dev)
-- Prise en compte des ereurs http !=500
+- Prise en compte des erreurs http !=500
 - Mise en place d'un garde fou pour limiter les appels gizwits en cas d'erreur 9xxx
 
 # 30/06/2025 (dev)
