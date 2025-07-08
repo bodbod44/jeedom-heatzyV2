@@ -140,6 +140,17 @@ Et d'une commande info **OnLine** de type _binaire_ :
 * **1** : Le module est Online (connecté à internet et fonctionnel)
 * **0** : Le module est Offline (déconnecté ou détaché du compte heatzy. N'est plus pilotable)
 
+Et d'une commande info **Mode dérogation** de type _numeric_ :
+
+* **0** : pas de dérogation
+* **1** : mode vacances
+* **2** : mode boost
+* **3** : détection de presence (selon type de module)
+                
+Et d'une commande info **Délai dérogation** de type _numeric_ :
+
+* **x** : Désigne le nombre de jours du mode vacances
+
 Et d'une commande info **Fenetre Ouverte** de type _binaire_ :
 
 **EXPERIMENTAL**

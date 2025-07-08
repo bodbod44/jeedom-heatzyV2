@@ -1,15 +1,9 @@
-# 03/07/2025 (dev)
-- Retour arrière sur la gestions des errurs http !=500
-- Amélioration de la gestion du timeout/offline
-- Préparation du mode dérogation
-
-# 02/07/2025 (dev)
-- Prise en compte des erreurs http !=500
-- Mise en place d'un garde fou pour limiter les appels gizwits en cas d'erreur 9xxx
-
-# 30/06/2025 (dev)
-- Détéction et désactivation des équipements qui ne sont plus rattachés au compte heatzy (err 9017)
+# 08/07/2025 (beta)
 - Ajout d'une commande info sur l'état OnLine/Offline
+- Nouvelles cmd pour remonter le derog_mode et le derog_time (en lecture)
+- Détéction et désactivation des équipements qui ne sont plus rattachés au compte heatzy (err 9017)
+- Mise en place d'un garde fou pour limiter les appels gizwits en cas d'erreur 9xxx
+- Préparation du mode dérogation
 
 # 29/06/2025 (beta)
 - Ajout d'une detection d'une fenetre ouverte (detection chute de temperature)

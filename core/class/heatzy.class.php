@@ -85,7 +85,7 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
+        if( $httpcode != 200 && $httpcode != 400 ){
             log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
@@ -141,7 +141,7 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
+        if( $httpcode != 200 && $httpcode != 400 ){
             log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
@@ -151,7 +151,7 @@ class HttpGizwits {
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        //log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
         return $aRep;
     }
   
@@ -198,7 +198,7 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
+        if( $httpcode != 200 && $httpcode != 400 ){
             log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
@@ -258,7 +258,7 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
+        if( $httpcode != 200 && $httpcode != 400 ){
             log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
@@ -327,7 +327,7 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
+        if( $httpcode != 200 && $httpcode != 400 ){
             log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
@@ -395,7 +395,7 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
+        if( $httpcode != 200 && $httpcode != 400 ){
             log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
@@ -463,7 +463,7 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
+        if( $httpcode != 200 && $httpcode != 400 ){
             log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
@@ -516,7 +516,7 @@ class HttpGizwits {
                 /// Ferme la connexion
                 curl_close($gizwits);
 
-                if( $httpcode == 500 ){
+                if( $httpcode != 200 && $httpcode != 400 ){
                     log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
                     return false;
                 }
@@ -573,7 +573,7 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
+        if( $httpcode != 200 && $httpcode != 400 ){
             log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
@@ -620,7 +620,7 @@ class HttpGizwits {
                 /// Ferme la connexion
                 curl_close($gizwits);
 
-                if( $httpcode == 500 ){
+                if( $httpcode != 200 && $httpcode != 400 ){
                     log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
                     return false;
                 }
@@ -683,7 +683,7 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode == 500 ){
+        if( $httpcode != 200 && $httpcode != 400 ){
             log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
             return false;
         }
@@ -775,7 +775,11 @@ class heatzy extends eqLogic {
      */
     public static function Synchronize() {
         /// Login + creation du cron
-        heatzy::Login();
+        if( heatzy::Login() === false ){
+            log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+            return false;
+        }
+            
         $UserToken = config::byKey('UserToken','heatzy','none');
       
         /// Bindings
@@ -1015,18 +1019,18 @@ class heatzy extends eqLogic {
 			// Activation de la détection de fenêtre ouverte 
 			if( isset ($aDevice['attr']['window_switch']) )
 				$this->checkAndUpdateCmd('WindowSwitch', $aDevice['attr']['window_switch'] );
-            /*
+            
             // Mode dérogation
                 // 0 : pas de dérogation
                 // 1 : mode vacances
                 // 2 : mode boost
                 // 3 : détection de presence
 			if( isset ($aDevice['attr']['derog_mode']) )
-				$this->checkAndUpdateCmd('xxxxxxxx', $aDevice['attr']['derog_mode'] );
+				$this->checkAndUpdateCmd('derog_mode', $aDevice['attr']['derog_mode'] );
             // Temps de dérogation (en jours) 
 			if( isset ($aDevice['attr']['derog_time']) )
-				$this->checkAndUpdateCmd('xxxxxxxx', $aDevice['attr']['derog_time'] );
-            */
+				$this->checkAndUpdateCmd('derog_time', $aDevice['attr']['derog_time'] );
+            
             $this->CalculExterne( $aDevice ) ;
         }
         else {                                             
@@ -1178,6 +1182,19 @@ class heatzy extends eqLogic {
      */
   
     public function CheckAndCreateCmd($aDevice) {
+        /*
+        $product_key = $this->getConfiguration('product_key','') ;
+      	log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' product_key='.$product_key);
+        $aProductInfo = HttpGizwits::GetProduitInfo($product_key) ;
+        $col = array_column($aProductInfo['entities'][0]['attrs'], 'display_name') ;
+        //log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' $col='.var_export($col, true));
+      
+        $found_key = array_search('mode', $col);
+        log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' $found_key='.$found_key);
+      
+        $moi = in_array( 'cft2' , $aProductInfo['entities'][0]['attrs'][$found_key]['enum'] ) ;
+        log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' $moi='.$moi. '->'.var_export($aProductInfo['entities'][0]['attrs'][$found_key]['enum'], true));
+      */
         
         // Rattrapage 4 ordres 6 ordres
         // Detection des pilote_pro / shine / glow qui n'auraient que 4 ordres (creation avant la prise en charge des 6 ordres)
@@ -1584,34 +1601,128 @@ class heatzy extends eqLogic {
  
         /// Creation de la commande window_opened
       	if( isset ($aDevice['attr']['Tendance']) ){
-          $cmd = $this->getCmd(null, 'Tendance'); 
-          if (!is_object($cmd) ) {
-              $cmd = new heatzyCmd();
-              $cmd->setName(__('Tendance Température', __FILE__));
-              $cmd->setLogicalId('Tendance');
-              $cmd->setType('info');
-              $cmd->setSubType('numeric');
-              $cmd->setEqLogic_id($this->getId());
-              $cmd->setIsHistorized(0);
-              $cmd->setIsVisible(0);
-              $cmd->save();
-          }
+            $cmd = $this->getCmd(null, 'Tendance'); 
+            if (!is_object($cmd) ) {
+                $cmd = new heatzyCmd();
+                $cmd->setName(__('Tendance Température', __FILE__));
+                $cmd->setLogicalId('Tendance');
+                $cmd->setType('info');
+                $cmd->setSubType('numeric');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(0);
+                $cmd->save();
+            }
         }
       
         /// Creation de la commande window_opened
       	if( isset ($aDevice['attr']['WindowOpened']) ){
-          $cmd = $this->getCmd(null, 'WindowOpened'); 
-          if (!is_object($cmd) ) {
-              $cmd = new heatzyCmd();
-              $cmd->setName(__('Fenetre Ouverte', __FILE__));
-              $cmd->setLogicalId('WindowOpened');
-              $cmd->setType('info');
-              $cmd->setSubType('binary');
-              $cmd->setEqLogic_id($this->getId());
-              $cmd->setIsHistorized(0);
-              $cmd->setIsVisible(1);
-              $cmd->save();
-          }
+            $cmd = $this->getCmd(null, 'WindowOpened'); 
+            if (!is_object($cmd) ) {
+                $cmd = new heatzyCmd();
+                $cmd->setName(__('Fenetre Ouverte', __FILE__));
+                $cmd->setLogicalId('WindowOpened');
+                $cmd->setType('info');
+                $cmd->setSubType('binary');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+        }
+        
+        /// Creation de la commande derog_mode / derog_time
+      	if( isset ($aDevice['attr']['derog_mode']) && isset ($aDevice['attr']['derog_time']) ){
+            $cmd = $this->getCmd(null, 'derog_mode'); 
+            if (!is_object($cmd) ) {
+                $cmd = new heatzyCmd();
+                $cmd->setName(__('Mode dérogation', __FILE__));
+                $cmd->setLogicalId('derog_mode');
+                $cmd->setType('info');
+                $cmd->setSubType('numeric');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+
+            $cmd = $this->getCmd(null, 'derog_time'); 
+            if (!is_object($cmd) ) {
+                $cmd = new heatzyCmd();
+                $cmd->setName(__('Délai dérogation', __FILE__));
+                $cmd->setLogicalId('derog_time');
+                $cmd->setType('info');
+                $cmd->setUnite('Min');
+                $cmd->setSubType('numeric');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            /*
+			/// Creation de la commande derog_off
+			$cmd = $this->getCmd(null, 'derog_off');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('derog_off');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Derogation OFF', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'derog_mode');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
+			}
+            
+			/// Creation de la commande derog_vac
+			$cmd = $this->getCmd(null, 'derog_vac');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('derog_vac');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Derogation Vacances', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'derog_mode');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
+			}
+            
+			/// Creation de la commande derog_boost
+			$cmd = $this->getCmd(null, 'derog_boost');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('derog_boost');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Derogation Boost', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'derog_mode');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
+			}
+            
+			/// Creation de la commande derog_presence
+			$cmd = $this->getCmd(null, 'derog_presence');
+			if (!is_object($cmd)) {
+				$cmd = new heatzyCmd();
+				$cmd->setLogicalId('derog_presence');
+				$cmd->setIsVisible(1);
+				$cmd->setName(__('Derogation Présence', __FILE__));
+				$cmd->setType('action');
+				$cmd->setSubType('other');
+				$cmd->setConfiguration('infoName', 'derog_mode');
+				$cmd->setEqLogic_id($this->getId());
+				$cmd->setIsHistorized(0);
+				$cmd->setIsVisible(1);
+				$cmd->save();
+			}*/
         }
     }
     
