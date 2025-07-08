@@ -52,9 +52,9 @@
                </span>
             </center>
          </span>
-         <span style="margin-left: 20px;margin-top: 0px;">
+         <span style="margin-left: 0px;margin-top: 0px;">
             <center>
-               <div style="margin-left: 10px">
+               <div style="margin-left: 0px">
                   <!-- Off -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Off_id#" data-version="#version#" style="display:none;#Off_display#;">
                   <span title="Mode OFF" class="off cursor action btn">
@@ -95,7 +95,7 @@
             </center>
          </span>
          <center>
-            <span style="margin-left: 20px;margin-top: 0px;">
+            <span style="margin-left: 10px;margin-top: 0px;">
                <!--  Plugzy -->
                <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
                <span title="" class="plug cursor action btn" data-cmd_id="#plugzy_id#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#plugzy_display#;">
@@ -128,6 +128,46 @@
                </span>
             </span>
          </center>
+         <span style="margin-left: 20px;margin-top: 0px; display:none;">
+            <center>
+               <!-- Derog mode -->
+               <span class="float:right" style="margin-right: 0px;margin-top: 0px;">
+               <span class="cmd cmd-widget #derog_mode_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#derog_mode_id#" style="margin-left:5px;display:none;#derog_mode_display#;" title="#derog_mode_CollectDate#" data-version="#version#">
+               <span class="iconCmd"></span>
+               </span>
+               </span>
+            </center>
+         </span>
+         <span style="margin-left: 0px;margin-top: 0px; display:none;">
+            <center>
+               <div style="margin-left: 0px">
+                  <!-- Derog Off -->
+                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_off_id#" data-version="#version#" style="display:none;#derog_off_display#;">
+                  <span title="Derog OFF" class="off cursor action btn">
+                  <i class="jeedom-off" style="font-size:1.2em"></i>
+                  </span>
+                  </span>
+                  <!-- Derog Vacances -->
+                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_vac_id#" data-version="#version#" style="display:none;#derog_vac_display#;">
+                  <span title="Derog Vacances" class="vacances cursor action btn">
+                  <i class="jeedomapp-plane" style="font-size:1.4em"></i>
+                  </span>
+                  </span>
+                  <!--  Derog Boost -->
+                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_boost_id#" data-version="#version#" style="display:none;#derog_boost_display#;">
+                  <span title="Derog boost" class="boost cursor action btn">
+                  <i class="fas fa-bomb" style="font-size:1.0em"></i>
+                  </span>
+                  </span>
+                  <!--  Derog presence -->
+                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_presence_id#" data-version="#version#" style="display:none;#derog_presence_display#;">
+                  <span title="Derog Présence" class="presence cursor action btn">
+                  <i class="loisir-runner5" style="font-size:1.0em"></i>
+                  </span>
+                  </span>
+               </div>
+            </center>
+         </span>
       </div>
    </div>
    <script>
@@ -277,6 +317,20 @@
          }
       }
       jeedom.cmd.update['#WindowOpened_id#']({display_value:'#WindowOpened_cmd#',collectDate:'#WindowOpened_CollectDate#',valueDate:'#WindowOpened_ValueDate#'});
+
+      jeedom.cmd.update['#derog_mode_id#'] = function(_options){
+         $('.cmd[data-cmd_id="#derog_mode_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         if (_options.display_value == '0') {
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('Derog<i class="icon jeedom-off" style="font-size:1em"></i>');   /// Derog Confort
+         }else if (_options.display_value == '1') { 
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i class="icon jeedomapp-plane" style="font-size:1em"></i><i style="font-size:0.5em">-1</i>');   /// Derog vacances
+         }else if (_options.display_value == '2') {
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i class="icon fas fa-bomb" style="font-size:1em"></i>');   /// Derog boost
+         }else {
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i class="icon loisir-runner5" style="font-size:1em"></i>');    /// Derog présence
+         }
+      }
+      jeedom.cmd.update['#derog_mode_id#']({display_value:'#derog_mode_cmd#',collectDate:'#derog_mode_CollectDate#',valueDate:'#derog_mode_ValueDate#'});
 
    </script>
 </div>

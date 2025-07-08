@@ -1,3 +1,10 @@
+# 08/07/2025 (beta)
+- Ajout d'une commande info sur l'état OnLine/Offline
+- Nouvelles cmd pour remonter le derog_mode et le derog_time (en lecture)
+- Détéction et désactivation des équipements qui ne sont plus rattachés au compte heatzy (err 9017)
+- Mise en place d'un garde fou pour limiter les appels gizwits en cas d'erreur 9xxx
+- Préparation du mode dérogation
+
 # 29/06/2025 (beta)
 - Ajout d'une detection d'une fenetre ouverte (detection chute de temperature)
 - Ajout d'un onglet Parametres dans chaque équipement
