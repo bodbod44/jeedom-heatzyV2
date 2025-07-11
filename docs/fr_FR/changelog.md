@@ -1,3 +1,14 @@
+# xx/06/2025 (dev)
+- TODO : Commande Alerte fenetre ouverte (deja possible en scenario)
+- TODO : Alerte hors ligne (9042)
+- TODO : Mode vacance
+- TODO : detecter les modules 6 ordres avec un appel datapoint
+- TODO : detection présence
+- TODO : Verifier login systematique (notamment dans Synchronize)
+
+# 11/07/2025 (dev)
+- Correction de warning PHP ([Signalement](https://community.jeedom.com/t/erreur-sur-cron-execution/141846/1))
+
 # 08/07/2025 (beta)
 - Ajout d'une commande info sur l'état OnLine/Offline
 - Nouvelles cmd pour remonter le derog_mode et le derog_time (en lecture)
