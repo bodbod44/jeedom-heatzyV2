@@ -36,12 +36,14 @@ Après téléchargement du plugin, il vous suffit juste d'activer celui-ci et de
 
 Puis cliquez sur synchroniser pour récupérer la liste des modules Heatzy pilotes associés à votre compte.
 
-![heatzy1](../images/configuration2.png)
+![heatzy1](../images/configuration3.png)
 
 * **Email** : votre adresse email utilisé lors de votre enregistrement dans le cloud
 * **Mot de passe** : votre mot de passe d'accès renseigné lors de votre enregistrement dans le cloud
 * **Token** : votre token d'accès au cloud, après la synchronisation de vos modules
 * **Expire** : la date d'expiration du token d'accès au cloud, après la synchronisation de vos modules
+* **Fréquence de rafraichissement des commandes** : Fréquence des appels à l'API heatzy pour récupérer les informations type mode, température, activations ...
+* **Fréquence de rafraichissement du statut du module** : Fréquence des appels à l'API heatzy pour récupérer le statut OnLine/Offline et pour l'ajout des nouveau xmodules rattachés au compte
 * **Synchroniser** : permet de synchroniser vos modules Heatzy avec le cloud
 
 

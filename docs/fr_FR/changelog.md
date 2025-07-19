@@ -1,10 +1,11 @@
-# xx/06/2025 (dev)
-- TODO : Commande Alerte fenetre ouverte (deja possible en scenario)
-- TODO : Alerte hors ligne (9042)
-- TODO : Mode vacance
-- TODO : detecter les modules 6 ordres avec un appel datapoint
-- TODO : detection présence
-- TODO : Verifier login systematique (notamment dans Synchronize)
+# 19/07/2025 (dev)
+- Ajout des parametres (niveau plugin) pour définir la fréquence de rafraichissement de :
+  - Statut : Ajout des nouveaux modules rattachés et statut OnLine/Offline
+  - Commande infos : Mode actifs, activation, températures ...
+- Passage du timeout des appels API en constante (et définition à 5)
+
+# 12/07/2025 (dev)
+- Désactivation des commandes mode lorsqu'une dérogation est active
 
 # 11/07/2025 (dev)
 - Correction de warning PHP ([Signalement](https://community.jeedom.com/t/erreur-sur-cron-execution/141846/1))

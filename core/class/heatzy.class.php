@@ -29,6 +29,8 @@ class HttpGizwits {
     public static $HeatzyAppId = "c70a66ff039d41b4a220e198b0fcc8b3";
     public static $UrlGizwits = "https://euapi.gizwits.com";
     
+    public static $Timeout = 5 ;
+    
     public static $_MaxError = 200 ;
 
     /*     * ***********************Methode static*************************** */
@@ -64,7 +66,7 @@ class HttpGizwits {
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
-            CURLOPT_TIMEOUT => 10,
+            CURLOPT_TIMEOUT => self::$Timeout,
             CURLOPT_POSTFIELDS => $data
         );
 
@@ -121,7 +123,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/datapoint?product_key='.$ProductKey,
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => 10
+            CURLOPT_TIMEOUT => self::$Timeout
         );
 
         /// Initialisation de la ressources curl
@@ -178,7 +180,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/bindings?limit=20&amp;skip=0',
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => 10
+            CURLOPT_TIMEOUT => self::$Timeout
         );
     
         /// Initialisation de la ressources curl
@@ -238,7 +240,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did.'/scheduler?limit='.$Limit.'&amp;skip='.$Skip,
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => 10
+            CURLOPT_TIMEOUT => self::$Timeout
         );
 
         /// Initialisation de la ressources curl
@@ -306,7 +308,7 @@ class HttpGizwits {
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
-            CURLOPT_TIMEOUT => 10,
+            CURLOPT_TIMEOUT => self::$Timeout,
             CURLOPT_POSTFIELDS => $data
         );
         
@@ -374,7 +376,7 @@ class HttpGizwits {
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
-            CURLOPT_TIMEOUT => 10,
+            CURLOPT_TIMEOUT => self::$Timeout,
             CURLOPT_POSTFIELDS => $data
         );
         
@@ -442,7 +444,7 @@ class HttpGizwits {
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
-            CURLOPT_TIMEOUT => 10,
+            CURLOPT_TIMEOUT => self::$Timeout,
             CURLOPT_POSTFIELDS => $data
         );
 
@@ -495,7 +497,7 @@ class HttpGizwits {
                     CURLOPT_FRESH_CONNECT => 1,
                     CURLOPT_RETURNTRANSFER => 1,
                     CURLOPT_FORBID_REUSE => 1,
-                    CURLOPT_TIMEOUT => 10,
+                    CURLOPT_TIMEOUT => self::$Timeout,
                     CURLOPT_POSTFIELDS => $data
                 );
 
@@ -555,7 +557,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => 10
+            CURLOPT_TIMEOUT => self::$Timeout
         );
         /// Initialisation de la ressources curl
         $gizwits = curl_init();
@@ -601,7 +603,7 @@ class HttpGizwits {
                     ),
                     CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
                     CURLOPT_RETURNTRANSFER => 1,
-                    CURLOPT_TIMEOUT => 10
+                    CURLOPT_TIMEOUT => self::$Timeout
                 );
               
                 /// Initialisation de la ressources curl
@@ -663,7 +665,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did,
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => 10
+            CURLOPT_TIMEOUT => self::$Timeout
         );
         
         /// Initialisation de la ressources curl
@@ -1033,7 +1035,7 @@ class heatzy extends eqLogic {
 				$this->checkAndUpdateCmd('derog_time', $aDevice['attr']['derog_time'] );
 
 			// Détéction de présence 
-			if( $aDevice['attr']['derog_mode'] == 3 ){
+			if( $aDevice['attr']['derog_mode'] == 3 && array_keys(self::$_HeatzyMode, $KeyMode)[0] == 0){
 				$this->checkAndUpdateCmd('detect_presence', 1 );
             }
             else{
@@ -1709,7 +1711,7 @@ class heatzy extends eqLogic {
 				$cmd->setIsVisible(1);
 				$cmd->setName(__('Derogation Boost', __FILE__));
 				$cmd->setType('action');
-				$cmd->setSubType('other');
+				$cmd->setSubType('message');
 				$cmd->setConfiguration('infoName', 'derog_mode');
 				$cmd->setEqLogic_id($this->getId());
 				$cmd->setIsHistorized(0);
@@ -1812,58 +1814,65 @@ class heatzy extends eqLogic {
     * synchronisation
     */
     public static function cron() {
-      
-      if( !cache::exist('Heatzy_CptError') ){
-        cache::set( 'Heatzy_CptError' , 0) ;
-        log::add('heatzy', 'debug',  __METHOD__.': INIT cache' );
-      }
 
-      if( cache::byKey('Heatzy_CptError')->getValue() > HttpGizwits::$_MaxError){
-        log::add('heatzy', 'debug',  __METHOD__.': cache::Compteur erreur > '.HttpGizwits::$_MaxError.' - Mode dégradé' );
-        return false ;      	
-      }
-      
-        $ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
-        $ExpireTokenTime = strtotime( $ExpireToken ) ;
-        
-        if( $ExpireTokenTime <= time() ){ // Si token expiré
-            log::add('heatzy', 'debug',  __METHOD__.': Token expiré ('.$ExpireToken.') - Récupération d un nouveau token' );
-                    
-          	if ( heatzy::Login() ){
-              	$ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
-              	$ExpireTokenTime = strtotime( $ExpireToken ) ;
-              	log::add('heatzy', 'debug',  __METHOD__.': Récupération du token OK ('.$ExpireToken.')' );
-            }
-          	else{
-          		log::add('heatzy', 'debug',  __METHOD__.': Récupération token KO' );	
-             	return false ;
-            }
+        if( !cache::exist('Heatzy_CptError') ){
+            cache::set( 'Heatzy_CptError' , 0) ;
+            log::add('heatzy', 'debug',  __METHOD__.': INIT cache' );
         }
+        if( cache::byKey('Heatzy_CptError')->getValue() > HttpGizwits::$_MaxError){
+            log::add('heatzy', 'debug',  __METHOD__.': cache::Compteur erreur > '.HttpGizwits::$_MaxError.' - Mode dégradé' );
+            return false ;      	
+        }    
         
-        foreach (eqLogic::byType('heatzy') as $heatzy) {
-
-            $Cmd = $heatzy->getCmd('info', 'IsOnLine') ;
-            $IsOnLine = (is_object($Cmd)) ? $Cmd->execCmd() : 1 ;
-          
-            if($heatzy->getIsEnable() == 1 && ($ExpireTokenTime - 120) > time() && $IsOnLine == 1){ /// Execute la commande refresh des modules activés
-
-                $Cmd = heatzyCmd::byEqLogicIdCmdName($heatzy->getId(), 'Rafraichir' );
-                if (! is_object($Cmd)) {
-                    log::add('heatzy', 'error',  ' La commande :refresh n\'a pas été trouvé' );
-                    throw new Exception(__(' La commande refresh n\'a pas été trouvé ', __FILE__));
+        if( (date("i") % config::byKey('Freq_status','heatzy','5') ) == 0 ){ // Toutes les 5 min par défaut
+          	// Le synchronize permet d'aouter les nouveaux modules rattachés et de vérifier le statut online/offline
+            $res = heatzy::Synchronize() ;
+            log::add('heatzy', 'debug',  __METHOD__.': Synchronize cron5 = '.$res );
+        }
+        else if( (date("i") % config::byKey('Freq_value','heatzy','1') ) == 0 ){ // Toutes les 1 min par défaut
+      
+            $ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
+            $ExpireTokenTime = strtotime( $ExpireToken ) ;
+            
+            if( $ExpireTokenTime <= time() ){ // Si token expiré
+                log::add('heatzy', 'debug',  __METHOD__.': Token expiré ('.$ExpireToken.') - Récupération d un nouveau token' );
+                        
+                if ( heatzy::Login() ){
+                    $ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
+                    $ExpireTokenTime = strtotime( $ExpireToken ) ;
+                    log::add('heatzy', 'debug',  __METHOD__.': Récupération du token OK ('.$ExpireToken.')' );
                 }
-                //$Cmd->execCmd($_options);
-                $Cmd->execCmd();
-
-                $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
-                $mc->remove();
-                $mc = cache::byKey('heatzyWidgetdashboard' . $heatzy->getId());
-                $mc->remove();
-
-                $heatzy->toHtml('mobile');
-                $heatzy->toHtml('dashboard');
-                $heatzy->refreshWidget();
+                else{
+                    log::add('heatzy', 'debug',  __METHOD__.': Récupération token KO' );	
+                    return false ;
+                }
             }
+            
+            foreach (eqLogic::byType('heatzy') as $heatzy) {
+
+                $Cmd = $heatzy->getCmd('info', 'IsOnLine') ;
+                $IsOnLine = (is_object($Cmd)) ? $Cmd->execCmd() : 1 ;
+              
+                if($heatzy->getIsEnable() == 1 && ($ExpireTokenTime - 120) > time() && $IsOnLine == 1){ /// Execute la commande refresh des modules activés
+
+                    $Cmd = heatzyCmd::byEqLogicIdCmdName($heatzy->getId(), 'Rafraichir' );
+                    if (! is_object($Cmd)) {
+                        log::add('heatzy', 'error',  ' La commande :refresh n\'a pas été trouvé' );
+                        throw new Exception(__(' La commande refresh n\'a pas été trouvé ', __FILE__));
+                    }
+                    //$Cmd->execCmd($_options);
+                    $Cmd->execCmd();
+
+                    $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
+                    $mc->remove();
+                    $mc = cache::byKey('heatzyWidgetdashboard' . $heatzy->getId());
+                    $mc->remove();
+
+                    $heatzy->toHtml('mobile');
+                    $heatzy->toHtml('dashboard');
+                    $heatzy->refreshWidget();
+                }
+            } // froeach
         }
     }
 
@@ -1871,10 +1880,11 @@ class heatzy extends eqLogic {
     * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
     * synchronisation
     */
+    /*
     public static function cron5() {        
-      $res = heatzy::Synchronize() ;
-      log::add('heatzy', 'debug',  __METHOD__.': Synchronize cron5 = '.$res );
-    }
+        $res = heatzy::Synchronize() ;
+        log::add('heatzy', 'debug',  __METHOD__.': Synchronize cron5 = '.$res );
+    }*/
   
   
     /**
@@ -2160,7 +2170,12 @@ class heatzyCmd extends cmd {
      */
 
     public function execute($_options = array()) {
-      //log::add('heatzy', 'debug',  __METHOD__.' : Commande execute : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');  
+      log::add('heatzy', 'debug',  __METHOD__.' : Commande execute : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');  
+      //var_export($col, true)
+      log::add('heatzy', 'debug',  __METHOD__.' : $_options1 : '.$_options ); 
+      //log::add('heatzy', 'debug',  __METHOD__.' : $_options2 : '.json_decode($_options, true) ); 
+      log::add('heatzy', 'debug',  __METHOD__.' : $_options3 : '.var_export($_options, true) );  
+      
       
       $Result = array();
         

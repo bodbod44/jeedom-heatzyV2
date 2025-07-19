@@ -61,7 +61,7 @@
          </span>
          <span style="margin-left: 0px;margin-top: 0px;">
             <center>
-               <div style="margin-left: 0px" id="btn_mode">
+               <div style="margin-left: 0px" id="#EtatConsigne_id#" class="btn_mode">
                   <!-- Off -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Off_id#" data-version="#version#" style="display:none;#Off_display#;">
                   <span title="Mode OFF" class="off cursor action btn">
@@ -147,29 +147,29 @@
          </span>
          <span style="margin-left: 0px;margin-top: 0px; display:;">
             <center>
-               <div style="margin-left: 0px">
+               <div style="margin-left: 0px;">
                   <!-- Dérogation Off -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_off_id#" data-version="#version#" style="display:none;#derog_off_display#;">
                   <span title="Dérogation OFF" class="off cursor action btn">
-                  <i class="jeedom-off" style="font-size:1.1em"></i>
+                  <i class="jeedom-off" style="font-size:1.2em;"></i>
                   </span>
                   </span>
                   <!-- Dérogation Vacances -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_vacances_id#" data-version="#version#" style="display:none;#derog_vacances_display#;">
                   <span title="Dérogation Vacances" class="vacances cursor action btn">
-                  <i class="fas fa-suitcase" style="font-size:1.2em"></i>
+                  <i class="fas fa-suitcase" style="font-size:1.3em;"></i>
                   </span>
                   </span>
                   <!--  Dérogation Boost -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_boost_id#" data-version="#version#" style="display:none;#derog_boost_display#;">
                   <span title="Dérogation boost" class="boost cursor action btn">
-                  <i class="fas fa-rocket" style="font-size:1.2em"></i>
+                  <i class="fas fa-rocket" style="font-size:1.3em;"></i>
                   </span>
                   </span>
                   <!--  Dérogation presence -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_presence_id#" data-version="#version#" style="display:none;#derog_presence_display#;">
                   <span title="Dérogation Présence" class="presence cursor action btn">
-                  <i class="fas fa-user" style="font-size:1.2em"></i>
+                  <i class="fas fa-user" style="font-size:1.3em;"></i>
                   </span>
                   </span>
                </div>
@@ -179,8 +179,8 @@
    </div>
    <script>
       $('.eqLogic[data-eqLogic_uid=#uid#] .cmd').on('click', function() {
-        	 //alert($(this).data('cmd_id'));
-          jeedom.cmd.execute({id: $(this).data('cmd_id')});
+        //alert($(this).data('cmd_id'));
+          jeedom.cmd.execute({id: $(this).data('cmd_id') , value: {param1: '0' , param2: '1'} });
           });
       
       jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
@@ -275,9 +275,9 @@
     
       jeedom.cmd.update['#cur_temp_id#'] = function(_options){
          $('.cmd[data-cmd_id="#cur_temp_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-         $('.cmd[data-cmd_id="#cur_temp_id#"] span').value(Number.parseFloat(_options.display_value).toFixed(1)); 
+         $('.cmd[data-cmd_id="#cur_temp_id#"] span').value(Number.parseFloat(_options.display_value).toFixed(1) + '' + _options.display_unit); 
       }
-      jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd# #cur_temp_unite#',collectDate:'#cur_temp_CollectDate#',valueDate:'#cur_temp_ValueDate#'});
+      jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd#',display_unit:'#cur_temp_unite#',collectDate:'#cur_temp_CollectDate#',valueDate:'#cur_temp_ValueDate#'});
       
       jeedom.cmd.update['#eco_temp_id#'] = function(_options){
          $('.cmd[data-cmd_id="#eco_temp_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
@@ -329,20 +329,20 @@
          $('.cmd[data-cmd_id="#derog_mode_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
          
          if (_options.display_value != '0') {
-            $('[id="btn_mode"]').attr('style', 'display:none;');
+            $('.btn_mode[id="#EtatConsigne_id#"]').attr('style', 'display:none;');
          }
          else{
-            $('[id="btn_mode"]').attr('style', 'display:xx;');
+            $('.btn_mode[id="#EtatConsigne_id#"]').attr('style', 'display:xx;');
          }
         
         if (_options.display_value == '0') {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i class="icon jeedom-off" style="font-size:1em"></i>');   /// Derog Confort
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon jeedom-off" style="font-size:0.9em;"></i>');   /// Derog Off
          }else if (_options.display_value == '1') { 
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i class="icon fas fa-suitcase" style="font-size:1em"></i><i style="font-size:0.5em">-1</i>');   /// Derog vacances
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-suitcase" style="font-size:1em"></i><i style="font-size:0.5em">-1</i>'); /// Derog vacances
          }else if (_options.display_value == '2') {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i class="icon fas fa-rocket" style="font-size:1em"></i>');   /// Derog boost
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-rocket" style="font-size:1em"></i>');   /// Derog boost
          }else {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i class="icon fas fa-user" style="font-size:1em"></i>');    /// Derog présence
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-user" style="font-size:1em"></i>');    /// Derog présence
          }
       }
       jeedom.cmd.update['#derog_mode_id#']({display_value:'#derog_mode_cmd#',collectDate:'#derog_mode_CollectDate#',valueDate:'#derog_mode_ValueDate#'});
