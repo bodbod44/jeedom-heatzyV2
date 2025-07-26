@@ -732,10 +732,9 @@ class heatzy extends eqLogic {
         /// Login
         $aResult = HttpGizwits::Login($email, $password );
         if ($aResult === false) {
-            log::add('heatzy', 'error', __METHOD__.' : impossible de se connecter a: '.HttpGizwits::$UrlGizwits);
+            log::add('heatzy', 'warning', __METHOD__.' : impossible de se connecter a: '.HttpGizwits::$UrlGizwits);
             return false;
         }
-        log::add('heatzy', 'debug',  '$aResult :'.var_export($aResult, true));
          
         $TokenExpire = date('Y-m-d H:i:s', $aResult['expire_at']);
         $UserToken = $aResult['token'];
@@ -776,7 +775,7 @@ class heatzy extends eqLogic {
     public static function Synchronize() {
         /// Login + creation du cron
         if( heatzy::Login() === false ){
-            log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+            log::add('heatzy', 'warning',  __METHOD__.' : heatzy::Login() - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
             return false;
         }
             
@@ -784,8 +783,8 @@ class heatzy extends eqLogic {
       
         /// Bindings
         $aDevices = HttpGizwits::Bindings($UserToken);
-        if($aDevices === false) {
-            log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+       if($aDevices === false) {
+            log::add('heatzy', 'warning',  __METHOD__.' : HttpGizwits::Bindings - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
             return false;
         }
         
@@ -875,7 +874,7 @@ class heatzy extends eqLogic {
                     $heatzy->setIsVisible(0) ;
                     $heatzy->save();
                     $heatzy->checkAndUpdateCmd('IsOnLine', 0 );   
-                    log::add('heatzy', 'error', 'Le module -'.$heatzy->getName().'- ('.$heatzy->getLogicalId().') n est plus rattaché au compte. Il est maintenant désactivé et non visible (mais pas supprimé)' );   
+                    log::add('heatzy', 'error', 'Le module -'.$heatzy->getName().'- ('.$heatzy->getLogicalId().') n est plus rattaché au compte. Il est maintenant désactivé et non visible (mais pas supprimé)' );
                 }
             }
         }
@@ -2261,7 +2260,7 @@ class heatzyCmd extends cmd {
             if( $Consigne != '' ){
                 $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
                 if($Result === false) {
-                    log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+                    log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
                     return false;
                 }
                 else{
