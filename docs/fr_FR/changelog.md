@@ -1,3 +1,6 @@
+# 26/07/2025 (beta)
+- Passage des certaines erreurs api en silencieuses
+
 # 08/07/2025 (beta)
 - Ajout d'une commande info sur l'état OnLine/Offline
 - Nouvelles cmd pour remonter le derog_mode et le derog_time (en lecture)
