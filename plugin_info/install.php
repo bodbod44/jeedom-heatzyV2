@@ -19,11 +19,12 @@
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function heatzy_install() {
+	/*
    log::add('heatzy', 'debug',  __METHOD__.': heatzy_install');
    $cron = cron::byClassAndFunction('heatzy', 'Login');
    if (is_object($cron)) {
 	  $cron->remove();
-   } 
+   } */
 }
 
 function heatzy_update() {
@@ -143,6 +144,12 @@ function heatzy_update() {
 			}
 		} // if Glow et Shine	  
 	} // foreach
+	
+   log::add('heatzy', 'debug',  __METHOD__.': heatzy_remove');
+   $cron = cron::byClassAndFunction('heatzy', 'Login');
+   if (is_object($cron)) {
+	  $cron->remove();
+   }
 }
 
 function heatzy_remove() {

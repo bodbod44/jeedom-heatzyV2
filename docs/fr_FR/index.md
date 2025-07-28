@@ -49,11 +49,12 @@ Configuration des objets connectés Heatzy
 -------------
 La configuration des modules Heatzy est accessible à partir du menu 'Plugins' > 'Objets connectés'.
 
-![heatzy2](../images/configuration_equipement2.png)
+![heatzy2](../images/configuration_equipement_Gestion.png)
+![heatzy3](../images/configuration_equipement_ListeEqLogic.png)
 
 Une fois que vous cliquez sur un équipement vous retrouvez la configuration de l'équipement :
 
-![heatzy3](../images/detail_equipement2.png)
+![heatzy4](../images/detail_equipement3.png)
 
 Vous retrouvez dans la section **Général**
 
@@ -62,10 +63,6 @@ Vous retrouvez dans la section **Général**
 * **Catégorie** : catégorie de l'équipement, par défaut chauffage
 * **Activer** : permet de rendre votre équipement actif
 * **Visible** : le rend visible sur le dashboard
-* **Template** : Choix du template d'affichage
-  * template **bodbod** : Nouveau template unique et commun à tous les modules *(les commandes non prises en charge par le module ne sont pas affichées)*
-  * template **l3flo** : Template d'origine créé par l3flo (<span style="color: #FF0000">/!\ Ces templates n'est plus maintenu et disparaitra des une future version</span>)
-  * template **jeedom** : Laisse jeedom créer les commandes et informations par défaut
 * **MAC** : l'adresse MAC du module Heatzy
 * **DID** : l'identifiant du module Heatzy
 
@@ -82,14 +79,14 @@ Configuration des commandes des objets connectés Heatzy
 
 ### Wigdet dashboard desktop
 
-![heatzy4](../images/WidgetDesktop.png)
+![heatzy5](../images/WidgetDesktop_PiloteSoc.png)![heatzy6](../images/WidgetDesktop_PilotePro.png)![heatzy7](../images/WidgetDesktop_Glow.png)![heatzy8](../images/WidgetDesktop_Shine.png)![heatzy9](../images/WidgetDesktop_Flam.png)
 
 ### Wigdet dashboard mobile
 
-![heatzy5](../images/WidgetMobile.png)
+![heatzy10](../images/WidgetMobile.png)
 
 
-Chaque équipement dispose des commandes actions :
+Chaque équipement dispose des commandes actions suivantes :
 
 * **Off** : permet de passer en mode off
 * **Confort** : permet de passer en mode confort
@@ -105,7 +102,7 @@ Chaque équipement dispose des commandes actions :
 * **Plugzy OFF** : Permet d'éteindre le plugzy *(seulement pour l'équipement de type flam)*
 * **Plugzy ON** : Permet d'allumer le plugzy *(seulement pour l'équipement de type flam)*
 
-D'une commande **Etat Consigne** de type _numerique_ :
+D'une commande info **Etat Consigne** de type _numerique_ :
 
 * **0** : Mode Confort
 * **4** : Mode Confort-1 (uniquement pour les modules 6 ordres)
@@ -114,7 +111,7 @@ D'une commande **Etat Consigne** de type _numerique_ :
 * **2** : Mode Hors-gel
 * **3** : Mode Off
 
-Et d'une commande **Mode** de type _string_ :
+Et d'une commande info **Mode** de type _string_ :
 
 * **Confort**
 * **Confort-1** (uniquement pour les modules 6 ordres)
@@ -123,30 +120,78 @@ Et d'une commande **Mode** de type _string_ :
 * **HorsGel**
 * **Off**
 
-Et d'une commande **Etat programmation** de type _binaire_ :
+Et d'une commande info **Etat programmation** de type _binaire_ :
 
 * **1** : La programmation est activée
 * **0** : La programmation est désactivée
 
-Et d'une commande **Etat Verrouillage** de type _binaire_ :
+Et d'une commande info **Etat Verrouillage** de type _binaire_ :
 
 * **1** : Le verrouillage est activé
 * **0** : Le verrouillage est désactivé
 
-Et d'une commande **Détéction fenetre ouverte** de type _binaire_ :
+Et d'une commande info **Etat Activation fenêtre ouverte** de type _binaire_ :
 
 * **1** : La détéction est activée
 * **0** : La détéction est désactivée
-                                  
-Et de commandes de type _numerique_ :
+
+Et d'une commande info **OnLine** de type _binaire_ :
+
+* **1** : Le module est Online (connecté à internet et fonctionnel)
+* **0** : Le module est Offline (déconnecté ou détaché du compte heatzy. N'est plus pilotable)
+
+Et d'une commande info **Mode dérogation** de type _numeric_ :
+
+* **0** : pas de dérogation
+* **1** : mode vacances
+* **2** : mode boost
+* **3** : détection de presence (selon type de module)
+                
+Et d'une commande info **Délai dérogation** de type _numeric_ :
+
+* **x** : Désigne le nombre de jours du mode vacances
+
+Et d'une commande info **Fenetre Ouverte** de type _binaire_ :
+
+**EXPERIMENTAL**
+* **1** : Le plugin a détécté qu'une fenetre était ouverte (détéction chute de température)
+* **0** : Fenetre fermée (après hausse de température ou après 60 min)
+**EXPERIMENTAL**
+             
+Et d'une commande info **Tendance Température** de type _numeric_ :
+
+**EXPERIMENTAL**
+* **-x** : La température à tendance à diminuer (à hauteur du coeficient par minute)
+* **0** : La température est stable
+* **+x** : La température à tendance à augmenter (à hauteur du coeficient par minute)
+**EXPERIMENTAL**
+             
+Et de commandes info de type _numerique_ :
 
 * **Temp. confort** : la température de consigne du mode confort
 * **Temp. eco**   : la température de consigne du mode eco
 * **Temperature** : la température relevé par le module
 * **Taux Humidité** : le taux d'humidité relevé par le module
 
->Vous pouvez tester la valeur de la commande info *Etat* ou *Mode* dans vos scénarios.
+>Vous pouvez tester les valeurs des commandes info dans vos scénarios.
 
+**Parametres complémentaires par équipement**
+
+* **Template** : Choix du template d'affichage
+  * template **bodbod** : Nouveau template unique et commun à tous les modules *(les commandes non prises en charge par le module ne sont pas affichées)*
+  * template **l3flo** : Template d'origine créé par l3flo (<span style="color: #FF0000">/!\ Ces templates n'est plus maintenu et disparaitra des une future version</span>)
+  * template **jeedom** : Laisse jeedom créer les commandes et informations par défaut
+* Capteur de température externe (facultatif)
+  * Cela permet d'avoir la température pour les modules qui n'ont pas de capteur
+  * Pour les modules qui possède un capteur interne, le capteur externe sera utilisé par le plugin
+* Capteur d'humidité externe (facultatif)
+  * Cela permet d'avoir le taux d'humidité pour les modules qui n'ont pas de capteur
+  * Pour les modules qui possède un capteur interne, le capteur externe sera utilisé par le plugin
+* Calcul de tendance pour la detection d'une fenetre ouverte avec :
+  * **Nombre de degré (°c)**
+  * **Durée (min)**
+  * Pour détécter une chute de 2° en moins de 5min, mettre 2 (°) et 5 (min)
+  * **Commande d'alerte** : Alerte en cas de detection de fenetre ouverte
 
 **Tableau des commandes possible par modules :**
 
