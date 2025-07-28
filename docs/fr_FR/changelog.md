@@ -1,3 +1,22 @@
+# 28/07/2025 (dev)
+- Prise en charge de la consigne confort/eco pour les ancien modules, Glow et Shine
+
+# 27/07/2025 (dev)
+- Ajout de la consigne de temperature confort dans le template bodbod
+- Ajout de la consigne de temperature éco dans le template bodbod
+- Ajout du slide derog_vacances dans le template bodbod
+- Ajout du slide derog_boost dans le template bodbod
+- Blocage du cron lors de la synchronisation (pour les synchro qui prennent du temps)
+
+# 26/07/2025 (dev)
+- Ajout de la consigne de temperature confort (uniquement en scénario ou template jeedom)
+- Ajout de la consigne de temperature éco (uniquement en scénario ou template jeedom)
+- Ajout de minValue, maxValue et step dans les templates
+
+# 25/07/2025 (dev)
+- Prise en charge de la commande derog_vacances (uniquement en scénario ou template jeedom)
+- Prise en charge de la commande derog_boost (uniquement en scénario ou template jeedom)
+
 # 19/07/2025 (dev)
 - Ajout des parametres (niveau plugin) pour définir la fréquence de rafraichissement de :
   - Statut : Ajout des nouveaux modules rattachés et statut OnLine/Offline
@@ -9,6 +28,9 @@
 
 # 11/07/2025 (dev)
 - Correction de warning PHP ([Signalement](https://community.jeedom.com/t/erreur-sur-cron-execution/141846/1))
+
+# 26/07/2025 (beta)
+- Passage des certaines erreurs api en silencieuses
 
 # 08/07/2025 (beta)
 - Ajout d'une commande info sur l'état OnLine/Offline

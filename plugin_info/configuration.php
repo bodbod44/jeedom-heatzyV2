@@ -86,6 +86,8 @@ if (!isConnect()) {
 <script>
 
 $('.bt_syncheatzy').on('click',function(){
+	  $('#div_alert').showAlert({message: 'Synchronisation en cours. Ne pas toucher au plugin pendant 2min', level: 'info'});
+	  
 	  $('#syncheatzy').addClass('fa-spin');
 	  
       $.ajax({// fonction permettant de faire de l'ajax

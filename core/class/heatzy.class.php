@@ -29,7 +29,7 @@ class HttpGizwits {
     public static $HeatzyAppId = "c70a66ff039d41b4a220e198b0fcc8b3";
     public static $UrlGizwits = "https://euapi.gizwits.com";
     
-    public static $Timeout = 5 ;
+    public static $Timeout = 10 ;
     
     public static $_MaxError = 200 ;
 
@@ -88,7 +88,7 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode );
             return false;
         }
         
@@ -201,7 +201,7 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode );
             return false;
         }
 
@@ -477,8 +477,8 @@ class HttpGizwits {
         //   }
      
      
-        if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
-
+        if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) { 
+            // erreur token invalide, alors on va en chercher un nouveau
             if( heatzy::Login() ){
               
                 $UserToken = config::byKey('UserToken','heatzy','none');
@@ -587,7 +587,7 @@ class HttpGizwits {
         // }
       
         if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
-
+            // erreur token invalide, alors on va en chercher un nouveau
             if( heatzy::Login() ){
               
                 $UserToken = config::byKey('UserToken','heatzy','none');
@@ -734,7 +734,7 @@ class heatzy extends eqLogic {
         /// Login
         $aResult = HttpGizwits::Login($email, $password );
         if ($aResult === false) {
-            log::add('heatzy', 'error', __METHOD__.' : impossible de se connecter a: '.HttpGizwits::$UrlGizwits);
+            log::add('heatzy', 'warning', __METHOD__.' : impossible de se connecter a: '.HttpGizwits::$UrlGizwits);
             return false;
         }
         log::add('heatzy', 'debug',  '$aResult :'.var_export($aResult, true));
@@ -776,25 +776,32 @@ class heatzy extends eqLogic {
      * @return false en cas d'erreur le nombre de modules synchroniser       
      */
     public static function Synchronize() {
+      
+        if( !cache::exist('Heatzy_Synchronize') ) cache::set( 'Heatzy_Synchronize' , 1) ;
+        cache::set( 'Heatzy_Synchronize' , 1) ;
+      
         /// Login + creation du cron
         if( heatzy::Login() === false ){
-            log::add('heatzy', 'error',  __METHOD__.' : heatzy::Login - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
+            log::add('heatzy', 'warning',  __METHOD__.' : heatzy::Login - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
             return false;
         }
             
-        $UserToken = config::byKey('UserToken','heatzy','none');
+        $UserToken = config::byKey('UserToken','heatzy','none');   
       
         /// Bindings
         $aDevices = HttpGizwits::Bindings($UserToken);
+      
+      
         if($aDevices === false) {
-            log::add('heatzy', 'error',  __METHOD__.' : HttpGizwits::Bindings - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
+            log::add('heatzy', 'warning',  __METHOD__.' : HttpGizwits::Bindings - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
             return false;
         }
         
       	log::add('heatzy', 'debug', __METHOD__.' '.count($aDevices ['devices']).'  module(s) trouvé');
         //log::add('heatzy', 'debug', __METHOD__.' $aDevice :'.var_export($aDevices, true));
+      
       	$Nb_Add = 0;
-      	$aSearchDid = [] ;
+      	$aSearchDid = [] ; //Va stocker les DID trouvé (pour vérifier ceux qui ont disparus)
         foreach ($aDevices ['devices'] as $DeviceNum => $aDevice) {
             $aSearchDid[] = $aDevice['did'] ;
             $eqLogic = self::byLogicalId( $aDevice['did'] , 'heatzy', false);
@@ -849,15 +856,17 @@ class heatzy extends eqLogic {
           	$eqLogic->save();
           
           	// A mettre après le save (car le save met le statut à 0)
-            if( $aDevice['is_online'] == 'true' )
+            if( $aDevice['is_online'] == 'true' ){
                 $eqLogic->setStatus('timeout','0');
-            else
+            }
+            else{
                 $eqLogic->setStatus('timeout','1');
-            
+            }
           
             log::add('heatzy', 'debug', __METHOD__.' Count($aSearchDid)='.count($aSearchDid).' Count($aDevice)='.count($aDevices ['devices']) );
                           
-            if ($eqLogic->getIsEnable() == 1 && $eqLogic->getStatus('timeout') == 0 ) { /// mise à jour du did
+            // mise à jour du did
+            if ($eqLogic->getIsEnable() == 1 && $eqLogic->getStatus('timeout') == 0 ) { // Ne pas faire si timout (car l'update va remettre reinit le timeout=
                  $eqLogic->updateHeatzyDid($UserToken,$aStatus);
             }
         }
@@ -872,16 +881,18 @@ class heatzy extends eqLogic {
       	foreach (eqLogic::byType('heatzy') as $heatzy) {
             if( !in_array($heatzy->getLogicalId() , $aSearchDid ) ){
                 if( $heatzy->getIsEnable() == 1 ){
-                    $heatzy->setStatus('timeout','1');
                     $heatzy->setIsEnable(0);
                     $heatzy->setIsVisible(0) ;
                     $heatzy->save();
                     $heatzy->checkAndUpdateCmd('IsOnLine', 0 );   
+                    $heatzy->setStatus('timeout','1');
                     log::add('heatzy', 'error', 'Le module -'.$heatzy->getName().'- ('.$heatzy->getLogicalId().') n est plus rattaché au compte. Il est maintenant désactivé et non visible (mais pas supprimé)' );   
                 }
             }
         }
       	//log::add('heatzy', 'debug', 'array_diff='.var_export( array_diff(eqLogic::byType('heatzy'), $aDevices ['devices']), true) );
+      
+      	cache::set( 'Heatzy_Synchronize' , 0) ;
       
         return count($aDevices['devices']);    
     }
@@ -969,8 +980,9 @@ class heatzy extends eqLogic {
                 }
                 else {
                     log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
-                    $this->setStatus('timeout','1');
-                    $this->save(); /// Enregistre les info
+                  	$this->checkAndUpdateCmd('IsOnLine', 0 ); 
+                  	$this->save(); /// Enregistre les info  
+                  	$this->setStatus('timeout','1');
                     return false;
                 }
             }
@@ -1028,11 +1040,17 @@ class heatzy extends eqLogic {
                 // 1 : mode vacances
                 // 2 : mode boost
                 // 3 : détection de presence
-			if( isset ($aDevice['attr']['derog_mode']) )
+			if( isset ($aDevice['attr']['derog_mode']) ){
 				$this->checkAndUpdateCmd('derog_mode', $aDevice['attr']['derog_mode'] );
-            // Temps de dérogation (en jours) 
-			if( isset ($aDevice['attr']['derog_time']) )
-				$this->checkAndUpdateCmd('derog_time', $aDevice['attr']['derog_time'] );
+              
+                // Temps de dérogation
+                //  vacances en jours (j)
+                //  boost en minutes (min)
+              	isset ($aDevice['attr']['derog_time']) ? $derog_time = $aDevice['attr']['derog_time'] : $derog_time = '0' ;
+                $this->checkAndUpdateCmd('derog_time_vacances', $aDevice['attr']['derog_mode'] == '1' ? $derog_time : 0 );
+              	$this->checkAndUpdateCmd('derog_time_boost'   , $aDevice['attr']['derog_mode'] == '2' ? $derog_time : 0 );
+              
+            }
 
 			// Détéction de présence 
 			if( $aDevice['attr']['derog_mode'] == 3 && array_keys(self::$_HeatzyMode, $KeyMode)[0] == 0){
@@ -1131,7 +1149,7 @@ class heatzy extends eqLogic {
             }
         }
     }
-    
+
       /**
      * @brief Fonction qui permet de savoir si le module gère 4 ou 6 ordres
      * 
@@ -1185,6 +1203,62 @@ class heatzy extends eqLogic {
         log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' Nombre d ordre='.$NbOrdres);
       	return $NbOrdres ;
     }
+    
+      /**
+     * @brief Fonction qui permet de savoir si le module gère 4 ou 6 ordres
+     * 
+     * @param tableau retour API
+     */
+  
+    public function VerifOrdreAccepte( $aDevice , $attr , $valeur , $valeurInit = false) {
+        if( $aDevice['attr'][$attr] == $valeur  ){
+            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET deja valorisé');
+            return true ;
+        }
+        else{
+            // On tente de mettre la valeur
+            $Consigne = array( 'attrs' => array ( $attr => $valeur )  );
+            $UserToken = config::byKey('UserToken','heatzy','none');
+            // Appel API pour SET $valeur
+            $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
+            
+            if( $ResultSet['error_code'] == '9025'){
+                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - '.$attr.'=>'.$valeur.' SET error 9025 attribut invalide');
+                return false ;
+            }
+                
+            if( $ResultSet['error_code'] == ''){
+                sleep(2); // Attente 3sec
+                // Appel API pour analyser le changement ou non de consigne
+                $ResultGet = HttpGizwits::GetConsigne($UserToken, $this->getLogicalId() ) ;
+                if( $ResultGet['error_code'] == ''){
+					  return true ;
+                  /*if( $ResultGet['attr'][$attr] == $valeur ){
+                        log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET valorisé avec succes');
+                        return true ;
+                    }
+                    else{
+                      log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET valeur autre (KO-'.$ResultGet['attr'][$attr].')');
+                    }*/
+                }
+                else
+                    log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code1 GET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+            }
+            else
+                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code2 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+            
+            if( $valeurInit == true ){
+                // On remet l'ordre initial
+                sleep(1);
+                $Consigne = array( 'attrs' => array ( $attr => $aDevice['attr'][$attr] )  );
+                $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
+                if( $ResultSet['error_code'] != '' )
+                    log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code3 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+            }
+        }
+
+      	return false ;
+    }
   
     /**
      * @brief Fonction qui permet de créer les commandes en fonction du retour de l'API
@@ -1206,7 +1280,19 @@ class heatzy extends eqLogic {
         $moi = in_array( 'cft2' , $aProductInfo['entities'][0]['attrs'][$found_key]['enum'] ) ;
         log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' $moi='.$moi. '->'.var_export($aProductInfo['entities'][0]['attrs'][$found_key]['enum'], true));
       */
-        
+      
+      /*
+      return true ;
+        log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - derog_mode=0 - '.$this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 0 ));
+        sleep(1);
+        log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - derog_mode=1 - '.$this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 1 ));
+        sleep(1);
+        log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - derog_mode=2 - '.$this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 2 ));
+        sleep(1);
+        log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - derog_mode=3 - '.$this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 3 ));
+        return true ;      
+*/
+      
         // Rattrapage 4 ordres 6 ordres
         // Detection des pilote_pro / shine / glow qui n'auraient que 4 ordres (creation avant la prise en charge des 6 ordres)
         //$Heatzy6Ordres = array("Pilote_Pro","Shine_ble","Glow_Simple_ble");
@@ -1232,7 +1318,6 @@ class heatzy extends eqLogic {
                             log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' creation commande :'.$Key.'=>'.$Mode);
                             $cmd = new heatzyCmd();
                             $cmd->setLogicalId($Mode);
-                            $cmd->setIsVisible(1);
                             $cmd->setName(__($Mode, __FILE__));
                             $cmd->setType('action');
                             $cmd->setSubType('other');
@@ -1294,6 +1379,32 @@ class heatzy extends eqLogic {
 				$CftTemp->setIsVisible(1);
 				$CftTemp->save();
 			}
+          
+            $cmd = $this->getCmd(null, 'cft_temp_consigne');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('cft_temp_consigne');
+                $cmd->setName(__('Consigne Temp. confort', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('slider');
+				//$cmd->setUnite('°C');
+                $cmd->setConfiguration('infoName', 'cft_temp');
+                $cmd->setConfiguration('value', "#slider#");
+                $cmd->setConfiguration('minValue', 15);  // valeur minimale
+                $cmd->setConfiguration('maxValue', 25); // valeur maximale
+              	$cmd->setConfiguration('tempHL', isset ($aDevice['attr']['cft_tempH']) ) ;
+                $cmd->setValue($CftTemp ->getId());  
+                $cmd->setDisplay('parameters', ['step' => 1]);
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(0);
+                $cmd->save();
+            }
+            else{
+				$cmd->setConfiguration('tempHL', isset ($aDevice['attr']['cft_tempH']) ) ;
+                $cmd->save();
+          }
+          
         } // cft_temp - cft_tempH
           
      	if( isset ($aDevice['attr']['eco_temp']) || isset ($aDevice['attr']['eco_tempH']) ){
@@ -1311,6 +1422,31 @@ class heatzy extends eqLogic {
 				$EcoTemp->setIsVisible(1);
 				$EcoTemp->save();
 			}
+          
+            $cmd = $this->getCmd(null, 'eco_temp_consigne');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('eco_temp_consigne');
+                $cmd->setName(__('Consigne Temp. eco', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('slider');
+                $cmd->setConfiguration('infoName', 'eco_temp');
+                $cmd->setConfiguration('value', "#slider#");
+                $cmd->setConfiguration('minValue', 10);  // valeur minimale
+                $cmd->setConfiguration('maxValue', 20); // valeur maximale
+                $cmd->setConfiguration('tempHL', isset ($aDevice['attr']['eco_tempH']) ) ;
+                $cmd->setValue($EcoTemp ->getId());  
+                $cmd->setDisplay('parameters', ['step' => 1]);
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(0);
+                $cmd->save();
+            }
+          else{
+            $cmd->setConfiguration('tempHL', isset ($aDevice['attr']['eco_tempH']) ) ;
+            $cmd->save();
+          }
+          
         } // if eco_temp - eco_tempH
           
         if( isset ($aDevice['attr']['cur_temp']) || isset ($aDevice['attr']['cur_tempH']) ){
@@ -1323,20 +1459,39 @@ class heatzy extends eqLogic {
 				$CurTemp->setType('info');
 				$CurTemp->setUnite('°C');
 				$CurTemp->setSubType('numeric');
+              	$CurTemp->setConfiguration('tempHL', isset ($aDevice['attr']['cur_tempH']) ) ;
 				$CurTemp->setEqLogic_id($this->getId());
 				$CurTemp->setIsHistorized(0);
 				$CurTemp->setIsVisible(1);
 				$CurTemp->save();
 			}
+            else{
+				$CurTemp->setConfiguration('tempHL', isset ($aDevice['attr']['cur_tempH']) ) ;
+                $CurTemp->save();
+           }
         } // if cur_temp - cur_tempH
             
         if( isset ($aDevice['attr']['timer_switch']) ){
+            
+            /// Creation de la commande info etatprog binaire
+            $etat = $this->getCmd(null, 'etatprog');
+            if (!is_object($etat)) {
+                $etat = new heatzyCmd();
+                $etat->setName(__('Etat programmation', __FILE__));
+                $etat->setLogicalId('etatprog');
+                $etat->setType('info');
+                $etat->setSubType('binary');
+                $etat->setEqLogic_id($this->getId());
+                $etat->setIsHistorized(0);
+                $etat->setIsVisible(1);
+                $etat->save();
+            }
+            
             // Programmation On/Off
             $cmd = $this->getCmd(null, 'ProgOn');
             if (!is_object($cmd)) {
                 $cmd = new heatzyCmd();
                 $cmd->setLogicalId('ProgOn');
-                $cmd->setIsVisible(1);
                 $cmd->setName(__('Activer Programmation', __FILE__));
                 $cmd->setType('action');
                 $cmd->setSubType('other');
@@ -1354,7 +1509,6 @@ class heatzy extends eqLogic {
             if (!is_object($cmd)) {
                 $cmd = new heatzyCmd();
                 $cmd->setLogicalId('ProgOff');
-                $cmd->setIsVisible(1);
                 $cmd->setName(__('Désactiver Programmation', __FILE__));
                 $cmd->setType('action');
                 $cmd->setSubType('other');
@@ -1368,12 +1522,16 @@ class heatzy extends eqLogic {
                 $cmd->setConfiguration('infoName', 'etatprog');
             }
                 
-            /// Creation de la commande info etatprog binaire
-            $etat = $this->getCmd(null, 'etatprog');
+        } // if timer switch
+      
+        if( isset ($aDevice['attr']['lock_switch']) ){
+            
+            /// Creation de la commande info etatlock binaire
+            $etat = $this->getCmd(null, 'etatlock');
             if (!is_object($etat)) {
                 $etat = new heatzyCmd();
-                $etat->setName(__('Etat programmation', __FILE__));
-                $etat->setLogicalId('etatprog');
+                $etat->setName(__('Etat Verrouillage', __FILE__));
+                $etat->setLogicalId('etatlock');
                 $etat->setType('info');
                 $etat->setSubType('binary');
                 $etat->setEqLogic_id($this->getId());
@@ -1381,15 +1539,12 @@ class heatzy extends eqLogic {
                 $etat->setIsVisible(1);
                 $etat->save();
             }
-        } // if timer switch
-      
-        if( isset ($aDevice['attr']['lock_switch']) ){
+            
             // Verouillage-lock On/Off
             $cmd = $this->getCmd(null, 'LockOn');
             if (!is_object($cmd)) {
                 $cmd = new heatzyCmd();
                 $cmd->setLogicalId('LockOn');
-                $cmd->setIsVisible(1);
                 $cmd->setName(__('Activer Verrouillage', __FILE__));
                 $cmd->setType('action');
                 $cmd->setSubType('other');
@@ -1407,7 +1562,6 @@ class heatzy extends eqLogic {
             if (!is_object($cmd)) {
                 $cmd = new heatzyCmd();
                 $cmd->setLogicalId('LockOff');
-                $cmd->setIsVisible(1);
                 $cmd->setName(__('Désactiver Verrouillage', __FILE__));
                 $cmd->setType('action');
                 $cmd->setSubType('other');
@@ -1421,12 +1575,16 @@ class heatzy extends eqLogic {
                 $cmd->setConfiguration('infoName', 'etatlock');
             }
                 
-            /// Creation de la commande info etatlock binaire
-            $etat = $this->getCmd(null, 'etatlock');
+        } // if lock_switch
+
+        if( isset ($aDevice['attr']['LOCK_C']) ){
+
+            /// Creation de la commande info Lock_C_State binaire
+            $etat = $this->getCmd(null, 'Lock_C_State');
             if (!is_object($etat)) {
                 $etat = new heatzyCmd();
                 $etat->setName(__('Etat Verrouillage', __FILE__));
-                $etat->setLogicalId('etatlock');
+                $etat->setLogicalId('Lock_C_State');
                 $etat->setType('info');
                 $etat->setSubType('binary');
                 $etat->setEqLogic_id($this->getId());
@@ -1434,16 +1592,12 @@ class heatzy extends eqLogic {
                 $etat->setIsVisible(1);
                 $etat->save();
             }
-        } // if lock_switch
-
-        if( isset ($aDevice['attr']['LOCK_C']) ){
             
             // Verouillage-lock On/Off
             $cmd = $this->getCmd(null, 'Lock_C_On');
             if (!is_object($cmd)) {
                 $cmd = new heatzyCmd();
                 $cmd->setLogicalId('Lock_C_On');
-                $cmd->setIsVisible(1);
                 $cmd->setName(__('Activer Verrouillage', __FILE__));
                 $cmd->setType('action');
                 $cmd->setSubType('other');
@@ -1461,7 +1615,6 @@ class heatzy extends eqLogic {
             if (!is_object($cmd)) {
                 $cmd = new heatzyCmd();
                 $cmd->setLogicalId('Lock_C_Off');
-                $cmd->setIsVisible(1);
                 $cmd->setName(__('Désactiver Verrouillage', __FILE__));
                 $cmd->setType('action');
                 $cmd->setSubType('other');
@@ -1475,35 +1628,22 @@ class heatzy extends eqLogic {
                 $cmd->setConfiguration('infoName', 'Lock_C_State');
             }
                 
-            /// Creation de la commande info Lock_C_State binaire
-            $etat = $this->getCmd(null, 'Lock_C_State');
-            if (!is_object($etat)) {
-                $etat = new heatzyCmd();
-                $etat->setName(__('Etat Verrouillage', __FILE__));
-                $etat->setLogicalId('Lock_C_State');
-                $etat->setType('info');
-                $etat->setSubType('binary');
-                $etat->setEqLogic_id($this->getId());
-                $etat->setIsHistorized(0);
-                $etat->setIsVisible(1);
-                $etat->save();
-            }
         } // if lock_switch
       
         if( isset ($aDevice['attr']['cur_humi']) ){
             /// Creation de la commande humidité du pilote_pro
             $CurHumi = $this->getCmd(null, 'cur_humi'); 
             if (!is_object($CurHumi)) {
-              $CurHumi = new heatzyCmd();
-              $CurHumi->setName(__('Taux Humidité', __FILE__));
-              $CurHumi->setLogicalId('cur_humi');
-              $CurHumi->setType('info');
-              $CurHumi->setUnite('%');
-              $CurHumi->setSubType('numeric');
-              $CurHumi->setEqLogic_id($this->getId());
-              $CurHumi->setIsHistorized(0);
-              $CurHumi->setIsVisible(1);
-              $CurHumi->save();
+                $CurHumi = new heatzyCmd();
+                $CurHumi->setName(__('Taux Humidité', __FILE__));
+                $CurHumi->setLogicalId('cur_humi');
+                $CurHumi->setType('info');
+                $CurHumi->setUnite('%');
+                $CurHumi->setSubType('numeric');
+                $CurHumi->setEqLogic_id($this->getId());
+                $CurHumi->setIsHistorized(0);
+                $CurHumi->setIsVisible(1);
+                $CurHumi->save();
             }
         } // cur_humi
       
@@ -1530,7 +1670,6 @@ class heatzy extends eqLogic {
             if (!is_object($cmd)) {
                 $cmd = new heatzyCmd();
                 $cmd->setLogicalId('WindowSwitchOn');
-                $cmd->setIsVisible(1);
                 $cmd->setName(__('Activer Fenetre Ouverte', __FILE__));
                 $cmd->setType('action');
                 $cmd->setSubType('other');
@@ -1547,7 +1686,6 @@ class heatzy extends eqLogic {
             if (!is_object($cmd)) {
                 $cmd = new heatzyCmd();
                 $cmd->setLogicalId('WindowSwitchOff');
-                $cmd->setIsVisible(1);
                 $cmd->setName(__('Désactiver Fenetre Ouverte', __FILE__));
                 $cmd->setType('action');
                 $cmd->setSubType('other');
@@ -1582,7 +1720,6 @@ class heatzy extends eqLogic {
 			if (!is_object($cmd)) {
 				$cmd = new heatzyCmd();
 				$cmd->setLogicalId('plugzyon');
-				$cmd->setIsVisible(1);
 				$cmd->setName(__('Plugzy ON', __FILE__));
 				$cmd->setType('action');
 				$cmd->setSubType('other');
@@ -1598,7 +1735,6 @@ class heatzy extends eqLogic {
 			if (!is_object($cmd)) {
 				$cmd = new heatzyCmd();
 				$cmd->setLogicalId('plugzyoff');
-				$cmd->setIsVisible(1);
 				$cmd->setName(__('Plugzy OFF', __FILE__));
 				$cmd->setType('action');
 				$cmd->setSubType('other');
@@ -1655,79 +1791,29 @@ class heatzy extends eqLogic {
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
                 $cmd->save();
-            }
+            //}
 
-            $cmd = $this->getCmd(null, 'derog_time'); 
-            if (!is_object($cmd) ) {
-                $cmd = new heatzyCmd();
-                $cmd->setName(__('Délai dérogation', __FILE__));
-                $cmd->setLogicalId('derog_time');
-                $cmd->setType('info');
-                $cmd->setUnite('Min');
-                $cmd->setSubType('numeric');
-                $cmd->setEqLogic_id($this->getId());
-                $cmd->setIsHistorized(0);
-                $cmd->setIsVisible(1);
-                $cmd->save();
-            }
-            
-			/// Creation de la commande derog_off
-			$cmd = $this->getCmd(null, 'derog_off');
-			if (!is_object($cmd)) {
-				$cmd = new heatzyCmd();
-				$cmd->setLogicalId('derog_off');
-				$cmd->setIsVisible(1);
-				$cmd->setName(__('Derogation OFF', __FILE__));
-				$cmd->setType('action');
-				$cmd->setSubType('other');
-				$cmd->setConfiguration('infoName', 'derog_mode');
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setIsHistorized(0);
-				$cmd->setIsVisible(1);
-				$cmd->save();
-			}
-            
-			/// Creation de la commande derog_vacances
-			$cmd = $this->getCmd(null, 'derog_vacances');
-			if (!is_object($cmd)) {
-				$cmd = new heatzyCmd();
-				$cmd->setLogicalId('derog_vacances');
-				$cmd->setIsVisible(1);
-				$cmd->setName(__('Derogation Vacances', __FILE__));
-				$cmd->setType('action');
-				$cmd->setSubType('other');
-				$cmd->setConfiguration('infoName', 'derog_mode');
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setIsHistorized(0);
-				$cmd->setIsVisible(1);
-				$cmd->save();
-			}
-            
-			/// Creation de la commande derog_boost
-			$cmd = $this->getCmd(null, 'derog_boost');
-			if (!is_object($cmd)) {
-				$cmd = new heatzyCmd();
-				$cmd->setLogicalId('derog_boost');
-				$cmd->setIsVisible(1);
-				$cmd->setName(__('Derogation Boost', __FILE__));
-				$cmd->setType('action');
-				$cmd->setSubType('message');
-				$cmd->setConfiguration('infoName', 'derog_mode');
-				$cmd->setEqLogic_id($this->getId());
-				$cmd->setIsHistorized(0);
-				$cmd->setIsVisible(1);
-				$cmd->save();
-			}
-          
-          
-          	if(true){  
-                /// Creation de la commande derog_presence
-                $cmd = $this->getCmd(null, 'derog_presence');
+                /*
+                $cmd = $this->getCmd(null, 'derog_time'); 
+                if (!is_object($cmd) ) {
+                    $cmd = new heatzyCmd();
+                    $cmd->setName(__('Délai dérogation', __FILE__));
+                    $cmd->setLogicalId('derog_time');
+                    $cmd->setType('info');
+                    //$cmd->setUnite('Min');
+                    $cmd->setSubType('numeric');
+                    $cmd->setEqLogic_id($this->getId());
+                    $cmd->setIsHistorized(0);
+                    $cmd->setIsVisible(1);
+                    $cmd->save();
+                }*/
+                
+                /// Creation de la commande derog_off (0)
+                $cmd = $this->getCmd(null, 'derog_off');
                 if (!is_object($cmd)) {
                     $cmd = new heatzyCmd();
-                    $cmd->setLogicalId('derog_presence');
-                    $cmd->setIsVisible(1);
-                    $cmd->setName(__('Derogation Présence', __FILE__));
+                    $cmd->setLogicalId('derog_off');
+                    $cmd->setName(__('Derogation OFF', __FILE__));
                     $cmd->setType('action');
                     $cmd->setSubType('other');
                     $cmd->setConfiguration('infoName', 'derog_mode');
@@ -1736,22 +1822,124 @@ class heatzy extends eqLogic {
                     $cmd->setIsVisible(1);
                     $cmd->save();
                 }
-
-                /// Creation de la commande derog_presence
-                $cmd = $this->getCmd(null, 'detect_presence');
+                
+                /// Creation de la commande derog_vacances (1)
+                $cmd = $this->getCmd(null, 'derog_vacances');
                 if (!is_object($cmd)) {
-                    $cmd = new heatzyCmd();
-                    $cmd->setName(__('Détéction Présence', __FILE__));
-                    $cmd->setLogicalId('detect_presence');
-                    $cmd->setType('info');
-                    $cmd->setSubType('binary');
-                    $cmd->setEqLogic_id($this->getId());
-                    $cmd->setIsHistorized(0);
-                    $cmd->setIsVisible(1);
-                    $cmd->save();
+                    if( $this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 1 ) ){
+                      
+                        $infoCmd = $this->getCmd(null, 'derog_time_vacances'); 
+                        if (!is_object($infoCmd) ) {
+                            $infoCmd = new heatzyCmd();
+                            $infoCmd->setName(__('Délai dérogation Vacances', __FILE__));
+                            $infoCmd->setLogicalId('derog_time_vacances');
+                            $infoCmd->setType('info');
+                            $infoCmd->setUnite('Jours');
+                            $infoCmd->setSubType('numeric');
+                            $infoCmd->setEqLogic_id($this->getId());
+                            $infoCmd->setIsHistorized(0);
+                            $infoCmd->setIsVisible(0);
+                            $infoCmd->save();
+                        }
+            
+                        $cmd = $this->getCmd(null, 'derog_vacances'); 
+                        if (!is_object($cmd) ) {
+                            $cmd = new heatzyCmd();
+                            $cmd->setLogicalId('derog_vacances');
+                            $cmd->setName(__('Derogation Vacances', __FILE__));
+                            $cmd->setType('action');
+                            $cmd->setSubType('slider');
+                            $cmd->setConfiguration('infoName', 'derog_time_vacances');
+                            $cmd->setConfiguration('value', "#slider#");
+                            $cmd->setConfiguration('minValue', 0);  // valeur minimale
+                            $cmd->setConfiguration('maxValue', 30); // valeur maximale
+                            $cmd->setValue($infoCmd ->getId());  
+                          	$cmd->setDisplay('parameters', ['step' => 2]);
+                            $cmd->setEqLogic_id($this->getId());
+                            $cmd->setIsHistorized(0);
+                            $cmd->setIsVisible(1);
+                            $cmd->save();
+                        }
+                    } // if VerifOrdreAccepte
                 }
-        	}
-        }
+                
+                /// Creation de la commande derog_boost (2)
+                $cmd = $this->getCmd(null, 'derog_boost');
+                if (!is_object($cmd)) {
+                    if( $this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 2 ) ){
+                      
+                        $infoCmd = $this->getCmd(null, 'derog_time_boost'); 
+                        if (!is_object($infoCmd) ) {
+                            $infoCmd = new heatzyCmd();
+                            $infoCmd->setName(__('Délai dérogation Boost', __FILE__));
+                            $infoCmd->setLogicalId('derog_time_boost');
+                            $infoCmd->setType('info');
+                            $infoCmd->setUnite('Min');
+                            $infoCmd->setSubType('numeric');
+                            $infoCmd->setEqLogic_id($this->getId());
+                            $infoCmd->setIsHistorized(0);
+                            $infoCmd->setIsVisible(0);
+                            $infoCmd->save();
+                        }
+                      
+                        $cmd = $this->getCmd(null, 'derog_boost');
+                        if (!is_object($cmd)) {
+                            $cmd = new heatzyCmd();
+                            $cmd->setLogicalId('derog_boost');
+                            $cmd->setName(__('Derogation Boost', __FILE__));
+                            $cmd->setType('action');
+                            $cmd->setSubType('slider');
+                            $cmd->setConfiguration('infoName', 'derog_time_boost');
+                            $cmd->setConfiguration('value', "#slider#");
+                            $cmd->setConfiguration('minValue', 0);  // valeur minimale
+                            $cmd->setConfiguration('maxValue', 120); // valeur maximale
+                            $cmd->setValue($infoCmd ->getId());  
+                          	$cmd->setDisplay('parameters', ['step' => 30]);
+                            $cmd->setEqLogic_id($this->getId());
+                            $cmd->setIsHistorized(0);
+                            $cmd->setIsVisible(1);
+                            $cmd->save();
+                        }
+                    } // if VerifOrdreAccepte
+                }
+              
+                /// Creation de la commande derog_presence (3)
+                $cmd = $this->getCmd(null, 'derog_presence');
+                if (!is_object($cmd)) {
+                    if( $this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 3 ) ){
+                      
+                        $cmd = $this->getCmd(null, 'derog_presence');
+                        if (!is_object($cmd)) {                      
+                            $cmd = new heatzyCmd();
+                            $cmd->setLogicalId('derog_presence');
+                            $cmd->setName(__('Derogation Présence', __FILE__));
+                            $cmd->setType('action');
+                            $cmd->setSubType('other');
+                            $cmd->setConfiguration('infoName', 'derog_mode');
+                            $cmd->setEqLogic_id($this->getId());
+                            $cmd->setIsHistorized(0);
+                            $cmd->setIsVisible(1);
+                            $cmd->save();
+                        }
+                    
+                        // Creation de la commande derog_presence
+                        // uniquement si mode derog_presence actif
+                        $cmd = $this->getCmd(null, 'detect_presence');
+                        if (!is_object($cmd)) {
+                            $cmd = new heatzyCmd();
+                            $cmd->setName(__('Détéction Présence', __FILE__));
+                            $cmd->setLogicalId('detect_presence');
+                            $cmd->setType('info');
+                            $cmd->setSubType('binary');
+                            $cmd->setEqLogic_id($this->getId());
+                            $cmd->setIsHistorized(0);
+                            $cmd->setIsVisible(1);
+                            $cmd->save();
+                        }
+                    } // if VerifOrdreAccepte
+                } // if !derog_presence
+            } // if !derog_mode
+        } // if derog_mode
     }
     
     /**
@@ -1815,46 +2003,62 @@ class heatzy extends eqLogic {
     */
     public static function cron() {
 
-        if( !cache::exist('Heatzy_CptError') ){
+        if( !cache::exist('Heatzy_Synchronize') ) cache::set( 'Heatzy_Synchronize' , 0) ;
+        if( cache::byKey('Heatzy_Synchronize')->getValue() == 1){
+          log::add('heatzy', 'debug',  __METHOD__.': Arret du cron car Synchronize en cours ...' ) ;
+          return false ;
+        }
+      
+        $ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
+        $ExpireTokenTime = strtotime( $ExpireToken ) ;
+
+        if( $ExpireTokenTime <= time() ){ // Si token expiré
+            log::add('heatzy', 'debug',  __METHOD__.': Token expiré ('.$ExpireToken.') - Récupération d un nouveau token' );
+
+            if ( heatzy::Login() ){
+                $ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
+                $ExpireTokenTime = strtotime( $ExpireToken ) ;
+                log::add('heatzy', 'debug',  __METHOD__.': Récupération du token OK ('.$ExpireToken.')' );
+            }
+            else{
+                log::add('heatzy', 'debug',  __METHOD__.': Récupération token KO' );	
+                return false ;
+            }
+        }         
+        
+        // Mise à jour du statut (Online/Offline + ajout noueau modules)
+        // Toutes les 5 min par défaut
+        if( (date("i") % config::byKey('Freq_status','heatzy','5') ) == 0 ){
+          	// Le synchronize permet d'aouter les nouveaux modules rattachés et de vérifier le statut online/offline
+            $res = heatzy::Synchronize() ;
+            log::add('heatzy', 'debug',  __METHOD__.': Synchronize cron5 = '.$res );
+            
+            // Le synchronize contient déjà un update (donc pas la peine d'alleer plus loin)
+          	return true ;
+        }
+      
+      	// Gestion du max erreur (passage en mode dégradé en cas de cumul d'erreur d'appel API)
+        if( !cache::exist('Heatzy_CptError') ){ // Init si non existant
             cache::set( 'Heatzy_CptError' , 0) ;
             log::add('heatzy', 'debug',  __METHOD__.': INIT cache' );
         }
         if( cache::byKey('Heatzy_CptError')->getValue() > HttpGizwits::$_MaxError){
+          	// Dépassement de la limite
+            // Le retour à létat normal se fait via l'updateHeatzyDid après la mise à jour du statut (Synchronize)          	
             log::add('heatzy', 'debug',  __METHOD__.': cache::Compteur erreur > '.HttpGizwits::$_MaxError.' - Mode dégradé' );
             return false ;      	
-        }    
-        
-        if( (date("i") % config::byKey('Freq_status','heatzy','5') ) == 0 ){ // Toutes les 5 min par défaut
-          	// Le synchronize permet d'aouter les nouveaux modules rattachés et de vérifier le statut online/offline
-            $res = heatzy::Synchronize() ;
-            log::add('heatzy', 'debug',  __METHOD__.': Synchronize cron5 = '.$res );
-        }
-        else if( (date("i") % config::byKey('Freq_value','heatzy','1') ) == 0 ){ // Toutes les 1 min par défaut
+        } 
       
-            $ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
-            $ExpireTokenTime = strtotime( $ExpireToken ) ;
-            
-            if( $ExpireTokenTime <= time() ){ // Si token expiré
-                log::add('heatzy', 'debug',  __METHOD__.': Token expiré ('.$ExpireToken.') - Récupération d un nouveau token' );
-                        
-                if ( heatzy::Login() ){
-                    $ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
-                    $ExpireTokenTime = strtotime( $ExpireToken ) ;
-                    log::add('heatzy', 'debug',  __METHOD__.': Récupération du token OK ('.$ExpireToken.')' );
-                }
-                else{
-                    log::add('heatzy', 'debug',  __METHOD__.': Récupération token KO' );	
-                    return false ;
-                }
-            }
+        // Mise à jour des commandes infos
+        // Toutes les 1 min par défaut
+        if( (date("i") % config::byKey('Freq_value','heatzy','1') ) == 0 ){ // Toutes les 1 min par défaut
             
             foreach (eqLogic::byType('heatzy') as $heatzy) {
 
                 $Cmd = $heatzy->getCmd('info', 'IsOnLine') ;
                 $IsOnLine = (is_object($Cmd)) ? $Cmd->execCmd() : 1 ;
               
-                if($heatzy->getIsEnable() == 1 && ($ExpireTokenTime - 120) > time() && $IsOnLine == 1){ /// Execute la commande refresh des modules activés
-
+                if($heatzy->getIsEnable() == 1 && ($ExpireTokenTime - 120) > time() && $IsOnLine == 1 && cache::byKey('Heatzy_Synchronize')->getValue() == 0){ /// Execute la commande refresh des modules activés
                     $Cmd = heatzyCmd::byEqLogicIdCmdName($heatzy->getId(), 'Rafraichir' );
                     if (! is_object($Cmd)) {
                         log::add('heatzy', 'error',  ' La commande :refresh n\'a pas été trouvé' );
@@ -1872,7 +2076,7 @@ class heatzy extends eqLogic {
                     $heatzy->toHtml('dashboard');
                     $heatzy->refreshWidget();
                 }
-            } // froeach
+            } // foreach
         }
     }
 
@@ -1998,8 +2202,8 @@ class heatzy extends eqLogic {
         */
         
         $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
-        $cible = $tmp = strtotime( "2025-07-01 00:00:00" ) ;         
-        if( $aujourdhui > $cible && (date('w', $aujourdhui )) == '7' ){
+        $cible = strtotime( "2025-07-01 00:00:00" ) ;         
+        if( $aujourdhui > $cible && (date('w', $aujourdhui )) == '0' ){
             foreach (update::all() as $update) {
                 if ($update->getLogicalId() == 'heatzy'){
             		if( $update->getSource()  != 'market' ){
@@ -2010,7 +2214,7 @@ class heatzy extends eqLogic {
             } //foreach
         } //if
         
-        heatzy::Login();
+        //heatzy::Login();
     }
 
     /*     * *********************Méthodes d'instance************************* */
@@ -2119,17 +2323,35 @@ class heatzy extends eqLogic {
                     break;
                 case 'action':
                     //log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
-
+				
+                	//$replace['#'.$cmd->getLogicalId().'_cmd#'] = $cmd->getConfiguration('Value') ;
+                	//$replace['#'.$cmd->getLogicalId().'_unite#'] = $cmd->getUnite();
+                
                     $replace['#'.$cmd->getLogicalId().'_id#'] = is_object($cmd) ? $cmd->getId() : '';
                     $replace['none;#'.$cmd->getLogicalId().'_display#'] = (is_object($cmd) && $cmd->getIsVisible()) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
+                
+                	$replace['#'.$cmd->getLogicalId().'_minValue#'] = $cmd->getConfiguration('minValue') ;
+                	$replace['#'.$cmd->getLogicalId().'_maxValue#'] = $cmd->getConfiguration('maxValue') ;
+                	 
+                	$t_parameters = $cmd->getDisplay('parameters') ;
+                	if( is_array( $t_parameters ) ){
+                		$replace['#'.$cmd->getLogicalId().'_step#'] = $t_parameters['step'] ;
+                	}
+
                     break;
                 default :
                     log::add('heatzy', 'error',  __METHOD__.' : Type de commande ($cmd->getType()='.$cmd->getType().') inconnu');
                     break;
-            }
-        }
+            } // switch
+        } //foreach cmd
+      
+      	// Pour paliere aux erreurs jquery (jquery.min.js?md5=7c…38ccd3edd840d82ee:2 Uncaught Error: Syntax error, unrecognized expression) liés aux id multiples (#xxx# non remplacés)
+      	if( $replace['#eco_temp_consigne_id#'] == '' ) $replace['#eco_temp_consigne_id#'] = $this->getId() ;
+      	if( $replace['#cft_temp_consigne_id#'] == '' ) $replace['#cft_temp_consigne_id#'] = $this->getId() ;
+      	if( $replace['#derog_vacances_id#'] == '' ) $replace['#derog_vacances_id#'] = $this->getId() ;
 		
-		//log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().'-TypeTemplate='.$this->getConfiguration('TypeTemplate', '0'));
+		//log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().'- '.var_export($replace, true) );
+      
 		switch( $this->getConfiguration('TypeTemplate', '') ){
 			case '':
 				$this->setConfiguration('TypeTemplate', '0');
@@ -2195,13 +2417,11 @@ class heatzyCmd extends cmd {
             
             $Consigne = '' ;
             $ForUpdate = '' ;
-            if ($this->getLogicalId() == 'plugzyon') {
-        
+            if ($this->getLogicalId() == 'plugzyon') {        
                 $Consigne = array( 'attrs' => array ( 'on_off' => 1 )  );
                 $ForUpdate = 1 ;
             }
-            else if ($this->getLogicalId() == 'plugzyoff') {
-              
+            else if ($this->getLogicalId() == 'plugzyoff') {              
                 $Consigne = array( 'attrs' => array ( 'on_off' => 0 )  );
                 $ForUpdate = 0 ;
             }
@@ -2252,12 +2472,14 @@ class heatzyCmd extends cmd {
                 $ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'derog_vacances') {
-                $Consigne = array( 'attrs' => array ( 'derog_mode' => 1 )  ); // 1 : mode vacances
-                $ForUpdate = 1 ;
+              	isset( $_options['slider'] ) ? $delai = intval( $_options['slider'] ) : $delai = 0 ;
+                $Consigne = array( 'attrs' => array ( 'derog_mode' => 1 , 'derog_time' => $delai , 'mode' => 'fro' )  ); // 1 : mode vacances
+                $ForUpdate = $delai ;
             }
             else if ($this->getLogicalId() == 'derog_boost') {
-                $Consigne = array( 'attrs' => array ( 'derog_mode' => 2 )  ); // 2 : mode boost
-                $ForUpdate = 2 ;
+              	isset( $_options['slider'] ) ? $delai = intval( $_options['slider'] ) : $delai = 0 ;
+                $Consigne = array( 'attrs' => array ( 'derog_mode' => 2 , 'derog_time' => $delai )  ); // 2 : mode boost
+                $ForUpdate = $delai ;
             }
             else if ($this->getLogicalId() == 'derog_presence') {
                 $Consigne = array( 'attrs' => array ( 'derog_mode' => 3 )  ); // 3 : détection de presence
@@ -2266,6 +2488,36 @@ class heatzyCmd extends cmd {
             else if ($this->getLogicalId() == 'derog_time') {
                 $Consigne = array( 'attrs' => array ( 'derog_time' => 0 )  );
                 $ForUpdate = 0 ;
+            }
+            else if ($this->getLogicalId() == 'cft_temp_consigne') {
+                //log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
+                //$this->getConfiguration('tempHL',false)
+                isset( $_options['slider'] ) ? $consigne = intval( $_options['slider'] ) : $consigne = 0 ;
+                if( $this->getConfiguration('tempHL',false) ){
+                    $tempBIN = str_pad( decbin($consigne * 10),  16, "0", STR_PAD_LEFT) ;
+                    $tempH = bindec(substr( $tempBIN , 0 , 8 )) ;
+                    $tempL = bindec(substr( $tempBIN , 8 )) ;
+                    //log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' $tempBIN='.$tempBIN.'-'.$tempH.'-'.$tempL.'-'.bindec($tempH).'-'.bindec($tempL) );                  
+                    $Consigne = array( 'attrs' => array ( 'cft_tempH' => $tempH , 'cft_tempL' => $tempL )  );
+                }
+                else{
+                    $Consigne = array( 'attrs' => array ( 'cft_temp' => $consigne * 10 )  );
+                }
+                $ForUpdate = $consigne ;
+            }
+            else if ($this->getLogicalId() == 'eco_temp_consigne') {
+                isset( $_options['slider'] ) ? $consigne = intval( $_options['slider'] ) : $consigne = 0 ;
+                if( $this->getConfiguration('tempHL',false) ){
+                    $tempBIN = str_pad( decbin($consigne * 10),  16, "0", STR_PAD_LEFT) ;
+                    $tempH = bindec(substr( $tempBIN , 0 , 8 )) ;
+                    $tempL = bindec(substr( $tempBIN , 8 )) ;
+                    //log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' $tempBIN='.$tempBIN.'-'.$tempH.'-'.$tempL.'-'.bindec($tempH).'-'.bindec($tempL) );                  
+                    $Consigne = array( 'attrs' => array ( 'eco_tempH' => $tempH , 'eco_tempL' => $tempL )  );
+                }
+                else{
+                    $Consigne = array( 'attrs' => array ( 'eco_temp' => $consigne * 10 )  );
+                }
+                $ForUpdate = $consigne ;
             }
             else if( in_array($this->getLogicalId() , heatzy::$_HeatzyMode ) ) {
               
@@ -2306,7 +2558,7 @@ class heatzyCmd extends cmd {
               	log::add('heatzy', 'debug',  __METHOD__.' :$Consigne != null : ');
                 $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
                 if($Result === false) {
-                    log::add('heatzy', 'error',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+                    log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
                     return false;
                 }
                 else{
@@ -2323,6 +2575,7 @@ class heatzyCmd extends cmd {
                         return false;
                     }
                     else if($ForUpdate != ''){
+                      	log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
                         $eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , $ForUpdate ) ;
                         $eqLogic->checkAndUpdateCmd('IsOnLine', 1 );
                     }
