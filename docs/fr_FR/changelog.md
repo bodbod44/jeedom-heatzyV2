@@ -1,24 +1,19 @@
-# 26/07/2025 (beta)
-- Passage des certaines erreurs api en silencieuses
-
-# 08/07/2025 (beta)
-- Ajout d'une commande info sur l'état OnLine/Offline
-- Nouvelles cmd pour remonter le derog_mode et le derog_time (en lecture)
-- Détéction et désactivation des équipements qui ne sont plus rattachés au compte heatzy (err 9017)
-- Mise en place d'un garde fou pour limiter les appels gizwits en cas d'erreur 9xxx
-- Préparation du mode dérogation
-
-# 29/06/2025 (beta)
-- Ajout d'une detection d'une fenetre ouverte (detection chute de temperature)
-- Ajout d'un onglet Parametres dans chaque équipement
-- Prise en charge d'un capteur de température externe
-- Prise en charge d'un capteur d'humidité externe
-- Ajout d'une commande information sur la tendance de la température (non affichée)
+# 28/07/2025 (stable)
+- Ajout d’une détection d’une fenêtre ouverte (détection chute de température)
+- Ajout d’un onglet Paramètres dans chaque équipement
+- Prise en charge d’un capteur de température externe
+- Prise en charge d’un capteur d’humidité externe
+- Ajout d’une commande information sur la tendance de la température (non affichée)
 - Ajout de la case historiser sur les commandes info/binaire
 - Refonte de la regénération du token (si expiré ou invalide)
 - Suppression du cron pour la regénération du token
-- Optimisation de la fonction synchronize (suppression de l'appel datapoint)
-- Ajout du detail_message lors des erreurs d'appels
+- Optimisation de la fonction synchronize (suppression de l’appel datapoint)
+- Ajout du detail_message lors des erreurs d’appels
+- Ajout d’une commande info sur l’état OnLine/Offline
+- Nouvelles cmd pour remonter le derog_mode et le derog_time (en lecture)
+- Détéction et désactivation des équipements qui ne sont plus rattachés au compte heatzy (err 9017)
+- Mise en place d’un garde fou pour limiter les appels gizwits en cas d’erreur 9xxx
+- Préparation du mode dérogation
 
 # 28/06/2025 (stable)
 - Prise en charge des modules GLOW et SHINE
