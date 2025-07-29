@@ -198,19 +198,19 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 	<table id="table_cmd" class="table table-bordered table-condensed">
 		<thead>
 			<tr>
-				<th style="width: 50px;">
+				<th style="width: 25px;">
 					#
 				</th>
-				<th style="width: 150px;">
+				<th style="width: 50px;">
 					{{Nom}}
 				</th>
-				<th style="width: 110px;">
+				<th style="width: 150px;">
 					{{Type}}
 				</th>
 				<th style="width: 50px;">
 					{{Etat}}
 				</th>
-				<th style="width: 200px;">
+				<th style="width: 150px;">
 					{{Paramètres}}
 				</th>
 			</tr>
@@ -218,6 +218,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 		<tbody></tbody>
 	</table>
 </div>
+
 <div role="tabpanel" class="tab-pane" id="paramtab">
 	<br>
 	<table style="border:1px solid black; width:100%" id="table_param2">
@@ -323,7 +324,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 							<br>
 							Pour les modules qui ont cette fonctionnalité en propre, le reglage est une chute de 2° en moins de 5 min (coef tendance = 2/5 = 0.4)
 							<br>
-							Si non renseigné, les valeurs 2° et 5min sont prise en compte
+							La commande d'alerte sert a être alerté en cas de chute de température (fenêtre ouverte en hiver)
 						</div>
 					</div>
 				</td>

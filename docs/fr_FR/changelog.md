@@ -1,6 +1,10 @@
+# 29/07/2025 (dev)
+- Tri des commandes (setOrder install + création)
+
 # 28/07/2025 (dev)
 - Prise en charge de la consigne confort/eco pour les ancien modules, Glow et Shine
 - Modification du blocage du cron lors de la synchronisation (avec timestamp)
+- Ajout d'un message pour les utilisateurs ayant le template l3flo
 
 # 27/07/2025 (dev)
 - Ajout de la consigne de temperature confort dans le template bodbod

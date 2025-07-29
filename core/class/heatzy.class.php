@@ -1272,79 +1272,95 @@ class heatzy extends eqLogic {
      */
   
     public function CheckAndCreateCmd($aDevice) {
+    
+      log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' DEBUG avant DEBUT');
       
-        // Rattrapage 4 ordres 6 ordres
-        // Detection des pilote_pro / shine / glow qui n'auraient que 4 ordres (creation avant la prise en charge des 6 ordres)
-        //$Heatzy6Ordres = array("Pilote_Pro","Shine_ble","Glow_Simple_ble");
-        $Heatzy6Ordres = array("Pilote_Pro");
-      	if( in_array( $this->getConfiguration('product', '') , $Heatzy6Ordres) && is_object( $this->getCmd(null,'Confort')) && !is_object( $this->getCmd(null,'Confort-2')) ){
-            $rattrapage = true ;
-            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' rattrapage 6 ordres');
-        }
-        else
-            $rattrapage = false ;
+        if( isset ($aDevice['attr']['cur_temp']) || isset ($aDevice['attr']['cur_tempH']) ){
+			/// Creation de la commande info de la temperature courante
+			$CurTemp = $this->getCmd(null, 'cur_temp'); 
+			if (!is_object($CurTemp)) {
+				$CurTemp = new heatzyCmd();
+				$CurTemp->setName(__('Temperature', __FILE__));
+				$CurTemp->setLogicalId('cur_temp');
+				$CurTemp->setType('info');
+				$CurTemp->setUnite('°C');
+				$CurTemp->setSubType('numeric');
+              	$CurTemp->setConfiguration('tempHL', isset ($aDevice['attr']['cur_tempH']) ) ;
+				$CurTemp->setEqLogic_id($this->getId());
+				$CurTemp->setOrder(10);
+				$CurTemp->setIsHistorized(0);
+				$CurTemp->setIsVisible(1);
+				$CurTemp->save();
+			}
+            else{
+				$CurTemp->setConfiguration('tempHL', isset ($aDevice['attr']['cur_tempH']) ) ;
+                $CurTemp->save();
+           }
+        } // if cur_temp - cur_tempH
       
-        if( (isset($aDevice['attr']['mode']) && !is_object( $this->getCmd(null,'EtatConsigne'))) || $rattrapage ){
-
-            // Verifie si module 4 ou 6 ordres
-        	//$NbOrdres = $this->VerifNbOrdres($aDevice) ;
-            $NbOrdres = $this->VerifOrdreAccepte( $aDevice , 'mode' , 'cft2' , '' , '' , true , true ) ? 6 : 4 ; 
-          	log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' VerifOrdreAccepte='.$NbOrdres.' ordres');
+      log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' DEBUG avant cur_humi');
+      
+        if( isset ($aDevice['attr']['cur_humi']) ){
+            /// Creation de la commande humidité du pilote_pro
+            $CurHumi = $this->getCmd(null, 'cur_humi'); 
+            if (!is_object($CurHumi)) {
+                $CurHumi = new heatzyCmd();
+                $CurHumi->setName(__('Taux Humidité', __FILE__));
+                $CurHumi->setLogicalId('cur_humi');
+                $CurHumi->setType('info');
+                $CurHumi->setUnite('%');
+                $CurHumi->setSubType('numeric');
+                $CurHumi->setEqLogic_id($this->getId());
+				$CurHumi->setOrder(11);
+                $CurHumi->setIsHistorized(0);
+                $CurHumi->setIsVisible(1);
+                $CurHumi->save();
+            }
+        } // cur_humi
+      
+     	if( isset ($aDevice['attr']['eco_temp']) || isset ($aDevice['attr']['eco_tempH']) ){
+			/// Creation de la commande info de la temperature eco
+			$EcoTemp = $this->getCmd(null, 'eco_temp'); 
+			if (!is_object($EcoTemp)) {
+				$EcoTemp = new heatzyCmd();
+				$EcoTemp->setName(__('Temp. eco', __FILE__));
+				$EcoTemp->setLogicalId('eco_temp');
+				$EcoTemp->setType('info');
+				$EcoTemp->setUnite('°C');
+				$EcoTemp->setSubType('numeric');
+				$EcoTemp->setEqLogic_id($this->getId());
+				$EcoTemp->setOrder(12);
+				$EcoTemp->setIsHistorized(0);
+				$EcoTemp->setIsVisible(1);
+				$EcoTemp->save();
+			}
           
-          	if( $NbOrdres > 0 ){
-                foreach (self::$_HeatzyMode as $Key => $Mode ) {
-                    if($Key < $NbOrdres){ // On arrêt la création selon le nombre d'ordres du module
-                        /// Creation de la commande action $Mode : $Key
-                        $cmd = $this->getCmd(null, $Mode);
-                        if (!is_object($cmd)) {
-                            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' creation commande :'.$Key.'=>'.$Mode);
-                            $cmd = new heatzyCmd();
-                            $cmd->setLogicalId($Mode);
-                            $cmd->setName(__($Mode, __FILE__));
-                            $cmd->setType('action');
-                            $cmd->setSubType('other');
-                            $cmd->setConfiguration('infoName', 'EtatConsigne');
-                            $cmd->setEqLogic_id($this->getId());
-                            $cmd->setIsHistorized(0);
-                            $cmd->setIsVisible(1);
-                            $cmd->save();
-                        }
-                        else{
-                            $cmd->setConfiguration('infoName', 'EtatConsigne');
-                        }
-                    }
-                } // for
-
-                /// Creation de la commande info Etat numeric
-                $etat = $this->getCmd(null, 'EtatConsigne');
-                if (!is_object($etat)) {
-                    $etat = new heatzyCmd();
-                    $etat->setName(__('Etat Consigne', __FILE__));
-                    $etat->setLogicalId('EtatConsigne');
-                    $etat->setType('info');
-                    $etat->setSubType('numeric');
-                    $etat->setEqLogic_id($this->getId());
-                    $etat->setIsHistorized(0);
-                    $etat->setIsVisible(1);
-                    $etat->save();
-                }
-                
-                /// Creation de la commande info mode (correspond à l'état sous forme d'une chaine de carcateres)
-                $mode = $this->getCmd(null, 'mode');
-                if (!is_object($mode)) {
-                    $mode = new heatzyCmd();
-                    $mode->setName(__('Mode', __FILE__));
-                    $mode->setLogicalId('mode');
-                    $mode->setType('info');
-                    $mode->setSubType('string');
-                    $mode->setEqLogic_id($this->getId());
-                    $mode->setIsHistorized(0);
-                    $mode->setIsVisible(1);
-                    $mode->save();
-                }
-            } // if nb ordre > 0
+            $cmd = $this->getCmd(null, 'eco_temp_consigne');
+            if (!is_object($cmd)) {
+                $cmd = new heatzyCmd();
+                $cmd->setLogicalId('eco_temp_consigne');
+                $cmd->setName(__('Consigne Temp. eco', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('slider');
+                $cmd->setConfiguration('infoName', 'eco_temp');
+                $cmd->setConfiguration('value', "#slider#");
+                $cmd->setConfiguration('minValue', 10);  // valeur minimale
+                $cmd->setConfiguration('maxValue', 20); // valeur maximale
+                $cmd->setConfiguration('tempHL', isset ($aDevice['attr']['eco_tempH']) ) ;
+                $cmd->setValue($EcoTemp ->getId());  
+                $cmd->setDisplay('parameters', ['step' => 1]);
+                $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(13);
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(0);
+                $cmd->save();
+            }
+          else{
+            $cmd->setConfiguration('tempHL', isset ($aDevice['attr']['eco_tempH']) ) ;
+            $cmd->save();
+          }
           
-        } // if mode 
+        } // if eco_temp - eco_tempH
         
 		if( isset ($aDevice['attr']['cft_temp']) || isset ($aDevice['attr']['cft_tempH']) ){
       			/// Creation de la commande info de la temperature de confort
@@ -1357,6 +1373,7 @@ class heatzy extends eqLogic {
 				$CftTemp->setUnite('°C');
 				$CftTemp->setSubType('numeric');
 				$CftTemp->setEqLogic_id($this->getId());
+				$CftTemp->setOrder(14);
 				$CftTemp->setIsHistorized(0);
 				$CftTemp->setIsVisible(1);
 				$CftTemp->save();
@@ -1378,6 +1395,7 @@ class heatzy extends eqLogic {
                 $cmd->setValue($CftTemp ->getId());  
                 $cmd->setDisplay('parameters', ['step' => 1]);
                 $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(15);
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(0);
                 $cmd->save();
@@ -1385,76 +1403,125 @@ class heatzy extends eqLogic {
             else{
 				$cmd->setConfiguration('tempHL', isset ($aDevice['attr']['cft_tempH']) ) ;
                 $cmd->save();
-          }
-          
+          }    
         } // cft_temp - cft_tempH
-          
-     	if( isset ($aDevice['attr']['eco_temp']) || isset ($aDevice['attr']['eco_tempH']) ){
-			/// Creation de la commande info de la temperature eco
-			$EcoTemp = $this->getCmd(null, 'eco_temp'); 
-			if (!is_object($EcoTemp)) {
-				$EcoTemp = new heatzyCmd();
-				$EcoTemp->setName(__('Temp. eco', __FILE__));
-				$EcoTemp->setLogicalId('eco_temp');
-				$EcoTemp->setType('info');
-				$EcoTemp->setUnite('°C');
-				$EcoTemp->setSubType('numeric');
-				$EcoTemp->setEqLogic_id($this->getId());
-				$EcoTemp->setIsHistorized(0);
-				$EcoTemp->setIsVisible(1);
-				$EcoTemp->save();
-			}
-          
-            $cmd = $this->getCmd(null, 'eco_temp_consigne');
-            if (!is_object($cmd)) {
+      
+        /// Creation de la commande window_opened
+      	if( isset ($aDevice['attr']['Tendance']) ){
+            $cmd = $this->getCmd(null, 'Tendance'); 
+            if (!is_object($cmd) ) {
                 $cmd = new heatzyCmd();
-                $cmd->setLogicalId('eco_temp_consigne');
-                $cmd->setName(__('Consigne Temp. eco', __FILE__));
-                $cmd->setType('action');
-                $cmd->setSubType('slider');
-                $cmd->setConfiguration('infoName', 'eco_temp');
-                $cmd->setConfiguration('value', "#slider#");
-                $cmd->setConfiguration('minValue', 10);  // valeur minimale
-                $cmd->setConfiguration('maxValue', 20); // valeur maximale
-                $cmd->setConfiguration('tempHL', isset ($aDevice['attr']['eco_tempH']) ) ;
-                $cmd->setValue($EcoTemp ->getId());  
-                $cmd->setDisplay('parameters', ['step' => 1]);
+                $cmd->setName(__('Tendance Température', __FILE__));
+                $cmd->setLogicalId('Tendance');
+                $cmd->setType('info');
+                $cmd->setSubType('numeric');
                 $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(16);
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(0);
                 $cmd->save();
+            }    
+        }
+
+        /// Creation de la commande window_opened
+      	if( isset ($aDevice['attr']['WindowOpened']) ){
+            $cmd = $this->getCmd(null, 'WindowOpened'); 
+            if (!is_object($cmd) ) {
+                $cmd = new heatzyCmd();
+                $cmd->setName(__('Fenetre Ouverte', __FILE__));
+                $cmd->setLogicalId('WindowOpened');
+                $cmd->setType('info');
+                $cmd->setSubType('binary');
+                $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(17);
+                $cmd->setIsHistorized(0);
+                $cmd->setIsVisible(1);
+                $cmd->save();
             }
-          else{
-            $cmd->setConfiguration('tempHL', isset ($aDevice['attr']['eco_tempH']) ) ;
-            $cmd->save();
-          }
+        }
+      
+      log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' DEBUG avant mode chauff');
+      
+        // Rattrapage 4 ordres 6 ordres
+        // Detection des pilote_pro / shine / glow qui n'auraient que 4 ordres (creation avant la prise en charge des 6 ordres)
+        //$Heatzy6Ordres = array("Pilote_Pro","Shine_ble","Glow_Simple_ble");
+        $Heatzy6Ordres = array("Pilote_Pro");
+      	if( in_array( $this->getConfiguration('product', '') , $Heatzy6Ordres) && is_object( $this->getCmd(null,'Confort')) && !is_object( $this->getCmd(null,'Confort-2')) ){
+            $rattrapage = true ;
+            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' rattrapage 6 ordres');
+        }
+        else
+            $rattrapage = false ;
+      
+        if( (isset($aDevice['attr']['mode']) && !is_object( $this->getCmd(null,'EtatConsigne'))) || $rattrapage ){
+
+            // Verifie si module 4 ou 6 ordres
+        	//$NbOrdres = $this->VerifNbOrdres($aDevice) ;
+            $NbOrdres = $this->VerifOrdreAccepte( $aDevice , 'mode' , 'cft2' , '' , '' , true , true ) ? 6 : 4 ; 
+          	log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' VerifOrdreAccepte='.$NbOrdres.' ordres');
           
-        } // if eco_temp - eco_tempH
-          
-        if( isset ($aDevice['attr']['cur_temp']) || isset ($aDevice['attr']['cur_tempH']) ){
-			/// Creation de la commande info de la temperature courante
-			$CurTemp = $this->getCmd(null, 'cur_temp'); 
-			if (!is_object($CurTemp)) {
-				$CurTemp = new heatzyCmd();
-				$CurTemp->setName(__('Temperature', __FILE__));
-				$CurTemp->setLogicalId('cur_temp');
-				$CurTemp->setType('info');
-				$CurTemp->setUnite('°C');
-				$CurTemp->setSubType('numeric');
-              	$CurTemp->setConfiguration('tempHL', isset ($aDevice['attr']['cur_tempH']) ) ;
-				$CurTemp->setEqLogic_id($this->getId());
-				$CurTemp->setIsHistorized(0);
-				$CurTemp->setIsVisible(1);
-				$CurTemp->save();
-			}
-            else{
-				$CurTemp->setConfiguration('tempHL', isset ($aDevice['attr']['cur_tempH']) ) ;
-                $CurTemp->save();
-           }
-        } // if cur_temp - cur_tempH
+          	if( $NbOrdres > 0 ){
+              
+                /// Creation de la commande info Etat numeric
+                $etat = $this->getCmd(null, 'EtatConsigne');
+                if (!is_object($etat)) {
+                    $etat = new heatzyCmd();
+                    $etat->setName(__('Etat Consigne', __FILE__));
+                    $etat->setLogicalId('EtatConsigne');
+                    $etat->setType('info');
+                    $etat->setSubType('numeric');
+                    $etat->setEqLogic_id($this->getId());
+					$etat->setOrder(20);
+                    $etat->setIsHistorized(0);
+                    $etat->setIsVisible(1);
+                    $etat->save();
+                }
+                
+                /// Creation de la commande info mode (correspond à l'état sous forme d'une chaine de carcateres)
+                $mode = $this->getCmd(null, 'mode');
+                if (!is_object($mode)) {
+                    $mode = new heatzyCmd();
+                    $mode->setName(__('Mode', __FILE__));
+                    $mode->setLogicalId('mode');
+                    $mode->setType('info');
+                    $mode->setSubType('string');
+                    $mode->setEqLogic_id($this->getId());
+					$mode->setOrder(21);
+                    $mode->setIsHistorized(0);
+                    $mode->setIsVisible(1);
+                    $mode->save();
+                }
+              
+                foreach (self::$_HeatzyMode as $Key => $Mode ) {
+                    if($Key < $NbOrdres){ // On arrêt la création selon le nombre d'ordres du module
+                        /// Creation de la commande action $Mode : $Key
+                        $cmd = $this->getCmd(null, $Mode);
+                        if (!is_object($cmd)) {
+                            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' creation commande :'.$Key.'=>'.$Mode);
+                            $cmd = new heatzyCmd();
+                            $cmd->setLogicalId($Mode);
+                            $cmd->setName(__('Mode '.$Mode, __FILE__));
+                            $cmd->setType('action');
+                            $cmd->setSubType('other');
+                            $cmd->setConfiguration('infoName', 'EtatConsigne');
+                            $cmd->setEqLogic_id($this->getId());
+							$cmd->setOrder(22 + $Key);
+                            $cmd->setIsHistorized(0);
+                            $cmd->setIsVisible(1);
+                            $cmd->save();
+                        }
+                        else{
+                            $cmd->setConfiguration('infoName', 'EtatConsigne');
+							$cmd->save();
+                        }
+                    }
+                } // for
+            } // if nb ordre > 0
+        } // if mode 
+       
+      log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' DEBUG avant timer_switch');
             
-        if( isset ($aDevice['attr']['timer_switch']) ){
-            
+        if( isset ($aDevice['attr']['timer_switch']) ){            
             /// Creation de la commande info etatprog binaire
             $etat = $this->getCmd(null, 'etatprog');
             if (!is_object($etat)) {
@@ -1464,6 +1531,7 @@ class heatzy extends eqLogic {
                 $etat->setType('info');
                 $etat->setSubType('binary');
                 $etat->setEqLogic_id($this->getId());
+				$etat->setOrder(30);
                 $etat->setIsHistorized(0);
                 $etat->setIsVisible(1);
                 $etat->save();
@@ -1479,13 +1547,14 @@ class heatzy extends eqLogic {
                 $cmd->setSubType('other');
                 $cmd->setConfiguration('infoName', 'etatprog');
                 $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(31);
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
                 $cmd->save();
             }
             else{
                 $cmd->setConfiguration('infoName', 'etatprog');
-            }
+            }    
                 
             $cmd = $this->getCmd(null, 'ProgOff');
             if (!is_object($cmd)) {
@@ -1496,6 +1565,7 @@ class heatzy extends eqLogic {
                 $cmd->setSubType('other');
                 $cmd->setConfiguration('infoName', 'etatprog');
                 $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(32);
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
                 $cmd->save();
@@ -1517,6 +1587,7 @@ class heatzy extends eqLogic {
                 $etat->setType('info');
                 $etat->setSubType('binary');
                 $etat->setEqLogic_id($this->getId());
+				$etat->setOrder(33);
                 $etat->setIsHistorized(0);
                 $etat->setIsVisible(1);
                 $etat->save();
@@ -1532,6 +1603,7 @@ class heatzy extends eqLogic {
                 $cmd->setSubType('other');
                 $cmd->setConfiguration('infoName', 'etatlock');
                 $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(34);
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
                 $cmd->save();
@@ -1549,6 +1621,7 @@ class heatzy extends eqLogic {
                 $cmd->setSubType('other');
                 $cmd->setConfiguration('infoName', 'etatlock');
                 $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(35);
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
                 $cmd->save();
@@ -1570,6 +1643,7 @@ class heatzy extends eqLogic {
                 $etat->setType('info');
                 $etat->setSubType('binary');
                 $etat->setEqLogic_id($this->getId());
+				etat->setOrder(36);
                 $etat->setIsHistorized(0);
                 $etat->setIsVisible(1);
                 $etat->save();
@@ -1585,6 +1659,7 @@ class heatzy extends eqLogic {
                 $cmd->setSubType('other');
                 $cmd->setConfiguration('infoName', 'Lock_C_State');
                 $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(37);
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
                 $cmd->save();
@@ -1602,6 +1677,7 @@ class heatzy extends eqLogic {
                 $cmd->setSubType('other');
                 $cmd->setConfiguration('infoName', 'Lock_C_State');
                 $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(38);
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
                 $cmd->save();
@@ -1611,24 +1687,7 @@ class heatzy extends eqLogic {
             }
                 
         } // if lock_switch
-      
-        if( isset ($aDevice['attr']['cur_humi']) ){
-            /// Creation de la commande humidité du pilote_pro
-            $CurHumi = $this->getCmd(null, 'cur_humi'); 
-            if (!is_object($CurHumi)) {
-                $CurHumi = new heatzyCmd();
-                $CurHumi->setName(__('Taux Humidité', __FILE__));
-                $CurHumi->setLogicalId('cur_humi');
-                $CurHumi->setType('info');
-                $CurHumi->setUnite('%');
-                $CurHumi->setSubType('numeric');
-                $CurHumi->setEqLogic_id($this->getId());
-                $CurHumi->setIsHistorized(0);
-                $CurHumi->setIsVisible(1);
-                $CurHumi->save();
-            }
-        } // cur_humi
-      
+          
         if( isset ($aDevice['attr']['window_switch']) ){
             /// Creation de la commande Activation de la détection de fenêtre ouverte du pilote_pro
             $CurWindow = $this->getCmd(null, 'WindowSwitch'); 
@@ -1639,6 +1698,7 @@ class heatzy extends eqLogic {
                 $CurWindow->setType('info');
                 $CurWindow->setSubType('binary');
                 $CurWindow->setEqLogic_id($this->getId());
+				$CurWindow->setOrder(39);
                 $CurWindow->setIsHistorized(0);
                 $CurWindow->setIsVisible(1);
                 $CurWindow->save();
@@ -1646,7 +1706,8 @@ class heatzy extends eqLogic {
             else{
                 $CurWindow->setName(__('Etat Activation fenêtre ouverte', __FILE__));
                 $CurWindow->save();
-            }
+            } 
+          
             // window_switch On/Off
             $cmd = $this->getCmd(null, 'WindowSwitchOn');
             if (!is_object($cmd)) {
@@ -1657,13 +1718,15 @@ class heatzy extends eqLogic {
                 $cmd->setSubType('other');
                 $cmd->setConfiguration('infoName', 'WindowSwitch');
                 $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(40);
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
                 $cmd->save();
             }
             else{
                 $cmd->setConfiguration('infoName', 'WindowSwitch');
-            }		        
+            }          
+          
             $cmd = $this->getCmd(null, 'WindowSwitchOff');
             if (!is_object($cmd)) {
                 $cmd = new heatzyCmd();
@@ -1673,13 +1736,14 @@ class heatzy extends eqLogic {
                 $cmd->setSubType('other');
                 $cmd->setConfiguration('infoName', 'WindowSwitch');
                 $cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(41);
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
                 $cmd->save();
             }
             else{
                 $cmd->setConfiguration('infoName', 'WindowSwitch');
-            }     
+            }
         } // if window_switch    
       
         if( isset ($aDevice['attr']['on_off']) ){
@@ -1692,6 +1756,7 @@ class heatzy extends eqLogic {
 				$Plugzy->setType('info');
 				$Plugzy->setSubType('binary');
 				$Plugzy->setEqLogic_id($this->getId());
+				$Plugzy->setOrder(42);
 				$Plugzy->setIsHistorized(0);
 				$Plugzy->setIsVisible(1);
 				$Plugzy->save();
@@ -1707,6 +1772,7 @@ class heatzy extends eqLogic {
 				$cmd->setSubType('other');
 				$cmd->setConfiguration('infoName', 'plugzy');
 				$cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(43);
 				$cmd->setIsHistorized(0);
 				$cmd->setIsVisible(1);
 				$cmd->save();
@@ -1722,43 +1788,14 @@ class heatzy extends eqLogic {
 				$cmd->setSubType('other');
 				$cmd->setConfiguration('infoName', 'plugzy');
 				$cmd->setEqLogic_id($this->getId());
+				$cmd->setOrder(44);
 				$cmd->setIsHistorized(0);
 				$cmd->setIsVisible(1);
 				$cmd->save();
 			}
         } // if on_off
  
-        /// Creation de la commande window_opened
-      	if( isset ($aDevice['attr']['Tendance']) ){
-            $cmd = $this->getCmd(null, 'Tendance'); 
-            if (!is_object($cmd) ) {
-                $cmd = new heatzyCmd();
-                $cmd->setName(__('Tendance Température', __FILE__));
-                $cmd->setLogicalId('Tendance');
-                $cmd->setType('info');
-                $cmd->setSubType('numeric');
-                $cmd->setEqLogic_id($this->getId());
-                $cmd->setIsHistorized(0);
-                $cmd->setIsVisible(0);
-                $cmd->save();
-            }
-        }
-      
-        /// Creation de la commande window_opened
-      	if( isset ($aDevice['attr']['WindowOpened']) ){
-            $cmd = $this->getCmd(null, 'WindowOpened'); 
-            if (!is_object($cmd) ) {
-                $cmd = new heatzyCmd();
-                $cmd->setName(__('Fenetre Ouverte', __FILE__));
-                $cmd->setLogicalId('WindowOpened');
-                $cmd->setType('info');
-                $cmd->setSubType('binary');
-                $cmd->setEqLogic_id($this->getId());
-                $cmd->setIsHistorized(0);
-                $cmd->setIsVisible(1);
-                $cmd->save();
-            }
-        }
+      log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' DEBUG avant DEROG');
         
         /// Creation de la commande derog_mode / derog_time
       	if( isset ($aDevice['attr']['derog_mode']) && isset ($aDevice['attr']['derog_time']) ){
@@ -1772,6 +1809,7 @@ class heatzy extends eqLogic {
                 $cmd->setEqLogic_id($this->getId());
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(1);
+          		$cmd->setOrder(60);
                 $cmd->save();
             //}
 
@@ -1785,10 +1823,12 @@ class heatzy extends eqLogic {
                     //$cmd->setUnite('Min');
                     $cmd->setSubType('numeric');
                     $cmd->setEqLogic_id($this->getId());
+					$cmd->setOrder(61);
                     $cmd->setIsHistorized(0);
                     $cmd->setIsVisible(1);
                     $cmd->save();
-                }*/
+                }
+                */
                 
                 /// Creation de la commande derog_off (0)
                 $cmd = $this->getCmd(null, 'derog_off');
@@ -1800,6 +1840,7 @@ class heatzy extends eqLogic {
                     $cmd->setSubType('other');
                     $cmd->setConfiguration('infoName', 'derog_mode');
                     $cmd->setEqLogic_id($this->getId());
+					$cmd->setOrder(62);
                     $cmd->setIsHistorized(0);
                     $cmd->setIsVisible(1);
                     $cmd->save();
@@ -1819,6 +1860,7 @@ class heatzy extends eqLogic {
                             $infoCmd->setUnite('Jours');
                             $infoCmd->setSubType('numeric');
                             $infoCmd->setEqLogic_id($this->getId());
+							$infoCmd->setOrder(63);
                             $infoCmd->setIsHistorized(0);
                             $infoCmd->setIsVisible(0);
                             $infoCmd->save();
@@ -1838,6 +1880,7 @@ class heatzy extends eqLogic {
                             $cmd->setValue($infoCmd ->getId());  
                           	$cmd->setDisplay('parameters', ['step' => 2]);
                             $cmd->setEqLogic_id($this->getId());
+							$cmd->setOrder(64);
                             $cmd->setIsHistorized(0);
                             $cmd->setIsVisible(1);
                             $cmd->save();
@@ -1859,6 +1902,7 @@ class heatzy extends eqLogic {
                             $infoCmd->setUnite('Min');
                             $infoCmd->setSubType('numeric');
                             $infoCmd->setEqLogic_id($this->getId());
+							$infoCmd->setOrder(65);
                             $infoCmd->setIsHistorized(0);
                             $infoCmd->setIsVisible(0);
                             $infoCmd->save();
@@ -1876,6 +1920,7 @@ class heatzy extends eqLogic {
                             $cmd->setConfiguration('minValue', 0);  // valeur minimale
                             $cmd->setConfiguration('maxValue', 120); // valeur maximale
                             $cmd->setValue($infoCmd ->getId());  
+							$cmd->setOrder(66);
                           	$cmd->setDisplay('parameters', ['step' => 30]);
                             $cmd->setEqLogic_id($this->getId());
                             $cmd->setIsHistorized(0);
@@ -1899,6 +1944,7 @@ class heatzy extends eqLogic {
                             $cmd->setSubType('other');
                             $cmd->setConfiguration('infoName', 'derog_mode');
                             $cmd->setEqLogic_id($this->getId());
+							$cmd->setOrder(67);
                             $cmd->setIsHistorized(0);
                             $cmd->setIsVisible(1);
                             $cmd->save();
@@ -1914,6 +1960,7 @@ class heatzy extends eqLogic {
                             $cmd->setType('info');
                             $cmd->setSubType('binary');
                             $cmd->setEqLogic_id($this->getId());
+							$cmd->setOrder(68);
                             $cmd->setIsHistorized(0);
                             $cmd->setIsVisible(1);
                             $cmd->save();
@@ -2199,11 +2246,23 @@ class heatzy extends eqLogic {
         $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
         $cible = strtotime( "2025-07-01 00:00:00" ) ;         
         if( $aujourdhui > $cible && (date('w', $aujourdhui )) == '0' ){
+          	// Vérification de l'utlisation des anciens templates
+          	$eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
+			foreach ($eqLogics as $eqLogic) {
+              //log::add('heatzy', 'debug',  __METHOD__.' : '.$eqLogic->getName().' - TypeTemplate='.$eqLogic->getConfiguration('TypeTemplate', '') );
+              if( $eqLogic->getConfiguration('TypeTemplate', '') == 1){
+                message::add("Heatzy", 'Pour certains équipements heatzy, vous utilisez d ancien template -l3flo-. Ce dernier n est plus maintenu et sera supprimé dans une prochaine version. Je vous suggère de basculer vos équipements sur le template bodbod ou jeedom (parametre accessible dans l onglet -parametres- de chaque équipement)' );
+              	break;
+              }
+            } // foreach
+
+          
+          	// On cherche leplugin heatzy pour vérifier l'origine de l'installation
             foreach (update::all() as $update) {
                 if ($update->getLogicalId() == 'heatzy'){
             		if( $update->getSource()  != 'market' ){
                         message::add("Heatzy", 'Votre plugin HEATZY a été installé depuis une version autre que le market (github ou fichier). La version officielle du plugin HEATZY a été mise à jour sur le market il y a peu. Je vous invite à aller sur le market et réinstaller le pugin HEATZY. Votre configuration (compte, appareils et commandes) sera conservée. Merci' );
-                    break;
+                    	break;
                 	} //if
             	} //if
             } //foreach
@@ -2243,6 +2302,7 @@ class heatzy extends eqLogic {
             $refresh->setType('action');
             $refresh->setSubType('other');
             $refresh->setEqLogic_id($this->getId());
+            $refresh->setOrder(0);
             $refresh->setIsHistorized(0);
             $refresh->setIsVisible(1);
             $refresh->save();
@@ -2257,6 +2317,7 @@ class heatzy extends eqLogic {
             $cmd->setType('info');
             $cmd->setSubType('binary');
             $cmd->setEqLogic_id($this->getId());
+			$cmd->setOrder(1);
             $cmd->setIsHistorized(0);
             $cmd->setIsVisible(0);
             $cmd->save();
