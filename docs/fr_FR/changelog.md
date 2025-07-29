@@ -1,5 +1,6 @@
 # 29/07/2025 (dev)
 - Tri des commandes (setOrder install + création)
+- Renommage des commandes Mode
 
 # 28/07/2025 (dev)
 - Prise en charge de la consigne confort/eco pour les ancien modules, Glow et Shine

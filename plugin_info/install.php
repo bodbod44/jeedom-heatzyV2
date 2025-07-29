@@ -180,8 +180,13 @@ function heatzy_update() {
         $cmd = $eqLogic->getCmd(null, 'derog_boost');          if (is_object($cmd)){ $cmd->setOrder(66); $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'derog_presence');       if (is_object($cmd)){ $cmd->setOrder(67); $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'detect_presence');      if (is_object($cmd)){ $cmd->setOrder(68); $cmd->save(); }
-
-      
+		
+        $cmd = $eqLogic->getCmd(null, 'Confort');   if (is_object($cmd)){ $cmd->setName(__('Mode Confort'  , __FILE__)) ; $cmd->save(); }
+		$cmd = $eqLogic->getCmd(null, 'Eco');       if (is_object($cmd)){ $cmd->setName(__('Mode Eco'      , __FILE__)) ; $cmd->save(); }
+		$cmd = $eqLogic->getCmd(null, 'HorsGel');   if (is_object($cmd)){ $cmd->setName(__('Mode HorsGel'  , __FILE__)) ; $cmd->save(); }
+		$cmd = $eqLogic->getCmd(null, 'Off');       if (is_object($cmd)){ $cmd->setName(__('Mode Off'      , __FILE__)) ; $cmd->save(); }
+		$cmd = $eqLogic->getCmd(null, 'Confort-1'); if (is_object($cmd)){ $cmd->setName(__('Mode Confort-1', __FILE__)) ; $cmd->save(); }
+		$cmd = $eqLogic->getCmd(null, 'Confort-2'); if (is_object($cmd)){ $cmd->setName(__('Mode Confort-2', __FILE__)) ; $cmd->save(); }
       
 	} // foreach
 	
