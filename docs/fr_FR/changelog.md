@@ -1,9 +1,15 @@
+# 30/07/2025 (dev)
+- Correction d'un bug entre le capteur externe temp et le cur_tempH (Glow/Shine)
+- Correction du changement de consigne pour lse modules tempH et tempL
+- Correction du template pour des erreurs jquery
+
 # 29/07/2025 (dev)
 - Tri des commandes (setOrder install + création)
 - Renommage des commandes Mode
+- Amélioration VerifOrdre
 
 # 28/07/2025 (dev)
-- Prise en charge de la consigne confort/eco pour les ancien modules, Glow et Shine
+- Prise en charge de la consigne confort/eco pour les ancien modules, Glow et Shine (tempH, tempL)
 - Modification du blocage du cron lors de la synchronisation (avec timestamp)
 - Ajout d'un message pour les utilisateurs ayant le template l3flo
 

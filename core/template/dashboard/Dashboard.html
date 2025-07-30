@@ -35,7 +35,7 @@
                      <div data-role="controlgroup" data-type="horizontal" title="Consigne température éco">
                         <i class="nature-night2" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
                         <a class="action ui-btn ui-mini ui-btn-inline ui-btn-raised bt_minus roundedLeft" style="font-size : 0.5em"><i class="fas fa-minus"></i></a>
-                           <input type="text" class="in_value" data-mini="true" value="#eco_temp_cmd# #eco_temp_unite#" data-wrapper-class="controlgroup-textinput ui-btn" style="font-size:0.8em; height:20px; width:50px" disabled/>
+                           <input type="text" class="in_value" data-mini="true" value="#eco_temp_cmd# #eco_temp_unite#" data-wrapper-class="controlgroup-textinput ui-btn" style="font-size:0.8em; height:20px; width:55px" disabled/>
                         <a class="action ui-btn ui-mini ui-btn-inline ui-btn-raised bt_plus roundedRight" style="font-size : 0.5em"><i class="fa fa-plus"></i></a>
                      </div>
                   </div>
@@ -50,7 +50,7 @@
                      <div data-role="controlgroup" data-type="horizontal" title="Consigne température confort">
                         <i class="meteo-soleil" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>  
                         <a class="action ui-btn ui-mini ui-btn-inline ui-btn-raised bt_minus roundedLeft" style="font-size : 0.5em"><i class="fas fa-minus"></i></a>
-                           <input type="text" class="in_value" data-mini="true" value="#cft_temp_cmd# #cft_temp_unite#" data-wrapper-class="controlgroup-textinput ui-btn" style="font-size:0.8em; height:20px; width:50px;" disabled/>
+                           <input type="text" class="in_value" data-mini="true" value="#cft_temp_cmd# #cft_temp_unite#" data-wrapper-class="controlgroup-textinput ui-btn" style="font-size:0.8em; height:20px; width:55px;" disabled/>
                            <a class="action ui-btn ui-mini ui-btn-inline ui-btn-raised bt_plus roundedRight" style="font-size : 0.5em"><i class="fa fa-plus"></i></a>
                      </div>
                   </div>
@@ -226,7 +226,10 @@
       $('.eqLogic[data-eqLogic_uid=#uid#] .cmd').on('click', function() {
         //alert($(this).data('cmd_id'));
         
-        	if( $(this).data('cmd_id') != '#cft_temp_consigne_id#' && $(this).data('cmd_id') != '#eco_temp_consigne_id#' && $(this).data('cmd_id') != '#derog_vacances_id#' )
+        	if(   $(this).data('cmd_id') != '#cft_temp_consigne_id#'
+               && $(this).data('cmd_id') != '#eco_temp_consigne_id#'
+               && $(this).data('cmd_id') != '#derog_vacances_id#'
+               && $(this).data('cmd_id') != '#derog_boost_id#' )
           		jeedom.cmd.execute({id: $(this).data('cmd_id') , value: {param1: '0' , param2: '1'} });
           });
       
@@ -321,6 +324,7 @@
       jeedom.cmd.update['#WindowSwitch_id#']({display_value:'#WindowSwitch_cmd#'});
     
       jeedom.cmd.update['#cur_temp_id#'] = function(_options){
+         if (_options.display_unit === undefined)  _options.display_unit = '°C' ;
          $('.cmd[data-cmd_id="#cur_temp_id#"]').attr('title','Température de la pièce<br>Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
          $('.cmd[data-cmd_id="#cur_temp_id#"] span').value(Number.parseFloat(_options.display_value).toFixed(1) + '' + _options.display_unit); 
       }
@@ -386,13 +390,13 @@
          }
         
         if (_options.display_value == '0') {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon jeedom-off" style="font-size:0.9em;"></i>');   /// Derog Off
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon jeedom-off" style="font-size:0.8em;"></i>');   /// Derog Off
          }else if (_options.display_value == '1') { 
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-suitcase" style="font-size:0.9em"></i><i style="font-size:0.4em">&nbsp;' + _options.derog_time_vacances + '&nbsp;jours</i>'); /// Derog vacances
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-suitcase" style="font-size:0.8em"></i><i style="font-size:0.4em">&nbsp;' + _options.derog_time_vacances + '&nbsp;jours</i>'); /// Derog vacances
          }else if (_options.display_value == '2') {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-rocket" style="font-size:1em"></i><i style="font-size:0.4em">&nbsp;' + _options.derog_time_boost + '&nbsp;min</i>');   /// Derog boost
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-rocket" style="font-size:0.9em"></i><i style="font-size:0.4em">&nbsp;' + _options.derog_time_boost + '&nbsp;min</i>');   /// Derog boost
          }else {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-user" style="font-size:1em"></i>');    /// Derog présence
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-user" style="font-size:0.9em"></i>');    /// Derog présence
          }
       }
       jeedom.cmd.update['#derog_mode_id#']({display_value:'#derog_mode_cmd#',collectDate:'#derog_mode_CollectDate#',valueDate:'#derog_mode_ValueDate#',derog_time_vacances:'#derog_time_vacances_cmd#',derog_time_boost:'#derog_time_boost_cmd#'});
@@ -467,56 +471,56 @@
 
      
       if( !Number.isNaN( Number.parseInt('#derog_time_vacances_id#') ) ){ 
-         var step#derog_vacances_id# = 1
+         var stepderog_vacances_id = 1
          if ($.issetWidgetOptParam('#derog_vacances_step#', 'step')) {
-            step#derog_vacances_id# = parseFloat('#derog_vacances_step#')
+            stepderog_vacances_id = parseFloat('#derog_vacances_step#')
          }
-         var mySlider#derog_vacances_id# = $.createWidgetSlider({
+         var mySliderderog_vacances_id = $.createWidgetSlider({
             sliderDiv: document.getElementById('widget_slider#derog_vacances_id#'),
-            state: ('#derog_time_vacances_cmd#' == '') ? #derog_vacances_minValue# : '#derog_time_vacances_cmd#',
-            min: #derog_vacances_minValue#,
-            max: #derog_vacances_maxValue#,
-            step: step#derog_vacances_id#,
+            state: ('#derog_time_vacances_cmd#' == '') ? parseInt('#derog_vacances_minValue#') : '#derog_time_vacances_cmd#',
+            min: parseInt('#derog_vacances_minValue#'),
+            max: parseInt('#derog_vacances_maxValue#'),
+            step: stepderog_vacances_id,
             tooltips: true,
             format: true,
             unite: '#derog_time_vacances_unite#'
          })
          if ($.issetWidgetOptParam('#derog_vacances_color#', 'color')) {
-            $(mySlider#derog_vacances_id#.target).find('.noUi-handle').style('background', '#derog_vacances_color#', 'important')
-            $(mySlider#derog_vacances_id#.target).find('.noUi-connect').style('background', '#derog_vacances_color#', 'important')
+            $(mySliderderog_vacances_id.target).find('.noUi-handle').style('background', '#derog_vacances_color#', 'important')
+            $(mySliderderog_vacances_id.target).find('.noUi-connect').style('background', '#derog_vacances_color#', 'important')
          }
-         mySlider#derog_vacances_id#.on('change', function(values, handle) {
+         mySliderderog_vacances_id.on('change', function(values, handle) {
             jeedom.cmd.execute({id: '#derog_vacances_id#', value: {slider: values[handle].replace('#derog_time_vacances_unite#', '').trim()}})
          })
          jeedom.cmd.addUpdateFunction('#derog_vacances_id#',function(_options) {
-            mySlider#derog_vacances_id#.set(_options.value)
+            mySliderderog_vacances_id.set(_options.value)
          });
       }
      
       if( !Number.isNaN( Number.parseInt('#derog_time_boost_id#') ) ){ 
-         var step#derog_boost_id# = 1
+         var stepderog_boost_id = 1
          if ($.issetWidgetOptParam('#derog_boost_step#', 'step')) {
-            step#derog_boost_id# = parseFloat('#derog_boost_step#')
+            stepderog_boost_id = parseFloat('#derog_boost_step#')
          }
-         var mySlider#derog_boost_id# = $.createWidgetSlider({
+         var mySliderderog_boost_id = $.createWidgetSlider({
             sliderDiv: document.getElementById('widget_slider#derog_boost_id#'),
-            state: ('#derog_time_boost_cmd#' == '') ? #derog_boost_minValue# : '#derog_time_boost_cmd#',
-            min: #derog_boost_minValue#,
-            max: #derog_boost_maxValue#,
-            step: step#derog_boost_id#,
+            state: ('#derog_time_boost_cmd#' == '') ? parseInt('#derog_boost_minValue#') : '#derog_time_boost_cmd#',
+            min: parseInt('#derog_boost_minValue#'),
+            max: parseInt('#derog_boost_maxValue#'),
+            step: stepderog_boost_id,
             tooltips: true,
             format: true,
             unite: '#derog_time_boost_unite#'
          })
          if ($.issetWidgetOptParam('#derog_boost_color#', 'color')) {
-            $(mySlider#derog_boost_id#.target).find('.noUi-handle').style('background', '#derog_boost_color#', 'important')
-            $(mySlider#derog_boost_id#.target).find('.noUi-connect').style('background', '#derog_boost_color#', 'important')
+            $(mySliderderog_boost_id.target).find('.noUi-handle').style('background', '#derog_boost_color#', 'important')
+            $(mySliderderog_boost_id.target).find('.noUi-connect').style('background', '#derog_boost_color#', 'important')
          }
-         mySlider#derog_boost_id#.on('change', function(values, handle) {
+         mySliderderog_boost_id.on('change', function(values, handle) {
             jeedom.cmd.execute({id: '#derog_boost_id#', value: {slider: values[handle].replace('#derog_time_boost_unite#', '').trim()}})
          })
          jeedom.cmd.addUpdateFunction('#derog_boost_id#',function(_options) {
-            mySlider#derog_boost_id#.set(_options.value)
+            mySliderderog_boost_id.set(_options.value)
          });
       }
      

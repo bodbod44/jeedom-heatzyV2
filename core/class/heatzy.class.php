@@ -1113,7 +1113,7 @@ class heatzy extends eqLogic {
                 }
             }
         }
-        if( !isset($aDevice['attr']['cur_temp']) && $Temp == -99 )
+        if( !isset($aDevice['attr']['cur_temp']) && !isset($aDevice['attr']['cur_tempH']) && $Temp == -99 )
         	$this->checkAndUpdateCmd('cur_temp', $Temp );
       
         
@@ -1220,7 +1220,7 @@ class heatzy extends eqLogic {
               	$Consigne = array( 'attrs' => array ( $attr => $valeur )  );
             $UserToken = config::byKey('UserToken','heatzy','none');
             // Appel API pour SET $valeur
-            //sleep(3); // Attente 3sec  
+            sleep(3); // Attente 2sec  
             $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
             
             if( $ResultSet['error_code'] == '9025' ){
@@ -1233,7 +1233,7 @@ class heatzy extends eqLogic {
 					return true ;
                 }
                 else{       
-                    sleep(1); // Attente 3sec
+                    sleep(2); // Attente 3sec
                     // Appel API pour analyser le changement ou non de consigne
                     $ResultGet = HttpGizwits::GetConsigne($UserToken, $this->getLogicalId() ) ;
                     if( $ResultGet['error_code'] == ''){
@@ -1254,7 +1254,7 @@ class heatzy extends eqLogic {
             
             if( $valeurInit == true ){
                 // On remet l'ordre initial
-                sleep(1);
+                sleep(2);
                 $Consigne = array( 'attrs' => array ( $attr => $aDevice['attr'][$attr] )  );
                 $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
                 if( $ResultSet['error_code'] != '' )
@@ -1264,6 +1264,7 @@ class heatzy extends eqLogic {
 
       	return false ;
     }
+    
   
     /**
      * @brief Fonction qui permet de créer les commandes en fonction du retour de l'API
@@ -1272,9 +1273,7 @@ class heatzy extends eqLogic {
      */
   
     public function CheckAndCreateCmd($aDevice) {
-    
-      log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' DEBUG avant DEBUT');
-      
+               
         if( isset ($aDevice['attr']['cur_temp']) || isset ($aDevice['attr']['cur_tempH']) ){
 			/// Creation de la commande info de la temperature courante
 			$CurTemp = $this->getCmd(null, 'cur_temp'); 
@@ -1295,10 +1294,8 @@ class heatzy extends eqLogic {
             else{
 				$CurTemp->setConfiguration('tempHL', isset ($aDevice['attr']['cur_tempH']) ) ;
                 $CurTemp->save();
-           }
+            }
         } // if cur_temp - cur_tempH
-      
-      log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' DEBUG avant cur_humi');
       
         if( isset ($aDevice['attr']['cur_humi']) ){
             /// Creation de la commande humidité du pilote_pro
@@ -1348,16 +1345,16 @@ class heatzy extends eqLogic {
                 $cmd->setConfiguration('maxValue', 20); // valeur maximale
                 $cmd->setConfiguration('tempHL', isset ($aDevice['attr']['eco_tempH']) ) ;
                 $cmd->setValue($EcoTemp ->getId());  
-                $cmd->setDisplay('parameters', ['step' => 1]);
+                $cmd->setDisplay('parameters', ['step' => 0.5]);
                 $cmd->setEqLogic_id($this->getId());
 				$cmd->setOrder(13);
                 $cmd->setIsHistorized(0);
                 $cmd->setIsVisible(0);
                 $cmd->save();
             }
-          else{
-            $cmd->setConfiguration('tempHL', isset ($aDevice['attr']['eco_tempH']) ) ;
-            $cmd->save();
+            else{
+                $cmd->setConfiguration('tempHL', isset ($aDevice['attr']['eco_tempH']) ) ;
+                $cmd->save();
           }
           
         } // if eco_temp - eco_tempH
@@ -1393,7 +1390,7 @@ class heatzy extends eqLogic {
                 $cmd->setConfiguration('maxValue', 25); // valeur maximale
               	$cmd->setConfiguration('tempHL', isset ($aDevice['attr']['cft_tempH']) ) ;
                 $cmd->setValue($CftTemp ->getId());  
-                $cmd->setDisplay('parameters', ['step' => 1]);
+                $cmd->setDisplay('parameters', ['step' => 0.5]);
                 $cmd->setEqLogic_id($this->getId());
 				$cmd->setOrder(15);
                 $cmd->setIsHistorized(0);
@@ -1403,7 +1400,7 @@ class heatzy extends eqLogic {
             else{
 				$cmd->setConfiguration('tempHL', isset ($aDevice['attr']['cft_tempH']) ) ;
                 $cmd->save();
-          }    
+            }    
         } // cft_temp - cft_tempH
       
         /// Creation de la commande window_opened
@@ -1439,8 +1436,6 @@ class heatzy extends eqLogic {
                 $cmd->save();
             }
         }
-      
-      log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' DEBUG avant mode chauff');
       
         // Rattrapage 4 ordres 6 ordres
         // Detection des pilote_pro / shine / glow qui n'auraient que 4 ordres (creation avant la prise en charge des 6 ordres)
@@ -1518,8 +1513,6 @@ class heatzy extends eqLogic {
                 } // for
             } // if nb ordre > 0
         } // if mode 
-       
-      log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' DEBUG avant timer_switch');
             
         if( isset ($aDevice['attr']['timer_switch']) ){            
             /// Creation de la commande info etatprog binaire
@@ -1570,10 +1563,9 @@ class heatzy extends eqLogic {
                 $cmd->setIsVisible(1);
                 $cmd->save();
             }
-              else{
+            else{
                 $cmd->setConfiguration('infoName', 'etatprog');
             }
-                
         } // if timer switch
       
         if( isset ($aDevice['attr']['lock_switch']) ){
@@ -1608,7 +1600,7 @@ class heatzy extends eqLogic {
                 $cmd->setIsVisible(1);
                 $cmd->save();
             }
-              else{
+            else{
                 $cmd->setConfiguration('infoName', 'etatlock');
             }
                 
@@ -1626,10 +1618,9 @@ class heatzy extends eqLogic {
                 $cmd->setIsVisible(1);
                 $cmd->save();
             }
-              else{
+            else{
                 $cmd->setConfiguration('infoName', 'etatlock');
             }
-                
         } // if lock_switch
 
         if( isset ($aDevice['attr']['LOCK_C']) ){
@@ -1643,7 +1634,7 @@ class heatzy extends eqLogic {
                 $etat->setType('info');
                 $etat->setSubType('binary');
                 $etat->setEqLogic_id($this->getId());
-				etat->setOrder(36);
+				$etat->setOrder(36);
                 $etat->setIsHistorized(0);
                 $etat->setIsVisible(1);
                 $etat->save();
@@ -1664,7 +1655,7 @@ class heatzy extends eqLogic {
                 $cmd->setIsVisible(1);
                 $cmd->save();
             }
-              else{
+            else{
                 $cmd->setConfiguration('infoName', 'Lock_C_State');
             }
                 
@@ -1682,10 +1673,9 @@ class heatzy extends eqLogic {
                 $cmd->setIsVisible(1);
                 $cmd->save();
             }
-              else{
+            else{
                 $cmd->setConfiguration('infoName', 'Lock_C_State');
             }
-                
         } // if lock_switch
           
         if( isset ($aDevice['attr']['window_switch']) ){
@@ -1795,7 +1785,6 @@ class heatzy extends eqLogic {
 			}
         } // if on_off
  
-      log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' DEBUG avant DEROG');
         
         /// Creation de la commande derog_mode / derog_time
       	if( isset ($aDevice['attr']['derog_mode']) && isset ($aDevice['attr']['derog_time']) ){
@@ -1878,7 +1867,7 @@ class heatzy extends eqLogic {
                             $cmd->setConfiguration('minValue', 0);  // valeur minimale
                             $cmd->setConfiguration('maxValue', 30); // valeur maximale
                             $cmd->setValue($infoCmd ->getId());  
-                          	$cmd->setDisplay('parameters', ['step' => 2]);
+                          	$cmd->setDisplay('parameters', ['step' => 1]);
                             $cmd->setEqLogic_id($this->getId());
 							$cmd->setOrder(64);
                             $cmd->setIsHistorized(0);
@@ -2404,7 +2393,7 @@ class heatzy extends eqLogic {
       	// Pour paliere aux erreurs jquery (jquery.min.js?md5=7c…38ccd3edd840d82ee:2 Uncaught Error: Syntax error, unrecognized expression) liés aux id multiples (#xxx# non remplacés)
       	if( $replace['#eco_temp_consigne_id#'] == '' ) $replace['#eco_temp_consigne_id#'] = $this->getId() ;
       	if( $replace['#cft_temp_consigne_id#'] == '' ) $replace['#cft_temp_consigne_id#'] = $this->getId() ;
-      	if( $replace['#derog_vacances_id#'] == '' ) $replace['#derog_vacances_id#'] = $this->getId() ;
+      	//if( $replace['#derog_vacances_id#'] == '' ) $replace['#derog_vacances_id#'] = $this->getId() ;
 		
 		//log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().'- '.var_export($replace, true) );
       
@@ -2548,8 +2537,9 @@ class heatzyCmd extends cmd {
             else if ($this->getLogicalId() == 'cft_temp_consigne') {
                 //log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
                 //$this->getConfiguration('tempHL',false)
-              	isset( $_options['slider'] ) ? $consigne = intval( $_options['slider'] ) : $consigne = 0 ;
-              
+              	isset( $_options['slider'] ) ? $consigne = floatval( $_options['slider'] ) : $consigne = 0 ;
+
+              	log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' $consigne='.$consigne );     
               	if( $this->getConfiguration('tempHL',false) ){
                     $tempBIN = str_pad( decbin($consigne * 10),  16, "0", STR_PAD_LEFT) ;
                     $tempH = bindec(substr( $tempBIN , 0 , 8 )) ;
@@ -2563,7 +2553,7 @@ class heatzyCmd extends cmd {
                 $ForUpdate = $consigne ;
             }
             else if ($this->getLogicalId() == 'eco_temp_consigne') {
-              	isset( $_options['slider'] ) ? $consigne = intval( $_options['slider'] ) : $consigne = 0 ;
+              	isset( $_options['slider'] ) ? $consigne = floatval( $_options['slider'] ) : $consigne = 0 ;
               
               	if( $this->getConfiguration('tempHL',false) ){
                     $tempBIN = str_pad( decbin($consigne * 10),  16, "0", STR_PAD_LEFT) ;
