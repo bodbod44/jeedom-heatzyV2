@@ -31,7 +31,7 @@
                   </span>
                  
 				  <!-- Modification/Affichage de la consigne eco -->
-                  <div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-version="#version#" data-eqLogic_id="#eqLogic_id#" data-cmd_id="#eco_temp_consigne_id#" data-cmd_uid="#uid#" style="display:none;#eco_temp_consigne_display#;">
+                  <div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-version="#version#" data-eqLogic_id="#id#" data-cmd_id="#eco_temp_consigne_id#" data-cmd_uid="#uid#" style="display:none;#eco_temp_consigne_display#;">
                      <div data-role="controlgroup" data-type="horizontal" title="Consigne température éco">
                         <i class="nature-night2" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
                         <a class="action ui-btn ui-mini ui-btn-inline ui-btn-raised bt_minus roundedLeft" style="font-size : 0.5em"><i class="fas fa-minus"></i></a>
@@ -46,7 +46,7 @@
                   </span>
                  
                   <!-- Modification/Affichage de la consigne confort -->
-                  <div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-version="#version#" data-eqLogic_id="#eqLogic_id#" data-cmd_id="#cft_temp_consigne_id#" data-cmd_uid="#uid#" style="display:none;#cft_temp_consigne_display#;">
+                  <div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-version="#version#" data-eqLogic_id="#id#" data-cmd_id="#cft_temp_consigne_id#" data-cmd_uid="#uid#" style="display:none;#cft_temp_consigne_display#;">
                      <div data-role="controlgroup" data-type="horizontal" title="Consigne température confort">
                         <i class="meteo-soleil" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>  
                         <a class="action ui-btn ui-mini ui-btn-inline ui-btn-raised bt_minus roundedLeft" style="font-size : 0.5em"><i class="fas fa-minus"></i></a>
@@ -203,13 +203,13 @@
       <span style="margin-left: 0px;margin-top: 0px; display:;">
          <center>
          <!--  Dérogation Vacances (slider) -->
-         <div class="cmd cmd-widget" data-type="action" title="Mode vacances<br>Le déplacement activera le mode vacances avec le nb de jours choisi" data-subtype="slider" data-template="default" data-version="#version#" data-eqLogic_id="#eqLogic_id#" data-cmd_id="#derog_vacances_id#" data-cmd_uid="#uid#" style="display:none;#derog_vacances_display#;">
+         <div class="cmd cmd-widget" data-type="action" title="Mode vacances<br>Le déplacement activera le mode vacances avec le nb de jours choisi" data-subtype="slider" data-template="default" data-version="#version#" data-eqLogic_id="#id#" data-cmd_id="#derog_vacances_id#" data-cmd_uid="#uid#" style="display:none;#derog_vacances_display#;">
             <div id="widget_slider#derog_vacances_id#" class="slider full-width-slider" style="margin-top: 0px">
                <i class="fas fa-suitcase" aria-hidden="true" style="font-size: 1.4em;margin-bottom:5px"></i>
             </div>
          </div>
          <!--  Dérogation Boost (slider) -->
-         <div class="cmd cmd-widget" data-type="action" title="Mode Boost<br>Le déplacement activera le mode boost avec le nb de minutes choisi" data-subtype="slider" data-template="default" data-version="#version#" data-eqLogic_id="#eqLogic_id#" data-cmd_id="#derog_boost_id#" data-cmd_uid="#uid#" style="display:none;#derog_boost_display#;">
+         <div class="cmd cmd-widget" data-type="action" title="Mode Boost<br>Le déplacement activera le mode boost avec le nb de minutes choisi" data-subtype="slider" data-template="default" data-version="#version#" data-eqLogic_id="#id#" data-cmd_id="#derog_boost_id#" data-cmd_uid="#uid#" style="display:none;#derog_boost_display#;">
             <div id="widget_slider#derog_boost_id#" class="slider full-width-slider">
                <i class="fas fa-rocket" aria-hidden="true" style="font-size: 1.4em;margin-bottom:5px"></i>
             </div>
@@ -410,117 +410,117 @@
          }
       }
       jeedom.cmd.update['#detect_presence_id#']({display_value:'#detect_presence_cmd#',collectDate:'#detect_presence_CollectDate#',valueDate:'#detect_presence_ValueDate#'});
-
-
-      $('.cmd[data-cmd_id=#eco_temp_consigne_id#] .bt_plus').on('click', function () {
+   
+     
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .bt_plus').on('click', function () {
          let max = ('#eco_temp_consigne_maxValue#' == '') ?  Number.MAX_VALUE : parseFloat('#eco_temp_consigne_maxValue#')
          let step = (isNaN(parseFloat('#eco_temp_consigne_step#'))) ?  0.5 : parseFloat('#eco_temp_consigne_step#')
-         if (parseFloat($('.cmd[data-cmd_id=#eco_temp_consigne_id#] .in_value').val()) <= max - step ) {
-            jeedom.cmd.refreshValue([{cmd_id :'#eco_temp_consigne_id#',value: parseFloat($('.cmd[data-cmd_id=#eco_temp_consigne_id#] .in_value').val()) + step}])
-            $('.cmd[data-cmd_id=#eco_temp_consigne_id#] .in_value').trigger('change')
+         if (parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val()) <= max - step ) {
+            jeedom.cmd.refreshValue([{cmd_id :'#eco_temp_consigne_id#',value: parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val()) + step}])
+            $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').trigger('change')
          }
-      })
-      $('.cmd[data-cmd_id=#eco_temp_consigne_id#] .bt_minus').on('click', function () {
+      })      
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .bt_minus').on('click', function () {
          let min = ('#eco_temp_consigne_minValue#' == '') ? Number.MIN_VALUE : parseFloat('#eco_temp_consigne_minValue#')
          let step = (isNaN(parseFloat('#eco_temp_consigne_step#'))) ?  0.5 : parseFloat('#eco_temp_consigne_step#')
-         if (parseFloat($('.cmd[data-cmd_id=#eco_temp_consigne_id#] .in_value').val()) >= min + step) {
-            jeedom.cmd.refreshValue([{cmd_id :'#eco_temp_consigne_id#',value: parseFloat($('.cmd[data-cmd_id=#eco_temp_consigne_id#] .in_value').val()) - step}])
-            $('.cmd[data-cmd_id=#eco_temp_consigne_id#] .in_value').trigger('change')
+         if (parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val()) >= min + step) {
+            jeedom.cmd.refreshValue([{cmd_id :'#eco_temp_consigne_id#',value: parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val()) - step}])
+            $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').trigger('change')
          }
       })
-      $('.cmd[data-cmd_id=#eco_temp_consigne_id#] .in_value').on('change', function () {
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').on('change', function () {
          if (typeof timerHandle#uid# !== 'undefined') {
          clearTimeout(timerHandle#uid#)
       }
       timerHandle#uid# = setTimeout(function() {
-         jeedom.cmd.execute({id:'#eco_temp_consigne_id#', value: {slider: $('.cmd[data-cmd_id=#eco_temp_consigne_id#] .in_value').val().replace("#eco_temp_unite#", "").replace(" ", "")}})
+         jeedom.cmd.execute({id:'#eco_temp_consigne_id#', value: {slider: $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val().replace("#eco_temp_unite#", "").replace(" ", "")}})
          }, 1000)
       })
          jeedom.cmd.addUpdateFunction('#eco_temp_consigne_id#',function(_options) {
-         $('.cmd[data-cmd_id=#eco_temp_consigne_id#] .in_value').val(_options.value+' #eco_temp_unite#')
+         $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val(_options.value+' #eco_temp_unite#')
       });
 
      
-      $('.cmd[data-cmd_id=#cft_temp_consigne_id#] .bt_plus').on('click', function () {
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .bt_plus').on('click', function () {
          let max = ('#cft_temp_consigne_maxValue#' == '') ?  Number.MAX_VALUE : parseFloat('#cft_temp_consigne_maxValue#')
          let step = (isNaN(parseFloat('#cft_temp_consigne_step#'))) ?  0.5 : parseFloat('#cft_temp_consigne_step#')
-         if (parseFloat($('.cmd[data-cmd_id=#cft_temp_consigne_id#] .in_value').val()) <= max - step ) {
-            jeedom.cmd.refreshValue([{cmd_id :'#cft_temp_consigne_id#',value: parseFloat($('.cmd[data-cmd_id=#cft_temp_consigne_id#] .in_value').val()) + step}])
-            $('.cmd[data-cmd_id=#cft_temp_consigne_id#] .in_value').trigger('change')
+         if (parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val()) <= max - step ) {
+            jeedom.cmd.refreshValue([{cmd_id :'#cft_temp_consigne_id#',value: parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val()) + step}])
+            $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').trigger('change')
       }
       })
-      $('.cmd[data-cmd_id=#cft_temp_consigne_id#] .bt_minus').on('click', function () {
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .bt_minus').on('click', function () {
          let min = ('#cft_temp_consigne_minValue#' == '') ? Number.MIN_VALUE : parseFloat('#cft_temp_consigne_minValue#')
          let step = (isNaN(parseFloat('#cft_temp_consigne_step#'))) ?  0.5 : parseFloat('#cft_temp_consigne_step#')
-         if (parseFloat($('.cmd[data-cmd_id=#cft_temp_consigne_id#] .in_value').val()) >= min + step) {
-            jeedom.cmd.refreshValue([{cmd_id :'#cft_temp_consigne_id#',value: parseFloat($('.cmd[data-cmd_id=#cft_temp_consigne_id#] .in_value').val()) - step}])
-            $('.cmd[data-cmd_id=#cft_temp_consigne_id#] .in_value').trigger('change')
+         if (parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val()) >= min + step) {
+            jeedom.cmd.refreshValue([{cmd_id :'#cft_temp_consigne_id#',value: parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val()) - step}])
+            $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').trigger('change')
          }
       })
-      $('.cmd[data-cmd_id=#cft_temp_consigne_id#] .in_value').on('change', function () {
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').on('change', function () {
          if (typeof timerHandle#uid# !== 'undefined') {
          clearTimeout(timerHandle#uid#)
       }
       timerHandle#uid# = setTimeout(function() {
-         jeedom.cmd.execute({id:'#cft_temp_consigne_id#', value: {slider: $('.cmd[data-cmd_id=#cft_temp_consigne_id#] .in_value').val().replace("#cft_temp_unite#", "").replace(" ", "")}})
+         jeedom.cmd.execute({id:'#cft_temp_consigne_id#', value: {slider: $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val().replace("#cft_temp_unite#", "").replace(" ", "")}})
          }, 1000)
       })
       jeedom.cmd.addUpdateFunction('#cft_temp_consigne_id#',function(_options) {
-         $('.cmd[data-cmd_id=#cft_temp_consigne_id#] .in_value').val(_options.value+' #cft_temp_unite#')
+         $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val(_options.value+' #cft_temp_unite#')
       });
 
      
       if( !Number.isNaN( Number.parseInt('#derog_time_vacances_id#') ) ){ 
-         var stepderog_vacances_id = 1
+         var stepderog_vacances_id_#id# = 1
          if ($.issetWidgetOptParam('#derog_vacances_step#', 'step')) {
-            stepderog_vacances_id = parseFloat('#derog_vacances_step#')
+            stepderog_vacances_id#id# = parseFloat('#derog_vacances_step#')
          }
-         var mySliderderog_vacances_id = $.createWidgetSlider({
+         var mySliderderog_vacances_id#id# = $.createWidgetSlider({
             sliderDiv: document.getElementById('widget_slider#derog_vacances_id#'),
             state: ('#derog_time_vacances_cmd#' == '') ? parseInt('#derog_vacances_minValue#') : '#derog_time_vacances_cmd#',
             min: parseInt('#derog_vacances_minValue#'),
             max: parseInt('#derog_vacances_maxValue#'),
-            step: stepderog_vacances_id,
+            step: stepderog_vacances_id#id#,
             tooltips: true,
             format: true,
             unite: '#derog_time_vacances_unite#'
          })
          if ($.issetWidgetOptParam('#derog_vacances_color#', 'color')) {
-            $(mySliderderog_vacances_id.target).find('.noUi-handle').style('background', '#derog_vacances_color#', 'important')
-            $(mySliderderog_vacances_id.target).find('.noUi-connect').style('background', '#derog_vacances_color#', 'important')
+            $(mySliderderog_vacances_id#id#.target).find('.noUi-handle').style('background', '#derog_vacances_color#', 'important')
+            $(mySliderderog_vacances_id#id#.target).find('.noUi-connect').style('background', '#derog_vacances_color#', 'important')
          }
-         mySliderderog_vacances_id.on('change', function(values, handle) {
-            jeedom.cmd.execute({id: '#derog_vacances_id#', value: {slider: values[handle].replace('#derog_time_vacances_unite#', '').trim()}})
+         mySliderderog_vacances_id#id#.on('change', function(values, handle) {
+           	jeedom.cmd.execute({id: '#derog_vacances_id#', value: {slider: values[handle].replace('#derog_time_vacances_unite#', '').trim()}})
          })
          jeedom.cmd.addUpdateFunction('#derog_vacances_id#',function(_options) {
-            mySliderderog_vacances_id.set(_options.value)
+            mySliderderog_vacances_id#id#.set(_options.value)
          });
       }
      
       if( !Number.isNaN( Number.parseInt('#derog_time_boost_id#') ) ){ 
-         var stepderog_boost_id = 1
+         var stepderog_boost_id#id# = 1
          if ($.issetWidgetOptParam('#derog_boost_step#', 'step')) {
-            stepderog_boost_id = parseFloat('#derog_boost_step#')
+            stepderog_boost_id#id# = parseFloat('#derog_boost_step#')
          }
-         var mySliderderog_boost_id = $.createWidgetSlider({
+         var mySliderderog_boost_id#id# = $.createWidgetSlider({
             sliderDiv: document.getElementById('widget_slider#derog_boost_id#'),
             state: ('#derog_time_boost_cmd#' == '') ? parseInt('#derog_boost_minValue#') : '#derog_time_boost_cmd#',
             min: parseInt('#derog_boost_minValue#'),
             max: parseInt('#derog_boost_maxValue#'),
-            step: stepderog_boost_id,
+            step: stepderog_boost_id#id#,
             tooltips: true,
             format: true,
             unite: '#derog_time_boost_unite#'
          })
          if ($.issetWidgetOptParam('#derog_boost_color#', 'color')) {
-            $(mySliderderog_boost_id.target).find('.noUi-handle').style('background', '#derog_boost_color#', 'important')
-            $(mySliderderog_boost_id.target).find('.noUi-connect').style('background', '#derog_boost_color#', 'important')
+            $(mySliderderog_boost_id#id#.target).find('.noUi-handle').style('background', '#derog_boost_color#', 'important')
+            $(mySliderderog_boost_id#id#.target).find('.noUi-connect').style('background', '#derog_boost_color#', 'important')
          }
-         mySliderderog_boost_id.on('change', function(values, handle) {
+         mySliderderog_boost_id#id#.on('change', function(values, handle) {
             jeedom.cmd.execute({id: '#derog_boost_id#', value: {slider: values[handle].replace('#derog_time_boost_unite#', '').trim()}})
          })
          jeedom.cmd.addUpdateFunction('#derog_boost_id#',function(_options) {
-            mySliderderog_boost_id.set(_options.value)
+            mySliderderog_boost_id#id#.set(_options.value)
          });
       }
      

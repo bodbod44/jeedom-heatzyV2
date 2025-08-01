@@ -1,3 +1,8 @@
+# 01/08/2025 (dev)
+- Le bouton Synchroniser permet d'être différencié (permettant plus d'action)
+- Arrêt de la dérogation si slider à 0
+- Correction bug javascript
+
 # 30/07/2025 (dev)
 - Correction d'un bug entre le capteur externe temp et le cur_tempH (Glow/Shine)
 - Correction du changement de consigne pour lse modules tempH et tempL
