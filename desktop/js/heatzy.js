@@ -43,19 +43,39 @@ function addCmdToTable(_cmd) {
     tr += '<input class="cmdAttr form-control input-sm" data-l1key="name" style="width : 200px;" placeholder="{{Nom}}">';
     tr += '</td>';
     tr += '<td>';
-    tr += '<span class="type" type="' + init(_cmd.type) + '">' + jeedom.cmd.availableType() + '</span>';
-    tr += '<span class="subType" subType="' + init(_cmd.subType) + '"></span>';
+    //tr += '<span class="type" type="' + init(_cmd.type) + '">' + jeedom.cmd.availableType() + '</span>';
+    //tr += '<span class="subType" subType="' + init(_cmd.subType) + '"></span>';
+   	tr += init(_cmd.type) + " / " + init(_cmd.subType) ;
     tr += '</td>';
     tr += '<td>';
     tr += '<span class="cmdAttr" data-l1key="htmlstate"></span>';
     //tr += '<span class="cmdAttr" data-l1key="unite"></span>';
     tr += '</td>';
     tr += '<td>';
-    tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" checked/>{{Afficher}}</label></span> ';
-    if (init(_cmd.type) == 'info' && ( init(_cmd.subType) == "numeric" || init(_cmd.subType) == "binary" ) )
+  	var class_inutile = '' ;
+  	if ( init(_cmd.logicalId) == 'refresh' ||
+         init(_cmd.logicalId) == 'IsOnLine' ||
+         init(_cmd.logicalId) == 'mode' ||
+         init(_cmd.logicalId) == 'ProgOn' ||
+         init(_cmd.logicalId) == 'ProgOff' ||
+         init(_cmd.logicalId) == 'LockOn' ||
+         init(_cmd.logicalId) == 'LockOff' ||
+         init(_cmd.logicalId) == 'WindowSwitchOn' ||
+         init(_cmd.logicalId) == 'WindowSwitchOff' ||
+         init(_cmd.logicalId) == 'derog_time_vacances' ||
+         init(_cmd.logicalId) == 'derog_time_boost'
+       )
+    	class_inutile = 'class_inutile' ;
+    tr += '<span class="' + class_inutile + '"><label class="checkbox-inline ' + class_inutile + '"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" checked/>{{Afficher}}</label></span> ';
+    tr += '</td>';
+    tr += '<td>';
+    if ( init(_cmd.type) == 'info' && ( init(_cmd.subType) == "numeric" || init(_cmd.subType) == "binary" ) )
     	tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isHistorized" checked/>{{Historiser}}</label></span> ';
+    tr += '</td>';
+    tr += '<td>';
     tr += '<a class="btn btn-default btn-xs cmdAction expertModeVisible" data-action="configure"><i class="fa fa-cogs"></i></a> ';
-    tr += '<a class="btn btn-default btn-xs cmdAction" data-action="test"><i class="fa fa-rss"></i> {{Tester}}</a>';
+    if( init(_cmd.type) == 'action' )  
+  		tr += '<a class="btn btn-default btn-xs cmdAction" data-action="test"><i class="fa fa-rss"></i> {{Tester}}</a>';
     tr += '<i class="fa fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i>';
     tr += '</td>';
     tr += '</tr>';

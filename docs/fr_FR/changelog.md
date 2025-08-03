@@ -1,3 +1,6 @@
+# 03/08/2025 (dev)
+- Suppression de certains boutons afficher pour le template commun (pour les commandes qui n'influencent pas l'affichage)
+
 # 01/08/2025 (dev)
 - Le bouton Synchroniser permet d'être différencié (permettant plus d'action)
 - Arrêt de la dérogation si slider à 0

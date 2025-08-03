@@ -205,12 +205,18 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 					{{Nom}}
 				</th>
 				<th style="width: 150px;">
-					{{Type}}
+					{{Type / subType}}
 				</th>
 				<th style="width: 50px;">
 					{{Etat}}
 				</th>
-				<th style="width: 150px;">
+				<th style="width: 50px;">
+					{{Affichage}}
+				</th>
+				<th style="width: 50px;">
+					{{Historique}}
+				</th>
+				<th style="width: 50px;">
 					{{Paramètres}}
 				</th>
 			</tr>
@@ -250,7 +256,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 					<div class="form-group">
 						<label class="col-sm-4 control-label" style="width:120px;">Template</label>
 						<div class="col-sm-6">
-							<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title=""  style="width:300px;">
+							<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title=""  style="width:300px;" onchange="AffichageTemplateBodbod()">
 								<option value="0">{{Template heatzy bodbod}}</option>
 								<option value="1">{{Template heatzy l3flo (bientôt obselète)}}</option>
 								<option value="2">{{Template jeedom}}</option>
@@ -442,5 +448,14 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
         }
         });
     });
+
+    function AffichageTemplateBodbod() {
+      //const selectTypeTemplate = $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected') ;
+      if( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').val() == 0 )
+        $('.class_inutile').attr('style', 'display:none;');
+      else
+        $('.class_inutile').attr('style', 'display:xxx;');
+    }
+    window.onload = AffichageTemplateBodbod; //note bien l'abscence de ()
 
 </script>

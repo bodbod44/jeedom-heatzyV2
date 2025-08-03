@@ -388,15 +388,22 @@
          else{
             $('.btn_mode[id="#EtatConsigne_id#"]').attr('style', 'display:xx;');
          }
+        //     alert( Date.parse("October 13, 1975 11:13:00") / 1000 + ' - ' + Date.parse('#EtatConsigne_ValueDate#') / 1000 ) ;
+        //var derog_time_restant#id# = 0 ;
+        //derog_time_restant#id# = (Date.now() / 1000) - (Date.parse("#derog_mode_ValueDate#") / 1000) ;
+        //alert( derog_time_restant#id# ) ;
+        
         
         if (_options.display_value == '0') {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon jeedom-off" style="font-size:0.8em;"></i>');   /// Derog Off
-         }else if (_options.display_value == '1') { 
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-suitcase" style="font-size:0.8em"></i><i style="font-size:0.4em">&nbsp;' + _options.derog_time_vacances + '&nbsp;jours</i>'); /// Derog vacances
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon jeedom-off" style="font-size:0.7em;"></i>');   /// Derog Off
+         }else if (_options.display_value == '1') {
+           	derog_time_restant#id# = _options.derog_time_vacances - parseInt( (parseInt(Date.now() / 1000) - parseInt(Date.parse("#derog_mode_ValueDate#") / 1000) ) / (3600 * 24) ) ;
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-suitcase" style="font-size:0.7em"></i><i style="font-size:0.4em">&nbsp;' + _options.derog_time_vacances + '&nbsp;jours&nbsp;(reste &nbsp;' + derog_time_restant#id# + '&nbsp;j)</i>'); /// Derog vacances
          }else if (_options.display_value == '2') {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-rocket" style="font-size:0.9em"></i><i style="font-size:0.4em">&nbsp;' + _options.derog_time_boost + '&nbsp;min</i>');   /// Derog boost
+           	derog_time_restant#id# = _options.derog_time_boost - parseInt( (parseInt(Date.now() / 1000) - parseInt(Date.parse("#derog_mode_ValueDate#") / 1000) ) / 60 ) ;
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-rocket" style="font-size:0.7em"></i><i style="font-size:0.4em">&nbsp;' + _options.derog_time_boost + 'min&nbsp;(reste&nbsp;' + derog_time_restant#id# + '&nbsp;min)</i>');   /// Derog boost
          }else {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-user" style="font-size:0.9em"></i>');    /// Derog présence
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-user" style="font-size:0.7em"></i>');    /// Derog présence
          }
       }
       jeedom.cmd.update['#derog_mode_id#']({display_value:'#derog_mode_cmd#',collectDate:'#derog_mode_CollectDate#',valueDate:'#derog_mode_ValueDate#',derog_time_vacances:'#derog_time_vacances_cmd#',derog_time_boost:'#derog_time_boost_cmd#'});
@@ -470,7 +477,7 @@
       });
 
      
-      if( !Number.isNaN( Number.parseInt('#derog_time_vacances_id#') ) ){ 
+      //if( !Number.isNaN( Number.parseInt('#derog_time_vacances_id#') ) && !Number.isNaN( Number.parseInt('#derog_vacances_id#') ) ){ 
          var stepderog_vacances_id_#id# = 1
          if ($.issetWidgetOptParam('#derog_vacances_step#', 'step')) {
             stepderog_vacances_id#id# = parseFloat('#derog_vacances_step#')
@@ -495,9 +502,9 @@
          jeedom.cmd.addUpdateFunction('#derog_vacances_id#',function(_options) {
             mySliderderog_vacances_id#id#.set(_options.value)
          });
-      }
+      //}
      
-      if( !Number.isNaN( Number.parseInt('#derog_time_boost_id#') ) ){ 
+      //if( !Number.isNaN( Number.parseInt('#derog_time_boost_id#') ) && !Number.isNaN( Number.parseInt('#derog_boost_id#') ) ){ 
          var stepderog_boost_id#id# = 1
          if ($.issetWidgetOptParam('#derog_boost_step#', 'step')) {
             stepderog_boost_id#id# = parseFloat('#derog_boost_step#')
@@ -513,8 +520,8 @@
             unite: '#derog_time_boost_unite#'
          })
          if ($.issetWidgetOptParam('#derog_boost_color#', 'color')) {
-            $(mySliderderog_boost_id#id#.target).find('.noUi-handle').style('background', '#derog_boost_color#', 'important')
-            $(mySliderderog_boost_id#id#.target).find('.noUi-connect').style('background', '#derog_boost_color#', 'important')
+            //$(mySliderderog_boost_id#id#.target).find('.noUi-handle').style('background', '#derog_boost_color#', 'important')
+            //$(mySliderderog_boost_id#id#.target).find('.noUi-connect').style('background', '#derog_boost_color#', 'important')
          }
          mySliderderog_boost_id#id#.on('change', function(values, handle) {
             jeedom.cmd.execute({id: '#derog_boost_id#', value: {slider: values[handle].replace('#derog_time_boost_unite#', '').trim()}})
@@ -522,7 +529,8 @@
          jeedom.cmd.addUpdateFunction('#derog_boost_id#',function(_options) {
             mySliderderog_boost_id#id#.set(_options.value)
          });
-      }
+      //}
+
      
    </script>
 </div>

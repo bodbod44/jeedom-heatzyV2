@@ -1812,7 +1812,7 @@ class heatzy extends eqLogic {
                 $cmd->setIsVisible(1);
           		$cmd->setOrder(60);
                 $cmd->save();
-            //}
+            }
 
                 /*
                 $cmd = $this->getCmd(null, 'derog_time'); 
@@ -1850,7 +1850,7 @@ class heatzy extends eqLogic {
                 /// Creation de la commande derog_vacances (1)
                 $cmd = $this->getCmd(null, 'derog_vacances');
                 if (!is_object($cmd) || $force) {
-                    if( $this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 1 , 'derog_time' , 1 , false ) ){
+                    if( $this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 1 , 'derog_time' , 1 , false , true ) ){
                       
                         $infoCmd = $this->getCmd(null, 'derog_time_vacances'); 
                         if (!is_object($infoCmd) ) {
@@ -1892,7 +1892,7 @@ class heatzy extends eqLogic {
                 /// Creation de la commande derog_boost (2)
                 $cmd = $this->getCmd(null, 'derog_boost');
                 if (!is_object($cmd) || $force) {
-                    if( $this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 2 , 'derog_time' , 30 , false ) ){
+                    if( $this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 2 , 'derog_time' , 30 , false , true ) ){
                       
                         $infoCmd = $this->getCmd(null, 'derog_time_boost'); 
                         if (!is_object($infoCmd) ) {
@@ -1968,7 +1968,7 @@ class heatzy extends eqLogic {
                         }
                     } // if VerifOrdreAccepte
                 } // if !derog_presence
-            } // if !derog_mode
+            //} // if !derog_mode
         } // if derog_mode
     }
     
