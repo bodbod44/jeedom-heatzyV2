@@ -737,7 +737,6 @@ class heatzy extends eqLogic {
             log::add('heatzy', 'warning', __METHOD__.' : impossible de se connecter a: '.HttpGizwits::$UrlGizwits);
             return false;
         }
-        log::add('heatzy', 'debug',  '$aResult :'.var_export($aResult, true));
          
         $TokenExpire = date('Y-m-d H:i:s', $aResult['expire_at']);
         $UserToken = $aResult['token'];
@@ -784,16 +783,17 @@ class heatzy extends eqLogic {
       
         /// Login + creation du cron
         if( heatzy::Login() === false ){
-            log::add('heatzy', 'warning',  __METHOD__.' : heatzy::Login - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
+            log::add('heatzy', 'warning',  __METHOD__.' : heatzy::Login() - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
             return false;
         }
             
         $UserToken = config::byKey('UserToken','heatzy','none');   
       
         /// Bindings
+
         $aDevices = HttpGizwits::Bindings($UserToken);      
-      
         if($aDevices === false) {
+
             log::add('heatzy', 'warning',  __METHOD__.' : HttpGizwits::Bindings - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
             return false;
         }
