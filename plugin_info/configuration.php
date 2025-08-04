@@ -50,6 +50,29 @@ if (!isConnect()) {
         	</div>
 		</div>
 		<div class="form-group">
+        	<label class="col-lg-4 control-label">{{Frequence de rafaichissement des commandes infos}}</label>
+        	<div class="col-lg-6">             
+				<select class="configKey form-control" data-l1key="Freq_value" title="Fréquence de rafaichissement des commandes depuis Heatzy (1 min par défaut)"  style="width:100px;">
+					<option value="1">1 min</option>
+					<option value="2">2 min</option>
+					<option value="3">3 min</option>
+					<option value="4">4 min</option>
+					<option value="5">5 min</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+        	<label class="col-lg-4 control-label">{{Frequence de rafaichissement du statut}}</label>
+        	<div class="col-lg-6">
+				<select class="configKey form-control" data-l1key="Freq_status" title="Fréquence de rafaichissement des statuts du module depuis Heatzy (5 min par défaut)"  style="width:100px;">
+					<option value="5">5 min</option>
+					<option value="10">10 min</option>
+					<option value="15">15 min</option>
+					<option value="20">20 min</option>
+				</select>
+            </div>
+		</div>
+		<div class="form-group">
 			<label class="col-lg-4 control-label">{{Synchroniser}}</label>
 			<div class="col-lg-2">
 				<a class="btn btn-info bt_syncheatzy"><i id='syncheatzy' class="fa fa-refresh"></i>
@@ -63,6 +86,8 @@ if (!isConnect()) {
 <script>
 
 $('.bt_syncheatzy').on('click',function(){
+	  $('#div_alert').showAlert({message: 'Synchronisation en cours. Ne pas toucher au plugin pendant 2min', level: 'info'});
+	  
 	  $('#syncheatzy').addClass('fa-spin');
 	  
       $.ajax({// fonction permettant de faire de l'ajax

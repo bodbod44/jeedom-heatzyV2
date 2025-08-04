@@ -24,14 +24,37 @@
                <span style="margin-right: 5px;font-weight: bold;font-size: 1.8em;"></span>
                </span>
                <div style="margin-top:5px; margin-left: 10px">
+                 
                   <!-- Affichage de la consigne eco -->
                   <span class="cmd cmd-widget #eco_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" style="margin-left:5px;display:none;#eco_temp_display#;" title="consigne eco" data-version="#version#">
                   <i class="nature-night2" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
                   </span>
+                 
+				  <!-- Modification/Affichage de la consigne eco -->
+                  <div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-version="#version#" data-eqLogic_id="#id#" data-cmd_id="#eco_temp_consigne_id#" data-cmd_uid="#uid#" style="display:none;#eco_temp_consigne_display#;">
+                     <div data-role="controlgroup" data-type="horizontal" title="Consigne température éco">
+                        <i class="nature-night2" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
+                        <a class="action ui-btn ui-mini ui-btn-inline ui-btn-raised bt_minus roundedLeft" style="font-size : 0.5em"><i class="fas fa-minus"></i></a>
+                           <input type="text" class="in_value" data-mini="true" value="#eco_temp_cmd# #eco_temp_unite#" data-wrapper-class="controlgroup-textinput ui-btn" style="font-size:0.8em; height:20px; width:55px" disabled/>
+                        <a class="action ui-btn ui-mini ui-btn-inline ui-btn-raised bt_plus roundedRight" style="font-size : 0.5em"><i class="fa fa-plus"></i></a>
+                     </div>
+                  </div>
+                  &nbsp;&nbsp;&nbsp;
                   <!-- Affichage de la consigne confort -->
                   <span class="cmd cmd-widget #cft_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cft_temp_id#" style="margin-left:5px;display:none;#cft_temp_display#;" title="consigne confort" data-version="#version#">
                   <i class="meteo-soleil" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>
                   </span>
+                 
+                  <!-- Modification/Affichage de la consigne confort -->
+                  <div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-version="#version#" data-eqLogic_id="#id#" data-cmd_id="#cft_temp_consigne_id#" data-cmd_uid="#uid#" style="display:none;#cft_temp_consigne_display#;">
+                     <div data-role="controlgroup" data-type="horizontal" title="Consigne température confort">
+                        <i class="meteo-soleil" aria-hidden="true"><span style="margin-right: 5px;font-size: 0.8em;"></span></i>  
+                        <a class="action ui-btn ui-mini ui-btn-inline ui-btn-raised bt_minus roundedLeft" style="font-size : 0.5em"><i class="fas fa-minus"></i></a>
+                           <input type="text" class="in_value" data-mini="true" value="#cft_temp_cmd# #cft_temp_unite#" data-wrapper-class="controlgroup-textinput ui-btn" style="font-size:0.8em; height:20px; width:55px;" disabled/>
+                           <a class="action ui-btn ui-mini ui-btn-inline ui-btn-raised bt_plus roundedRight" style="font-size : 0.5em"><i class="fa fa-plus"></i></a>
+                     </div>
+                  </div>
+                 
                </div>
             </center>
          </span>
@@ -50,11 +73,18 @@
                <span class="iconWindow"></span>
                </span>
                </span>
+              
+              <!-- Detect_presence -->
+               <span class="float:right" style="margin-right: 0px;margin-top: 0px;">
+               <span class="cmd cmd-widget #detect_presence_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#detect_presence_id#" style="margin-left:5px;display:none;#detect_presence_display#;" title="#detect_presence_CollectDate#" data-version="#version#">
+               <span class="iconPresence"></span>
+               </span>
+               </span>
             </center>
          </span>
          <span style="margin-left: 0px;margin-top: 0px;">
             <center>
-               <div style="margin-left: 0px">
+               <div style="margin-left: 0px" id="#EtatConsigne_id#" class="btn_mode">
                   <!-- Off -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Off_id#" data-version="#version#" style="display:none;#Off_display#;">
                   <span title="Mode OFF" class="off cursor action btn">
@@ -128,7 +158,7 @@
                </span>
             </span>
          </center>
-         <span style="margin-left: 20px;margin-top: 0px; display:none;">
+         <span style="margin-left: 20px;margin-top: 0px; display:;">
             <center>
                <!-- Derog mode -->
                <span class="float:right" style="margin-right: 0px;margin-top: 0px;">
@@ -138,42 +168,69 @@
                </span>
             </center>
          </span>
-         <span style="margin-left: 0px;margin-top: 0px; display:none;">
+         <span style="margin-left: 0px;margin-top: 0px; display:;">
             <center>
-               <div style="margin-left: 0px">
-                  <!-- Derog Off -->
+               <div style="margin-left: 0px;">
+                  <!-- Dérogation Off -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_off_id#" data-version="#version#" style="display:none;#derog_off_display#;">
-                  <span title="Derog OFF" class="off cursor action btn">
-                  <i class="jeedom-off" style="font-size:1.2em"></i>
+                  <span title="Dérogation OFF" class="off cursor action btn">
+                  <i class="jeedom-off" style="font-size:1.2em;"></i>
                   </span>
                   </span>
-                  <!-- Derog Vacances -->
-                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_vac_id#" data-version="#version#" style="display:none;#derog_vac_display#;">
-                  <span title="Derog Vacances" class="vacances cursor action btn">
-                  <i class="jeedomapp-plane" style="font-size:1.4em"></i>
+                  <!-- Dérogation Vacances 
+                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_vacances_id#" data-version="#version#" style="display:none;#derog_vacances_display#;">
+                  <span title="Dérogation Vacances" class="vacances cursor action btn">
+                  <i class="fas fa-suitcase" style="font-size:1.3em;"></i>
                   </span>
-                  </span>
-                  <!--  Derog Boost -->
+                  </span>-->
+                  <!--  Dérogation Boost 
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_boost_id#" data-version="#version#" style="display:none;#derog_boost_display#;">
-                  <span title="Derog boost" class="boost cursor action btn">
-                  <i class="fas fa-bomb" style="font-size:1.0em"></i>
+                  <span title="Dérogation boost" class="boost cursor action btn">
+                  <i class="fas fa-rocket" style="font-size:1.3em;"></i>
                   </span>
-                  </span>
-                  <!--  Derog presence -->
+                  </span>-->
+                  <!--  Dérogation presence -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_presence_id#" data-version="#version#" style="display:none;#derog_presence_display#;">
-                  <span title="Derog Présence" class="presence cursor action btn">
-                  <i class="loisir-runner5" style="font-size:1.0em"></i>
+                  <span title="Dérogation Présence" class="presence cursor action btn">
+                  <i class="fas fa-user" style="font-size:1.3em;"></i>
                   </span>
                   </span>
                </div>
             </center>
          </span>
       </div>
+       
+      <span style="margin-left: 0px;margin-top: 0px; display:;">
+         <center>
+         <!--  Dérogation Vacances (slider) -->
+         <div class="cmd cmd-widget" data-type="action" title="Mode vacances<br>Le déplacement activera le mode vacances avec le nb de jours choisi" data-subtype="slider" data-template="default" data-version="#version#" data-eqLogic_id="#id#" data-cmd_id="#derog_vacances_id#" data-cmd_uid="#uid#" style="display:none;#derog_vacances_display#;">
+            <div id="widget_slider#derog_vacances_id#" class="slider full-width-slider" style="margin-top: 0px">
+               <i class="fas fa-suitcase" aria-hidden="true" style="font-size: 1.4em;margin-bottom:5px"></i>
+            </div>
+         </div>
+         <!--  Dérogation Boost (slider) -->
+         <div class="cmd cmd-widget" data-type="action" title="Mode Boost<br>Le déplacement activera le mode boost avec le nb de minutes choisi" data-subtype="slider" data-template="default" data-version="#version#" data-eqLogic_id="#id#" data-cmd_id="#derog_boost_id#" data-cmd_uid="#uid#" style="display:none;#derog_boost_display#;">
+            <div id="widget_slider#derog_boost_id#" class="slider full-width-slider">
+               <i class="fas fa-rocket" aria-hidden="true" style="font-size: 1.4em;margin-bottom:5px"></i>
+            </div>
+         </div>
+         </center>
+      </span>  
+
+       
    </div>
+  
+  
    <script>
+     
       $('.eqLogic[data-eqLogic_uid=#uid#] .cmd').on('click', function() {
-        	 //alert($(this).data('cmd_id'));
-          jeedom.cmd.execute({id: $(this).data('cmd_id')});
+        //alert($(this).data('cmd_id'));
+        
+        	if(   $(this).data('cmd_id') != '#cft_temp_consigne_id#'
+               && $(this).data('cmd_id') != '#eco_temp_consigne_id#'
+               && $(this).data('cmd_id') != '#derog_vacances_id#'
+               && $(this).data('cmd_id') != '#derog_boost_id#' )
+          		jeedom.cmd.execute({id: $(this).data('cmd_id') , value: {param1: '0' , param2: '1'} });
           });
       
       jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
@@ -267,25 +324,29 @@
       jeedom.cmd.update['#WindowSwitch_id#']({display_value:'#WindowSwitch_cmd#'});
     
       jeedom.cmd.update['#cur_temp_id#'] = function(_options){
-         $('.cmd[data-cmd_id="#cur_temp_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-         $('.cmd[data-cmd_id="#cur_temp_id#"] span').value(_options.display_value);
+         if (_options.display_unit === undefined)  _options.display_unit = '°C' ;
+         $('.cmd[data-cmd_id="#cur_temp_id#"]').attr('title','Température de la pièce<br>Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         $('.cmd[data-cmd_id="#cur_temp_id#"] span').value(Number.parseFloat(_options.display_value).toFixed(1) + '' + _options.display_unit); 
       }
-      jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd# #cur_temp_unite#',collectDate:'#cur_temp_CollectDate#',valueDate:'#cur_temp_ValueDate#'});
+      jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd#',display_unit:'#cur_temp_unite#',collectDate:'#cur_temp_CollectDate#',valueDate:'#cur_temp_ValueDate#'});
       
       jeedom.cmd.update['#eco_temp_id#'] = function(_options){
-         $('.cmd[data-cmd_id="#eco_temp_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-         $('.cmd[data-cmd_id="#eco_temp_id#"] span').value(_options.display_value);
+         if (_options.display_unit === undefined)  _options.display_unit = '°C' ;
+         $('.cmd[data-cmd_id="#eco_temp_id#"]').attr('title','Valeur température éco<br>Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         $('.cmd[data-cmd_id="#eco_temp_id#"] span').value(': ' + Number.parseFloat(_options.display_value).toFixed(1) + ' ' + _options.display_unit );
       }
-      jeedom.cmd.update['#eco_temp_id#']({display_value:': #eco_temp_cmd# #eco_temp_unite#',collectDate:'#eco_temp_CollectDate#',valueDate:'#eco_temp_ValueDate#'});
+      jeedom.cmd.update['#eco_temp_id#']({display_value:'#eco_temp_cmd#', display_unit:'#eco_temp_unite#',collectDate:'#eco_temp_CollectDate#',valueDate:'#eco_temp_ValueDate#'});
       
       jeedom.cmd.update['#cft_temp_id#'] = function(_options){
-         $('.cmd[data-cmd_id="#cft_temp_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-         $('.cmd[data-cmd_id="#cft_temp_id#"] span').value(_options.display_value);
+         //alert( _options.display_value + ' ' + _options.display_unit + ' ' + _options.collectDate ) ;
+         if (_options.display_unit === undefined)  _options.display_unit = '°C' ;
+         $('.cmd[data-cmd_id="#cft_temp_id#"]').attr('title','Valeur température confort<br>Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         $('.cmd[data-cmd_id="#cft_temp_id#"] span').value(': ' + Number.parseFloat(_options.display_value).toFixed(1) + ' ' + _options.display_unit );
       }
-      jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp_cmd# #cft_temp_unite#',collectDate:'#cft_temp_CollectDate#',valueDate:'#cft_temp_ValueDate#'});
+      jeedom.cmd.update['#cft_temp_id#']({display_value:'#cft_temp_cmd#', display_unit:'#cft_temp_unite#',collectDate:'#cft_temp_CollectDate#',valueDate:'#cft_temp_ValueDate#'});
       
       jeedom.cmd.update['#cur_humi_id#'] = function(_options){
-         $('.cmd[data-cmd_id="#cur_humi_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         $('.cmd[data-cmd_id="#cur_humi_id#"]').attr('title','Humidité de la pièce<br>Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
          $('.cmd[data-cmd_id="#cur_humi_id#"] span').value(_options.display_value);
       }
       jeedom.cmd.update['#cur_humi_id#']({display_value:'#cur_humi_cmd# #cur_humi_unite#',collectDate:'#cur_humi_CollectDate#',valueDate:'#cur_humi_ValueDate#'});
@@ -320,17 +381,156 @@
 
       jeedom.cmd.update['#derog_mode_id#'] = function(_options){
          $('.cmd[data-cmd_id="#derog_mode_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-         if (_options.display_value == '0') {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('Derog<i class="icon jeedom-off" style="font-size:1em"></i>');   /// Derog Confort
-         }else if (_options.display_value == '1') { 
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i class="icon jeedomapp-plane" style="font-size:1em"></i><i style="font-size:0.5em">-1</i>');   /// Derog vacances
+         
+         if (_options.display_value != '0') {
+            $('.btn_mode[id="#EtatConsigne_id#"]').attr('style', 'display:none;');
+         }
+         else{
+            $('.btn_mode[id="#EtatConsigne_id#"]').attr('style', 'display:xx;');
+         }
+        //     alert( Date.parse("October 13, 1975 11:13:00") / 1000 + ' - ' + Date.parse('#EtatConsigne_ValueDate#') / 1000 ) ;
+        //var derog_time_restant#id# = 0 ;
+        //derog_time_restant#id# = (Date.now() / 1000) - (Date.parse("#derog_mode_ValueDate#") / 1000) ;
+        //alert( derog_time_restant#id# ) ;
+        
+        
+        if (_options.display_value == '0') {
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon jeedom-off" style="font-size:0.7em;"></i>');   /// Derog Off
+         }else if (_options.display_value == '1') {
+           	derog_time_restant#id# = _options.derog_time_vacances - parseInt( (parseInt(Date.now() / 1000) - parseInt(Date.parse("#derog_mode_ValueDate#") / 1000) ) / (3600 * 24) ) ;
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-suitcase" style="font-size:0.7em"></i><i style="font-size:0.4em">&nbsp;' + _options.derog_time_vacances + '&nbsp;jours&nbsp;(reste &nbsp;' + derog_time_restant#id# + '&nbsp;j)</i>'); /// Derog vacances
          }else if (_options.display_value == '2') {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i class="icon fas fa-bomb" style="font-size:1em"></i>');   /// Derog boost
+           	derog_time_restant#id# = _options.derog_time_boost - parseInt( (parseInt(Date.now() / 1000) - parseInt(Date.parse("#derog_mode_ValueDate#") / 1000) ) / 60 ) ;
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-rocket" style="font-size:0.7em"></i><i style="font-size:0.4em">&nbsp;' + _options.derog_time_boost + 'min&nbsp;(reste&nbsp;' + derog_time_restant#id# + '&nbsp;min)</i>');   /// Derog boost
          }else {
-            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i class="icon loisir-runner5" style="font-size:1em"></i>');    /// Derog présence
+            $('.cmd[data-cmd_id="#derog_mode_id#"] > span.iconCmd').empty().append('<i style="font-size:0.5em">Dérogation : </i><i class="icon fas fa-user" style="font-size:0.7em"></i>');    /// Derog présence
          }
       }
-      jeedom.cmd.update['#derog_mode_id#']({display_value:'#derog_mode_cmd#',collectDate:'#derog_mode_CollectDate#',valueDate:'#derog_mode_ValueDate#'});
+      jeedom.cmd.update['#derog_mode_id#']({display_value:'#derog_mode_cmd#',collectDate:'#derog_mode_CollectDate#',valueDate:'#derog_mode_ValueDate#',derog_time_vacances:'#derog_time_vacances_cmd#',derog_time_boost:'#derog_time_boost_cmd#'});
+     
+      jeedom.cmd.update['#detect_presence_id#'] = function(_options){
+         $('.cmd[data-cmd_id="#detect_presence_id#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         if (_options.display_value == '1') {
+            $('.cmd[data-cmd_id="#detect_presence_id#"] > span.iconPresence').empty().append('<i class="icon fas fa-running" style="font-size:2.3em;color: #d35400;"></i>');   /// Ouverte
+         }else{
+            $('.cmd[data-cmd_id="#detect_presence_id#"] > span.iconPresence').empty().append('<i class="icon fas fa-running2" style="font-size:2em;color: #034203;"></i>');    /// Fermée
+         }
+      }
+      jeedom.cmd.update['#detect_presence_id#']({display_value:'#detect_presence_cmd#',collectDate:'#detect_presence_CollectDate#',valueDate:'#detect_presence_ValueDate#'});
+   
+     
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .bt_plus').on('click', function () {
+         let max = ('#eco_temp_consigne_maxValue#' == '') ?  Number.MAX_VALUE : parseFloat('#eco_temp_consigne_maxValue#')
+         let step = (isNaN(parseFloat('#eco_temp_consigne_step#'))) ?  0.5 : parseFloat('#eco_temp_consigne_step#')
+         if (parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val()) <= max - step ) {
+            jeedom.cmd.refreshValue([{cmd_id :'#eco_temp_consigne_id#',value: parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val()) + step}])
+            $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').trigger('change')
+         }
+      })      
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .bt_minus').on('click', function () {
+         let min = ('#eco_temp_consigne_minValue#' == '') ? Number.MIN_VALUE : parseFloat('#eco_temp_consigne_minValue#')
+         let step = (isNaN(parseFloat('#eco_temp_consigne_step#'))) ?  0.5 : parseFloat('#eco_temp_consigne_step#')
+         if (parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val()) >= min + step) {
+            jeedom.cmd.refreshValue([{cmd_id :'#eco_temp_consigne_id#',value: parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val()) - step}])
+            $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').trigger('change')
+         }
+      })
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').on('change', function () {
+         if (typeof timerHandle#uid# !== 'undefined') {
+         clearTimeout(timerHandle#uid#)
+      }
+      timerHandle#uid# = setTimeout(function() {
+         jeedom.cmd.execute({id:'#eco_temp_consigne_id#', value: {slider: $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val().replace("#eco_temp_unite#", "").replace(" ", "")}})
+         }, 1000)
+      })
+         jeedom.cmd.addUpdateFunction('#eco_temp_consigne_id#',function(_options) {
+         $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#eco_temp_consigne_id#"] .in_value').val(_options.value+' #eco_temp_unite#')
+      });
 
+     
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .bt_plus').on('click', function () {
+         let max = ('#cft_temp_consigne_maxValue#' == '') ?  Number.MAX_VALUE : parseFloat('#cft_temp_consigne_maxValue#')
+         let step = (isNaN(parseFloat('#cft_temp_consigne_step#'))) ?  0.5 : parseFloat('#cft_temp_consigne_step#')
+         if (parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val()) <= max - step ) {
+            jeedom.cmd.refreshValue([{cmd_id :'#cft_temp_consigne_id#',value: parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val()) + step}])
+            $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').trigger('change')
+      }
+      })
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .bt_minus').on('click', function () {
+         let min = ('#cft_temp_consigne_minValue#' == '') ? Number.MIN_VALUE : parseFloat('#cft_temp_consigne_minValue#')
+         let step = (isNaN(parseFloat('#cft_temp_consigne_step#'))) ?  0.5 : parseFloat('#cft_temp_consigne_step#')
+         if (parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val()) >= min + step) {
+            jeedom.cmd.refreshValue([{cmd_id :'#cft_temp_consigne_id#',value: parseFloat($('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val()) - step}])
+            $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').trigger('change')
+         }
+      })
+      $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').on('change', function () {
+         if (typeof timerHandle#uid# !== 'undefined') {
+         clearTimeout(timerHandle#uid#)
+      }
+      timerHandle#uid# = setTimeout(function() {
+         jeedom.cmd.execute({id:'#cft_temp_consigne_id#', value: {slider: $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val().replace("#cft_temp_unite#", "").replace(" ", "")}})
+         }, 1000)
+      })
+      jeedom.cmd.addUpdateFunction('#cft_temp_consigne_id#',function(_options) {
+         $('.cmd[data-eqLogic_id="#id#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val(_options.value+' #cft_temp_unite#')
+      });
+
+     
+      //if( !Number.isNaN( Number.parseInt('#derog_time_vacances_id#') ) && !Number.isNaN( Number.parseInt('#derog_vacances_id#') ) ){ 
+         var stepderog_vacances_id_#id# = 1
+         if ($.issetWidgetOptParam('#derog_vacances_step#', 'step')) {
+            stepderog_vacances_id#id# = parseFloat('#derog_vacances_step#')
+         }
+         var mySliderderog_vacances_id#id# = $.createWidgetSlider({
+            sliderDiv: document.getElementById('widget_slider#derog_vacances_id#'),
+            state: ('#derog_time_vacances_cmd#' == '') ? parseInt('#derog_vacances_minValue#') : '#derog_time_vacances_cmd#',
+            min: parseInt('#derog_vacances_minValue#'),
+            max: parseInt('#derog_vacances_maxValue#'),
+            step: stepderog_vacances_id#id#,
+            tooltips: true,
+            format: true,
+            unite: '#derog_time_vacances_unite#'
+         })
+         if ($.issetWidgetOptParam('#derog_vacances_color#', 'color')) {
+            $(mySliderderog_vacances_id#id#.target).find('.noUi-handle').style('background', '#derog_vacances_color#', 'important')
+            $(mySliderderog_vacances_id#id#.target).find('.noUi-connect').style('background', '#derog_vacances_color#', 'important')
+         }
+         mySliderderog_vacances_id#id#.on('change', function(values, handle) {
+           	jeedom.cmd.execute({id: '#derog_vacances_id#', value: {slider: values[handle].replace('#derog_time_vacances_unite#', '').trim()}})
+         })
+         jeedom.cmd.addUpdateFunction('#derog_vacances_id#',function(_options) {
+            mySliderderog_vacances_id#id#.set(_options.value)
+         });
+      //}
+     
+      //if( !Number.isNaN( Number.parseInt('#derog_time_boost_id#') ) && !Number.isNaN( Number.parseInt('#derog_boost_id#') ) ){ 
+         var stepderog_boost_id#id# = 1
+         if ($.issetWidgetOptParam('#derog_boost_step#', 'step')) {
+            stepderog_boost_id#id# = parseFloat('#derog_boost_step#')
+         }
+         var mySliderderog_boost_id#id# = $.createWidgetSlider({
+            sliderDiv: document.getElementById('widget_slider#derog_boost_id#'),
+            state: ('#derog_time_boost_cmd#' == '') ? parseInt('#derog_boost_minValue#') : '#derog_time_boost_cmd#',
+            min: parseInt('#derog_boost_minValue#'),
+            max: parseInt('#derog_boost_maxValue#'),
+            step: stepderog_boost_id#id#,
+            tooltips: true,
+            format: true,
+            unite: '#derog_time_boost_unite#'
+         })
+         if ($.issetWidgetOptParam('#derog_boost_color#', 'color')) {
+            //$(mySliderderog_boost_id#id#.target).find('.noUi-handle').style('background', '#derog_boost_color#', 'important')
+            //$(mySliderderog_boost_id#id#.target).find('.noUi-connect').style('background', '#derog_boost_color#', 'important')
+         }
+         mySliderderog_boost_id#id#.on('change', function(values, handle) {
+            jeedom.cmd.execute({id: '#derog_boost_id#', value: {slider: values[handle].replace('#derog_time_boost_unite#', '').trim()}})
+         })
+         jeedom.cmd.addUpdateFunction('#derog_boost_id#',function(_options) {
+            mySliderderog_boost_id#id#.set(_options.value)
+         });
+      //}
+
+     
    </script>
 </div>
