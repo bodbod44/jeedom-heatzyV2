@@ -82,7 +82,7 @@ foreach ($eqLogics as $eqLogic) {
 
  <ul class="nav nav-tabs" role="tablist">
   <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Équipement}}</a></li>
-  <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
+  <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab" onclick="AffichageTemplateBodbod();"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
   <li role="presentation"><a href="#paramtab" aria-controls="param" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> {{Paramètres}}</a></li>
 </ul>
 
@@ -455,6 +455,11 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
         $('.class_inutile').attr('style', 'display:none;');
       else
         $('.class_inutile').attr('style', 'display:xxx;');
+      //alert( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length + '-' + $('.class_inutile').length ) ;
+      //if( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length == 1 && $('.class_inutile').length == 0 )
+      //setTimeout(AffichageTemplateBodbod, 3000);
+      
+      //console.log( $('.eqLogicAttr[data-l1key="name"]').val() + '-' + $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length + '-' + $('.class_inutile').length ) ;
     }
     window.onload = AffichageTemplateBodbod; //note bien l'abscence de ()
 

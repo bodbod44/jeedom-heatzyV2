@@ -1,75 +1,38 @@
-# 03/08/2025 (dev)
-- Suppression de certains boutons afficher pour le template commun (pour les commandes qui n'influencent pas l'affichage)
-
-# 01/08/2025 (dev)
-- Le bouton Synchroniser permet d'être différencié (permettant plus d'action)
-- Arrêt de la dérogation si slider à 0
-- Correction bug javascript
-
-# 30/07/2025 (dev)
-- Correction d'un bug entre le capteur externe temp et le cur_tempH (Glow/Shine)
-- Correction du changement de consigne pour lse modules tempH et tempL
-- Correction du template pour des erreurs jquery
-
-# 29/07/2025 (dev)
-- Tri des commandes (setOrder install + création)
-- Renommage des commandes Mode
-- Amélioration VerifOrdre
-
-# 28/07/2025 (dev)
-- Prise en charge de la consigne confort/eco pour les ancien modules, Glow et Shine (tempH, tempL)
-- Modification du blocage du cron lors de la synchronisation (avec timestamp)
-- Ajout d'un message pour les utilisateurs ayant le template l3flo
-
-# 27/07/2025 (dev)
-- Ajout de la consigne de temperature confort dans le template bodbod
-- Ajout de la consigne de temperature éco dans le template bodbod
-- Ajout du slide derog_vacances dans le template bodbod
-- Ajout du slide derog_boost dans le template bodbod
-- Blocage du cron lors de la synchronisation (pour les synchro qui prennent du temps)
-
-# 26/07/2025 (dev)
-- Ajout de la consigne de temperature confort (uniquement en scénario ou template jeedom)
-- Ajout de la consigne de temperature éco (uniquement en scénario ou template jeedom)
-- Ajout de minValue, maxValue et step dans les templates
-
-# 25/07/2025 (dev)
-- Prise en charge de la commande derog_vacances (uniquement en scénario ou template jeedom)
-- Prise en charge de la commande derog_boost (uniquement en scénario ou template jeedom)
-
-# 19/07/2025 (dev)
+# 04/08/2025 (beta)
+- Ajour de la gestion des derogation (Mode Off/Vacances/Boost/Présence)
+  - Le mode dérogation actif supprime l'affichage des modes de chauffage (Off, Confort, eco ...)
+  - L'envoi de derog_vacances ou derog_boost à 0 provque un passage en OFF
+  - Les dérogations sont accessible par scénario
+- Prise en charge du chabngement de consigne eco/confort (widget + scnéario)
+- Modification de la page de configuration des équipements avec suppression de certains boutons "afficher"
+  - Concerne les commandes qui n'ont pas d'influence sur l'affichage (facilite la compréhension en lien avec ([ce sujet](https://community.jeedom.com/t/modules-heatzy-pro-nouvelles-fonctionnalites/141672/22?u=bodbod)) )
+  - Concerne uniquement le template commun (bodbod)
 - Ajout des parametres (niveau plugin) pour définir la fréquence de rafraichissement de :
   - Statut : Ajout des nouveaux modules rattachés et statut OnLine/Offline
   - Commande infos : Mode actifs, activation, températures ...
-- Passage du timeout des appels API en constante (et définition à 5)
-
-# 12/07/2025 (dev)
-- Désactivation des commandes mode lorsqu'une dérogation est active
-
-# 11/07/2025 (dev)
+- Le bouton Synchroniser permet de forcer la recréation de certaines commandes si KO à la première création
+- La mise à jour du plugin va retrier l'ordre des commandes (setOrder) pour être plus proche de celui du widget
+- Renommage des commandes Mode (ex : Confort -> Mode Confort)
+- Ajout d'un message pour les utilisateurs ayant le template l3flo sur des équipements (pour les inviter à changer car tempalte plus maintenus)
+- Passage du timeout des appels API en constante globale (et définie à 10s)
 - Correction de warning PHP ([Signalement](https://community.jeedom.com/t/erreur-sur-cron-execution/141846/1))
 
-# 26/07/2025 (beta)
-- Passage des certaines erreurs api en silencieuses
-
-# 08/07/2025 (beta)
-- Ajout d'une commande info sur l'état OnLine/Offline
-- Nouvelles cmd pour remonter le derog_mode et le derog_time (en lecture)
-- Détéction et désactivation des équipements qui ne sont plus rattachés au compte heatzy (err 9017)
-- Mise en place d'un garde fou pour limiter les appels gizwits en cas d'erreur 9xxx
-- Préparation du mode dérogation
-
-# 29/06/2025 (beta)
-- Ajout d'une detection d'une fenetre ouverte (detection chute de temperature)
-- Ajout d'un onglet Parametres dans chaque équipement
-- Prise en charge d'un capteur de température externe
-- Prise en charge d'un capteur d'humidité externe
-- Ajout d'une commande information sur la tendance de la température (non affichée)
+# 28/07/2025 (stable)
+- Ajout d’une détection d’une fenêtre ouverte (détection chute de température)
+- Ajout d’un onglet Paramètres dans chaque équipement
+- Prise en charge d’un capteur de température externe
+- Prise en charge d’un capteur d’humidité externe
+- Ajout d’une commande information sur la tendance de la température (non affichée)
 - Ajout de la case historiser sur les commandes info/binaire
 - Refonte de la regénération du token (si expiré ou invalide)
 - Suppression du cron pour la regénération du token
-- Optimisation de la fonction synchronize (suppression de l'appel datapoint)
-- Ajout du detail_message lors des erreurs d'appels
+- Optimisation de la fonction synchronize (suppression de l’appel datapoint)
+- Ajout du detail_message lors des erreurs d’appels
+- Ajout d’une commande info sur l’état OnLine/Offline
+- Nouvelles cmd pour remonter le derog_mode et le derog_time (en lecture)
+- Détéction et désactivation des équipements qui ne sont plus rattachés au compte heatzy (err 9017)
+- Mise en place d’un garde fou pour limiter les appels gizwits en cas d’erreur 9xxx
+- Préparation du mode dérogation
 
 # 28/06/2025 (stable)
 - Prise en charge des modules GLOW et SHINE
