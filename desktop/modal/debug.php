@@ -27,12 +27,12 @@ echo '</br>&nbsp;';
 
 $eqLogics = heatzy::byType('heatzy');
 foreach ($eqLogics as $eqLogic) {
-  	echo '</br>&nbsp;';
+    echo '</br>&nbsp;';
     echo '<h3>'.$eqLogic->getHumanName(true).'</h3>';
-  	//echo '</br>&nbsp;';
-  	echo '<span class="label label-info" style="font-size:1em; cursor : default; white-space: normal;">'.var_export( eqLogic::byId($eqLogic->getId(), null) , true ).'</span>';
+    //echo '</br>&nbsp;';
+    echo '<span class="label label-info" style="font-size:1em; cursor : default; white-space: normal;">'.var_export( eqLogic::byId($eqLogic->getId(), null) , true ).'</span>';
     echo '</br>&nbsp;';
     echo '<span class="label label-info" style="font-size:1em; cursor:default; white-space:normal;">'.var_export( cmd::byEqLogicId($eqLogic->getId(), null) , true ).'</span>';
-  	echo '</br>&nbsp;';
+    echo '</br>&nbsp;';
 }
 ?>
