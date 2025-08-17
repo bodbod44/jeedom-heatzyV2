@@ -1,3 +1,6 @@
+# 05/08/2025 (beta)
+- Ajout d'un bouton vers la documentation du plugin (version beta)
+
 # 04/08/2025 (beta)
 - Ajour de la gestion des dérogations (Mode Off/Vacances/Boost/Présence)
   - Le mode dérogation actif supprime l'affichage des modes de chauffage (Off, Confort, eco ...)

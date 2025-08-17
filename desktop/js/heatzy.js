@@ -53,8 +53,7 @@ function addCmdToTable(_cmd) {
     tr += '</td>';
     tr += '<td>';
     var class_inutile = '' ;
-    if ( init(_cmd.logicalId) == 'refresh' ||
-         init(_cmd.logicalId) == 'IsOnLine' ||
+    if ( init(_cmd.logicalId) == 'IsOnLine' ||
          init(_cmd.logicalId) == 'mode' ||
          init(_cmd.logicalId) == 'ProgOn' ||
          init(_cmd.logicalId) == 'ProgOff' ||
@@ -65,8 +64,9 @@ function addCmdToTable(_cmd) {
          init(_cmd.logicalId) == 'derog_time_vacances' ||
          init(_cmd.logicalId) == 'derog_time_boost'
        )
-    class_inutile = 'class_inutile' ;
-    tr += '<span class="' + class_inutile + '"><label class="checkbox-inline ' + class_inutile + '"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" checked/>{{Afficher}}</label></span> ';
+        class_inutile = 'class_ExclureBodbod' ;
+    if ( init(_cmd.logicalId) != 'refresh')
+        tr += '<span class="' + class_inutile + '"><label class="checkbox-inline ' + class_inutile + '"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" checked/>{{Afficher}}</label></span> ';
     tr += '</td>';
     tr += '<td>';
     if ( init(_cmd.type) == 'info' && ( init(_cmd.subType) == "numeric" || init(_cmd.subType) == "binary" ) )
