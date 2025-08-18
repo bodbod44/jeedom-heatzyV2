@@ -23,36 +23,49 @@ foreach ($eqLogics as $eqLogic) {
  <div class="col-lg-10 col-md-9 col-sm-8 eqLogicThumbnailDisplay" style="border-left: solid 1px #EEE; padding-left: 25px;">
    <legend><i class="fa fa-cog"></i>  {{Gestion}}</legend>
    <div class="eqLogicThumbnailContainer">
-	  <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
+  
+	  <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;">
 	    <center>
-	      <i class="fa fa-wrench" style="font-size : 5em;color:#767676;"></i>
+	      <i class="fa fa-wrench" style="font-size : 4em;color:#767676;"></i>
 	    </center>
 	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Configuration}}</center></span>
 	  </div>
-	  <div class="cursor expertModeVisible" id="bt_healthHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+  
+	  <div class="cursor expertModeVisible" id="bt_healthHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
 	    <center>
-	        <i class="fa fa-medkit" style="font-size : 5em;color:#767676;"></i>
+	        <i class="fa fa-medkit" style="font-size : 4em;color:#767676;"></i>
 	    </center>
 	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Santé}}</center></span>
 	  </div>
-	  <div class="cursor expertModeVisible" id="bt_ManualHeatzy" onclick="window.open('https://drive.google.com/drive/folders/1pbrZ7RRNZf8yzdbH-cd7Fk9ih2j7WZFd', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+  
+	  <div class="cursor expertModeVisible" id="bt_DocPlugin" onclick="window.open('https://bodbod44.github.io/jeedom-heatzyV2/fr_FR/', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
 	    <center>
-	        <i class="fa fa-book-open" style="font-size : 5em;color:#767676;"></i>
+	        <i class="fa fa-book-open" style="font-size : 4em;color:#767676;"></i>
+	    </center>
+	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Documentation<br>plugin}}</center></span>
+	  </div>
+  
+	  <div class="cursor expertModeVisible" id="bt_ManualHeatzy" onclick="window.open('https://drive.google.com/drive/folders/1pbrZ7RRNZf8yzdbH-cd7Fk9ih2j7WZFd', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
+	    <center>
+	        <i class="fa fa-book-reader" style="font-size : 4em;color:#767676;"></i>
 	    </center>
 	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Manuels utilisateur<br>Heatzy}}</center></span>
 	  </div>
-	  <div class="cursor expertModeVisible" id="bt_AssistanceHeatzy" onclick="window.open('https://community.jeedom.com/tag/plugin-heatzy', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+  
+	  <div class="cursor expertModeVisible" id="bt_AssistanceHeatzy" onclick="window.open('https://community.jeedom.com/tag/plugin-heatzy', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
 	    <center>
-	        <i class="fa fa-ambulance" style="font-size : 5em;color:#767676;"></i>
+	        <i class="fa fa-ambulance" style="font-size : 4em;color:#767676;"></i>
 	    </center>
 	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Assistance}}</center></span>
 	  </div>
-	  <div class="cursor expertModeVisible" id="bt_debugHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;display:<?php if(log::getLogLevel('heatzy') == 100) echo 'display' ; else echo 'none' ; ?>" >
+  
+	  <div class="cursor expertModeVisible" id="bt_debugHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;display:<?php if(log::getLogLevel('heatzy') == 100) echo 'display' ; else echo 'none' ; ?>" >
 	    <center>
-	        <i class="fa fa-search-location" style="font-size : 5em;color:#767676;"></i>
+	        <i class="fa fa-search-location" style="font-size : 4em;color:#767676;"></i>
 	    </center>
 	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Debug}}</center></span>
 	  </div>
+  
 </div>
 <legend><i class="fa fa-cube"></i>  {{Mes Heatzy}}
 </legend>
@@ -204,7 +217,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 				<th style="width: 50px;">
 					{{Nom}}
 				</th>
-				<th style="width: 150px;">
+				<th style="width: 100px;">
 					{{Type / subType}}
 				</th>
 				<th style="width: 50px;">
@@ -452,9 +465,9 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
     function AffichageTemplateBodbod() {
       //const selectTypeTemplate = $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected') ;
       if( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').val() == 0 )
-        $('.class_inutile').attr('style', 'display:none;');
+        $('.class_ExclureBodbod').attr('style', 'display:none;');
       else
-        $('.class_inutile').attr('style', 'display:xxx;');
+        $('.class_ExclureBodbod').attr('style', 'display:xxx;');
       //alert( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length + '-' + $('.class_inutile').length ) ;
       //if( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length == 1 && $('.class_inutile').length == 0 )
       //setTimeout(AffichageTemplateBodbod, 3000);
