@@ -1,4 +1,7 @@
-# 05/08/2025 (beta)
+# 17/08/2025 (dev)
+- Correction d'un bug avec l'affichage sur les vues ([Signalement](https://community.jeedom.com/t/modules-heatzy-pro-nouvelles-fonctionnalites/141672/22))
+
+# 05/08/2025 (dev)
 - Ajout d'un bouton vers la documentation du plugin (version beta)
 
 # 04/08/2025 (beta)
@@ -8,7 +11,7 @@
   - Les dérogations sont accessibles par scénario
 - Prise en charge du changement de consigne éco/confort (widget + scnéario)
 - Modification de la page de configuration des équipements avec suppression de certains boutons "afficher"
-  - Concerne les commandes qui n'ont pas d'influence sur l'affichage (facilite la compréhension en lien avec ([ce sujet](https://community.jeedom.com/t/modules-heatzy-pro-nouvelles-fonctionnalites/141672/22?u=bodbod)) )
+  - Concerne les commandes qui n'ont pas d'influence sur l'affichage (facilite la compréhension en lien avec ([ce sujet](https://community.jeedom.com/t/modules-heatzy-pro-nouvelles-fonctionnalites/141672/22)) )
   - Concerne uniquement le template commun (bodbod)
 - Ajout des paramètres (niveau plugin) pour définir la fréquence de rafraichissement de :
   - Statut : Ajout des nouveaux modules rattachés et statut OnLine/Offline
@@ -102,18 +105,18 @@
 - Correction clic sur le filtre de gauche dans la configuration.
 - Renommage de la commande Etat Lock -> Etat Vérouillage
 - Correction displayExeption (ajout d'une condition sur la version jeedom) 
-- Ajout de la fonctionnalité de verrouillage pour Pilote2 (dashboard+mobile+API) ([Signalement](https://community.jeedom.com/t/resurrection-du-plugin-heatzy-mise-a-jour/136824/2?u=bodbod))
+- Ajout de la fonctionnalité de verrouillage pour Pilote2 (dashboard+mobile+API) ([Signalement](https://community.jeedom.com/t/resurrection-du-plugin-heatzy-mise-a-jour/136824/2))
 - Renommage de la commande lock en Verrouillage (dashboard + mobile + commandes actions)
 - Correction affichage du logo qui était en 403 (affichage de l'éclair ou de la flamme)
 - Ajout du mode Verrouillage dans la documentation.
-- Ajout de la fonctionnalité de Verrouillage pour Pilote_Soc (dashboard+mobile+API) ([Signalement](https://community.jeedom.com/t/plugin-tiers-heatzy/54291/5?u=bodbod))
+- Ajout de la fonctionnalité de Verrouillage pour Pilote_Soc (dashboard+mobile+API) ([Signalement](https://community.jeedom.com/t/plugin-tiers-heatzy/54291/5))
   - Le mode verrouillage évite qu’une tiers personne modifie le fonctionnement du radiateur via le module physique (bloque toutes actions faites depuis le bouton de contrôle du module)
   - Le mode verrouillage permet également d'éteindre les leds sur le module (pratique si ceux-ci sont placés dans une chambre)
-- Modification de l'icône du plugin pour améliorer la visibilité en mode sombre ([Signalement](https://community.jeedom.com/t/plugin-tiers-heatzy/54291/3?u=bodbod))
+- Modification de l'icône du plugin pour améliorer la visibilité en mode sombre ([Signalement](https://community.jeedom.com/t/plugin-tiers-heatzy/54291/3))
 - Correction "ERROR : heatzy::Login : impossible de se connecter" ([Signalement](https://community.jeedom.com/t/error-heatzy-login-impossible-de-se-connecter/129877))
 - Correction du problème token sur GetConsigne ([Signalement](https://community.jeedom.com/t/probleme-token-depuis-le-passage-a-2024/118282))
-- Call to undefined displayExeption ([Signalement](https://community.jeedom.com/t/lors-de-la-synchronisation-erreur-500-internal-server-error/134687/3?u=bodbod) / [Détail1](https://community.jeedom.com/t/correction-ajax-displayexeption-e-a-remplacer-par-displayexception-e-et-doc-absente-en-beta/105525) / [Détail2](https://community.jeedom.com/t/correction-ajax-displayexeption-e-a-remplacer-par-displayexception-e/105523))
-- Affichage équipement Pilote_Soc_C3.html (Dashboard+Mobile) ([Signalement](https://community.jeedom.com/t/affichage-equipement/95357/4?u=bodbod))
+- Call to undefined displayExeption ([Signalement](https://community.jeedom.com/t/lors-de-la-synchronisation-erreur-500-internal-server-error/134687/3) / [Détail1](https://community.jeedom.com/t/correction-ajax-displayexeption-e-a-remplacer-par-displayexception-e-et-doc-absente-en-beta/105525) / [Détail2](https://community.jeedom.com/t/correction-ajax-displayexeption-e-a-remplacer-par-displayexception-e/105523))
+- Affichage équipement Pilote_Soc_C3.html (Dashboard+Mobile) ([Signalement](https://community.jeedom.com/t/affichage-equipement/95357/4))
 
 
 
