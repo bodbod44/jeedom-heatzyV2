@@ -1,8 +1,5 @@
-# 18/08/2025 (beta)
-- Correction d'un bug avec l'affichage sur les vues ([Signalement](https://community.jeedom.com/t/modules-heatzy-pro-nouvelles-fonctionnalites/141672/22))
+# 29/08/2025 (stable)
 - Ajout d'un bouton vers la documentation du plugin (version beta)
-
-# 04/08/2025 (beta)
 - Ajour de la gestion des dérogations (Mode Off/Vacances/Boost/Présence)
   - Le mode dérogation actif supprime l'affichage des modes de chauffage (Off, Confort, eco ...)
   - L'envoi de derog_vacances ou derog_boost à 0 provoque un passage en OFF
@@ -20,6 +17,7 @@
 - Ajout d'un message pour les utilisateurs ayant le template l3flo sur des équipements (pour les inviter à changer car template plus maintenus)
 - Passage du timeout des appels API en constante globale (et définie à 10s)
 - Correction de warning PHP ([Signalement](https://community.jeedom.com/t/erreur-sur-cron-execution/141846/1))
+- Correction d'un bug avec l'affichage sur les vues ([Signalement](https://community.jeedom.com/t/modules-heatzy-pro-nouvelles-fonctionnalites/141672/22))
 
 # 28/07/2025 (stable)
 - Ajout d’une détection d’une fenêtre ouverte (détection chute de température)
