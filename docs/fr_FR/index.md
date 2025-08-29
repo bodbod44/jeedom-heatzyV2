@@ -36,12 +36,14 @@ Après téléchargement du plugin, il vous suffit juste d'activer celui-ci et de
 
 Puis cliquez sur synchroniser pour récupérer la liste des modules Heatzy pilotes associés à votre compte.
 
-![heatzy1](../images/configuration2.png)
+![heatzy1](../images/configuration3.png)
 
 * **Email** : votre adresse email utilisé lors de votre enregistrement dans le cloud
 * **Mot de passe** : votre mot de passe d'accès renseigné lors de votre enregistrement dans le cloud
 * **Token** : votre token d'accès au cloud, après la synchronisation de vos modules
 * **Expire** : la date d'expiration du token d'accès au cloud, après la synchronisation de vos modules
+* **Fréquence de rafraichissement des commandes** : Fréquence des appels à l'API heatzy pour récupérer les informations type mode, température, activations ...
+* **Fréquence de rafraichissement du statut du module** : Fréquence des appels à l'API heatzy pour récupérer le statut OnLine/Offline et pour l'ajout des nouveau xmodules rattachés au compte
 * **Synchroniser** : permet de synchroniser vos modules Heatzy avec le cloud
 
 
@@ -111,6 +113,13 @@ D'une commande info **Etat Consigne** de type _numerique_ :
 * **2** : Mode Hors-gel
 * **3** : Mode Off
 
+Et de commandes info de type _numerique_ :
+
+* **Temp. confort** : la température de consigne du mode confort
+* **Temp. eco**     : la température de consigne du mode eco
+* **Temperature**   : la température relevée par le module
+* **Taux Humidité** : le taux d'humidité relevé par le module
+
 Et d'une commande info **Mode** de type _string_ :
 
 * **Confort**
@@ -146,10 +155,22 @@ Et d'une commande info **Mode dérogation** de type _numeric_ :
 * **1** : mode vacances
 * **2** : mode boost
 * **3** : détection de presence (selon type de module)
-                
-Et d'une commande info **Délai dérogation** de type _numeric_ :
 
-* **x** : Désigne le nombre de jours du mode vacances
+Et d'une commande info **Délai dérogation Vacances** de type _numerique_ :
+
+* **xx** représente le nombre de jours demandé pour le mode vacances
+
+Et d'une commande info **Délai dérogation Boost** de type _numerique_ :
+
+* **xx** représente le nombre de minutes demandé pour le mode boost
+
+Et d'une commande info **Détéction Présence** de type _binaire_ :
+
+**EXPERIMENTAL**
+Fonctionne uniquement en mode "détéction de présence" (pour les modules qui possèdent cette fonctionnalités)
+* **1** : Le plugin a détécté qu'une fenetre était ouverte (détéction chute de température)
+* **0** : Fenetre fermée (après hausse de température ou après 60 min)
+**EXPERIMENTAL**
 
 Et d'une commande info **Fenetre Ouverte** de type _binaire_ :
 
@@ -165,13 +186,7 @@ Et d'une commande info **Tendance Température** de type _numeric_ :
 * **0** : La température est stable
 * **+x** : La température à tendance à augmenter (à hauteur du coeficient par minute)
 **EXPERIMENTAL**
-             
-Et de commandes info de type _numerique_ :
 
-* **Temp. confort** : la température de consigne du mode confort
-* **Temp. eco**   : la température de consigne du mode eco
-* **Temperature** : la température relevé par le module
-* **Taux Humidité** : le taux d'humidité relevé par le module
 
 >Vous pouvez tester les valeurs des commandes info dans vos scénarios.
 
@@ -208,7 +223,9 @@ Et de commandes info de type _numerique_ :
  | Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
  | Température courante | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
  | Température Confort | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
+ | Consigne Température Confort | action | N/A | N/A | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
  | Température Eco | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
+ | Consigne Température Eco | action | N/A | N/A | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
  | Humidité courante | info | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 
  | Etat Programmation | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
  | Programmation On | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
@@ -222,6 +239,14 @@ Et de commandes info de type _numerique_ :
  | Etat On_Off (plugzy ou OnOff) | info | N/A | N/A | N/A | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
  | On | action | N/A | N/A | N/A | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
  | Off | action | N/A | N/A | N/A | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
+ | Mode dérogation | info | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
+ | Derogation OFF | action | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
+ | Derogation Vacances | action | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
+ | Délai Derogation Vacances (en jours) | info | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
+ | Derogation Boost | action | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
+ | Délai Derogation Boost (en min) | info | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
+ | Derogation Présence | action | N/A | N/A | Oui | ? | N/A | N/A | ? | ? | N/A | N/A | 
+ | Détéction Présence | info | N/A | N/A | Oui | ? | N/A | N/A | ? | ? | N/A | N/A | 
 
 
 FAQ

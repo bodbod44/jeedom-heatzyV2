@@ -23,36 +23,49 @@ foreach ($eqLogics as $eqLogic) {
  <div class="col-lg-10 col-md-9 col-sm-8 eqLogicThumbnailDisplay" style="border-left: solid 1px #EEE; padding-left: 25px;">
    <legend><i class="fa fa-cog"></i>  {{Gestion}}</legend>
    <div class="eqLogicThumbnailContainer">
-	  <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
+  
+	  <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;">
 	    <center>
-	      <i class="fa fa-wrench" style="font-size : 5em;color:#767676;"></i>
+	      <i class="fa fa-wrench" style="font-size : 4em;color:#767676;"></i>
 	    </center>
 	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Configuration}}</center></span>
 	  </div>
-	  <div class="cursor expertModeVisible" id="bt_healthHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+  
+	  <div class="cursor expertModeVisible" id="bt_healthHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
 	    <center>
-	        <i class="fa fa-medkit" style="font-size : 5em;color:#767676;"></i>
+	        <i class="fa fa-medkit" style="font-size : 4em;color:#767676;"></i>
 	    </center>
 	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Santé}}</center></span>
 	  </div>
-	  <div class="cursor expertModeVisible" id="bt_ManualHeatzy" onclick="window.open('https://drive.google.com/drive/folders/1pbrZ7RRNZf8yzdbH-cd7Fk9ih2j7WZFd', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+  
+	  <div class="cursor expertModeVisible" id="bt_DocPlugin" onclick="window.open('https://bodbod44.github.io/jeedom-heatzyV2/fr_FR/', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
 	    <center>
-	        <i class="fa fa-book-open" style="font-size : 5em;color:#767676;"></i>
+	        <i class="fa fa-book-open" style="font-size : 4em;color:#767676;"></i>
+	    </center>
+	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Documentation<br>plugin}}</center></span>
+	  </div>
+  
+	  <div class="cursor expertModeVisible" id="bt_ManualHeatzy" onclick="window.open('https://drive.google.com/drive/folders/1pbrZ7RRNZf8yzdbH-cd7Fk9ih2j7WZFd', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
+	    <center>
+	        <i class="fa fa-book-reader" style="font-size : 4em;color:#767676;"></i>
 	    </center>
 	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Manuels utilisateur<br>Heatzy}}</center></span>
 	  </div>
-	  <div class="cursor expertModeVisible" id="bt_AssistanceHeatzy" onclick="window.open('https://community.jeedom.com/tag/plugin-heatzy', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+  
+	  <div class="cursor expertModeVisible" id="bt_AssistanceHeatzy" onclick="window.open('https://community.jeedom.com/tag/plugin-heatzy', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
 	    <center>
-	        <i class="fa fa-ambulance" style="font-size : 5em;color:#767676;"></i>
+	        <i class="fa fa-ambulance" style="font-size : 4em;color:#767676;"></i>
 	    </center>
 	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Assistance}}</center></span>
 	  </div>
-	  <div class="cursor expertModeVisible" id="bt_debugHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;display:<?php if(log::getLogLevel('heatzy') == 100) echo 'display' ; else echo 'none' ; ?>" >
+  
+	  <div class="cursor expertModeVisible" id="bt_debugHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;display:<?php if(log::getLogLevel('heatzy') == 100) echo 'display' ; else echo 'none' ; ?>" >
 	    <center>
-	        <i class="fa fa-search-location" style="font-size : 5em;color:#767676;"></i>
+	        <i class="fa fa-search-location" style="font-size : 4em;color:#767676;"></i>
 	    </center>
 	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Debug}}</center></span>
 	  </div>
+  
 </div>
 <legend><i class="fa fa-cube"></i>  {{Mes Heatzy}}
 </legend>
@@ -82,7 +95,7 @@ foreach ($eqLogics as $eqLogic) {
 
  <ul class="nav nav-tabs" role="tablist">
   <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Équipement}}</a></li>
-  <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
+  <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab" onclick="AffichageTemplateBodbod();"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
   <li role="presentation"><a href="#paramtab" aria-controls="param" role="tab" data-toggle="tab"><i class="fa fa-cog"></i> {{Paramètres}}</a></li>
 </ul>
 
@@ -198,19 +211,25 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 	<table id="table_cmd" class="table table-bordered table-condensed">
 		<thead>
 			<tr>
-				<th style="width: 50px;">
+				<th style="width: 25px;">
 					#
 				</th>
-				<th style="width: 150px;">
+				<th style="width: 50px;">
 					{{Nom}}
 				</th>
-				<th style="width: 110px;">
-					{{Type}}
+				<th style="width: 100px;">
+					{{Type / subType}}
 				</th>
 				<th style="width: 50px;">
 					{{Etat}}
 				</th>
-				<th style="width: 200px;">
+				<th style="width: 50px;">
+					{{Affichage}}
+				</th>
+				<th style="width: 50px;">
+					{{Historique}}
+				</th>
+				<th style="width: 50px;">
 					{{Paramètres}}
 				</th>
 			</tr>
@@ -218,6 +237,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 		<tbody></tbody>
 	</table>
 </div>
+
 <div role="tabpanel" class="tab-pane" id="paramtab">
 	<br>
 	<table style="border:1px solid black; width:100%" id="table_param2">
@@ -249,7 +269,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 					<div class="form-group">
 						<label class="col-sm-4 control-label" style="width:120px;">Template</label>
 						<div class="col-sm-6">
-							<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title=""  style="width:300px;">
+							<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title=""  style="width:300px;" onchange="AffichageTemplateBodbod()">
 								<option value="0">{{Template heatzy bodbod}}</option>
 								<option value="1">{{Template heatzy l3flo (bientôt obselète)}}</option>
 								<option value="2">{{Template jeedom}}</option>
@@ -323,7 +343,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 							<br>
 							Pour les modules qui ont cette fonctionnalité en propre, le reglage est une chute de 2° en moins de 5 min (coef tendance = 2/5 = 0.4)
 							<br>
-							Si non renseigné, les valeurs 2° et 5min sont prise en compte
+							La commande d'alerte sert a être alerté en cas de chute de température (fenêtre ouverte en hiver)
 						</div>
 					</div>
 				</td>
@@ -441,5 +461,19 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
         }
         });
     });
+
+    function AffichageTemplateBodbod() {
+      //const selectTypeTemplate = $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected') ;
+      if( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').val() == 0 )
+        $('.class_ExclureBodbod').attr('style', 'display:none;');
+      else
+        $('.class_ExclureBodbod').attr('style', 'display:xxx;');
+      //alert( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length + '-' + $('.class_inutile').length ) ;
+      //if( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length == 1 && $('.class_inutile').length == 0 )
+      //setTimeout(AffichageTemplateBodbod, 3000);
+      
+      //console.log( $('.eqLogicAttr[data-l1key="name"]').val() + '-' + $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length + '-' + $('.class_inutile').length ) ;
+    }
+    window.onload = AffichageTemplateBodbod; //note bien l'abscence de ()
 
 </script>

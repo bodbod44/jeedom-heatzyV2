@@ -26,45 +26,70 @@ if (!isConnect()) {
     <fieldset>
           <legend><i class="fa fa-list-ul"></i>{{Général}}</legend>
         <div class="form-group">
-        	<label class="col-lg-4 control-label">{{Email}}</label>
-        	<div class="col-lg-6">
-        	    <input type="text" class="configKey form-control" data-l1key="email" />
-        	</div>
-	    </div>
+            <label class="col-lg-4 control-label">{{Email}}</label>
+            <div class="col-lg-6">
+                <input type="text" class="configKey form-control" data-l1key="email" />
+            </div>
+        </div>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Mot de passe}}</label>
             <div class="col-lg-6">
                 <input type="password" class="configKey form-control" data-l1key="password" />
             </div>
         </div>
-		<div class="form-group">
-        	<label class="col-lg-4 control-label">{{Token}}</label>
-        	<div class="col-lg-6">
-        	<?=config::byKey('UserToken','heatzy','');?>
-        	</div>
-		</div>
-		<div class="form-group">
-        	<label class="col-lg-4 control-label">{{Expire}}</label>
-        	<div class="col-lg-6">
-        	<?=config::byKey('ExpireToken','heatzy','');?>
-        	</div>
-		</div>
-		<div class="form-group">
-			<label class="col-lg-4 control-label">{{Synchroniser}}</label>
-			<div class="col-lg-2">
-				<a class="btn btn-info bt_syncheatzy"><i id='syncheatzy' class="fa fa-refresh"></i>
-				Synchroniser<span id="nbheatzy"></span>
-				</a>
-			</div>
-		</div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Token}}</label>
+            <div class="col-lg-6">
+            <?=config::byKey('UserToken','heatzy','');?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Expire}}</label>
+            <div class="col-lg-6">
+            <?=config::byKey('ExpireToken','heatzy','');?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Frequence de rafaichissement des commandes infos}}</label>
+            <div class="col-lg-6">             
+                <select class="configKey form-control" data-l1key="Freq_value" title="Fréquence de rafaichissement des commandes depuis Heatzy (1 min par défaut)"  style="width:100px;">
+                    <option value="1">1 min</option>
+                    <option value="2">2 min</option>
+                    <option value="3">3 min</option>
+                    <option value="4">4 min</option>
+                    <option value="5">5 min</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Frequence de rafaichissement du statut}}</label>
+            <div class="col-lg-6">
+                <select class="configKey form-control" data-l1key="Freq_status" title="Fréquence de rafaichissement des statuts du module depuis Heatzy (5 min par défaut)"  style="width:100px;">
+                    <option value="5">5 min</option>
+                    <option value="10">10 min</option>
+                    <option value="15">15 min</option>
+                    <option value="20">20 min</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Synchroniser}}</label>
+            <div class="col-lg-2">
+                <a class="btn btn-info bt_syncheatzy"><i id='syncheatzy' class="fa fa-refresh"></i>
+                Synchroniser<span id="nbheatzy"></span>
+                </a>
+            </div>
+        </div>
     </fieldset>
 </form>
 
 <script>
 
 $('.bt_syncheatzy').on('click',function(){
-	  $('#syncheatzy').addClass('fa-spin');
-	  
+      $('#div_alert').showAlert({message: 'Synchronisation en cours. Ne pas toucher au plugin pendant 2min', level: 'info'});
+      
+      $('#syncheatzy').addClass('fa-spin');
+      
       $.ajax({// fonction permettant de faire de l'ajax
       type: "POST", // méthode de transmission des données au fichier php
       url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
@@ -82,11 +107,11 @@ $('.bt_syncheatzy').on('click',function(){
         return;
       }
       else
-		$('#div_alert').showAlert({message: 'Synchronisation de '+data.result+' module(s)', level: 'info'});
+        $('#div_alert').showAlert({message: 'Synchronisation de '+data.result+' module(s)', level: 'info'});
         $('#nbheatzy').empty();
-		$('#nbheatzy').append(' : '+data.result+' module(s)');
+        $('#nbheatzy').append(' : '+data.result+' module(s)');
     }
-  	});
+      });
       
     $('#syncheatzy').removeClass('fa-spin');
 });

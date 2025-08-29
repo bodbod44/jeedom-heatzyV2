@@ -27,7 +27,7 @@ try {
     ajax::init();
 
     if (init('action') == 'SyncHeatzy') {
-    	ajax::success( heatzy::Synchronize(	) );
+    	ajax::success( heatzy::Synchronize( true ) );
     }
 
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
