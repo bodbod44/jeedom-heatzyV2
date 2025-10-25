@@ -1,10 +1,4 @@
-# xx/06/2025 (dev)
-- TODO : Commande Alerte fenetre ouverte (deja possible en scenario) => A faire
-- TODO : Alerte hors ligne (9042) => A faire
-- TODO : Relance commande si KO
-
-
-# 25/10/2025 (beta)
+# 25/10/2025 (stable)
 - Le mode derogation vacances passe de 0 à 1 jour par défaut (si pas de délai fourni)
 - Le mode derogation boost passe de 0 à 60min par défaut (si pas de délai fourni)
 - Possibilité de désactiver la fréquence de rafaichissement des commandes et statuts (choix 'off')
