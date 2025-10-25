@@ -29,7 +29,8 @@ class HttpGizwits {
     public static $HeatzyAppId = "c70a66ff039d41b4a220e198b0fcc8b3";
     public static $UrlGizwits = "https://euapi.gizwits.com";
     
-    public static $Timeout = 10 ;
+    //public static $ConnectTimeout = 30 ;
+    public static $Default_Timeout = 60 ;
     
     public static $_MaxError = 200 ;
 
@@ -66,7 +67,7 @@ class HttpGizwits {
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
-            CURLOPT_TIMEOUT => self::$Timeout,
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout ),
             CURLOPT_POSTFIELDS => $data
         );
 
@@ -123,7 +124,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/datapoint?product_key='.$ProductKey,
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => self::$Timeout
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
         );
 
         /// Initialisation de la ressources curl
@@ -180,7 +181,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/bindings?limit=20&amp;skip=0',
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => self::$Timeout
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
         );
     
         /// Initialisation de la ressources curl
@@ -240,7 +241,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did.'/scheduler?limit='.$Limit.'&amp;skip='.$Skip,
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => self::$Timeout
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
         );
 
         /// Initialisation de la ressources curl
@@ -308,7 +309,7 @@ class HttpGizwits {
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
-            CURLOPT_TIMEOUT => self::$Timeout,
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout ),
             CURLOPT_POSTFIELDS => $data
         );
         
@@ -376,7 +377,7 @@ class HttpGizwits {
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
-            CURLOPT_TIMEOUT => self::$Timeout,
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout ),
             CURLOPT_POSTFIELDS => $data
         );
         
@@ -444,7 +445,8 @@ class HttpGizwits {
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
-            CURLOPT_TIMEOUT => self::$Timeout,
+            //CURLOPT_CONNECTTIMEOUT => self::$ConnectTimeout,
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout ),
             CURLOPT_POSTFIELDS => $data
         );
 
@@ -497,7 +499,7 @@ class HttpGizwits {
                     CURLOPT_FRESH_CONNECT => 1,
                     CURLOPT_RETURNTRANSFER => 1,
                     CURLOPT_FORBID_REUSE => 1,
-                    CURLOPT_TIMEOUT => self::$Timeout,
+                    CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout ),
                     CURLOPT_POSTFIELDS => $data
                 );
 
@@ -557,7 +559,8 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => self::$Timeout
+            //CURLOPT_CONNECTTIMEOUT => self::$ConnectTimeout,
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
         );
         /// Initialisation de la ressources curl
         $gizwits = curl_init();
@@ -603,7 +606,7 @@ class HttpGizwits {
                     ),
                     CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
                     CURLOPT_RETURNTRANSFER => 1,
-                    CURLOPT_TIMEOUT => self::$Timeout
+                    CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
                 );
               
                 /// Initialisation de la ressources curl
@@ -665,7 +668,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did,
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => self::$Timeout
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
         );
         
         /// Initialisation de la ressources curl
@@ -2032,6 +2035,8 @@ class heatzy extends eqLogic {
     * synchronisation
     */
     public static function cron() {
+      
+      	sleep(30); // Ne pas interférer avec les appels à hh:mm:00
 
         if( !cache::exist('Heatzy_Synchronize') ) cache::set( 'Heatzy_Synchronize' , 0) ;
       
@@ -2066,7 +2071,8 @@ class heatzy extends eqLogic {
         
         // Mise à jour du statut (Online/Offline + ajout noueau modules)
         // Toutes les 5 min par défaut
-        if( (date("i") % config::byKey('Freq_status','heatzy','5') ) == 0 ){
+        $Freq_status = config::byKey('Freq_status','heatzy','5') ;
+        if( ( date("i") % $Freq_status ) == 0 && $Freq_status > 0 ){
             // Le synchronize permet d'aouter les nouveaux modules rattachés et de vérifier le statut online/offline
             $res = heatzy::Synchronize() ;
             log::add('heatzy', 'debug',  __METHOD__.': Synchronize cron5 = '.$res );
@@ -2089,7 +2095,8 @@ class heatzy extends eqLogic {
 
         // Mise à jour des commandes infos
         // Toutes les 1 min par défaut
-        if( (date("i") % config::byKey('Freq_value','heatzy','1') ) == 0 ){ // Toutes les 1 min par défaut
+        $Freq_value = config::byKey('Freq_value','heatzy','5') ;
+        if( (date("i") % $Freq_value ) == 0 && $Freq_value > 0 ){ // Toutes les 1 min par défaut
 
             foreach (eqLogic::byType('heatzy') as $heatzy) {
 
@@ -2524,12 +2531,12 @@ class heatzyCmd extends cmd {
                 $ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'derog_vacances') {
-                  isset( $_options['slider'] ) ? $delai = intval( $_options['slider'] ) : $delai = 0 ;
+                  isset( $_options['slider'] ) ? $delai = intval( $_options['slider'] ) : $delai = 1 ;
                 $Consigne = array( 'attrs' => array ( 'derog_mode' => 1 , 'derog_time' => $delai , 'mode' => 'fro' )  ); // 1 : mode vacances
                 $ForUpdate = $delai ;
             }
             else if ($this->getLogicalId() == 'derog_boost') {
-                  isset( $_options['slider'] ) ? $delai = intval( $_options['slider'] ) : $delai = 0 ;
+                  isset( $_options['slider'] ) ? $delai = intval( $_options['slider'] ) : $delai = 60 ;
                 $Consigne = array( 'attrs' => array ( 'derog_mode' => 2 , 'derog_time' => $delai , 'mode' => 'cft' )  ); // 2 : mode boost
                 $ForUpdate = $delai ;
             }
@@ -2651,7 +2658,7 @@ class heatzyCmd extends cmd {
         $this->getEqLogic()->toHtml('dashboard');
         $this->getEqLogic()->refreshWidget();
         
-          return true;
+        return true;
     }
 
     /*     * **********************Getteur Setteur*************************** */

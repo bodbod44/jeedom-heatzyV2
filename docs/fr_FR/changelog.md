@@ -1,3 +1,9 @@
+# 25/10/2025 (stable)
+- Le mode derogation vacances passe de 0 à 1 jour par défaut (si pas de délai fourni)
+- Le mode derogation boost passe de 0 à 60min par défaut (si pas de délai fourni)
+- Possibilité de désactiver la fréquence de rafaichissement des commandes et statuts (choix 'off')
+- Ajout d'un parametre de Timeout dans la configuration pour les connexions euapi.gizwits.com (60sec par défaut)
+
 # 29/08/2025 (stable)
 - Ajout d'un bouton vers la documentation du plugin (version beta)
 - Ajour de la gestion des dérogations (Mode Off/Vacances/Boost/Présence)
