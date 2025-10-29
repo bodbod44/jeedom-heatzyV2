@@ -1,3 +1,7 @@
+# 29/10/2025 (beta)
+- Le timeout par défaut pour les connexions gizwits.com passe à 30sec
+- Mise en place d'un système de réémission d'appel API (jusqu'à 45 fois) lors d'un problème de connexion au serveur (Uniquement sur SetConsigne et GetConsigne)
+
 # 25/10/2025 (stable)
 - Le mode derogation vacances passe de 0 à 1 jour par défaut (si pas de délai fourni)
 - Le mode derogation boost passe de 0 à 60min par défaut (si pas de délai fourni)
