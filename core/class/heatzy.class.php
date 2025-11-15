@@ -31,8 +31,11 @@ class HttpGizwits {
     
     //public static $ConnectTimeout = 30 ;
     public static $Default_Timeout = 60 ;
+    public static $RecurrenceAPI = 5 ;
     
     public static $_MaxError = 200 ;
+    
+    public static $DebugExport = true ;
 
     /*     * ***********************Methode static*************************** */
     /**
@@ -67,7 +70,7 @@ class HttpGizwits {
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
-            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout ),
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout ),
             CURLOPT_POSTFIELDS => $data
         );
 
@@ -124,7 +127,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/datapoint?product_key='.$ProductKey,
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout )
         );
 
         /// Initialisation de la ressources curl
@@ -181,7 +184,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/bindings?limit=20&amp;skip=0',
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout )
         );
     
         /// Initialisation de la ressources curl
@@ -241,7 +244,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did.'/scheduler?limit='.$Limit.'&amp;skip='.$Skip,
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout )
         );
 
         /// Initialisation de la ressources curl
@@ -309,7 +312,7 @@ class HttpGizwits {
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
-            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout ),
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout ),
             CURLOPT_POSTFIELDS => $data
         );
         
@@ -377,7 +380,7 @@ class HttpGizwits {
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
-            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout ),
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout ),
             CURLOPT_POSTFIELDS => $data
         );
         
@@ -421,7 +424,7 @@ class HttpGizwits {
      * 
      * @return Un tableau vide ou false en cas d'erreur
      */
-    public static function SetConsigne($UserToken, $Did, $Consigne) {
+    public static function SetConsigne($UserToken, $Did, $Consigne, $Recurrence = 0) {
         
         if(empty($UserToken) || empty($Did) || empty($Consigne)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
@@ -431,7 +434,7 @@ class HttpGizwits {
         /// Preparation de la requete : json
         $data = json_encode( $Consigne ) ;
 
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($data, true));
+        log::add('heatzy', 'debug',  __METHOD__.':'.$Did.'-'.var_export($data, true).' (Recurrence '.$Recurrence.')');
         
         /// Parametres cUrl
         $params = array(
@@ -446,7 +449,7 @@ class HttpGizwits {
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
             //CURLOPT_CONNECTTIMEOUT => self::$ConnectTimeout,
-            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout ),
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', self::$Default_Timeout ),
             CURLOPT_POSTFIELDS => $data
         );
 
@@ -467,18 +470,64 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
-            return false;
+        if( $httpcode != 200 && $httpcode != 400 ){ // Si erreur technique
+            log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- erreur http '.$httpcode.' - timeout '.config::byKey('Timeout_value','heatzy',self::$Default_Timeout ).'s (Recurrence '.$Recurrence.')');
+            
+            if( $Recurrence < self::$RecurrenceAPI ){
+                log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
+                sleep(2); // tempo
+                
+                $aRep = self::SetConsigne($UserToken, $Did, $Consigne , $Recurrence + 1) ;
+                if( $aRep === false ){
+                    log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
+                    return false;
+                }
+                log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
+            }
+            else
+                return false; // Retour KO si trop de tentative récursive
         }
-
-        ///Décodage de la réponse
-        $aRep = json_decode($result, true);
+        else{ // Le serveur a répondu
+            
+            if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
+                log::add('heatzy', 'debug',  __METHOD__.': error_code '.$aRep['error_code'].' (Recurrence '.$Recurrence.')');
+                
+                if( $Recurrence < self::$RecurrenceAPI ){
+                    // erreur token invalide, alors on va en chercher un nouveau
+                    log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
+                    
+                    if( heatzy::Login() ){
+                        $UserToken = config::byKey('UserToken','heatzy','none'); // Je récupère le nouveau token
+                        log::add('heatzy', 'debug',  __METHOD__.': Login() OK - Nouveau Token ('.$UserToken.') (Recurrence '.$Recurrence.')');
+                        
+                        $aRep = self::SetConsigne($UserToken, $Did, $Consigne, $Recurrence + 1) ;
+                        if( $aRep === false ){
+                            log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
+                            return false;
+                        }
+                        log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
+                    }
+                    else{
+                        log::add('heatzy', 'debug',  __METHOD__.': Login() KO'.$Recurrence.')');
+                        return false;
+                    }
+                }
+                else
+                    return false; // Retour KO si trop de tentative récursive
+            }
+            else{
+                /// Réponse OK - Décodage de la réponse
+                $aRep = json_decode($result, true);
+            }
+        }
+        
+        log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
+        
         //   if(isset($aRep['error_message'])) {
         //       throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         //   }
      
-     
+     /*
         if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) { 
             // erreur token invalide, alors on va en chercher un nouveau
             if( heatzy::Login() ){
@@ -499,7 +548,7 @@ class HttpGizwits {
                     CURLOPT_FRESH_CONNECT => 1,
                     CURLOPT_RETURNTRANSFER => 1,
                     CURLOPT_FORBID_REUSE => 1,
-                    CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout ),
+                    CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout ),
                     CURLOPT_POSTFIELDS => $data
                 );
 
@@ -533,6 +582,8 @@ class HttpGizwits {
                 return false;
             }
         }
+    */
+        
         return $aRep;
     }
     
@@ -543,7 +594,7 @@ class HttpGizwits {
      * 
      * @return Un tableau associatif ou false en cas d'erreur
      */
-    public static function GetConsigne($UserToken, $Did ) {
+    public static function GetConsigne($UserToken, $Did, $Recurrence = 0 ) {
               
         if(empty($Did)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
@@ -560,7 +611,7 @@ class HttpGizwits {
             CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
             CURLOPT_RETURNTRANSFER => 1,
             //CURLOPT_CONNECTTIMEOUT => self::$ConnectTimeout,
-            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', self::$Default_Timeout )
         );
         /// Initialisation de la ressources curl
         $gizwits = curl_init();
@@ -579,16 +630,64 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
-            return false;
+            log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- erreur http '.$httpcode.' - timeout '.config::byKey('Timeout_value','heatzy',self::$Default_Timeout ).'s (Recurrence '.$Recurrence.')');
+            
+            if( $Recurrence < self::$RecurrenceAPI ){
+                log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
+                sleep(2); // tempo
+                
+                $aRep = self::GetConsigne($UserToken, $Did , $Recurrence + 1) ;
+                if( $aRep === false ){
+                    log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
+                    return false;
+                }
+                log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
+            }
+            else
+                return false;
+        }
+        else{ // Le serveur a répondu
+            
+            if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
+                log::add('heatzy', 'debug',  __METHOD__.': error_code '.$aRep['error_code'].' (Recurrence '.$Recurrence.')');
+                
+                if( $Recurrence < self::$RecurrenceAPI ){
+                    // erreur token invalide, alors on va en chercher un nouveau
+                    log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
+                    
+                    if( heatzy::Login() ){
+                        $UserToken = config::byKey('UserToken','heatzy','none'); // Je récupère le nouveau token
+                        log::add('heatzy', 'debug',  __METHOD__.': Login() OK - Nouveau Token ('.$UserToken.') (Recurrence '.$Recurrence.')');
+                        
+                        $aRep = self::GetConsigne($UserToken, $Did , $Recurrence + 1) ;
+                        if( $aRep === false ){
+                            log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
+                            return false;
+                        }
+                        log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
+                    }
+                    else{
+                        log::add('heatzy', 'debug',  __METHOD__.': Login() KO'.$Recurrence.')');
+                        return false;
+                    }
+                }
+                else
+                    return false; // Retour KO si trop de tentative récursive
+            }
+            else{
+                /// Réponse OK - Décodage de la réponse
+                $aRep = json_decode($result, true);
+            }
         }
       
+        log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
+      
         ///Décodage de la réponse
-        $aRep = json_decode($result, true);
+        //$aRep = json_decode($result, true);
         //if(isset($aRep['error_message'])) {
         //    throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         // }
-      
+      /*
         if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
             // erreur token invalide, alors on va en chercher un nouveau
             if( heatzy::Login() ){
@@ -606,7 +705,7 @@ class HttpGizwits {
                     ),
                     CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
                     CURLOPT_RETURNTRANSFER => 1,
-                    CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
+                    CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout )
                 );
               
                 /// Initialisation de la ressources curl
@@ -637,10 +736,13 @@ class HttpGizwits {
                 log::add('heatzy', 'debug',  __METHOD__.': Login() KO');
                 return false;
             }
+        }*/
+        
+        if( self::$DebugExport ){
+            log::add('heatzy', 'debug',  __METHOD__.':'.var_export($params, true));
+            log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
         }
-      
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($params, true));
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        
         return $aRep;
     }
     
@@ -668,7 +770,7 @@ class HttpGizwits {
             ),
             CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did,
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', $Default_Timeout )
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout )
         );
         
         /// Initialisation de la ressources curl
@@ -2069,17 +2171,18 @@ class heatzy extends eqLogic {
             }
         }         
         
-        // Mise à jour du statut (Online/Offline + ajout noueau modules)
-        // Toutes les 5 min par défaut
-        $Freq_status = config::byKey('Freq_status','heatzy','5') ;
-        if( ( date("i") % $Freq_status ) == 0 && $Freq_status > 0 ){
-            // Le synchronize permet d'aouter les nouveaux modules rattachés et de vérifier le statut online/offline
-            $res = heatzy::Synchronize() ;
-            log::add('heatzy', 'debug',  __METHOD__.': Synchronize cron5 = '.$res );
-            
-            // Le synchronize contient déjà un update (donc pas la peine d'aller plus loin)
-            return true ;
-        }
+        // Mise à jour du statut (Online/Offline + ajout noueau modules)        
+        $Freq_status = config::byKey('Freq_status','heatzy','30') ; // Toutes les 30 min par défaut
+        if( $Freq_status > 0  ){ // Si param != off
+            if( ( date("i") % $Freq_status ) == 0 ){ // Si on tombe bien sur le x minute
+                // Le synchronize permet d'aouter les nouveaux modules rattachés et de vérifier le statut online/offline
+                $res = heatzy::Synchronize() ;
+                log::add('heatzy', 'debug',  __METHOD__.': Synchronize cron5 = '.$res );
+                
+                // Le synchronize contient déjà un update (donc pas la peine d'aller plus loin)
+                return true ;
+            } // ( date("i") % $Freq_status ) == 0
+        } //if $Freq_status > 0
       
         // Gestion du max erreur (passage en mode dégradé en cas de cumul d'erreur d'appel API)
         if( !cache::exist('Heatzy_CptError') ){ // Init si non existant
@@ -2094,40 +2197,41 @@ class heatzy extends eqLogic {
         } 
 
         // Mise à jour des commandes infos
-        // Toutes les 1 min par défaut
-        $Freq_value = config::byKey('Freq_value','heatzy','5') ;
-        if( (date("i") % $Freq_value ) == 0 && $Freq_value > 0 ){ // Toutes les 1 min par défaut
+        $Freq_value = config::byKey('Freq_value','heatzy','2') ; // Toutes les 2 min par défaut si non parametré
+        if( $Freq_value > 0 ){ // Si param != off
+            if( (date("i") % $Freq_value ) == 0 ){ // Si on tombe bien sur le x minute
 
-            foreach (eqLogic::byType('heatzy') as $heatzy) {
+                foreach (eqLogic::byType('heatzy') as $heatzy) {
 
-                $Cmd = $heatzy->getCmd('info', 'IsOnLine') ;
-                $IsOnLine = (is_object($Cmd)) ? $Cmd->execCmd() : 1 ;
-              
-                // Execute le refresh si
-                //  - Eqlogic actif
-                //  - Eqlogic connecté (online)
-                //  - Token pas prêt d'expirer
-                //  - Pas de synchro en cours
-                if($heatzy->getIsEnable() == 1 && $IsOnLine == 1 && ($ExpireTokenTime - 120) > time() && cache::byKey('Heatzy_Synchronize')->getValue() == 0){
-                    $Cmd = heatzyCmd::byEqLogicIdCmdName($heatzy->getId(), 'Rafraichir' );
-                    if (! is_object($Cmd)) {
-                        log::add('heatzy', 'error',  ' La commande :refresh n\'a pas été trouvé' );
-                        throw new Exception(__(' La commande refresh n\'a pas été trouvé ', __FILE__));
+                    $Cmd = $heatzy->getCmd('info', 'IsOnLine') ;
+                    $IsOnLine = (is_object($Cmd)) ? $Cmd->execCmd() : 1 ;
+                  
+                    // Execute le refresh si
+                    //  - Eqlogic actif
+                    //  - Eqlogic connecté (online)
+                    //  - Token pas prêt d'expirer
+                    //  - Pas de synchro en cours
+                    if($heatzy->getIsEnable() == 1 && $IsOnLine == 1 && ($ExpireTokenTime - 120) > time() && cache::byKey('Heatzy_Synchronize')->getValue() == 0){
+                        $Cmd = heatzyCmd::byEqLogicIdCmdName($heatzy->getId(), 'Rafraichir' );
+                        if (! is_object($Cmd)) {
+                            log::add('heatzy', 'error',  ' La commande :refresh n\'a pas été trouvé' );
+                            throw new Exception(__(' La commande refresh n\'a pas été trouvé ', __FILE__));
+                        }
+
+                        $Cmd->execCmd();
+
+                        $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
+                        $mc->remove();
+                        $mc = cache::byKey('heatzyWidgetdashboard' . $heatzy->getId());
+                        $mc->remove();
+
+                        $heatzy->toHtml('mobile');
+                        $heatzy->toHtml('dashboard');
+                        $heatzy->refreshWidget();
                     }
-
-                    $Cmd->execCmd();
-
-                    $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
-                    $mc->remove();
-                    $mc = cache::byKey('heatzyWidgetdashboard' . $heatzy->getId());
-                    $mc->remove();
-
-                    $heatzy->toHtml('mobile');
-                    $heatzy->toHtml('dashboard');
-                    $heatzy->refreshWidget();
-                }
-            } // foreach
-        }
+                } // foreach
+            } // (date("i") % $Freq_value ) == 0
+        } // if $Freq_value > 0
     }
 
     /**
@@ -2451,14 +2555,17 @@ class heatzyCmd extends cmd {
      */
 
     public function execute($_options = array()) {
-      log::add('heatzy', 'debug',  __METHOD__.' : Commande execute : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');  
-      //var_export($col, true)
-      log::add('heatzy', 'debug',  __METHOD__.' : $_options1 : '.$_options ); 
-      //log::add('heatzy', 'debug',  __METHOD__.' : $_options2 : '.json_decode($_options, true) ); 
-      log::add('heatzy', 'debug',  __METHOD__.' : $_options3 : '.var_export($_options, true) );  
+        log::add('heatzy', 'debug',  __METHOD__.' : Commande execute : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');  
+      
+        if( HttpGizwits::$DebugExport ){
+            //var_export($col, true)
+            log::add('heatzy', 'debug',  __METHOD__.' : $_options1 : '.$_options ); 
+            //log::add('heatzy', 'debug',  __METHOD__.' : $_options2 : '.json_decode($_options, true) ); 
+            log::add('heatzy', 'debug',  __METHOD__.' : $_options3 : '.var_export($_options, true) );
+        }      
       
       
-      $Result = array();
+        $Result = array();
         
         /// Lecture du token
         $UserToken = config::byKey('UserToken','heatzy','none');
