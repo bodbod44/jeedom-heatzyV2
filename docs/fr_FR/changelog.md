@@ -1,4 +1,8 @@
-# 29/10/2025 (beta)
+# xx/06/2025 (dev)
+- TODO : Commande Alerte fenetre ouverte (deja possible en scenario) => A faire
+- TODO : Alerte hors ligne (9042) => A faire
+
+# 15/11/2025 (stable)
 - Le timeout par défaut pour les connexions gizwits.com passe à 30sec
 - Mise en place d'un système de réémission d'appel API (jusqu'à 4 fois) lors d'un problème de connexion au serveur (Uniquement sur SetConsigne et GetConsigne)
 

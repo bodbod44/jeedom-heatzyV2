@@ -52,7 +52,7 @@ Configuration des objets connectés Heatzy
 -------------
 La configuration des modules Heatzy est accessible à partir du menu 'Plugins' > 'Objets connectés'.
 
-![heatzy2](../images/configuration_equipement_Gestion.png)
+![heatzy2](../images/configuration_equipement_Gestion2.png)
 ![heatzy3](../images/configuration_equipement_ListeEqLogic.png)
 
 Une fois que vous cliquez sur un équipement vous retrouvez la configuration de l'équipement :
@@ -250,6 +250,20 @@ Et d'une commande info **Tendance Température** de type _numeric_ :
  | Détéction Présence | info | N/A | N/A | Oui | ? | N/A | N/A | ? | ? | N/A | N/A | 
 
 
+**Utilisation des tâches planifiées Heatzy (Réservé à un publique averti !!!) **
+Heatzy possède son propre système de tâches planifiées.
+Les tâches sont envoyés aux serveurs Gizwitz qui se charge d'envoyer les consignes aux modules au moment voulu.
+Cette fonctionnalité n'est utilisable que par l' API (l'application mobile ne se pas les gérer).
+
+L'utilité de cette fonctionnalité reste marginale dans la mesure ou on peut le faire dans jeedom.
+Neanmoins, j'ai décidé de l'implémenter dans le plugin si certains utilisateurs ont des besoins spécifiques.
+
+Le plugin jeedom, permet de lire, créer, modifier ou supprimer des tâches.
+En revanche, le coeur de la tâche est géré sous forme de JSON (donc réservé à un publique de connaisseurs.
+Un lien a été ajouté vers la documentation officielle.
+![heatzy11](../images/Scheduler.png)
+
+
 FAQ
 === 
 
@@ -292,8 +306,10 @@ Dans un premier temps, fermer votre application mobile et revérifiez.
 S'il a été supprimé de l'application, le plugin ne pourra rien faire.
 Reportez vous aux manuels des produits : https://drive.google.com/drive/folders/1pbrZ7RRNZf8yzdbH-cd7Fk9ih2j7WZFd
 
-**Leplugin renvoit des erreurs 8xxx ou 9xxx, a quoi correspondent-ils ?**
+**Le plugin renvoit des erreurs 8xxx ou 9xxx, a quoi correspondent-ils ?**
 
 Les erreurs renvoyées par l'API gizwits sont repartoriés ici : https://docs.gizwits.com/en-us/AppDev/APICloudSDK.html#Error-codes
 Ces sont des libellés tchniques et pas forcement compréhensibles par tout le monde.
-N'hésitez pas à faire un message sur le forum jeedom (avec le tag heatzy)
+N'hésitez pas à faire un message sur le forum jeedom (avec le tag heatzy).
+En Octobre 2025 à l'approche de l'hiver, beaucoup d'utliateur ont réactivé leurs modules Heatzy provoquant des saturations des serveurs GizWits.
+Cela s'est traduit par des temps de latence sur les commandes et une grosses remontés d'erreurs dan le plugin jeedom Heatzy (beaucoup d'appels KO). Une mécanique de réémission d'appel a été mise en place pour limiter les conséquences.

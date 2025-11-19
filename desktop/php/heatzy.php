@@ -38,6 +38,13 @@ foreach ($eqLogics as $eqLogic) {
 	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Santé}}</center></span>
 	  </div>
   
+	  <div class="cursor expertModeVisible" id="bt_scheduler" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;display:<?php if(log::getLogLevel('heatzy') == 100 || true ) echo 'display' ; else echo 'none' ; ?>" >
+	    <center>
+	        <i class="fa fa-tasks" style="font-size : 4em;color:#767676;"></i>
+	    </center>
+	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Tâches programmées}}</center></span>
+	  </div>
+  
 	  <div class="cursor expertModeVisible" id="bt_DocPlugin" onclick="window.open('https://bodbod44.github.io/jeedom-heatzyV2/fr_FR/', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
 	    <center>
 	        <i class="fa fa-book-open" style="font-size : 4em;color:#767676;"></i>
