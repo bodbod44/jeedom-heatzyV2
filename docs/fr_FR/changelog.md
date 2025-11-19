@@ -1,6 +1,5 @@
-# xx/06/2025 (dev)
-- TODO : Commande Alerte fenetre ouverte (deja possible en scenario) => A faire
-- TODO : Alerte hors ligne (9042) => A faire
+# 20/11/2025 (beta)
+- Ajout d'une modale permettant de gérer les tâches planifiées Heatzy (Visualisation, Création, Mise à jour, et suppression)
 
 # 15/11/2025 (stable)
 - Le timeout par défaut pour les connexions gizwits.com passe à 30sec

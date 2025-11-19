@@ -30,6 +30,18 @@ Il est nécessaire de suivre le guide d'installation et d'utilisation fourni pou
 Configuration
 ==
 
+Page du plugin
+-------------
+![heatzy2](../images/configuration_equipement_Gestion2.png)
+* **Configuration** : Fenetre permettant de configurer le plugin (compte heatzy, niveau de log, fréquence de rafraichissement...)
+* **Santé** : Modale permettant de visualiser la bonne santé des modules (si connecté, dernière comminucation ...)
+* **Tâches programmées** : Modale permettant de gérer les tâches planifiées Heatzy (réservé à un public averti)
+* **Documentation plugin** : Lien pointant sur la documentation de ce plugin
+* **Documentation utilisateur Heatzy** : Lien pointant sur la documentation Heatzy (sur un Drive Heatzy)
+* **Assistance** : Lien pointant vers le forum community jeedom directment sur les sujets de ce plugin
+* **Debug utilisateur Heatzy** : Modale permettant de sortir tous le contenu brute du parametrage (uniquement visible lorsque le niveau de log est debug)
+
+
 Configuration du plugin
 -------------
 Après téléchargement du plugin, il vous suffit juste d'activer celui-ci et de saisir l'adresse mail et le mot de passe pour accéder au cloud Heatzy.
@@ -52,7 +64,6 @@ Configuration des objets connectés Heatzy
 -------------
 La configuration des modules Heatzy est accessible à partir du menu 'Plugins' > 'Objets connectés'.
 
-![heatzy2](../images/configuration_equipement_Gestion2.png)
 ![heatzy3](../images/configuration_equipement_ListeEqLogic.png)
 
 Une fois que vous cliquez sur un équipement vous retrouvez la configuration de l'équipement :
@@ -250,7 +261,8 @@ Et d'une commande info **Tendance Température** de type _numeric_ :
  | Détéction Présence | info | N/A | N/A | Oui | ? | N/A | N/A | ? | ? | N/A | N/A | 
 
 
-**Utilisation des tâches planifiées Heatzy (Réservé à un publique averti !!!) **
+
+**Utilisation des tâches planifiées Heatzy (Réservé à un public averti !!!)**
 Heatzy possède son propre système de tâches planifiées.
 Les tâches sont envoyés aux serveurs Gizwitz qui se charge d'envoyer les consignes aux modules au moment voulu.
 Cette fonctionnalité n'est utilisable que par l' API (l'application mobile ne se pas les gérer).

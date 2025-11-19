@@ -57,7 +57,9 @@ function GetSchedulersByDid( did ){
                 $('#div_alert').showAlert({message: data.result, level: 'danger'});
                 return;
             }
-            InsertLignes( data.result , did[0] , did[1] ) ;
+          if( data.result != ""){
+            InsertLignes( data.result , did[1]  ) ;
+          }
         },
         error: function(err) {
             alert("Erreur pour " + did[0] + did[1], err);
@@ -168,7 +170,6 @@ function DeleteScheduler( did , Id ){
                 return;
             }
             // Succès : La classe a été appelée et a renvoyé une réponse
-            //alert('suppr OK');
             var row = document.getElementById("row_" + Id);
             row.parentNode.removeChild(row);
             
@@ -186,14 +187,14 @@ function InsertLignes( TabScheduler , LogicalId ){
 }
 
 function InsertLigne( variable , LogicalId ){          
-    document.getElementById('div_' + variable["did"]).style.display = "" ;              
+    document.getElementById('div_' + variable['did']).style.display = "" ;              
     let tbody = document.getElementById('myTable_' + variable["did"]).getElementsByTagName('tbody')[0];              
     let row = tbody.insertRow(); // insère une nouvelle ligne
     row.id = "row_" + variable["id"] ;
     row.insertCell(0).textContent = variable["created_at"] ;
     row.insertCell(1).textContent = variable["date"] ;
     row.insertCell(2).textContent = variable["time"] ;
-    row.insertCell(3).textContent = variable["days"] ;
+  	row.insertCell(3).textContent = variable["days"] ;
     row.insertCell(4).textContent = variable["repeat"] ;
     row.insertCell(5).textContent = variable["start_date"] ;
     row.insertCell(6).textContent = variable["end_date"] ;
@@ -241,7 +242,7 @@ function AlimFormUpdate( LogicalId , id ){
     if(document.getElementById('row_' + id ).cells[2].textContent != '')
         Json += '    "time": "' + document.getElementById('row_' + id ).cells[2].textContent + '",' + "\n" ;
     if(document.getElementById('row_' + id ).cells[3].textContent != '')
-        Json += '    "days": "' + document.getElementById('row_' + id ).cells[3].textContent + '",' + "\n" ;
+        Json += '    "days": [' + document.getElementById('row_' + id ).cells[3].textContent + '],' + "\n" ;
     if(document.getElementById('row_' + id ).cells[4].textContent != '')
         Json += '    "repeat": "' + document.getElementById('row_' + id ).cells[4].textContent + '",' + "\n" ;
     if(document.getElementById('row_' + id ).cells[5].textContent != '')
@@ -278,8 +279,8 @@ function InjecteExemple( selectObject ){
             Json += '    "timer_switch": 0,' + "\n" ;
             Json += '    "derog_mode": 2,' + "\n" ;
             Json += '    "derog_time": 180,' + "\n" ;
-            Json += '    "cft_temp": 19,' + "\n" ;
-            Json += '    "eco_temp": 15' + "\n" ;
+            Json += '    "cft_temp": 190,' + "\n" ;
+            Json += '    "eco_temp": 170' + "\n" ;
             Json += '   },' + "\n" ;
             Json += '  "date": "2026-04-01",' + "\n" ;
             Json += '  "time": "09:00",' + "\n" ;
@@ -309,8 +310,9 @@ function InjecteExemple( selectObject ){
             Json += '		"timer_switch":1,' + "\n" ;
             Json += '		"derog_mode":0' + "\n" ;
             Json += '	},' + "\n" ;
-            Json += '	"days":[1],' + "\n" ;
+            Json += '	"days":[1, 2],' + "\n" ;
             Json += '	"time": "09:00",' + "\n" ;
+            Json += '	"repeat": "day",' + "\n" ;
             Json += '	"start_date": "2025-01-01",' + "\n" ;
             Json += '	"end_date": "2026-01-01",' + "\n" ;
             Json += '	"remark": "Activer la programmation au début de chaque mois"' + "\n" ;
