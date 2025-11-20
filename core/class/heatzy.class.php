@@ -227,14 +227,20 @@ class HttpGizwits {
      *
      * @return Un tableau associatif ou false en cas d'erreur
      */
-    public static function GetSchedulerList($UserToken, $Did, $Skip = 0, $Limit = 20) {
+    public static function GetSchedulerList($UserToken, $Did, $Skip = 0, $Limit = 30) {
+
+        /*
+        log::add('heatzy', 'debug',  __METHOD__.': $UserToken='.$UserToken);
+        log::add('heatzy', 'debug',  __METHOD__.': $Did='.$Did);
+        log::add('heatzy', 'debug',  __METHOD__.': $Skip='.$Skip);
+        log::add('heatzy', 'debug',  __METHOD__.': $Limit='.$Limit);
+        */
     
         if(empty($UserToken) || empty($Did)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
             return false;
         }
-    
-        log::add('heatzy', 'debug',  __METHOD__.':skip '.$Skip);
+
         /// Parametres cUrl
         $params = array(
             CURLOPT_HTTPHEADER => array(
@@ -274,10 +280,86 @@ class HttpGizwits {
         if(isset($aRep['error_message'])) {
             throw new Exception(__('DID : ', __FILE__) . $Did.' '.__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
-        //log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
         return $aRep;
     }
 
+    /**
+     * @brief Fonction qui permet de créer une tache
+     *
+     * @param $UserToken   Token utilisateur d'acces au cloud
+     * @param $Did           Identifiant du module dans le cloud
+     * @param $Id           L'identifiant de la tache
+     * @param $Param       Les parametres de la tache
+     * 
+     * @return l'id de la tâche ou false en cas d'erreur
+     */
+    public static function CreateScheduler($UserToken, $Did, $Param) {
+
+        /*
+        log::add('heatzy', 'debug',  __METHOD__.': $UserToken='.$UserToken);
+        log::add('heatzy', 'debug',  __METHOD__.': $Did='.$Did);
+        log::add('heatzy', 'debug',  __METHOD__.': $Param='.var_export($Param, true));
+        */
+      
+        if(empty($UserToken) || empty($Did) || empty($Param)){
+            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            return false;
+        }
+    
+        /// Preparation de la requete : json
+        $data = json_encode( $Param ) ;
+        
+        /// Parametres cUrl
+        $params = array(
+            CURLOPT_POST => 1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                    'X-Gizwits-User-token: '.$UserToken
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did.'/scheduler' ,
+            CURLOPT_FRESH_CONNECT => 1,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FORBID_REUSE => 1,
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout ),
+            CURLOPT_POSTFIELDS => $data
+        );
+        
+        /// Initialisation de la ressources curl
+        $gizwits = curl_init();
+        if ($gizwits === false)
+            return false;
+
+        /// Configuration des options
+        curl_setopt_array($gizwits, $params);
+
+        /// Excute la requete
+        $result = curl_exec($gizwits);
+
+        /// Test le code retour http
+        $httpcode = curl_getinfo($gizwits, CURLINFO_HTTP_CODE);
+
+        /// Ferme la connexion
+        curl_close($gizwits);
+
+        if( $httpcode != 201 && $httpcode != 400 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+            return false;
+        }
+        
+        ///Décodage de la réponse
+        $aRep = json_decode($result, true);
+    
+        //if(isset($aRep['error_message'])) {
+        //    throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
+        //}
+        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        return $aRep;
+    }
+  
     /**
      * @brief Fonction qui permet de modifier une tache
      *
@@ -288,8 +370,15 @@ class HttpGizwits {
      * 
      * @return Un tableau associatif ou false en cas d'erreur
      */
-    public static function SetScheduler($UserToken, $Did, $Id, $Param) {
-    
+    public static function UpdateScheduler($UserToken, $Did, $Id, $Param) {
+
+        /*
+        log::add('heatzy', 'debug',  __METHOD__.': $UserToken='.$UserToken);
+        log::add('heatzy', 'debug',  __METHOD__.': $Did='.$Did);
+        log::add('heatzy', 'debug',  __METHOD__.': $Id='.$Id);
+        log::add('heatzy', 'debug',  __METHOD__.': $Param='.var_export($Param, true));
+        */
+        
         if(empty($UserToken) || empty($Did) || empty($Id) || empty($Param)){
             log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
             return false;
@@ -297,7 +386,7 @@ class HttpGizwits {
     
         /// Preparation de la requete : json
         $data = json_encode( $Param ) ;
-        
+
         /// Parametres cUrl
         $params = array(
             CURLOPT_POST => 1,
@@ -344,9 +433,81 @@ class HttpGizwits {
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
-        //log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
         return $aRep;
     }
+  
+    /**
+     * @brief Fonction qui permet de supprimer une tache
+     *
+     * @param $UserToken   Token utilisateur d'acces au cloud
+     * @param $Did           Identifiant du module dans le cloud
+     * @param $Id           L'identifiant de la tache
+     * 
+     * @return true ou false en cas d'erreur
+     */
+    public static function DeleteScheduler($UserToken, $Did, $Id ) {
+    
+        /*
+        log::add('heatzy', 'debug',  __METHOD__.': $UserToken='.$UserToken);
+        log::add('heatzy', 'debug',  __METHOD__.': $Did='.$Did);
+        log::add('heatzy', 'debug',  __METHOD__.': $Id='.$Id);
+        */
+    
+        if(empty($UserToken) || empty($Did) || empty($Id) ){
+            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            return false;
+        }
+        
+        /// Parametres cUrl
+        $params = array(
+            CURLOPT_POST => 1,
+            CURLOPT_CUSTOMREQUEST => 'DELETE',
+            CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                    'X-Gizwits-User-token: '.$UserToken
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/devices/'.$Did.'/scheduler/'.$Id,
+            CURLOPT_FRESH_CONNECT => 1,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FORBID_REUSE => 1,
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout ),
+        );
+        
+        /// Initialisation de la ressources curl
+        $gizwits = curl_init();
+        if ($gizwits === false)
+            return false;
+
+        /// Configuration des options
+        curl_setopt_array($gizwits, $params);
+
+        /// Excute la requete
+        $result = curl_exec($gizwits);
+
+        /// Test le code retour http
+        $httpcode = curl_getinfo($gizwits, CURLINFO_HTTP_CODE);
+
+        /// Ferme la connexion
+        curl_close($gizwits);
+
+        if( $httpcode != 200 && $httpcode != 400 ){
+            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+            return false;
+        }
+        
+        ///Décodage de la réponse
+        $aRep = json_decode($result, true);
+    
+        if(isset($aRep['error_message'])) {
+            throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
+        }
+        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        return true ;
+    }
+  
     /**
      * @brief Fonction qui permet de modifier les informations d'accroche
      * 
@@ -2118,7 +2279,7 @@ class heatzy extends eqLogic {
                 $aTask['enabled']=$EtatProg;
                 
                 /// Mise a jour de la tache
-                $aTaskResul = HttpGizwits::SetScheduler($UserToken, $this->getLogicalId(), $Id, $aTask);
+                $aTaskResul = HttpGizwits::UpdateScheduler($UserToken, $this->getLogicalId(), $Id, $aTask);
                 if ($aTaskResul === false ) {
                     throw new Exception(__('Erreur : mise à jour de la tache', __FILE__));
                 }

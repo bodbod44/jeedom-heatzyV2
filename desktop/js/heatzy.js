@@ -23,6 +23,11 @@ $('#bt_debugHeatzy').on('click', function () {
   $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=debug').dialog('open');
 });
 
+$('#bt_scheduler').on('click', function () {
+  $('#md_modal').dialog({title: "{{Tâches programmées}}"});
+  $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=scheduler').dialog('open');
+});
+
 $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
 /*
  * Fonction pour l'ajout de commande, appellé automatiquement par plugin.template
