@@ -24,6 +24,7 @@ if (!isConnect('admin')) {
 <script>
 buffer = "";
 <?php
+    // Créé un tablmeau avec le nom et l'id de tous les modules
     $eqLogics = heatzy::byType('heatzy') ;
     echo '$tab_heatzy = ['."\n" ;
     foreach ($eqLogics as $eqLogic) {
@@ -181,12 +182,14 @@ function DeleteScheduler( did , Id ){
 }
 
 function InsertLignes( TabScheduler , LogicalId ){
+    // Boucle sur la tableau des tâches pour un did
     for (variable of TabScheduler) {
         InsertLigne( variable , LogicalId ) ;
     };
 }
 
-function InsertLigne( variable , LogicalId ){          
+function InsertLigne( variable , LogicalId ){
+    // Insert les lignes
     document.getElementById('div_' + variable['did']).style.display = "" ;              
     let tbody = document.getElementById('myTable_' + variable["did"]).getElementsByTagName('tbody')[0];              
     let row = tbody.insertRow(); // insère une nouvelle ligne
@@ -209,13 +212,14 @@ function VerifFormulaire(){
     did =  document.getElementById('sel_did').value ;
     Param =  document.getElementById("Param").value ;
 
-    try {
+    try { // test de la synthaxe du JSON
         JSON.parse(Param);
     } catch (e) {
         alert('Le JSON est vide ou invalide') ;
         return false ;
     }
 
+    // Si textid vide => Création
     if( document.getElementById("text_id").value == "" ){
         if( did == ""){
             alert('Choisir un équipement') ;
@@ -223,7 +227,7 @@ function VerifFormulaire(){
         }
         CreateScheduler( did , json_decode(Param) ) ;
     }
-    else{
+    else{ // Sinon modification
         UpdateScheduler( did , document.getElementById("text_id").value , json_decode(Param) )
     }
 }
@@ -269,8 +273,7 @@ function RazForm(){
 }
 
 function InjecteExemple( selectObject ){
-    document.getElementById('Param').value = selectObject.value ;
-    
+    // Alimente le formulaire avec des exemples
     switch(selectObject.value) {
         case 'unique':
             Json  = "{" + "\n" ;
