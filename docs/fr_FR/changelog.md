@@ -1,4 +1,4 @@
-# 20/11/2025 (beta)
+# 23/11/2025 (stable)
 - Ajout d'une modale permettant de gérer les tâches planifiées Heatzy (Visualisation, Création, Mise à jour, et suppression)
 
 # 15/11/2025 (stable)
