@@ -51,7 +51,7 @@ class HttpGizwits {
     public static function Login($User, $Passwd, $Lang='en') {
      
         if(empty($User) || empty($Passwd)){
-            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
         }
 
@@ -92,7 +92,7 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode );
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode );
             return false;
         }
         
@@ -101,7 +101,7 @@ class HttpGizwits {
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
         return $aRep;
     }
   
@@ -115,7 +115,7 @@ class HttpGizwits {
     public static function GetProduitInfo($ProductKey) {
         
         if(empty($ProductKey)){
-            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
         }
         
@@ -148,7 +148,7 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
             return false;
         }
 
@@ -157,7 +157,7 @@ class HttpGizwits {
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
-        //log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
         return $aRep;
     }
   
@@ -171,7 +171,7 @@ class HttpGizwits {
     public static function Bindings($UserToken) {
         
         if(empty($UserToken)){
-            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
         }
         
@@ -205,7 +205,7 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode );
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode );
             return false;
         }
 
@@ -214,7 +214,7 @@ class HttpGizwits {
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
         return $aRep;
     }
     
@@ -230,14 +230,14 @@ class HttpGizwits {
     public static function GetSchedulerList($UserToken, $Did, $Skip = 0, $Limit = 30) {
 
         /*
-        log::add('heatzy', 'debug',  __METHOD__.': $UserToken='.$UserToken);
-        log::add('heatzy', 'debug',  __METHOD__.': $Did='.$Did);
-        log::add('heatzy', 'debug',  __METHOD__.': $Skip='.$Skip);
-        log::add('heatzy', 'debug',  __METHOD__.': $Limit='.$Limit);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $UserToken='.$UserToken);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Did='.$Did);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Skip='.$Skip);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Limit='.$Limit);
         */
     
         if(empty($UserToken) || empty($Did)){
-            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
         }
 
@@ -271,7 +271,7 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
             return false;
         }
 
@@ -280,7 +280,7 @@ class HttpGizwits {
         if(isset($aRep['error_message'])) {
             throw new Exception(__('DID : ', __FILE__) . $Did.' '.__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
         return $aRep;
     }
 
@@ -297,13 +297,13 @@ class HttpGizwits {
     public static function CreateScheduler($UserToken, $Did, $Param) {
 
         /*
-        log::add('heatzy', 'debug',  __METHOD__.': $UserToken='.$UserToken);
-        log::add('heatzy', 'debug',  __METHOD__.': $Did='.$Did);
-        log::add('heatzy', 'debug',  __METHOD__.': $Param='.var_export($Param, true));
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $UserToken='.$UserToken);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Did='.$Did);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Param='.var_export($Param, true));
         */
       
         if(empty($UserToken) || empty($Did) || empty($Param)){
-            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
         }
     
@@ -346,7 +346,7 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 201 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
             return false;
         }
         
@@ -356,7 +356,7 @@ class HttpGizwits {
         //if(isset($aRep['error_message'])) {
         //    throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         //}
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
         return $aRep;
     }
   
@@ -373,14 +373,14 @@ class HttpGizwits {
     public static function UpdateScheduler($UserToken, $Did, $Id, $Param) {
 
         /*
-        log::add('heatzy', 'debug',  __METHOD__.': $UserToken='.$UserToken);
-        log::add('heatzy', 'debug',  __METHOD__.': $Did='.$Did);
-        log::add('heatzy', 'debug',  __METHOD__.': $Id='.$Id);
-        log::add('heatzy', 'debug',  __METHOD__.': $Param='.var_export($Param, true));
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $UserToken='.$UserToken);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Did='.$Did);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Id='.$Id);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Param='.var_export($Param, true));
         */
         
         if(empty($UserToken) || empty($Did) || empty($Id) || empty($Param)){
-            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
         }
     
@@ -423,7 +423,7 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
             return false;
         }
         
@@ -433,7 +433,7 @@ class HttpGizwits {
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
         return $aRep;
     }
   
@@ -449,13 +449,13 @@ class HttpGizwits {
     public static function DeleteScheduler($UserToken, $Did, $Id ) {
     
         /*
-        log::add('heatzy', 'debug',  __METHOD__.': $UserToken='.$UserToken);
-        log::add('heatzy', 'debug',  __METHOD__.': $Did='.$Did);
-        log::add('heatzy', 'debug',  __METHOD__.': $Id='.$Id);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $UserToken='.$UserToken);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Did='.$Did);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Id='.$Id);
         */
     
         if(empty($UserToken) || empty($Did) || empty($Id) ){
-            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
         }
         
@@ -494,7 +494,7 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
             return false;
         }
         
@@ -504,7 +504,7 @@ class HttpGizwits {
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
         return true ;
     }
   
@@ -520,7 +520,7 @@ class HttpGizwits {
     public static function SetBindingInformation($UserToken, $Did, $DevAlias) {
     
         if(empty($UserToken) || empty($Did) || empty($DevAlias)){
-            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
         }
 
@@ -563,7 +563,7 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
             return false;
         }
 
@@ -572,7 +572,7 @@ class HttpGizwits {
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
         return $aRep;
     }
     
@@ -588,14 +588,14 @@ class HttpGizwits {
     public static function SetConsigne($UserToken, $Did, $Consigne, $Recurrence = 0) {
         
         if(empty($UserToken) || empty($Did) || empty($Consigne)){
-            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
         }
 
         /// Preparation de la requete : json
         $data = json_encode( $Consigne ) ;
 
-        log::add('heatzy', 'debug',  __METHOD__.':'.$Did.'-'.var_export($data, true).' (Recurrence '.$Recurrence.')');
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'-'.var_export($data, true).' (Recurrence '.$Recurrence.')');
         
         /// Parametres cUrl
         $params = array(
@@ -632,18 +632,18 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){ // Si erreur technique
-            log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- erreur http '.$httpcode.' - timeout '.config::byKey('Timeout_value','heatzy',self::$Default_Timeout ).'s (Recurrence '.$Recurrence.')');
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- erreur http '.$httpcode.' - timeout '.config::byKey('Timeout_value','heatzy',self::$Default_Timeout ).'s (Recurrence '.$Recurrence.')');
             
             if( $Recurrence < self::$RecurrenceAPI ){
-                log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
                 sleep(2); // tempo
                 
                 $aRep = self::SetConsigne($UserToken, $Did, $Consigne , $Recurrence + 1) ;
                 if( $aRep === false ){
-                    log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
                     return false;
                 }
-                log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
             }
             else
                 return false; // Retour KO si trop de tentative récursive
@@ -651,25 +651,25 @@ class HttpGizwits {
         else{ // Le serveur a répondu
             
             if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
-                log::add('heatzy', 'debug',  __METHOD__.': error_code '.$aRep['error_code'].' (Recurrence '.$Recurrence.')');
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': error_code '.$aRep['error_code'].' (Recurrence '.$Recurrence.')');
                 
                 if( $Recurrence < self::$RecurrenceAPI ){
                     // erreur token invalide, alors on va en chercher un nouveau
-                    log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
                     
                     if( heatzy::Login() ){
                         $UserToken = config::byKey('UserToken','heatzy','none'); // Je récupère le nouveau token
-                        log::add('heatzy', 'debug',  __METHOD__.': Login() OK - Nouveau Token ('.$UserToken.') (Recurrence '.$Recurrence.')');
+                        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() OK - Nouveau Token ('.$UserToken.') (Recurrence '.$Recurrence.')');
                         
                         $aRep = self::SetConsigne($UserToken, $Did, $Consigne, $Recurrence + 1) ;
                         if( $aRep === false ){
-                            log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
+                            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
                             return false;
                         }
-                        log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
+                        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
                     }
                     else{
-                        log::add('heatzy', 'debug',  __METHOD__.': Login() KO'.$Recurrence.')');
+                        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() KO'.$Recurrence.')');
                         return false;
                     }
                 }
@@ -682,7 +682,7 @@ class HttpGizwits {
             }
         }
         
-        log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
         
         //   if(isset($aRep['error_message'])) {
         //       throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
@@ -695,7 +695,7 @@ class HttpGizwits {
               
                 $UserToken = config::byKey('UserToken','heatzy','none');
                 
-                log::add('heatzy', 'debug',  __METHOD__.': Login() OK - Nouveau Token ('.$UserToken.')');
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() OK - Nouveau Token ('.$UserToken.')');
               
                 /// Parametres cUrl
                 $params = array(
@@ -731,7 +731,7 @@ class HttpGizwits {
                 curl_close($gizwits);
 
                 if( $httpcode != 200 && $httpcode != 400 ){
-                    log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
                     return false;
                 }
 
@@ -739,7 +739,7 @@ class HttpGizwits {
                 $aRep = json_decode($result, true);
             }
             else{
-                log::add('heatzy', 'debug',  __METHOD__.': Login() KO');
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() KO');
                 return false;
             }
         }
@@ -758,7 +758,7 @@ class HttpGizwits {
     public static function GetConsigne($UserToken, $Did, $Recurrence = 0 ) {
               
         if(empty($Did)){
-            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
         }
         
@@ -791,18 +791,18 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- erreur http '.$httpcode.' - timeout '.config::byKey('Timeout_value','heatzy',self::$Default_Timeout ).'s (Recurrence '.$Recurrence.')');
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- erreur http '.$httpcode.' - timeout '.config::byKey('Timeout_value','heatzy',self::$Default_Timeout ).'s (Recurrence '.$Recurrence.')');
             
             if( $Recurrence < self::$RecurrenceAPI ){
-                log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
                 sleep(2); // tempo
                 
                 $aRep = self::GetConsigne($UserToken, $Did , $Recurrence + 1) ;
                 if( $aRep === false ){
-                    log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
                     return false;
                 }
-                log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
             }
             else
                 return false;
@@ -810,25 +810,25 @@ class HttpGizwits {
         else{ // Le serveur a répondu
             
             if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
-                log::add('heatzy', 'debug',  __METHOD__.': error_code '.$aRep['error_code'].' (Recurrence '.$Recurrence.')');
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': error_code '.$aRep['error_code'].' (Recurrence '.$Recurrence.')');
                 
                 if( $Recurrence < self::$RecurrenceAPI ){
                     // erreur token invalide, alors on va en chercher un nouveau
-                    log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
                     
                     if( heatzy::Login() ){
                         $UserToken = config::byKey('UserToken','heatzy','none'); // Je récupère le nouveau token
-                        log::add('heatzy', 'debug',  __METHOD__.': Login() OK - Nouveau Token ('.$UserToken.') (Recurrence '.$Recurrence.')');
+                        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() OK - Nouveau Token ('.$UserToken.') (Recurrence '.$Recurrence.')');
                         
                         $aRep = self::GetConsigne($UserToken, $Did , $Recurrence + 1) ;
                         if( $aRep === false ){
-                            log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
+                            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
                             return false;
                         }
-                        log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
+                        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
                     }
                     else{
-                        log::add('heatzy', 'debug',  __METHOD__.': Login() KO'.$Recurrence.')');
+                        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() KO'.$Recurrence.')');
                         return false;
                     }
                 }
@@ -841,7 +841,7 @@ class HttpGizwits {
             }
         }
       
-        log::add('heatzy', 'debug', __METHOD__.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
       
         ///Décodage de la réponse
         //$aRep = json_decode($result, true);
@@ -855,7 +855,7 @@ class HttpGizwits {
               
                 $UserToken = config::byKey('UserToken','heatzy','none');
                 
-                log::add('heatzy', 'debug',  __METHOD__.': Login() OK - Nouveau Token ('.$UserToken.')');
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() OK - Nouveau Token ('.$UserToken.')');
               
                 /// Parametres cUrl
                 $params = array(
@@ -886,7 +886,7 @@ class HttpGizwits {
                 curl_close($gizwits);
 
                 if( $httpcode != 200 && $httpcode != 400 ){
-                    log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
                     return false;
                 }
 
@@ -894,14 +894,14 @@ class HttpGizwits {
                 $aRep = json_decode($result, true);
             }
             else{
-                log::add('heatzy', 'debug',  __METHOD__.': Login() KO');
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() KO');
                 return false;
             }
         }*/
         
         if( self::$DebugExport ){
-            log::add('heatzy', 'debug',  __METHOD__.':'.var_export($params, true));
-            log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($params, true));
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
         }
         
         return $aRep;
@@ -918,7 +918,7 @@ class HttpGizwits {
     public static function GetDeviceDetails($UserToken, $Did) {
     
         if(empty($Did)){
-            log::add('heatzy', 'debug',  __METHOD__.': argument invalide');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
         }
     
@@ -952,7 +952,7 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.': erreur http '.$httpcode);
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
             return false;
         }
         
@@ -961,7 +961,7 @@ class HttpGizwits {
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
-        log::add('heatzy', 'debug',  __METHOD__.':'.var_export($aRep, true));
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
         return $aRep;
     }
 }
@@ -1000,7 +1000,7 @@ class heatzy extends eqLogic {
         /// Login
         $aResult = HttpGizwits::Login($email, $password );
         if ($aResult === false) {
-            log::add('heatzy', 'warning', __METHOD__.' : impossible de se connecter a: '.HttpGizwits::$UrlGizwits);
+            log::add('heatzy', 'warning', __METHOD__.'(ln '.__LINE__.')'.' : impossible de se connecter a: '.HttpGizwits::$UrlGizwits);
             return false;
         }
         log::add('heatzy', 'debug',  '$aResult :'.var_export($aResult, true));
@@ -1043,14 +1043,14 @@ class heatzy extends eqLogic {
      */
     public static function Synchronize( $force = false ) {
             
-          log::add('heatzy', 'debug',  __METHOD__.' : $force='.$force);
+          log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $force='.$force);
       
         if( !cache::exist('Heatzy_Synchronize') ) cache::set( 'Heatzy_Synchronize' , 1) ;
         cache::set( 'Heatzy_Synchronize' , strtotime(date("Y-m-d H:i:s")) ) ;
       
         /// Login + creation du cron
         if( heatzy::Login() === false ){
-            log::add('heatzy', 'warning',  __METHOD__.' : heatzy::Login - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
+            log::add('heatzy', 'warning',  __METHOD__.'(ln '.__LINE__.')'.' : heatzy::Login - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
             return false;
         }
             
@@ -1060,12 +1060,12 @@ class heatzy extends eqLogic {
         $aDevices = HttpGizwits::Bindings($UserToken);      
       
         if($aDevices === false) {
-            log::add('heatzy', 'warning',  __METHOD__.' : HttpGizwits::Bindings - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
+            log::add('heatzy', 'warning',  __METHOD__.'(ln '.__LINE__.')'.' : HttpGizwits::Bindings - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
             return false;
         }
         
-          log::add('heatzy', 'debug', __METHOD__.' '.count($aDevices ['devices']).'  module(s) trouvé');
-        //log::add('heatzy', 'debug', __METHOD__.' $aDevice :'.var_export($aDevices, true));
+          log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.count($aDevices ['devices']).'  module(s) trouvé');
+        //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' $aDevice :'.var_export($aDevices, true));
       
           $Nb_Add = 0;
           $aSearchDid = [] ; //Va stocker les DID trouvé (pour vérifier ceux qui ont disparus)
@@ -1141,7 +1141,7 @@ class heatzy extends eqLogic {
         //log::add('heatzy', 'info', 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
           if( $Nb_Add > 0)
             log::add('heatzy', 'info', $Nb_Add.' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s) Heatzy rattaché(s) au compte');
-          log::add('heatzy', 'debug', __METHOD__.' '.$Nb_Add.' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s)');
+          log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$Nb_Add.' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s)');
         //message::add("Heatzy", 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
       
           // Recherche des équipements qui ne sont plus rattachés au compte
@@ -1170,9 +1170,9 @@ class heatzy extends eqLogic {
       
         if( !cache::exist('Heatzy_CptError') ){
             cache::set( 'Heatzy_CptError' , 0) ;
-            log::add('heatzy', 'debug',  __METHOD__.': INIT cache' );
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': INIT cache' );
         }
-        //log::add('heatzy', 'debug',  __METHOD__.' : cache='.cache::byKey('Heatzy_CptError')->getValue() );
+        //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : cache='.cache::byKey('Heatzy_CptError')->getValue() );
       
         if(empty($aDevice)) {
             /// Lecture de l'etat
@@ -1180,14 +1180,14 @@ class heatzy extends eqLogic {
               $UserToken = config::byKey('UserToken','heatzy','none');
             $aDevice = HttpGizwits::GetConsigne($UserToken, $this->getLogicalId());
             if($aDevice === false) {
-                log::add('heatzy', 'warning',  __METHOD__.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+                log::add('heatzy', 'warning',  __METHOD__.'(ln '.__LINE__.')'.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
                 $this->setStatus('timeout','1');
                 $this->save();
                   cache::set('Heatzy_CptError', cache::byKey('Heatzy_CptError')->getValue() + 1 );
                 return false;
             }
             else if(isset($aDevice['error_message']) && isset($aDevice['error_code'])) {
-                log::add('heatzy', 'error',  __METHOD__.' : '.$this->getLogicalId().' - '.$aDevice['error_code'].' - '.$aDevice['error_message'].' - '.$aDevice['detail_message']);
+                log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : '.$this->getLogicalId().' - '.$aDevice['error_code'].' - '.$aDevice['error_message'].' - '.$aDevice['detail_message']);
                   cache::set('Heatzy_CptError', cache::byKey('Heatzy_CptError')->getValue() + 1 );
                 return false;
             }
@@ -1207,7 +1207,7 @@ class heatzy extends eqLogic {
         if(isset($aDevice['attr']['mode'])) {
 
             // Créer les commandes en fonction du contenu de la réponse
-          log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' CheckAndCreateCmd...');
+          log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' CheckAndCreateCmd...');
             $this->CheckAndCreateCmd($aDevice , $force) ;
           
             if( $aDevice['attr']['mode'] == 'cft' ) {        /// Confort
@@ -1246,7 +1246,7 @@ class heatzy extends eqLogic {
                     $KeyMode = 'Off';
                 }
                 else {
-                    log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getLogicalId().' non connecte');
                       $this->checkAndUpdateCmd('IsOnLine', 0 ); 
                       $this->save(); /// Enregistre les info  
                       $this->setStatus('timeout','1');
@@ -1329,7 +1329,7 @@ class heatzy extends eqLogic {
             $this->CalculExterne( $aDevice ) ;
         }
         else {                                             
-            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getLogicalId().' non connecte');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getLogicalId().' non connecte');
             $this->setStatus('timeout','1');
             $this->save(); /// Enregistre les info
             return false;
@@ -1461,19 +1461,19 @@ class heatzy extends eqLogic {
                     }
                 }
                 else
-                    log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code1 GET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' error_code1 GET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
             }
             else
-                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code2 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' error_code2 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
             // On remet l'ordre initial
             sleep(1);
             $Consigne = array( 'attrs' => array ( 'mode' => $aDevice['attr']['mode'] )  );
             $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
             if( $ResultSet['error_code'] != '' )
-                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code3 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' error_code3 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
         }
 
-        log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' Nombre d ordre='.$NbOrdres);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' Nombre d ordre='.$NbOrdres);
           return $NbOrdres ;
     }*/
     
@@ -1486,7 +1486,7 @@ class heatzy extends eqLogic {
   
     public function VerifOrdreAccepte( $aDevice , $attr , $valeur , $attr2 , $valeur2 , $verif_result , $valeurInit = false) {
         if( $aDevice['attr'][$attr] == $valeur  ){
-            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET deja valorisé');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET deja valorisé');
             return true ;
         }
         else{
@@ -1501,7 +1501,7 @@ class heatzy extends eqLogic {
             $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
             
             if( $ResultSet['error_code'] == '9025' ){
-                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - '.$attr.'=>'.$valeur.' SET error 9025 attribut invalide');
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' - '.$attr.'=>'.$valeur.' SET error 9025 attribut invalide');
                 return false;
             }
                 
@@ -1515,19 +1515,19 @@ class heatzy extends eqLogic {
                     $ResultGet = HttpGizwits::GetConsigne($UserToken, $this->getLogicalId() ) ;
                     if( $ResultGet['error_code'] == ''){
                         if( $ResultGet['attr'][$attr] == $valeur ){
-                            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET valorisé avec succes');
+                            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET valorisé avec succes');
                             return true ;
                         }
                         else{
-                            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET valeur autre (KO-'.$ResultGet['attr'][$attr].')');
+                            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET valeur autre (KO-'.$ResultGet['attr'][$attr].')');
                         }
                     }
                     else
-                        log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code1 GET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+                        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' error_code1 GET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
                 }
             }
             else
-                log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code2 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' error_code2 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
             
             if( $valeurInit == true ){
                 // On remet l'ordre initial
@@ -1535,7 +1535,7 @@ class heatzy extends eqLogic {
                 $Consigne = array( 'attrs' => array ( $attr => $aDevice['attr'][$attr] )  );
                 $ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
                 if( $ResultSet['error_code'] != '' )
-                    log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' error_code3 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' error_code3 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
             }
         }
 
@@ -1720,7 +1720,7 @@ class heatzy extends eqLogic {
         /*$Heatzy6Ordres = array("Pilote_Pro");
         if( in_array( $this->getConfiguration('product', '') , $Heatzy6Ordres) && is_object( $this->getCmd(null,'Confort')) && !is_object( $this->getCmd(null,'Confort-2')) ){
             $rattrapage = true ;
-            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' rattrapage 6 ordres');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' rattrapage 6 ordres');
         }
         else
             $rattrapage = false ;*/
@@ -1730,7 +1730,7 @@ class heatzy extends eqLogic {
             // Verifie si module 4 ou 6 ordres
             //$NbOrdres = $this->VerifNbOrdres($aDevice) ;
             $NbOrdres = $this->VerifOrdreAccepte( $aDevice , 'mode' , 'cft2' , '' , '' , true , true ) ? 6 : 4 ; 
-            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' VerifOrdreAccepte='.$NbOrdres.' ordres');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' VerifOrdreAccepte='.$NbOrdres.' ordres');
           
             if( $NbOrdres > 0 ){
               
@@ -1770,7 +1770,7 @@ class heatzy extends eqLogic {
                         /// Creation de la commande action $Mode : $Key
                         $cmd = $this->getCmd(null, $Mode);
                         if (!is_object($cmd)) {
-                            log::add('heatzy', 'debug',  __METHOD__.': '.$this->getName().' creation commande :'.$Key.'=>'.$Mode);
+                            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' creation commande :'.$Key.'=>'.$Mode);
                             $cmd = new heatzyCmd();
                             $cmd->setLogicalId($Mode);
                             $cmd->setName(__('Mode '.$Mode, __FILE__));
@@ -2305,13 +2305,13 @@ class heatzy extends eqLogic {
       
         // Si Synchronise depuis plus de 15min, on rénit (peut arriver si plantage dans synchronize)
         if( (strtotime(date("Y-m-d H:i:s")) - cache::byKey('Heatzy_Synchronize')->getValue()) > 900 && cache::byKey('Heatzy_Synchronize')->getValue() > 0 ){
-            log::add('heatzy', 'debug',  __METHOD__.': Réinit du cache Heatzy_Synchronize car > 600s (='.cache::byKey('Heatzy_Synchronize')->getValue().')' ) ;
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Réinit du cache Heatzy_Synchronize car > 600s (='.cache::byKey('Heatzy_Synchronize')->getValue().')' ) ;
             cache::set( 'Heatzy_Synchronize' , 0) ;
         }
       
         //Si synchro en cours, on arrête
         if( cache::byKey('Heatzy_Synchronize')->getValue() > 0){
-            log::add('heatzy', 'debug',  __METHOD__.': Arret du cron car Synchronize en cours ...' ) ;
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Arret du cron car Synchronize en cours ...' ) ;
             return false ;
         }
       
@@ -2319,15 +2319,15 @@ class heatzy extends eqLogic {
         $ExpireTokenTime = strtotime( $ExpireToken ) ;
 
         if( $ExpireTokenTime <= time() ){ // Si token expiré
-            log::add('heatzy', 'debug',  __METHOD__.': Token expiré ('.$ExpireToken.') - Récupération d un nouveau token' );
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Token expiré ('.$ExpireToken.') - Récupération d un nouveau token' );
 
             if ( heatzy::Login() ){
                 $ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
                 $ExpireTokenTime = strtotime( $ExpireToken ) ;
-                log::add('heatzy', 'debug',  __METHOD__.': Récupération du token OK ('.$ExpireToken.')' );
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Récupération du token OK ('.$ExpireToken.')' );
             }
             else{
-                log::add('heatzy', 'debug',  __METHOD__.': Récupération token KO' );    
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Récupération token KO' );    
                 return false ;
             }
         }         
@@ -2338,7 +2338,7 @@ class heatzy extends eqLogic {
             if( ( date("i") % $Freq_status ) == 0 ){ // Si on tombe bien sur le x minute
                 // Le synchronize permet d'aouter les nouveaux modules rattachés et de vérifier le statut online/offline
                 $res = heatzy::Synchronize() ;
-                log::add('heatzy', 'debug',  __METHOD__.': Synchronize cron5 = '.$res );
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchronize cron5 = '.$res );
                 
                 // Le synchronize contient déjà un update (donc pas la peine d'aller plus loin)
                 return true ;
@@ -2348,12 +2348,12 @@ class heatzy extends eqLogic {
         // Gestion du max erreur (passage en mode dégradé en cas de cumul d'erreur d'appel API)
         if( !cache::exist('Heatzy_CptError') ){ // Init si non existant
             cache::set( 'Heatzy_CptError' , 0) ;
-            log::add('heatzy', 'debug',  __METHOD__.': INIT cache' );
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': INIT cache' );
         }
         if( cache::byKey('Heatzy_CptError')->getValue() > HttpGizwits::$_MaxError){
               // Dépassement de la limite
             // Le retour à létat normal se fait via l'updateHeatzyDid après la mise à jour du statut (Synchronize)              
-            log::add('heatzy', 'debug',  __METHOD__.': cache::Compteur erreur > '.HttpGizwits::$_MaxError.' - Mode dégradé' );
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': cache::Compteur erreur > '.HttpGizwits::$_MaxError.' - Mode dégradé' );
             return false ;          
         } 
 
@@ -2402,7 +2402,7 @@ class heatzy extends eqLogic {
     /*
     public static function cron5() {        
         $res = heatzy::Synchronize() ;
-        log::add('heatzy', 'debug',  __METHOD__.': Synchronize cron5 = '.$res );
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchronize cron5 = '.$res );
     }*/
   
   
@@ -2522,7 +2522,7 @@ class heatzy extends eqLogic {
             // Vérification de l'utlisation des anciens templates
             $eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
             foreach ($eqLogics as $eqLogic) {
-              //log::add('heatzy', 'debug',  __METHOD__.' : '.$eqLogic->getName().' - TypeTemplate='.$eqLogic->getConfiguration('TypeTemplate', '') );
+              //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : '.$eqLogic->getName().' - TypeTemplate='.$eqLogic->getConfiguration('TypeTemplate', '') );
               if( $eqLogic->getConfiguration('TypeTemplate', '') == 1){
                 message::add("Heatzy", 'Pour certains équipements heatzy, vous utilisez d ancien template -l3flo-. Ce dernier n est plus maintenu et sera supprimé dans une prochaine version. Je vous suggère de basculer vos équipements sur le template bodbod ou jeedom (parametre accessible dans l onglet -parametres- de chaque équipement)' );
                 break;
@@ -2636,11 +2636,11 @@ class heatzy extends eqLogic {
         $_version = jeedom::versionAlias($_version);
         $product = $this->getConfiguration('product', '');
     
-        //log::add('heatzy', 'debug',  __METHOD__.' : Liste commandes - '.$this->getName());
+        //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Liste commandes - '.$this->getName());
         foreach ($this->getCmd() as $cmd) {    
             switch($cmd->getType()){
                 case 'info':
-                    //log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
+                    //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
 
                     $replace['#'.$cmd->getLogicalId().'_id#'] = $cmd->getId();
                     $replace['#'.$cmd->getLogicalId().'_cmd#'] = $cmd->execCmd();
@@ -2651,7 +2651,7 @@ class heatzy extends eqLogic {
                     $replace['none;#'.$cmd->getLogicalId().'_display#'] = ($cmd->getIsVisible() && $cmd->execCmd() != -99) ? '#'.$cmd->getLogicalId().'_display#' : 'none;';
                     break;
                 case 'action':
-                    //log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
+                    //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Name='.$this->getName().' - CmdId='.$cmd->getLogicalId().' - CmdName='.$cmd->getName().' - CmdType='.$cmd->getType());
                 
                     //$replace['#'.$cmd->getLogicalId().'_cmd#'] = $cmd->getConfiguration('Value') ;
                     //$replace['#'.$cmd->getLogicalId().'_unite#'] = $cmd->getUnite();
@@ -2669,12 +2669,12 @@ class heatzy extends eqLogic {
 
                     break;
                 default :
-                    log::add('heatzy', 'error',  __METHOD__.' : Type de commande ($cmd->getType()='.$cmd->getType().') inconnu');
+                    log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : Type de commande ($cmd->getType()='.$cmd->getType().') inconnu');
                     break;
             } // switch
         } //foreach cmd
 
-        //log::add('heatzy', 'debug',  __METHOD__.' : Name='.$this->getName().'- '.var_export($replace, true) );
+        //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Name='.$this->getName().'- '.var_export($replace, true) );
       
         switch( $this->getConfiguration('TypeTemplate', '') ){
             case '':
@@ -2716,13 +2716,13 @@ class heatzyCmd extends cmd {
      */
 
     public function execute($_options = array()) {
-        log::add('heatzy', 'debug',  __METHOD__.' : Commande execute : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');  
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Commande execute : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');  
       
         if( HttpGizwits::$DebugExport ){
             //var_export($col, true)
-            log::add('heatzy', 'debug',  __METHOD__.' : $_options1 : '.$_options ); 
-            //log::add('heatzy', 'debug',  __METHOD__.' : $_options2 : '.json_decode($_options, true) ); 
-            log::add('heatzy', 'debug',  __METHOD__.' : $_options3 : '.var_export($_options, true) );
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $_options1 : '.$_options ); 
+            //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $_options2 : '.json_decode($_options, true) ); 
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $_options3 : '.var_export($_options, true) );
         }      
       
       
@@ -2740,7 +2740,7 @@ class heatzyCmd extends cmd {
         else if($this->getType() == 'action' ) {
             
             $eqLogic = $this->getEqLogic();
-            //log::add('heatzy', 'debug',  __METHOD__.' : '.$eqLogic->getName().' - LogicalId='.$this->getLogicalId().' ('.$this->getId().')');
+            //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : '.$eqLogic->getName().' - LogicalId='.$this->getLogicalId().' ('.$this->getId().')');
             
             $Consigne = '' ;
             $ForUpdate = '' ;
@@ -2817,16 +2817,16 @@ class heatzyCmd extends cmd {
                 $ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'cft_temp_consigne') {
-                //log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
+                //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
                 //$this->getConfiguration('tempHL',false)
                 isset( $_options['slider'] ) ? $consigne = floatval( $_options['slider'] ) : $consigne = 0 ;
 
-                log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' $consigne='.$consigne );     
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' $consigne='.$consigne );     
                 if( $this->getConfiguration('tempHL',false) ){
                     $tempBIN = str_pad( decbin($consigne * 10),  16, "0", STR_PAD_LEFT) ;
                     $tempH = bindec(substr( $tempBIN , 0 , 8 )) ;
                     $tempL = bindec(substr( $tempBIN , 8 )) ;
-                    //log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' $tempBIN='.$tempBIN.'-'.$tempH.'-'.$tempL.'-'.bindec($tempH).'-'.bindec($tempL) );                  
+                    //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' $tempBIN='.$tempBIN.'-'.$tempH.'-'.$tempL.'-'.bindec($tempH).'-'.bindec($tempL) );                  
                     $Consigne = array( 'attrs' => array ( 'cft_tempH' => $tempH , 'cft_tempL' => $tempL )  );
                 }
                 else{
@@ -2841,7 +2841,7 @@ class heatzyCmd extends cmd {
                     $tempBIN = str_pad( decbin($consigne * 10),  16, "0", STR_PAD_LEFT) ;
                     $tempH = bindec(substr( $tempBIN , 0 , 8 )) ;
                     $tempL = bindec(substr( $tempBIN , 8 )) ;
-                    //log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' $tempBIN='.$tempBIN.'-'.$tempH.'-'.$tempL.'-'.bindec($tempH).'-'.bindec($tempL) );                  
+                    //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' $tempBIN='.$tempBIN.'-'.$tempH.'-'.$tempL.'-'.bindec($tempH).'-'.bindec($tempL) );                  
                     $Consigne = array( 'attrs' => array ( 'eco_tempH' => $tempH , 'eco_tempL' => $tempL )  );
                 }
                 else{
@@ -2853,7 +2853,7 @@ class heatzyCmd extends cmd {
               
                 $Mode = array_keys(heatzy::$_HeatzyMode, $this->getLogicalId());
               
-                log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' mode = '. var_export($Mode, true));
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' mode = '. var_export($Mode, true));
               
                 if( $eqLogic->getConfiguration('product', 'Heatzy') == 'Heatzy') {    /// Premiere version du module pilote
                     $Consigne = array( 'raw' => array(1, 1, $Mode[0]) ) ;
@@ -2880,21 +2880,21 @@ class heatzyCmd extends cmd {
                 $ForUpdate = '' ;
             }
             else{
-                log::add('heatzy', 'error',  __METHOD__.' : Commande inconnue : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');
+                log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : Commande inconnue : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');
             }/// Le mode
               
             
             if( $Consigne != '' ){
-                  log::add('heatzy', 'debug',  __METHOD__.' :$Consigne != null : ');
+                  log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' :$Consigne != null : ');
                 $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
                 if($Result === false) {
-                    log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
+                    log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
                     return false;
                 }
                 else{
                     /// Si une erreur de communication
                     if(isset($Result['error_message']) && isset($Result['error_code'])) {
-                        log::add('heatzy', 'error',  __METHOD__.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
+                        log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
                       
                           if( $Result['error_code'] == '9017' || $Result['error_code'] == '9042' ){
                               // 9017 = Détaché du compte
@@ -2905,7 +2905,7 @@ class heatzyCmd extends cmd {
                         return false;
                     }
                     else if($ForUpdate != ''){
-                          log::add('heatzy', 'debug', __METHOD__.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
+                          log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
                         $eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , $ForUpdate ) ;
                         $eqLogic->checkAndUpdateCmd('IsOnLine', 1 );
                     }

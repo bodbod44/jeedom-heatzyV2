@@ -263,6 +263,7 @@ Et d'une commande info **Tendance Température** de type _numeric_ :
 
 
 **Utilisation des tâches planifiées Heatzy (Réservé à un public averti !!!)**
+
 Heatzy possède son propre système de tâches planifiées.
 Les tâches sont envoyés aux serveurs Gizwitz qui se charge d'envoyer les consignes aux modules au moment voulu.
 Cette fonctionnalité n'est utilisable que par l' API (l'application mobile ne se pas les gérer).
