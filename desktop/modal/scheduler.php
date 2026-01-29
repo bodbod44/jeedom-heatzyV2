@@ -273,6 +273,10 @@ function RazForm(){
 }
 
 function InjecteExemple( selectObject ){
+    var StartDate = new Date().toLocaleDateString('fr-CA') ;
+    var StartDate1 = new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleDateString('fr-CA');
+    var EndDate = new Date(new Date().setMonth(new Date().getMonth() + 6)).toLocaleDateString('fr-CA');
+    
     // Alimente le formulaire avec des exemples
     switch(selectObject.value) {
         case 'unique':
@@ -285,11 +289,11 @@ function InjecteExemple( selectObject ){
             Json += '    "cft_temp": 190,' + "\n" ;
             Json += '    "eco_temp": 170' + "\n" ;
             Json += '   },' + "\n" ;
-            Json += '  "date": "2026-04-01",' + "\n" ;
+            Json += '  "date": "' + StartDate1 + '",' + "\n" ;
             Json += '  "time": "09:00",' + "\n" ;
             Json += '  "repeat": "none",' + "\n" ;
-            Json += '  "start_date": "2025-09-30",' + "\n" ;
-            Json += '  "end_date": "2026-09-30",' + "\n" ;
+            Json += '  "start_date": "' + StartDate + '",' + "\n" ;
+            Json += '  "end_date": "' + EndDate + '",' + "\n" ;
             Json += '  "remark": "Éteindre le radiateur a la fin de l hiver"' + "\n" ;
             Json += '}' ;
         	document.getElementById ('Param').value = Json ;
@@ -299,10 +303,10 @@ function InjecteExemple( selectObject ){
             Json += '	"attrs":{' + "\n" ;
             Json += '		"derog_mode": 3' + "\n" ;
             Json += '    },' + "\n" ;
-            Json += '    "repeat": "mon, tue, wed, thu, fri, sat, sun"' + "\n" ;
+            Json += '    "repeat": "mon, tue, wed, thu, fri, sat, sun",' + "\n" ;
             Json += '    "time": "09:00",' + "\n" ;
-            Json += '    "start_date": "2025-08-30",' + "\n" ;
-            Json += '    "end_date": "2025-11-30",' + "\n" ;
+            Json += '    "start_date": "' + StartDate + '",' + "\n" ;
+            Json += '    "end_date": "' + EndDate + '",' + "\n" ;
             Json += '    "remark": "Passage en mode détection de présence du Pilote Pro en semaine"' + "\n" ;
             Json += '}' + "\n" ;
             document.getElementById ('Param').value = Json ;
@@ -316,8 +320,8 @@ function InjecteExemple( selectObject ){
             Json += '	"days":[1, 2],' + "\n" ;
             Json += '	"time": "09:00",' + "\n" ;
             Json += '	"repeat": "day",' + "\n" ;
-            Json += '	"start_date": "2025-01-01",' + "\n" ;
-            Json += '	"end_date": "2026-01-01",' + "\n" ;
+            Json += '	"start_date": "' + StartDate + '",' + "\n" ;
+            Json += '	"end_date": "' + EndDate + '",' + "\n" ;
             Json += '	"remark": "Activer la programmation au début de chaque mois"' + "\n" ;
             Json += '}' + "\n" ;
             document.getElementById ('Param').value = Json ;

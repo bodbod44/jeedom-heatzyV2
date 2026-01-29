@@ -1,3 +1,6 @@
+# 29/01/2026 (dev)
+- Calcul des dates dans le JSON des tâches planifiées
+
 # 08/01/2026 (dev)
 - Ajout du n° de ligne dans les logs
 
