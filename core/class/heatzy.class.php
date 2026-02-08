@@ -113,7 +113,7 @@ class HttpGizwits {
      * @return Un tableau associatif ou false en cas d'erreur
      */
     public static function GetProduitInfo($ProductKey) {
-        
+
         if(empty($ProductKey)){
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
             return false;
@@ -1007,6 +1007,7 @@ class heatzy extends eqLogic {
          
         $TokenExpire = date('Y-m-d H:i:s', $aResult['expire_at']);
         $UserToken = $aResult['token'];
+        $uid = $aResult['uid'];
         
         if( config::byKey('UserToken', 'heatzy', '') != $UserToken || config::byKey('ExpireToken', 'heatzy', '') != $TokenExpire)
             message::add("Heatzy", 'Génération du token heatzy : '.config::byKey('ExpireToken', 'heatzy', '').'/'.config::byKey('UserToken', 'heatzy', '').' -> '.$TokenExpire.'/'.$UserToken);
@@ -1014,6 +1015,7 @@ class heatzy extends eqLogic {
         //    message::add("Heatzy", 'Génération du token heatzy -> Pas de changement');
         
         config::save('UserToken', $UserToken, 'heatzy'); /// => Sauvegarde du token utilisateur
+        config::save('uid', $uid, 'heatzy'); /// => uid
         config::save('ExpireToken', $TokenExpire, 'heatzy'); /// => Sauvegarde de l'expiration du token
         
         /*
@@ -1183,12 +1185,12 @@ class heatzy extends eqLogic {
                 log::add('heatzy', 'warning',  __METHOD__.'(ln '.__LINE__.')'.' : impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
                 $this->setStatus('timeout','1');
                 $this->save();
-                  cache::set('Heatzy_CptError', cache::byKey('Heatzy_CptError')->getValue() + 1 );
+                cache::set('Heatzy_CptError', cache::byKey('Heatzy_CptError')->getValue() + 1 );
                 return false;
             }
             else if(isset($aDevice['error_message']) && isset($aDevice['error_code'])) {
                 log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : '.$this->getLogicalId().' - '.$aDevice['error_code'].' - '.$aDevice['error_message'].' - '.$aDevice['detail_message']);
-                  cache::set('Heatzy_CptError', cache::byKey('Heatzy_CptError')->getValue() + 1 );
+                cache::set('Heatzy_CptError', cache::byKey('Heatzy_CptError')->getValue() + 1 );
                 return false;
             }
           
@@ -1207,9 +1209,9 @@ class heatzy extends eqLogic {
         if(isset($aDevice['attr']['mode'])) {
 
             // Créer les commandes en fonction du contenu de la réponse
-          log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' CheckAndCreateCmd...');
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' CheckAndCreateCmd...');
             $this->CheckAndCreateCmd($aDevice , $force) ;
-          
+
             if( $aDevice['attr']['mode'] == 'cft' ) {        /// Confort
                 $KeyMode = 'Confort';
             }
@@ -1315,7 +1317,7 @@ class heatzy extends eqLogic {
                 //  boost en minutes (min)
                   $derog_time = isset ($aDevice['attr']['derog_time']) ? $aDevice['attr']['derog_time'] : 0 ;
                 $this->checkAndUpdateCmd('derog_time_vacances', $aDevice['attr']['derog_mode'] == '1' ? $derog_time : 0 );
-                  $this->checkAndUpdateCmd('derog_time_boost'   , $aDevice['attr']['derog_mode'] == '2' ? $derog_time : 0 );              
+                $this->checkAndUpdateCmd('derog_time_boost'   , $aDevice['attr']['derog_mode'] == '2' ? $derog_time : 0 );              
             }
 
             // Détéction de présence 
@@ -1325,6 +1327,30 @@ class heatzy extends eqLogic {
             else{
                 $this->checkAndUpdateCmd('detect_presence', 0 );
             }
+            
+            // Puissance consommée (en W) 
+            if( isset ($aDevice['attr']['cur_power']) )
+                $this->checkAndUpdateCmd('cur_power', $aDevice['attr']['cur_power'] );
+            
+            // Intensité consommée (en A)  
+            if( isset ($aDevice['attr']['cur_current']) )
+                $this->checkAndUpdateCmd('cur_current', $aDevice['attr']['cur_current'] );
+            
+            // Tension du réseau (en V) 
+            if( isset ($aDevice['attr']['cur_voltage']) )
+                $this->checkAndUpdateCmd('cur_voltage', $aDevice['attr']['cur_voltage'] );
+
+            // Puissance du signal 
+            if( isset ($aDevice['attr']['signal_power']) )
+                $this->checkAndUpdateCmd('signal_power', $aDevice['attr']['signal_power'] );
+
+            // energy_saving 
+            if( isset ($aDevice['attr']['energy_saving']) )
+                $this->checkAndUpdateCmd('energy_saving', $aDevice['attr']['energy_saving'] );
+            
+            // kill_switch 
+            if( isset ($aDevice['attr']['kill_switch']) )
+                $this->checkAndUpdateCmd('kill_switch', $aDevice['attr']['kill_switch'] );
             
             $this->CalculExterne( $aDevice ) ;
         }
@@ -2145,7 +2171,7 @@ class heatzy extends eqLogic {
                             $cmd->setConfiguration('minValue', 0);  // valeur minimale
                             $cmd->setConfiguration('maxValue', 30); // valeur maximale
                             $cmd->setValue($infoCmd ->getId());  
-                              $cmd->setDisplay('parameters', ['step' => 1]);
+                            $cmd->setDisplay('parameters', ['step' => 1]);
                             $cmd->setEqLogic_id($this->getId());
                             $cmd->setOrder(64);
                             $cmd->setIsHistorized(0);
@@ -2298,6 +2324,14 @@ class heatzy extends eqLogic {
     * synchronisation
     */
     public static function cron() {
+        /*log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': cron...');
+        $tab = HttpGizwits::GetProduitInfo('aa85e43fc4464e4d0000000000000000') ;
+        
+        foreach($tab['entities'] as $element) {
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$element['display_name']);
+        }
+        
+        return false ;*/
       
       	sleep(30); // Ne pas interférer avec les appels à hh:mm:00
 

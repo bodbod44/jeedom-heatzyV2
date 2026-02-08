@@ -38,6 +38,12 @@ if (!isConnect()) {
             </div>
         </div>
         <div class="form-group">
+            <label class="col-lg-4 control-label">{{uid}}</label>
+            <div class="col-lg-6">
+            <?=config::byKey('uid','heatzy','');?>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-lg-4 control-label">{{Token}}</label>
             <div class="col-lg-6">
             <?=config::byKey('UserToken','heatzy','');?>
