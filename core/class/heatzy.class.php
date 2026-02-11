@@ -988,7 +988,105 @@ class heatzy extends eqLogic {
      */
     public static $_HeatzyMode = array('Confort', 'Eco', 'HorsGel', 'Off','Confort-1','Confort-2');
 
+    /**
+     * @brief La fonction deamon_info() sera appelée par le core lors de l’affichage du cadre suivant dans la page de configuration de votre plugin
+     */
+    public static function deamon_info() {
+        $return = array();
+        $return['log'] = __CLASS__;
+        $return['state'] = 'nok';
+        $pid_file = jeedom::getTmpFolder(__CLASS__) . '/heatzyd.pid';
+        if (file_exists($pid_file)) {
+            if (@posix_getsid(trim(file_get_contents($pid_file)))) {
+                $return['state'] = 'ok';
+            } else {
+                shell_exec(system::getCmdSudo() . 'rm -rf ' . $pid_file . ' 2>&1 > /dev/null');
+            }
+        }
+        $return['launchable'] = 'ok';
+        $user = config::byKey('user', __CLASS__); // exemple si votre démon à besoin de la config user,
+        $pswd = config::byKey('password', __CLASS__); // password,
+        $clientId = config::byKey('clientId', __CLASS__); // et clientId
+        if ($user == '') {
+            $return['launchable'] = 'nok';
+            $return['launchable_message'] = __('Le nom d\'utilisateur n\'est pas configuré', __FILE__);
+        } elseif ($pswd == '') {
+            $return['launchable'] = 'nok';
+            $return['launchable_message'] = __('Le mot de passe n\'est pas configuré', __FILE__);
+        } elseif ($clientId == '') {
+            $return['launchable'] = 'nok';
+            $return['launchable_message'] = __('La clé d\'application n\'est pas configurée', __FILE__);
+        }
+        return $return;
+    }
     
+    /**
+     * @brief La fonction deamon_start() est comme son nom l’indique la méthode qui sera appelée par le core pour démarrer votre démon
+     */
+    public static function deamon_start() {
+        self::deamon_stop();
+        $deamon_info = self::deamon_info();
+        if ($deamon_info['launchable'] != 'ok') {
+            throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
+        }
+
+        $path = realpath(dirname(__FILE__) . '/../../resources/heatzyd'); // répertoire du démon à modifier
+        $cmd = system::getCmdPython3(__CLASS__) . " {$path}/heatzyd.py"; // nom du démon à modifier
+        $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
+        $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55009'); // port par défaut à modifier
+        $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'http:127.0.0.1:port:comp') . '/plugins/heatzy/core/php/jeeHeatzy.php'; // chemin de la callback url à modifier (voir ci-dessous)
+        $cmd .= ' --user "' . trim(str_replace('"', '\"', config::byKey('user', __CLASS__))) . '"'; // on rajoute les paramètres utiles à votre démon, ici user
+        $cmd .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('password', __CLASS__))) . '"'; // et password
+        $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
+        $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/deamon.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
+        log::add(__CLASS__, 'info', 'Lancement démon');
+        $result = exec($cmd . ' >> ' . log::getPathToLog('heatzy_daemon') . ' 2>&1 &'); // 'template_daemon' est le nom du log pour votre démon, vous devez nommer votre log en commençant par le pluginid pour que le fichier apparaisse dans la page de config
+        $i = 0;
+        while ($i < 20) {
+            $deamon_info = self::deamon_info();
+            if ($deamon_info['state'] == 'ok') {
+                break;
+            }
+            sleep(1);
+            $i++;
+        }
+        if ($i >= 30) {
+            log::add(__CLASS__, 'error', __('Impossible de lancer le démon Heatzy, vérifiez le log', __FILE__), 'unableStartDeamon');
+            return false;
+        }
+        message::removeAll(__CLASS__, 'unableStartDeamon');
+        return true;
+    }
+
+    /**
+     * @brief ette méthode sera utilisée pour stopper le démon: on récupère le pid du démon, qui a été écrit dans le “pid_file” et on envoi le kill système au process.
+     */
+    public static function deamon_stop() {
+        $pid_file = jeedom::getTmpFolder(__CLASS__) . '/deamon.pid'; // ne pas modifier
+        if (file_exists($pid_file)) {
+            $pid = intval(trim(file_get_contents($pid_file)));
+            system::kill($pid);
+        }
+        system::kill('heatzyd.py'); // nom du démon à modifier
+        sleep(1);
+    }
+    /**
+     * @Elle reçoit donc en paramètre un tableau de valeur et se charge de l’envoyer au socket du démon qui pourra donc lire ce tableau dans la méthode read_socket().
+     */
+    public static function sendToDaemon($params) {
+        $deamon_info = self::deamon_info();
+        if ($deamon_info['state'] != 'ok') {
+            throw new Exception("Le démon n'est pas démarré");
+        }
+        $params['apikey'] = jeedom::getApiKey(__CLASS__);
+        $params['apikey2'] = 'apikey2';
+        $payLoad = json_encode($params);
+        $socket = socket_create(AF_INET, SOCK_STREAM, 0);
+        socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55009')); //port par défaut de votre plugin à modifier
+        socket_write($socket, $payLoad, strlen($payLoad));
+        socket_close($socket);
+    }
+     
     /**
      * @brief Fonction qui permet de tirer un nouveau token utilisateur
      */
@@ -2767,6 +2865,7 @@ class heatzyCmd extends cmd {
       
         if ($this->getLogicalId() == 'refresh') {
             $this->getEqLogic()->updateHeatzyDid($UserToken);
+            sendToDaemon( $_options ) ;
         }
         else if($this->getType() == 'info' ) {
               return $this->getValue();

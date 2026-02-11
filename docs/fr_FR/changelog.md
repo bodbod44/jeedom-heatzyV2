@@ -1,3 +1,10 @@
+# xx/06/2025 (dev)
+- TODO : Commande Alerte fenetre ouverte (deja possible en scenario) => A faire
+- TODO : Alerte hors ligne (9042) => A faire
+
+# 10/02/2026 (dev)
+- Ajout d'un demon
+
 # 29/01/2026 (dev)
 - Calcul des dates dans le JSON des tâches planifiées
 
