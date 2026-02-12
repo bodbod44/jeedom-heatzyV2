@@ -1004,19 +1004,27 @@ class heatzy extends eqLogic {
             }
         }
         $return['launchable'] = 'ok';
-        $user = config::byKey('user', __CLASS__); // exemple si votre démon à besoin de la config user,
-        $pswd = config::byKey('password', __CLASS__); // password,
+        $user = config::byKey('email', __CLASS__); // exemple si votre démon à besoin de la config user,
+        $pswd = config::byKey('password', 'heatzy'); // password,
         $clientId = config::byKey('clientId', __CLASS__); // et clientId
+        
+        log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$user='.$user);
+        log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$pswd='.$pswd);
+        log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$clientId='.$clientId);
+        
+          //      $email = config::byKey('email', 'heatzy', '');
+        //$password = config::byKey('password', 'heatzy', '');
+        
         if ($user == '') {
             $return['launchable'] = 'nok';
             $return['launchable_message'] = __('Le nom d\'utilisateur n\'est pas configuré', __FILE__);
-        } elseif ($pswd == '') {
+        } /*elseif ($pswd == '') {
             $return['launchable'] = 'nok';
             $return['launchable_message'] = __('Le mot de passe n\'est pas configuré', __FILE__);
         } elseif ($clientId == '') {
             $return['launchable'] = 'nok';
             $return['launchable_message'] = __('La clé d\'application n\'est pas configurée', __FILE__);
-        }
+        }*/
         return $return;
     }
     
