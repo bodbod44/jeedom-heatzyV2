@@ -12,8 +12,9 @@ try {
         die();
     }
     $result = json_decode(file_get_contents("php://input"), true);
-    if (!is_array($result)) {
-      	log::add('heatzy', 'error', 'die...');
+    if (!is_array($result) ) {
+      	if( !is_null($result) )	
+      		log::add('heatzy', 'error', 'die...('.var_export($result, true).')');
         die();
     }
 	log::add('heatzy', 'error', 'On avance...');

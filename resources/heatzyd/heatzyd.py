@@ -145,7 +145,7 @@ try:
 	# my_jeedom_serial = jeedom_serial(device=_device)  # if you need jeedom_serial
 	my_jeedom_socket = jeedom_socket(port=_socket_port, address=_socket_host)
     # https://github.com/lxrootard/eufy/blob/322ff841b71cd7db0e901caca8706fa4ce7452ed/resources/eufyd/eufyd.py#L287
-	my_jeedom_com = jeedom_com(_apikey, _callback)
+	# my_jeedom_com = jeedom_com(_apikey, _callback)
 	listen()
 except Exception as e:
 	logging.debug('Fatal error')
