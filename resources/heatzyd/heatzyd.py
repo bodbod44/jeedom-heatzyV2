@@ -26,58 +26,72 @@ from jeedom.jeedom import jeedom_socket, jeedom_utils, jeedom_com, JEEDOM_SOCKET
 
 
 def read_socket():
-    if not JEEDOM_SOCKET_MESSAGE.empty():
-        logging.debug("Message received in socket JEEDOM_SOCKET_MESSAGE")
-        message = json.loads(jeedom_utils.stripped(JEEDOM_SOCKET_MESSAGE.get()))
-        if message['apikey'] != _apikey:
-            logging.error("Invalid apikey from socket: %s", message)
-            return
-        try:
-            print('read')
-        except Exception as e:
-            logging.error('Send command to demon error: %s', e)
+	if not JEEDOM_SOCKET_MESSAGE.empty():
+		logging.error("Message received in socket JEEDOM_SOCKET_MESSAGE")
+		#LeGet = JEEDOM_SOCKET_MESSAGE.get()
+		#logging.error("message recu : %s" , LeGet )
+		#logging.error("Lestripped...")
+		#Lestripped = jeedom_utils.stripped(LeGet)
+		logging.error("loads...")
+		#message = json.loads( LeGet )
+		message = json.loads(JEEDOM_SOCKET_MESSAGE.get().decode('utf-8'))
+		#logging.error("message recu : %s" , message['apikey'])
+		if message['apikey'] != _apikey:
+			logging.error("Invalid apikey from socket: %s", message)
+			return
+		if message['apikey'] == _apikey:
+			logging.error("OK: %s", message)
+			my_jeedom_com.send_change_immediate({'key1' : 'value1', 'key3' : 'value3' })
+			logging.error("Send OK: %s", message)
+			return
+		try:
+			print('read')
+		except Exception as e:
+			logging.error('Send command to demon error: %s', e)
 
 
 def listen():
-    my_jeedom_socket.open()
-    try:
-        while 1:
-            time.sleep(0.5)
-            read_socket()
-    except KeyboardInterrupt:
-        shutdown()
+	my_jeedom_socket.open()
+	try:
+		while 1:
+			time.sleep(0.5)
+			read_socket()
+	except KeyboardInterrupt:
+		logging.error('Listen KeyboardInterrupt: %s', 'xxx')
+		shutdown()
 
 
 def handler(signum=None, frame=None):
-    logging.debug("Signal %i caught, exiting...", int(signum))
-    shutdown()
+	logging.debug("Signal %i caught, exiting...", int(signum))
+	shutdown()
 
 
 def shutdown():
-    logging.debug("Shutdown")
-    logging.debug("Removing PID file %s", _pidfile)
-    try:
-        os.remove(_pidfile)
-    except Exception as e:
-        logging.warning('Error removing PID file: %s', e)
-    try:
-        my_jeedom_socket.close()
-    except Exception as e:
-        logging.warning('Error closing socket: %s', e)
-    # try:  # if you need jeedom_serial
-    #     my_jeedom_serial.close()
-    # except Exception as e:
-    #     logging.warning('Error closing serial: %s', e)
-    logging.debug("Exit 0")
-    sys.stdout.flush()
-    os._exit(0)
+	logging.debug("Shutdown")
+	logging.debug("Removing PID file %s", _pidfile)
+	try:
+		os.remove(_pidfile)
+	except Exception as e:
+		logging.warning('Error removing PID file: %s', e)
+	try:
+		my_jeedom_socket.close()
+	except Exception as e:
+		logging.warning('Error closing socket: %s', e)
+	# try:  # if you need jeedom_serial
+	#     my_jeedom_serial.close()
+	# except Exception as e:
+	#     logging.warning('Error closing serial: %s', e)
+	logging.debug("Exit 0")
+	sys.stdout.flush()
+	os._exit(0)
 
+logging.debug("Demarrage")
 
-_log_level = "error"
-_socket_port = 55009
+_log_level = 'debug'
+_socket_port = 55099
 _socket_host = 'localhost'
 _device = 'auto'
-_pidfile = '/tmp/demond.pid'
+_pidfile = '/tmp/heatzyd.pid'
 _apikey = ''
 _callback = ''
 _cycle = 0.3
@@ -93,45 +107,48 @@ parser.add_argument("--socketport", help="Port for socket server", type=int)
 args = parser.parse_args()
 
 if args.device:
-    _device = args.device
+	_device = args.device
 if args.loglevel:
-    _log_level = args.loglevel
+	_log_level = args.loglevel
 if args.callback:
-    _callback = args.callback
+	_callback = args.callback
 if args.apikey:
-    _apikey = args.apikey
+	_apikey = args.apikey
 if args.pid:
-    _pidfile = args.pid
+	_pidfile = args.pid
 if args.cycle:
-    _cycle = float(args.cycle)
+	_cycle = float(args.cycle)
 if args.socketport:
-    _socket_port = args.socketport
+	_socket_port = args.socketport
 
 _socket_port = int(_socket_port)
 
 jeedom_utils.set_log_level(_log_level)
 
-logging.info('Start demond')
-logging.info('Log level: %s', _log_level)
-logging.info('Socket port: %s', _socket_port)
-logging.info('Socket host: %s', _socket_host)
-logging.info('PID file: %s', _pidfile)
-logging.info('Apikey: %s', _apikey)
-logging.info('Device: %s', _device)
+logging.error('Start demond')
+logging.error('Log level: %s', _log_level)
+logging.error('Socket port: %s', _socket_port)
+logging.error('Socket host: %s', _socket_host)
+logging.error('PID file: %s', _pidfile)
+logging.error('Apikey: %s', _apikey)
+logging.error('Device: %s', _device)
 
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
 
 try:
-    jeedom_utils.write_pid(str(_pidfile))
-    my_jeedom_com = jeedom_com(apikey=_apikey, url=_callback, cycle=_cycle)
-    if not my_jeedom_com.test():
-        logging.error('Network communication issues. Please fixe your Jeedom network configuration.')
-        shutdown()
-    # my_jeedom_serial = jeedom_serial(device=_device)  # if you need jeedom_serial
-    my_jeedom_socket = jeedom_socket(port=_socket_port, address=_socket_host)
-    listen()
+	jeedom_utils.write_pid(str(_pidfile))
+	my_jeedom_com = jeedom_com(apikey=_apikey, url=_callback, cycle=_cycle)
+	if not my_jeedom_com.test():
+		logging.error('Network communication issues. Please fixe your Jeedom network configuration.')
+		shutdown()
+	# my_jeedom_serial = jeedom_serial(device=_device)  # if you need jeedom_serial
+	my_jeedom_socket = jeedom_socket(port=_socket_port, address=_socket_host)
+    # https://github.com/lxrootard/eufy/blob/322ff841b71cd7db0e901caca8706fa4ce7452ed/resources/eufyd/eufyd.py#L287
+	my_jeedom_com = jeedom_com(_apikey, _callback)
+	listen()
 except Exception as e:
-    logging.error('Fatal error: %s', e)
-    logging.info(traceback.format_exc())
-    shutdown()
+	logging.debug('Fatal error')
+	logging.error('Fatal error2: %s', e)
+	logging.info(traceback.format_exc())
+	shutdown()

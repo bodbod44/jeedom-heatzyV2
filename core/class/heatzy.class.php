@@ -1004,13 +1004,13 @@ class heatzy extends eqLogic {
             }
         }
         $return['launchable'] = 'ok';
-        $user = config::byKey('email', __CLASS__); // exemple si votre démon à besoin de la config user,
-        $pswd = config::byKey('password', 'heatzy'); // password,
+        $user = config::byKey('uid', __CLASS__); // exemple si votre démon à besoin de la config user,
+        $pswd = config::byKey('uid', 'heatzy'); // password,
         $clientId = config::byKey('clientId', __CLASS__); // et clientId
         
-        log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$user='.$user);
-        log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$pswd='.$pswd);
-        log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$clientId='.$clientId);
+        //log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$user='.$user);
+        //log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$pswd='.$pswd);
+        //log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$clientId='.$clientId);
         
           //      $email = config::byKey('email', 'heatzy', '');
         //$password = config::byKey('password', 'heatzy', '');
@@ -1041,13 +1041,14 @@ class heatzy extends eqLogic {
         $path = realpath(dirname(__FILE__) . '/../../resources/heatzyd'); // répertoire du démon à modifier
         $cmd = system::getCmdPython3(__CLASS__) . " {$path}/heatzyd.py"; // nom du démon à modifier
         $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
-        $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55009'); // port par défaut à modifier
+        $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55099'); // port par défaut à modifier
         $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'http:127.0.0.1:port:comp') . '/plugins/heatzy/core/php/jeeHeatzy.php'; // chemin de la callback url à modifier (voir ci-dessous)
-        $cmd .= ' --user "' . trim(str_replace('"', '\"', config::byKey('user', __CLASS__))) . '"'; // on rajoute les paramètres utiles à votre démon, ici user
-        $cmd .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('password', __CLASS__))) . '"'; // et password
+        //$cmd .= ' --user "' . trim(str_replace('"', '\"', config::byKey('uid', __CLASS__))) . '"'; // on rajoute les paramètres utiles à votre démon, ici user
+        //$cmd .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('uid', __CLASS__))) . '"'; // et password
         $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
-        $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/deamon.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
+        $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/heatzyd.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
         log::add(__CLASS__, 'info', 'Lancement démon');
+        log::add(__CLASS__, 'debug', '$cmd='.$cmd);
         $result = exec($cmd . ' >> ' . log::getPathToLog('heatzy_daemon') . ' 2>&1 &'); // 'template_daemon' est le nom du log pour votre démon, vous devez nommer votre log en commençant par le pluginid pour que le fichier apparaisse dans la page de config
         $i = 0;
         while ($i < 20) {
@@ -1058,7 +1059,7 @@ class heatzy extends eqLogic {
             sleep(1);
             $i++;
         }
-        if ($i >= 30) {
+        if ($i >= 20) {
             log::add(__CLASS__, 'error', __('Impossible de lancer le démon Heatzy, vérifiez le log', __FILE__), 'unableStartDeamon');
             return false;
         }
@@ -1081,16 +1082,19 @@ class heatzy extends eqLogic {
     /**
      * @Elle reçoit donc en paramètre un tableau de valeur et se charge de l’envoyer au socket du démon qui pourra donc lire ce tableau dans la méthode read_socket().
      */
-    public static function sendToDaemon($params) {
+    public static function sendToDaemon($params2) {
         $deamon_info = self::deamon_info();
         if ($deamon_info['state'] != 'ok') {
             throw new Exception("Le démon n'est pas démarré");
         }
+      	else
+          log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : Le démon est démarre');
         $params['apikey'] = jeedom::getApiKey(__CLASS__);
         $params['apikey2'] = 'apikey2';
         $payLoad = json_encode($params);
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $payLoad='.$payLoad);
         $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-        socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55009')); //port par défaut de votre plugin à modifier
+        socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55099')); //port par défaut de votre plugin à modifier
         socket_write($socket, $payLoad, strlen($payLoad));
         socket_close($socket);
     }
@@ -2873,7 +2877,7 @@ class heatzyCmd extends cmd {
       
         if ($this->getLogicalId() == 'refresh') {
             $this->getEqLogic()->updateHeatzyDid($UserToken);
-            sendToDaemon( $_options ) ;
+            $this->getEqLogic()->sendToDaemon( $_options ) ;
         }
         else if($this->getType() == 'info' ) {
               return $this->getValue();

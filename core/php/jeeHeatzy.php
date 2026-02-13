@@ -3,7 +3,7 @@
 try {
     require_once dirname(__FILE__) . "/../../../../core/php/core.inc.php";
 
-    if (!jeedom::apiAccess(init('apikey'), 'template')) { //remplacez template par l'id de votre plugin
+    if (!jeedom::apiAccess(init('apikey'), 'heatzy')) { //remplacez template par l'id de votre plugin
         echo __('Vous n\'êtes pas autorisé à effectuer cette action', __FILE__);
         die();
     }
@@ -13,16 +13,17 @@ try {
     }
     $result = json_decode(file_get_contents("php://input"), true);
     if (!is_array($result)) {
+      	log::add('heatzy', 'error', 'die...');
         die();
     }
-
+	log::add('heatzy', 'error', 'On avance...');
     if (isset($result['key1'])) {
-        // do something
+        log::add('heatzy', 'error', 'J ai recu key1...');
     } elseif (isset($result['key2'])) {
-        // do something else
+        log::add('heatzy', 'error', 'J ai recu key2...');
     } else {
-        log::add('template', 'error', 'unknown message received from daemon'); //remplacez template par l'id de votre plugin
+        log::add('heatzy', 'error', 'je ne sais pas quoi faire'); //remplacez template par l'id de votre plugin
     }
 } catch (Exception $e) {
-    log::add('template', 'error', displayException($e)); //remplacez template par l'id de votre plugin
+    log::add('heatzy', 'error', 'catch '.displayException($e)); //remplacez template par l'id de votre plugin
 }

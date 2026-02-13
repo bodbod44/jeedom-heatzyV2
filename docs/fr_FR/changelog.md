@@ -2,6 +2,9 @@
 - TODO : Commande Alerte fenetre ouverte (deja possible en scenario) => A faire
 - TODO : Alerte hors ligne (9042) => A faire
 
+# 13/02/2026 (dev)
+- Correction du demon
+
 # 10/02/2026 (dev)
 - Ajout d'un demon
 
