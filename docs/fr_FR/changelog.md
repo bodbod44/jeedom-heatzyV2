@@ -2,6 +2,17 @@
 - TODO : Commande Alerte fenetre ouverte (deja possible en scenario) => A faire
 - TODO : Alerte hors ligne (9042) => A faire
 
+# 15/02/2026 (dev)
+- Demon
+  - Amélioration du demon (thread)
+  - Gestion de la réponse vers jeeedom
+  - TODO
+    - Gestion des dconnexions
+    - Gestion de ordres depuis jeedom
+
+# 14/02/2026 (dev)
+- Implémentation du websocket
+
 # 13/02/2026 (dev)
 - Correction du demon
 

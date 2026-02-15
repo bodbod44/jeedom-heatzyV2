@@ -26,13 +26,13 @@ if (!isConnect()) {
     <fieldset>
           <legend><i class="fa fa-list-ul"></i>{{Général}}</legend>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Email}}</label>
+            <label class="col-lg-4 control-label">{{Email}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Email du compte heatzy)}}"></i></sup></label>
             <div class="col-lg-6">
                 <input type="text" class="configKey form-control" data-l1key="email" />
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Mot de passe}}</label>
+            <label class="col-lg-4 control-label">{{Mot de passe}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Mot de passe Heatzy utilisé pour se connecter sur l'application officielle}}"></i></sup></label>
             <div class="col-lg-6">
                 <input type="password" class="configKey form-control" data-l1key="password" />
             </div>
@@ -50,15 +50,21 @@ if (!isConnect()) {
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Expire}}</label>
+            <label class="col-lg-4 control-label">{{Expire}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Date à laquelle le token expirera (sera renouvellé automatiquement par le plugin)}}"></i></sup></label>
             <div class="col-lg-6">
             <?=config::byKey('ExpireToken','heatzy','');?>
             </div>
         </div>
         <div class="form-group">
+            <label class="col-lg-4 control-label">{{Port demon}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Port utilisé pour le demon}}"></i></sup></label>
+            <div class="col-lg-6">
+                <input type="text" class="configKey form-control" data-l1key="socketport" style="width:100px;" />
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-lg-4 control-label">{{Timeout sur les connexions euapi.gizwits.com}}</label>
             <div class="col-lg-6">             
-                <select class="configKey form-control" data-l1key="Timeout_value" title="Timeout sur les connexions euapi.gizwits.com (60sec par défaut)"  style="width:100px;">
+                <select class="configKey form-control" data-l1key="Timeout_value" title="Timeout sur les connexions euapi.gizwits.com (60sec par défaut)" style="width:100px;">
                     <option value="5">5 sec</option>
                     <option value="10">10 sec</option>
                     <option value="30">30 sec</option>
@@ -71,7 +77,7 @@ if (!isConnect()) {
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Frequence de rafaichissement des commandes infos}}</label>
             <div class="col-lg-6">             
-                <select class="configKey form-control" data-l1key="Freq_value" title="Fréquence de rafaichissement des commandes depuis Heatzy (2 min par défaut)"  style="width:100px;">
+                <select class="configKey form-control" data-l1key="Freq_value" title="Fréquence de rafaichissement des commandes depuis Heatzy (2 min par défaut)" style="width:100px;">
                     <option value="0">Off</option>
                     <option value="1">1 min</option>
                     <option value="2">2 min</option>
@@ -138,4 +144,3 @@ $('.bt_syncheatzy').on('click',function(){
     $('#syncheatzy').removeClass('fa-spin');
 });
 </script>
-

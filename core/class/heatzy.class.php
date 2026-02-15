@@ -1038,15 +1038,16 @@ class heatzy extends eqLogic {
             throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
         }
 
-        $path = realpath(dirname(__FILE__) . '/../../resources/heatzyd'); // répertoire du démon à modifier
-        $cmd = system::getCmdPython3(__CLASS__) . " {$path}/heatzyd.py"; // nom du démon à modifier
+        $path = realpath(dirname(__FILE__) . '/../../resources/heatzyd');
+        $cmd = system::getCmdPython3(__CLASS__) . " {$path}/heatzyd.py";
         $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
         $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55099'); // port par défaut à modifier
         $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'http:127.0.0.1:port:comp') . '/plugins/heatzy/core/php/jeeHeatzy.php'; // chemin de la callback url à modifier (voir ci-dessous)
-        //$cmd .= ' --user "' . trim(str_replace('"', '\"', config::byKey('uid', __CLASS__))) . '"'; // on rajoute les paramètres utiles à votre démon, ici user
-        //$cmd .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('uid', __CLASS__))) . '"'; // et password
         $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
-        $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/heatzyd.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
+        $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/heatzyd.pid';
+        $cmd .= ' --appid '.HttpGizwits::$HeatzyAppId ;
+        $cmd .= ' --token '.config::byKey('UserToken', __CLASS__, 'xxx-token-xxx');
+        $cmd .= ' --uid '.config::byKey('uid', __CLASS__, 'xxx-uid-xxx');
         log::add(__CLASS__, 'info', 'Lancement démon');
         log::add(__CLASS__, 'debug', '$cmd='.$cmd);
         $result = exec($cmd . ' >> ' . log::getPathToLog('heatzy_daemon') . ' 2>&1 &'); // 'template_daemon' est le nom du log pour votre démon, vous devez nommer votre log en commençant par le pluginid pour que le fichier apparaisse dans la page de config
@@ -1063,6 +1064,11 @@ class heatzy extends eqLogic {
             log::add(__CLASS__, 'error', __('Impossible de lancer le démon Heatzy, vérifiez le log', __FILE__), 'unableStartDeamon');
             return false;
         }
+        else{
+            // Envoi de l'ordre du connexion au Websocket Gizwits
+            //sendToDaemon() ;
+        }
+        
         message::removeAll(__CLASS__, 'unableStartDeamon');
         return true;
     }
@@ -1082,17 +1088,22 @@ class heatzy extends eqLogic {
     /**
      * @Elle reçoit donc en paramètre un tableau de valeur et se charge de l’envoyer au socket du démon qui pourra donc lire ce tableau dans la méthode read_socket().
      */
-    public static function sendToDaemon($params2) {
+    public static function sendToDaemon($params) {
         $deamon_info = self::deamon_info();
         if ($deamon_info['state'] != 'ok') {
             throw new Exception("Le démon n'est pas démarré");
         }
       	else
           log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : Le démon est démarre');
+      
         $params['apikey'] = jeedom::getApiKey(__CLASS__);
-        $params['apikey2'] = 'apikey2';
+        $params['cmd'] = 'execute' ;
+        $params['utc_mess']   = strtotime(date('Y-m-d H:i:s') ) ;
+        $params['date_mess']  = date('Y-m-d H:i:s') ;
+      
         $payLoad = json_encode($params);
         log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $payLoad='.$payLoad);
+        
         $socket = socket_create(AF_INET, SOCK_STREAM, 0);
         socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55099')); //port par défaut de votre plugin à modifier
         socket_write($socket, $payLoad, strlen($payLoad));
@@ -1278,6 +1289,14 @@ class heatzy extends eqLogic {
     /**
      * @brief Fonction de mise à jour du device did
      */
+    public function updateHeatzyDid2($UserToken = null, $aDevice = array() , $force = false) {
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.var_export($aDevice, true) );
+        $this->updateHeatzyDid( $UserToken , $aDevice , $force) ;
+        $this->toHtml('mobile');
+        $this->toHtml('dashboard');
+        $this->refreshWidget();
+    }
+        
     public function updateHeatzyDid($UserToken = null, $aDevice = array() , $force = false) {
       
         if( !cache::exist('Heatzy_CptError') ){
@@ -1315,11 +1334,13 @@ class heatzy extends eqLogic {
         }
       
         // Modes de chauffe
-        // Note : Théoriquement pilote_pro doit être lu avec cur_mode (mais le retour contient quand même mode
-        if(isset($aDevice['attr']['mode'])) {
+        // Note : Théoriquement pilote_pro doit être lu avec cur_mode (mais le retour contient quand même mode)
+        if(isset($aDevice['attr']['mode']) || isset($aDevice['attr']['cur_temp']) || isset($aDevice['attr']['derog_mode']) ) {
 
             // Créer les commandes en fonction du contenu de la réponse
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' CheckAndCreateCmd...');
+
+          	// Créer les commandes si besoin
             $this->CheckAndCreateCmd($aDevice , $force) ;
 
             if( $aDevice['attr']['mode'] == 'cft' ) {        /// Confort
@@ -1356,14 +1377,14 @@ class heatzy extends eqLogic {
                 }
                 else if($mode1 == 129 && $mode2 == 156) { /// Off
                     $KeyMode = 'Off';
-                }
+                }/*
                 else {
                     log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getLogicalId().' non connecte');
                       $this->checkAndUpdateCmd('IsOnLine', 0 ); 
                       $this->save(); /// Enregistre les info  
                       $this->setStatus('timeout','1');
                     return false;
-                }
+                }*/
             }
           
             // Consigne de température du mode éco (eco_temp ou eco_tempH+eco_tempL selon type de module)
@@ -1437,7 +1458,7 @@ class heatzy extends eqLogic {
             else{
                 $this->checkAndUpdateCmd('detect_presence', 0 );
             }
-            
+            /*
             // Puissance consommée (en W) 
             if( isset ($aDevice['attr']['cur_power']) )
                 $this->checkAndUpdateCmd('cur_power', $aDevice['attr']['cur_power'] );
@@ -1461,7 +1482,7 @@ class heatzy extends eqLogic {
             // kill_switch 
             if( isset ($aDevice['attr']['kill_switch']) )
                 $this->checkAndUpdateCmd('kill_switch', $aDevice['attr']['kill_switch'] );
-            
+            */
             $this->CalculExterne( $aDevice ) ;
         }
         else {                                             
@@ -1686,6 +1707,7 @@ class heatzy extends eqLogic {
      */
 
     public function CheckAndCreateCmd($aDevice , $force = false) {
+      
 
         if( isset ($aDevice['attr']['cur_temp']) || isset ($aDevice['attr']['cur_tempH']) ){
         /// Creation de la commande info de la temperature courante
@@ -2877,7 +2899,6 @@ class heatzyCmd extends cmd {
       
         if ($this->getLogicalId() == 'refresh') {
             $this->getEqLogic()->updateHeatzyDid($UserToken);
-            $this->getEqLogic()->sendToDaemon( $_options ) ;
         }
         else if($this->getType() == 'info' ) {
               return $this->getValue();
@@ -3030,8 +3051,14 @@ class heatzyCmd extends cmd {
               
             
             if( $Consigne != '' ){
-                  log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' :$Consigne != null : ');
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' :$Consigne != null : ');
                 $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+              
+              	// Envoi au demon
+              	$Consigne['did'] = $this->getEqLogic()->getLogicalId() ;
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' Envoi au demon : '.json_encode($Consigne) );
+                $this->getEqLogic()->sendToDaemon( $Consigne ) ;
+              
                 if($Result === false) {
                     log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
                     return false;

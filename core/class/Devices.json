@@ -54,8 +54,8 @@
 	,{"cmd":"signal_power"        	,"attrs":{"LogicalId":"signal_power"        ,"Name":"Puissance du signal"                ,"Order":83 ,"Type":"info"  ,"SubType":"numeric","Unite":"db"   ,"Config_infoName":null                 ,"Config_value":null      ,"Config_minValue":null,"Config_maxValue":null,"Config_tempHL":null ,"setValue":null                  ,"Display":null                            ,"IsHistorized":0,"IsVisible":0}}
 	,{"cmd":"energy_saving"       	,"attrs":{"LogicalId":"energy_saving"       ,"Name":"Mode écoresponsable"                ,"Order":84 ,"Type":"info"  ,"SubType":"numeric","Unite":"°C"   ,"Config_infoName":null                 ,"Config_value":null      ,"Config_minValue":null,"Config_maxValue":null,"Config_tempHL":null ,"setValue":null                  ,"Display":null                            ,"IsHistorized":0,"IsVisible":0}}
 	,{"cmd":"kill_switch"         	,"attrs":{"LogicalId":"kill_switch"         ,"Name":"Coupe circuit"                      ,"Order":85 ,"Type":"info"  ,"SubType":"binary" ,"Unite":null   ,"Config_infoName":null                 ,"Config_value":null      ,"Config_minValue":null,"Config_maxValue":null,"Config_tempHL":null ,"setValue":null                  ,"Display":null                            ,"IsHistorized":0,"IsVisible":0}}
+	,{"cmd":"peak_hours"          	,"attrs":{"LogicalId":"peak_hours"          ,"Name":"Activation heures pleines-creuses"  ,"Order":86 ,"Type":"info"  ,"SubType":"binary" ,"Unite":null   ,"Config_infoName":null                 ,"Config_value":null      ,"Config_minValue":null,"Config_maxValue":null,"Config_tempHL":null ,"setValue":null                  ,"Display":null                            ,"IsHistorized":1,"IsVisible":1}}
+	,{"cmd":"peak_signal"         	,"attrs":{"LogicalId":"peak_signal"         ,"Name":"Signal heures creuses"              ,"Order":87 ,"Type":"info"  ,"SubType":"binary" ,"Unite":null   ,"Config_infoName":null                 ,"Config_value":null      ,"Config_minValue":null,"Config_maxValue":null,"Config_tempHL":null ,"setValue":null                  ,"Display":null                            ,"IsHistorized":2,"IsVisible":2}}
 	]	
-
-
 
 }

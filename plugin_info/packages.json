@@ -10,7 +10,9 @@
   "pip3": {
     "pyserial" : {"reinstall" : true},
     "requests" : {"reinstall" : true},
-    "pyudev" : {"reinstall" : true}
+    "pyudev" : {"reinstall" : true},
+    "websocket-client" : {"reinstall" : true},
+    "Thread" : {"reinstall" : true}
   },
   "plugin": {
   },
