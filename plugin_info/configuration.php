@@ -56,6 +56,15 @@ if (!isConnect()) {
             </div>
         </div>
         <div class="form-group">
+            <label class="col-lg-4 control-label">{{Type d API utilisé}}</label>
+            <div class="col-lg-6">             
+                <select class="configKey form-control" data-l1key="API_Type" title="Type d API utilisé" style="width:100px;">
+                    <option value="REST">API REST</option>
+                    <option value="WS">WebSocket</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-lg-4 control-label">{{Port demon}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Port utilisé pour le demon}}"></i></sup></label>
             <div class="col-lg-6">
                 <input type="text" class="configKey form-control" data-l1key="socketport" style="width:100px;" />

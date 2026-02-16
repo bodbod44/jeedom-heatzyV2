@@ -22,7 +22,7 @@ try {
         die();
     }
     
-	log::add('heatzy', 'debug', 'Retour du demon... : '.var_export($result, true) );
+	log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' Retour du demon : '.var_export($result, true) );
     
     if( isset($result['data']['did']) ){
       	//log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.'): $result[data][did] : -'.$result['data']['did'].'-' );
@@ -33,6 +33,7 @@ try {
           $result2['updated_at'] = time() ;
           $result2['attr'] = $result['data']['attrs'] ;
           //log::add('heatzy', 'debug', '$result2 : '.var_export($result2, true) );
+          
           $eqLogic->updateHeatzyDid2( '' , $result2 , false) ;
         }
       	else
@@ -41,13 +42,6 @@ try {
     else
 		log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.'): Tableau sans $result[data][did]' );
     
-    /*if (isset($result['key1'])) {
-        log::add('heatzy', 'error', 'J ai recu key1...');
-    } elseif (isset($result['key2'])) {
-        log::add('heatzy', 'error', 'J ai recu key2...');
-    } else {
-        log::add('heatzy', 'error', 'je ne sais pas quoi faire'); //remplacez template par l'id de votre plugin
-    }*/
 } catch (Exception $e) {
     log::add('heatzy', 'error', 'catch '.displayException($e)); //remplacez template par l'id de votre plugin
 }

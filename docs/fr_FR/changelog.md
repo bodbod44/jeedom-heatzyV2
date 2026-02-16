@@ -1,14 +1,20 @@
 # xx/06/2025 (dev)
 - TODO : Commande Alerte fenetre ouverte (deja possible en scenario) => A faire
 - TODO : Alerte hors ligne (9042) => A faire
+- TODO
+  - Gestion des deconnexions / relance)
+  - Redesnce du KO demon dans jeedom
+  - Gestion des cas particuliers (robustesse)
 
+# 16/02/2026 (dev)
+- Demon
+  - Finalisation des allers-retours jeedom<->demon<->gizwits
+  - Ajout d'un choix dans la configuration (API/WS)
+    
 # 15/02/2026 (dev)
 - Demon
   - Amélioration du demon (thread)
   - Gestion de la réponse vers jeeedom
-  - TODO
-    - Gestion des dconnexions
-    - Gestion de ordres depuis jeedom
 
 # 14/02/2026 (dev)
 - Implémentation du websocket

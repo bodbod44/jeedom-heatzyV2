@@ -48,6 +48,7 @@ class HttpGizwits {
      * 
      * @return Un tableau associatif ou false en cas d'erreur       
      */
+//class HttpGizwits
     public static function Login($User, $Passwd, $Lang='en') {
      
         if(empty($User) || empty($Passwd)){
@@ -112,6 +113,7 @@ class HttpGizwits {
      * 
      * @return Un tableau associatif ou false en cas d'erreur
      */
+//class HttpGizwits
     public static function GetProduitInfo($ProductKey) {
 
         if(empty($ProductKey)){
@@ -168,6 +170,7 @@ class HttpGizwits {
      * 
      * @return Un tableau associatif ou false en cas d'erreur
      */
+//class HttpGizwits
     public static function Bindings($UserToken) {
         
         if(empty($UserToken)){
@@ -227,6 +230,7 @@ class HttpGizwits {
      *
      * @return Un tableau associatif ou false en cas d'erreur
      */
+//class HttpGizwits
     public static function GetSchedulerList($UserToken, $Did, $Skip = 0, $Limit = 30) {
 
         /*
@@ -294,6 +298,7 @@ class HttpGizwits {
      * 
      * @return l'id de la tâche ou false en cas d'erreur
      */
+//class HttpGizwits
     public static function CreateScheduler($UserToken, $Did, $Param) {
 
         /*
@@ -370,6 +375,7 @@ class HttpGizwits {
      * 
      * @return Un tableau associatif ou false en cas d'erreur
      */
+//class HttpGizwits
     public static function UpdateScheduler($UserToken, $Did, $Id, $Param) {
 
         /*
@@ -446,6 +452,7 @@ class HttpGizwits {
      * 
      * @return true ou false en cas d'erreur
      */
+//class HttpGizwits
     public static function DeleteScheduler($UserToken, $Did, $Id ) {
     
         /*
@@ -517,6 +524,7 @@ class HttpGizwits {
      * 
      * @return ou false en cas d'erreur
      */
+//class HttpGizwits
     public static function SetBindingInformation($UserToken, $Did, $DevAlias) {
     
         if(empty($UserToken) || empty($Did) || empty($DevAlias)){
@@ -585,6 +593,7 @@ class HttpGizwits {
      * 
      * @return Un tableau vide ou false en cas d'erreur
      */
+//class HttpGizwits
     public static function SetConsigne($UserToken, $Did, $Consigne, $Recurrence = 0) {
         
         if(empty($UserToken) || empty($Did) || empty($Consigne)){
@@ -755,6 +764,7 @@ class HttpGizwits {
      * 
      * @return Un tableau associatif ou false en cas d'erreur
      */
+//class HttpGizwits
     public static function GetConsigne($UserToken, $Did, $Recurrence = 0 ) {
               
         if(empty($Did)){
@@ -915,6 +925,7 @@ class HttpGizwits {
      *
      * @return Un tableau associatif ou false en cas d'erreur
      */
+//class HttpGizwits
     public static function GetDeviceDetails($UserToken, $Did) {
     
         if(empty($Did)){
@@ -986,11 +997,13 @@ class heatzy extends eqLogic {
      *      /!\ Les clefs des valeurs du tableau correspond
      *      aux valeurs supportées par les devices
      */
+//class heatzy extends eqLogic
     public static $_HeatzyMode = array('Confort', 'Eco', 'HorsGel', 'Off','Confort-1','Confort-2');
 
     /**
      * @brief La fonction deamon_info() sera appelée par le core lors de l’affichage du cadre suivant dans la page de configuration de votre plugin
      */
+//class heatzy extends eqLogic
     public static function deamon_info() {
         $return = array();
         $return['log'] = __CLASS__;
@@ -1004,40 +1017,47 @@ class heatzy extends eqLogic {
             }
         }
         $return['launchable'] = 'ok';
-        $user = config::byKey('uid', __CLASS__); // exemple si votre démon à besoin de la config user,
-        $pswd = config::byKey('uid', 'heatzy'); // password,
-        $clientId = config::byKey('clientId', __CLASS__); // et clientId
-        
-        //log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$user='.$user);
-        //log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$pswd='.$pswd);
-        //log::add( 'heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':$clientId='.$clientId);
-        
-          //      $email = config::byKey('email', 'heatzy', '');
-        //$password = config::byKey('password', 'heatzy', '');
-        
-        if ($user == '') {
+      
+        $email = config::byKey('email', __CLASS__ , '');
+        $password = config::byKey('password', __CLASS__ , '');
+        $UserToken = config::byKey('UserToken', __CLASS__ , '');
+        $ExpireToken = config::byKey('ExpireToken', __CLASS__ , '');
+        $socketport = config::byKey('socketport', __CLASS__ , '55099');
+        $uid = config::byKey('uid', __CLASS__ , '');
+      
+                
+        if ($email == '') {
             $return['launchable'] = 'nok';
-            $return['launchable_message'] = __('Le nom d\'utilisateur n\'est pas configuré', __FILE__);
-        } /*elseif ($pswd == '') {
+            $return['launchable_message'] = __('L\'email du compte Heatzy n\'est pas configuré', __FILE__);
+        } elseif ($password == '') {
             $return['launchable'] = 'nok';
-            $return['launchable_message'] = __('Le mot de passe n\'est pas configuré', __FILE__);
-        } elseif ($clientId == '') {
+            $return['launchable_message'] = __('Le mot de passe du compte n\'est pas configuré', __FILE__);
+        } elseif ($UserToken == '') {
             $return['launchable'] = 'nok';
-            $return['launchable_message'] = __('La clé d\'application n\'est pas configurée', __FILE__);
-        }*/
+            $return['launchable_message'] = __('Le token n\'a pas été récupéré (relancez une synchronisation)', __FILE__);
+        } elseif ( strtotime( $ExpireToken ) <= time() ) {
+            $return['launchable'] = 'nok';
+            $return['launchable_message'] = __('Le token est expiré (relancez une synchronisation)', __FILE__);
+        } elseif ( $socketport == '' || !is_numeric($socketport) ) {
+            $return['launchable'] = 'nok';
+            $return['launchable_message'] = __('Port demon vide ou mal alimenté (essayer un port numérique comme 550xx)', __FILE__);
+        } elseif ( $uid == '' ) {
+            $return['launchable'] = 'nok';
+            $return['launchable_message'] = __('uid non valorisé (relancez une synchronisation)', __FILE__);
+        }
         return $return;
     }
     
     /**
      * @brief La fonction deamon_start() est comme son nom l’indique la méthode qui sera appelée par le core pour démarrer votre démon
      */
+//class heatzy extends eqLogic
     public static function deamon_start() {
         self::deamon_stop();
         $deamon_info = self::deamon_info();
         if ($deamon_info['launchable'] != 'ok') {
             throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
         }
-
         $path = realpath(dirname(__FILE__) . '/../../resources/heatzyd');
         $cmd = system::getCmdPython3(__CLASS__) . " {$path}/heatzyd.py";
         $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
@@ -1048,9 +1068,10 @@ class heatzy extends eqLogic {
         $cmd .= ' --appid '.HttpGizwits::$HeatzyAppId ;
         $cmd .= ' --token '.config::byKey('UserToken', __CLASS__, 'xxx-token-xxx');
         $cmd .= ' --uid '.config::byKey('uid', __CLASS__, 'xxx-uid-xxx');
+      
         log::add(__CLASS__, 'info', 'Lancement démon');
         log::add(__CLASS__, 'debug', '$cmd='.$cmd);
-        $result = exec($cmd . ' >> ' . log::getPathToLog('heatzy_daemon') . ' 2>&1 &'); // 'template_daemon' est le nom du log pour votre démon, vous devez nommer votre log en commençant par le pluginid pour que le fichier apparaisse dans la page de config
+        $result = exec($cmd . ' >> ' . log::getPathToLog('heatzy_daemon') . ' 2>&1 &'); // 'template_daemon' est le nom du log pour votre démon
         $i = 0;
         while ($i < 20) {
             $deamon_info = self::deamon_info();
@@ -1076,6 +1097,7 @@ class heatzy extends eqLogic {
     /**
      * @brief ette méthode sera utilisée pour stopper le démon: on récupère le pid du démon, qui a été écrit dans le “pid_file” et on envoi le kill système au process.
      */
+//class heatzy extends eqLogic
     public static function deamon_stop() {
         $pid_file = jeedom::getTmpFolder(__CLASS__) . '/deamon.pid'; // ne pas modifier
         if (file_exists($pid_file)) {
@@ -1088,22 +1110,44 @@ class heatzy extends eqLogic {
     /**
      * @Elle reçoit donc en paramètre un tableau de valeur et se charge de l’envoyer au socket du démon qui pourra donc lire ce tableau dans la méthode read_socket().
      */
-    public static function sendToDaemon($params) {
+//class heatzy extends eqLogic
+    public static function sendToDaemon( $action , $did , $params) {
         $deamon_info = self::deamon_info();
         if ($deamon_info['state'] != 'ok') {
             throw new Exception("Le démon n'est pas démarré");
         }
       	else
           log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : Le démon est démarre');
-      
-        $params['apikey'] = jeedom::getApiKey(__CLASS__);
-        $params['cmd'] = 'execute' ;
-        $params['utc_mess']   = strtotime(date('Y-m-d H:i:s') ) ;
-        $params['date_mess']  = date('Y-m-d H:i:s') ;
+  
+        $message['apikey'] = jeedom::getApiKey(__CLASS__);
+        $message['utc_mess']   = strtotime(date('Y-m-d H:i:s') ) ;
+        $message['date_mess']  = date('Y-m-d H:i:s') ;
       
         $payLoad = json_encode($params);
-        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $payLoad='.$payLoad);
+        //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $payLoad='.$payLoad);
         
+		if( $action == 'login' ){
+			$params['cmd'] = 'login_req' ;
+        }
+		else if( $action == 'read' ){
+			$params['cmd'] = 'c2s_read' ;
+		}
+		else if( $action == 'execute' ){
+          	//{ "cmd": "c2s_write", "data": { "did": "xxxxxxxxxx", "attrs": { "name1": "", "name2": <value2>, } } }
+			//$message = '{ "cmd": "c2s_write", "data": { "did": "'.$did.'", "attrs": '.$payLoad.' } }' ;
+          	$message['message']['cmd'] = 'c2s_write' ;
+          	$message['message']['data']['did'] = $did ;
+            $message['message']['data']['attrs'] = $params['attrs'] ;
+              //= '{ "cmd": "c2s_write", "data": { "did": "'.$did.'", "attrs": '.$payLoad.' } }' ;
+		}
+		else{
+          	log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $action non trouvé ('.$action.')');
+          	return ;
+      	}
+      
+      	log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $mess ('.json_encode($message).')');
+            
+      	$payLoad = json_encode($message) ;
         $socket = socket_create(AF_INET, SOCK_STREAM, 0);
         socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55099')); //port par défaut de votre plugin à modifier
         socket_write($socket, $payLoad, strlen($payLoad));
@@ -1113,6 +1157,7 @@ class heatzy extends eqLogic {
     /**
      * @brief Fonction qui permet de tirer un nouveau token utilisateur
      */
+//class heatzy extends eqLogic
     public static function Login() {
 
         $email = config::byKey('email', 'heatzy', '');
@@ -1164,6 +1209,7 @@ class heatzy extends eqLogic {
      *        
      * @return false en cas d'erreur le nombre de modules synchroniser       
      */
+//class heatzy extends eqLogic
     public static function Synchronize( $force = false ) {
             
           log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $force='.$force);
@@ -1289,6 +1335,7 @@ class heatzy extends eqLogic {
     /**
      * @brief Fonction de mise à jour du device did
      */
+//class heatzy extends eqLogic
     public function updateHeatzyDid2($UserToken = null, $aDevice = array() , $force = false) {
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.var_export($aDevice, true) );
         $this->updateHeatzyDid( $UserToken , $aDevice , $force) ;
@@ -1297,6 +1344,7 @@ class heatzy extends eqLogic {
         $this->refreshWidget();
     }
         
+//class heatzy extends eqLogic
     public function updateHeatzyDid($UserToken = null, $aDevice = array() , $force = false) {
       
         if( !cache::exist('Heatzy_CptError') ){
@@ -1304,8 +1352,9 @@ class heatzy extends eqLogic {
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': INIT cache' );
         }
         //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : cache='.cache::byKey('Heatzy_CptError')->getValue() );
-      
-        if(empty($aDevice)) {
+      //if( config::byKey('API_Type','heatzy','REST') != 'REST' ){
+        //if(empty($aDevice) && config::byKey('API_Type','heatzy','REST') == 'REST' ) {
+      if( empty($aDevice) ) {
             /// Lecture de l'etat
             if( $UserToken == null )
               $UserToken = config::byKey('UserToken','heatzy','none');
@@ -1447,6 +1496,7 @@ class heatzy extends eqLogic {
                 //  vacances en jours (j)
                 //  boost en minutes (min)
                   $derog_time = isset ($aDevice['attr']['derog_time']) ? $aDevice['attr']['derog_time'] : 0 ;
+              log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': derog time='.$derog_time.'-'.$aDevice['attr']['derog_time']);
                 $this->checkAndUpdateCmd('derog_time_vacances', $aDevice['attr']['derog_mode'] == '1' ? $derog_time : 0 );
                 $this->checkAndUpdateCmd('derog_time_boost'   , $aDevice['attr']['derog_mode'] == '2' ? $derog_time : 0 );              
             }
@@ -1507,6 +1557,7 @@ class heatzy extends eqLogic {
      * 
      * @param tableau retour API
      */
+//class heatzy extends eqLogic
     public function CalculExterne($aDevice) {
                 
         // Prise en compte d'un capteur d'humidité externe
@@ -1640,7 +1691,7 @@ class heatzy extends eqLogic {
      * 
      * @param tableau retour API
      */
-  
+//class heatzy extends eqLogic
     public function VerifOrdreAccepte( $aDevice , $attr , $valeur , $attr2 , $valeur2 , $verif_result , $valeurInit = false) {
         if( $aDevice['attr'][$attr] == $valeur  ){
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET deja valorisé');
@@ -1705,7 +1756,7 @@ class heatzy extends eqLogic {
      * 
      * @param tableau retour API
      */
-
+//class heatzy extends eqLogic
     public function CheckAndCreateCmd($aDevice , $force = false) {
       
 
@@ -2357,7 +2408,7 @@ class heatzy extends eqLogic {
 
                 /// Creation de la commande derog_presence (3)
                 $cmd = $this->getCmd(null, 'derog_presence');
-                if (!is_object($cmd) || $force) {
+                if (!is_object($cmd) && $force) {
                     if( $this->VerifOrdreAccepte( $aDevice , 'derog_mode' , 3 , '' , '' , false , true ) ){
                       
                         $cmd = $this->getCmd(null, 'derog_presence');
@@ -2401,7 +2452,7 @@ class heatzy extends eqLogic {
      * 
      * @param $EtatProg        true ou false
      */
-
+//class heatzy extends eqLogic
     public function GestProg($EtatProg) {
         $Skip = 0;            /// Nombre d'element sauté
         $Limit = 100;        /// Limite du nombre de tache
@@ -2455,6 +2506,7 @@ class heatzy extends eqLogic {
     * Fonction exécutée automatiquement toutes les minutes par Jeedom
     * synchronisation
     */
+//class heatzy extends eqLogic
     public static function cron() {
         /*log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': cron...');
         $tab = HttpGizwits::GetProduitInfo('aa85e43fc4464e4d0000000000000000') ;
@@ -2496,7 +2548,11 @@ class heatzy extends eqLogic {
                 log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Récupération token KO' );    
                 return false ;
             }
-        }         
+        }
+      
+		if( config::byKey('API_Type','heatzy','REST') != 'REST' ){
+          return ;
+        }
         
         // Mise à jour du statut (Online/Offline + ajout noueau modules)        
         $Freq_status = config::byKey('Freq_status','heatzy','30') ; // Toutes les 30 min par défaut
@@ -2576,6 +2632,7 @@ class heatzy extends eqLogic {
     * Fonction exécutée automatiquement toutes les 30minutes par Jeedom
     * seulement pour les modules Heatzy et Flam_Week2
     * */
+//class heatzy extends eqLogic
     public static function cron30() {
 
         foreach (eqLogic::byType('heatzy') as $heatzy) {
@@ -2652,6 +2709,7 @@ class heatzy extends eqLogic {
 
     /*
      * Fonction exécutée automatiquement tous les jours par Jeedom*/
+//class heatzy extends eqLogic
     public static function cronDaily() {
         //$aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
         //$tmp = strtotime( "2025-06-20 20:20:20" ) ;
@@ -2715,14 +2773,17 @@ class heatzy extends eqLogic {
     /**
      * @brief   Méthode appellée avant la création de votre objet
      */
+//class heatzy extends eqLogic
     public function preInsert() {
         $this->setCategory('heating', 1);
     }
 
+//class heatzy extends eqLogic
     public function postInsert() {
         
     }
 
+//class heatzy extends eqLogic
     public function preSave() {
          
     }
@@ -2730,7 +2791,7 @@ class heatzy extends eqLogic {
      * @brief  Méthode appellée après la sauvegarde de votre objet
      *         Creation de la commande refresh
      */
-    
+//class heatzy extends eqLogic
     public function postSave() {
         /// Creation de la commande de rafraichissement
         $refresh = $this->getCmd(null, 'refresh');
@@ -2766,6 +2827,7 @@ class heatzy extends eqLogic {
     /**
      * Si le nom du module a changé, on le met à jour
      */
+//class heatzy extends eqLogic
     public function preUpdate() {
         
         if ( $this->getConfiguration('dev_alias', '') != $this->getName() ) {
@@ -2781,19 +2843,22 @@ class heatzy extends eqLogic {
         
     }
 
+//class heatzy extends eqLogic
     public function postUpdate() {
 
     }
-
+  
+//class heatzy extends eqLogic
     public function preRemove() {
         
     }
-
+  
+//class heatzy extends eqLogic
     public function postRemove() {
         
     }
 
-   
+//class heatzy extends eqLogic
     public function toHtml($_version = 'dashboard') {
         $replace = $this->preToHtml($_version);
         if (!is_array($replace)) {
@@ -2880,7 +2945,7 @@ class heatzyCmd extends cmd {
      * return true;
      * }
      */
-
+// class heatzyCmd extends cmd
     public function execute($_options = array()) {
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Commande execute : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');  
       
@@ -3051,42 +3116,46 @@ class heatzyCmd extends cmd {
               
             
             if( $Consigne != '' ){
-                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' :$Consigne != null : ');
-                $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
-              
-              	// Envoi au demon
-              	$Consigne['did'] = $this->getEqLogic()->getLogicalId() ;
-                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' Envoi au demon : '.json_encode($Consigne) );
-                $this->getEqLogic()->sendToDaemon( $Consigne ) ;
-              
-                if($Result === false) {
-                    log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
-                    return false;
-                }
-                else{
-                    /// Si une erreur de communication
-                    if(isset($Result['error_message']) && isset($Result['error_code'])) {
-                        log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
-                      
-                          if( $Result['error_code'] == '9017' || $Result['error_code'] == '9042' ){
-                              // 9017 = Détaché du compte
-                              // 9042 = Offline
-                              $eqLogic->setStatus('timeout','1');
-                            $eqLogic->checkAndUpdateCmd('IsOnLine', 0 );
-                        }
+              	if( config::byKey('API_Type','heatzy','REST') == 'REST' ){
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' :$Consigne != null : ');
+                    $Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
+
+                    if($Result === false) {
+                        log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - impossible de se connecter à:'.HttpGizwits::$UrlGizwits);
                         return false;
                     }
-                    else if($ForUpdate != ''){
-                          log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
-                        $eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , $ForUpdate ) ;
-                        $eqLogic->checkAndUpdateCmd('IsOnLine', 1 );
-                    }
-                }
-            }
+                    else{
+                        /// Si une erreur de communication
+                        if(isset($Result['error_message']) && isset($Result['error_code'])) {
+                            log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
+
+                              if( $Result['error_code'] == '9017' || $Result['error_code'] == '9042' ){
+                                  // 9017 = Détaché du compte
+                                  // 9042 = Offline
+                                  $eqLogic->setStatus('timeout','1');
+                                $eqLogic->checkAndUpdateCmd('IsOnLine', 0 );
+                            }
+                            return false;
+                        }
+                        else if($ForUpdate != ''){
+                              log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
+                            $eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , $ForUpdate ) ;
+                            $eqLogic->checkAndUpdateCmd('IsOnLine', 1 );
+                        }
+                    } // $Result === false
+                } // if REST
+				else{
+                    // Envoi au demon
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' Envoi au demon : '.json_encode($Consigne) );
+                    $this->getEqLogic()->sendToDaemon( 'execute' , $this->getEqLogic()->getLogicalId() , $Consigne ) ; 
+                } // REST
+            } // if $Consigne != ''
             
+          if( config::byKey('API_Type','heatzy','REST') == 'REST' ){
             /// Mise à jour de l'état
             sleep(1); // tempo de 1sec pour laisser le temps a l'API de le prendre en compte et le restituer
             $this->getEqLogic()->updateHeatzyDid($UserToken);
+          }
             
         } /// Fin action
         $mc = cache::byKey('heatzyWidgetmobile' . $this->getEqLogic()->getId());
@@ -3097,7 +3166,7 @@ class heatzyCmd extends cmd {
         $this->getEqLogic()->toHtml('mobile');
         $this->getEqLogic()->toHtml('dashboard');
         $this->getEqLogic()->refreshWidget();
-        
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' FIN EXECUTE' );
         return true;
     }
 

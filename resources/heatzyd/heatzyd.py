@@ -41,31 +41,20 @@ def listen():
 def read_socket():
 	if not JEEDOM_SOCKET_MESSAGE.empty():
 		logging.debug("Message received in socket JEEDOM_SOCKET_MESSAGE")
-		#LeGet = JEEDOM_SOCKET_MESSAGE.get()
-		#logging.error("message recu : %s" , LeGet )
-		#logging.error("Lestripped...")
-		#Lestripped = jeedom_utils.stripped(LeGet)
-		logging.debug("loads...")
-		#message = json.loads( LeGet )
 		message = json.loads(JEEDOM_SOCKET_MESSAGE.get().decode('utf-8'))
-		#logging.debug("message recu : %s" , message['apikey'])
-		if message['apikey'] != _apikey:
-			logging.debug("Invalid apikey from socket: %s", message)
-			return
-		if message['apikey'] == _apikey:
-			logging.debug("OK: %s", message)
-			my_jeedom_com.send_change_immediate({'key1' : 'value1', 'key3' : 'value3' })
-			logging.debug("Send OK: %s", message)
-			#_websocket.send('totototo') # start listening events
-			return
-		try:
-			print('read')
-		except Exception as e:
-			logging.error('Send command to demon error: %s', e)
+		if 'apikey' in message and 'message' in message:
+			if message['apikey'] == _apikey:
+				logging.debug("message valide : %s", message)
+				send_message_gizwitz( json.dumps( message['message']) )
+			else:
+				logging.error("apikey invalide: %s", message)
+		else:
+			logging.error("Invalid message: %s", message)
+
 
 def send_socket( mess ):
 	def Send_to_jeedom(*args):
-		logging.debug('Send_to_jeedom : ' + mess)
+		#logging.debug('Send_to_jeedom : ' + mess)
 		my_jeedom_com.send_change_immediate( mess )
 	Thread(target=Send_to_jeedom).start()
 
@@ -127,14 +116,9 @@ def start_websocket():
 	
 # lecture du websocket
 def on_message_gizwits(ws, msg):
-	global _heartbeat
-	_heartbeat = time.time()
-	#logging.debug('on_message_gizwits_heartbeat : ' + str(_heartbeat) + ' - ' + str(time.time() - _heartbeat) + ' - ' + time.ctime(_heartbeat) )
-	#logging.debug('on_message_gizwits: ' + msg)
+	#global _heartbeat
+	#_heartbeat = time.time()
 	jsonMsg = json.loads(msg)
-
-	#vraimess = '{"cmd":"s2c_noti","data":{"did":"yCpPJifDjBpjNdhsrGEmdH","attrs":{"temp_set_step":"off","mode":"stop","window_switch":false,"p1_data1":85,"p1_data2":85,"p1_data3":85,"p1_data4":85,"p1_data5":85,"p1_data6":85,"p1_data7":85,"p1_data8":85,"p1_data9":85,"p1_data10":85,"p1_data11":5,"p1_data12":85,"p2_data1":85,"p2_data2":85,"p2_data3":85,"p2_data4":85,"p2_data5":85,"p2_data6":85,"p2_data7":85,"p2_data8":85,"p2_data9":85,"p2_data10":85,"p2_data11":85,"p2_data12":85,"p3_data1":85,"p3_data2":85,"p3_data3":85,"p3_data4":85,"p3_data5":85,"p3_data6":85,"p3_data7":101,"p3_data8":85,"p3_data9":85,"p3_data10":85,"p3_data11":85,"p3_data12":85,"p4_data1":85,"p4_data2":85,"p4_data3":85,"p4_data4":85,"p4_data5":85,"p4_data6":85,"p4_data7":85,"p4_data8":85,"p4_data9":85,"p4_data10":85,"p4_data11":85,"p4_data12":85,"p5_data1":85,"p5_data2":85,"p5_data3":85,"p5_data4":85,"p5_data5":85,"p5_data6":85,"p5_data7":85,"p5_data8":85,"p5_data9":85,"p5_data10":85,"p5_data11":85,"p5_data12":85,"p6_data1":85,"p6_data2":85,"p6_data3":85,"p6_data4":85,"p6_data5":85,"p6_data6":85,"p6_data7":85,"p6_data8":85,"p6_data9":85,"p6_data10":85,"p6_data11":85,"p6_data12":85,"p7_data1":85,"p7_data2":85,"p7_data3":85,"p7_data4":85,"p7_data5":85,"p7_data6":85,"p7_data7":85,"p7_data8":85,"p7_data9":85,"p7_data10":85,"p7_data11":85,"p7_data12":85,"derog_mode":0,"derog_time":0,"lock_switch":0,"time_week":7,"time_hour":32,"time_min":0,"timer_switch":0,"boost_switch":0,"boost_time":0,"data1":0,"data2":0,"com_temp":50,"cft_temp":210,"eco_temp":150,"cur_signal":"stop","cur_mode":"stop","Heating_state":false,"cur_humi":84,"cur_temp":85}}}'
-	#tvraimess = json.loads(vraimess)
 	
 	if jsonMsg['cmd'] == 'login_res' and 'success' in jsonMsg['data']:
 		if jsonMsg['data']['success'] == True :
@@ -143,10 +127,8 @@ def on_message_gizwits(ws, msg):
 		else:
 			logging.debug('on_message_gizwits - ERROR Login KO : ' + msg)
 	elif jsonMsg['cmd'] == 's2c_noti':
-		#{"cmd":"s2c_noti","data":{"did":"yCpPJifDjBpjNdhsrGEmdH","attrs":{"temp_set_step":"off","mod
 		logging.debug('on_message_gizwits - message notification reçu : ' + msg)
 		if 'did' in jsonMsg['data'] and 'attrs' in jsonMsg['data']:
-			logging.debug('on_message_gizwits - IL FAUT ENVOYER LES ATTRS AU PLUGIN')
 			send_socket( msg )
 	elif jsonMsg['cmd'] == 's2c_invalid_msg' and jsonMsg['data']['error_code'] > 0:
 		logging.debug('on_message_gizwits - ERROR : ' + str(jsonMsg['data']['error_code']) + ' - ' + jsonMsg['data']['msg'])
@@ -155,15 +137,6 @@ def on_message_gizwits(ws, msg):
 		logging.debug('on_message_gizwits - PING OK - ' + msg)
 	else:
 		logging.debug('on_message_gizwits - message non connu : ' + msg)
-
-	#if jsonMsg['type'] == 'version':
-		#parseVersionMessage(jsonMsg)
-
-	#if jsonMsg['type'] == 'result':
-		#parseResultMessage(jsonMsg)
-	
-	#if jsonMsg['type'] == 'event':
-		#parseEventMessage(jsonMsg)
 
 def on_error(ws, error):
 	logging.error('on_error: '+ str(error) )
@@ -178,21 +151,10 @@ def on_open(ws):
 	_websocket = ws
 	logging.debug('on_open: '+ "Websocket opened")
 	logging.debug('on_open: '+ 'keep_running = ' + str(_websocket.keep_running) )
-    
+	
 	message = '{"cmd": "login_req", "data": { "appid": "' + _heatzy_appid + '", "uid": "' + _heatzy_uid + '", "token": "' + _heatzy_token + '", "p0_type": "attrs_v4", "heartbeat_interval": 180 , "auto_subscribe": true }}'
 	send_message_gizwitz(message)
-	#def run(*args):
-		
-		#logging.debug("message:" + message)
-		#_websocket.send(message) # Set logs
-		#ws.send("Hello, Server")
-		#logging.debug(_websocket.recv() )
-		#time.sleep(1)
-		#_websocket.send("{\"command\": \"start_listening\"}") # start listening events
-		#time.sleep(1)
-		#_websocket.send("{\"command\": \"set_api_schema\", \"schemaVersion\": 16}") # Set API schema
-		#time.sleep(1)
-
+	
 	def ping(*args):
 		logging.debug('ping: '+ 'keep_running = ' + str(_websocket.keep_running) )
 		while _websocket.keep_running:
@@ -201,16 +163,17 @@ def on_open(ws):
 				send_message_gizwitz( '{"cmd": "ping"}' )
 			time.sleep(10)
 	Thread(target=ping).start()
-
+	
 	logging.debug('on_open: '+ "Websocket opened FIN")
 	#Thread(target=run).start()
 	#run()
 
 def send_message_gizwitz( mess ):
+	global _heartbeat
+	_heartbeat = time.time()
 	def SendMessage(*args):
 		logging.debug('send_message_gizwitz' + mess)
 		_websocket.send(mess)
-		#_heartbeat = time.time()
 	Thread(target=SendMessage).start()
 
 
