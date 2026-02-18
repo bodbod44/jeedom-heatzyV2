@@ -40,16 +40,24 @@ def listen():
 
 def read_socket():
 	if not JEEDOM_SOCKET_MESSAGE.empty():
-		logging.debug("Message received in socket JEEDOM_SOCKET_MESSAGE")
+		logging.debug("read_socket - Message received in socket JEEDOM_SOCKET_MESSAGE")
 		message = json.loads(JEEDOM_SOCKET_MESSAGE.get().decode('utf-8'))
 		if 'apikey' in message and 'message' in message:
 			if message['apikey'] == _apikey:
-				logging.debug("message valide : %s", message)
-				send_message_gizwitz( json.dumps( message['message']) )
+				logging.debug("read_socket - message valide : %s", message)
+				if message['message']['cmd'] == 'login_req' or message['message']['cmd'] == 'c2s_read' or message['message']['cmd'] == 'c2s_write' :
+					ws_gizwitz_send_message( json.dumps( message['message']) )
+				if message['message']['cmd'] == 'stop' :
+					shutdown()
+				if message['message']['cmd'] == 'log_level' :
+					logging.debug("read_socket - changement du niveau de log - " + message['message']['log_level'])
+					jeedom_utils.set_log_level( message['message']['log_level'] )
+				else:
+					logging.error("read_socket - Commande non trouvée : %s", message)
 			else:
-				logging.error("apikey invalide: %s", message)
+				logging.error("read_socket - apikey invalide: %s", message)
 		else:
-			logging.error("Invalid message: %s", message)
+			logging.error("read_socket - Invalid message: %s", message)
 
 
 def send_socket( mess ):
@@ -99,13 +107,13 @@ def shutdown():
 def start_websocket():
 	logging.debug("Starting websocket with the container")
 	websocket.enableTrace(False)
-	host = "ws://" + _ws_url + ":" + _ws_port + "/ws/app/v1"
+	host = "ws://" + _ws_gizwitz_url + ":" + _ws_gizwitz_port + "/ws/app/v1"
 
 	_ws = websocket.WebSocketApp(host,
-                                on_open = on_open,
-                                on_message=on_message_gizwits,
-                                on_error=on_error,
-                                on_close=on_close)
+                                on_open    = ws_gizwitz_on_open,
+                                on_message = ws_gizwits_on_message,
+                                on_error   = ws_gizwits_on_error,
+                                on_close   = ws_gizwits_on_close )
 	#_ws.run_forever()
 	#th = threading.Thread(target=_ws.run_forever)
 	#th.daemon = True
@@ -114,68 +122,115 @@ def start_websocket():
 	Thread(target=_ws.run_forever, daemon=True ).start()
 	logging.info("Websocket started")
 	
-# lecture du websocket
-def on_message_gizwits(ws, msg):
-	#global _heartbeat
-	#_heartbeat = time.time()
+# lecture du websocket (récéptino d'un message gizwits)
+def ws_gizwits_on_message(ws, msg):
+	global _ws_gizwitz_ws_status
+	global _ws_gizwitz_login_status
+	global _ws_gizwitz_heartbeat_receive
+	_ws_gizwitz_heartbeat_receive = time.time()
 	jsonMsg = json.loads(msg)
 	
+	# retour du login
 	if jsonMsg['cmd'] == 'login_res' and 'success' in jsonMsg['data']:
 		if jsonMsg['data']['success'] == True :
-			logging.debug('on_message_gizwits - Login OK : ' + msg)
-			#send_socket( vraimess )
+			_ws_gizwitz_login_status = 0
+			logging.debug('ws_gizwits_on_message - Login OK : ' + msg)
 		else:
-			logging.debug('on_message_gizwits - ERROR Login KO : ' + msg)
-	elif jsonMsg['cmd'] == 's2c_noti':
-		logging.debug('on_message_gizwits - message notification reçu : ' + msg)
-		if 'did' in jsonMsg['data'] and 'attrs' in jsonMsg['data']:
+			_ws_gizwitz_login_status += 1
+			logging.debug('ws_gizwits_on_message - ERROR Login KO : ' + msg)
+	# notification de changement depuis gizwits
+	elif jsonMsg['cmd'] == 's2c_noti' or jsonMsg['cmd'] == 's2c_online_status':
+		logging.debug('ws_gizwits_on_message - message notification reçu : ' + msg)
+		if 'did' in jsonMsg['data']:
 			send_socket( msg )
+	# retour d'une erreur (format, login KO ...)
 	elif jsonMsg['cmd'] == 's2c_invalid_msg' and jsonMsg['data']['error_code'] > 0:
-		logging.debug('on_message_gizwits - ERROR : ' + str(jsonMsg['data']['error_code']) + ' - ' + jsonMsg['data']['msg'])
-		logging.debug('on_message_gizwits - '+ 'keep_running = ' + str(_websocket.keep_running) )
+		if jsonMsg['data']['error_code'] == 1003 or  jsonMsg['data']['error_code'] == 1009:
+			_ws_gizwitz_login_status += 1
+			logging.debug('ws_gizwits_on_message - '+ 'ws_gizwits login KO please login again status=' + str(_ws_gizwitz_login_status) + ' (' + str(jsonMsg['data']['error_code']) + ') - ' + msg )
+			# si login KO, on relance
+			ws_gizwitz_send_login()
+		elif jsonMsg['data']['error_code'] == 1011:
+			_ws_gizwitz_ws_status = False
+			logging.debug('ws_gizwits_on_message - ' + 'ws_gizwits websocket déconnecté goodbye (' + str(jsonMsg['data']['error_code']) + ') - ' + msg )
+		else:
+			logging.debug('ws_gizwits_on_message - ERROR : ' + str(jsonMsg['data']['error_code']) + ' - ' + jsonMsg['data']['msg'] + 'mess:' + msg )
+			logging.debug('ws_gizwits_on_message - '+ 'keep_running = ' + str(_websocket.keep_running) )
+	# retour du ping
 	elif jsonMsg['cmd'] == 'pong':
-		logging.debug('on_message_gizwits - PING OK - ' + msg)
+		logging.debug('ws_gizwits_on_message - PING OK - ' + msg)
 	else:
-		logging.debug('on_message_gizwits - message non connu : ' + msg)
+		logging.error('ws_gizwits_on_message - message non connu : ' + msg)
 
-def on_error(ws, error):
-	logging.error('on_error: '+ str(error) )
-	logging.debug('on_error: '+ 'keep_running = ' + str(_websocket.keep_running) )
+def ws_gizwits_on_error(ws, error):
+	logging.error('ws_gizwits_on_error: error '+ str(error) + '-' + 'keep_running=' + str(_websocket.keep_running) )
 
-def on_close(ws, close_status_code, close_msg):
-	logging.debug('on_close: '+ "Websocket closed")
-	logging.debug('on_close: '+ 'keep_running = ' + str(_websocket.keep_running) )
+def ws_gizwits_on_close(ws, close_status_code, close_msg):
+	logging.debug('ws_gizwits_on_close: ' + 'Websocket closed (keep_running=' + str(_websocket.keep_running) + ')')
+	shutdown()
 
-def on_open(ws):
+def ws_gizwitz_on_open(ws):
 	global _websocket
 	_websocket = ws
-	logging.debug('on_open: '+ "Websocket opened")
-	logging.debug('on_open: '+ 'keep_running = ' + str(_websocket.keep_running) )
-	
-	message = '{"cmd": "login_req", "data": { "appid": "' + _heatzy_appid + '", "uid": "' + _heatzy_uid + '", "token": "' + _heatzy_token + '", "p0_type": "attrs_v4", "heartbeat_interval": 180 , "auto_subscribe": true }}'
-	send_message_gizwitz(message)
+	logging.debug('ws_gizwitz_on_open: ' + 'Websocket open... (keep_running=' + str(_websocket.keep_running) + ')')
+
+	global _ws_gizwitz_ws_status
+	_ws_gizwitz_ws_status = True
+
+	ws_gizwitz_send_login()
 	
 	def ping(*args):
 		logging.debug('ping: '+ 'keep_running = ' + str(_websocket.keep_running) )
+		status_receive = True
 		while _websocket.keep_running:
-			if (time.time() - _heartbeat) > 60:
-				#logging.debug('_heartbeat : ' + str(_heartbeat) + ' - ' + str(time.time() - _heartbeat) + ' - ' + time.ctime(_heartbeat) + ' - ' + str( (time.time() - _heartbeat) > 60 ) )
-				send_message_gizwitz( '{"cmd": "ping"}' )
-			time.sleep(10)
-	Thread(target=ping).start()
+			if (time.time() - _ws_gizwitz_heartbeat_send) > _ws_gizwitz_heartbeat_ping:
+				logging.debug('ping: '+ '_ws_gizwitz_ws_status=' + str(_ws_gizwitz_ws_status) )
+				ws_gizwitz_send_message( '{"cmd": "ping"}' )
+			time.sleep(1)
+			if status_receive == True and (time.time() - _ws_gizwitz_heartbeat_receive) > (_ws_gizwitz_heartbeat_ping + 20):
+				logging.info('ping: '+ 'Hummm, je ne vois plus de communication' )
+				status_receive = False
+			if status_receive == False and (time.time() - _ws_gizwitz_heartbeat_receive) < (_ws_gizwitz_heartbeat_ping + 20):
+				logging.info('ping: '+ 'Hummm, la connexion semble rétablie' )
+				status_receive = True
+				
+			time.sleep(9)
+	Thread(target=ping).start()	
+	logging.debug('ws_gizwitz_on_open: '+ "Websocket opened")
+
+
+def ws_gizwitz_send_message( mess , force = False ):
+	global _ws_gizwitz_ws_status
+	#global _ws_gizwitz_login_status
+	if (not _ws_gizwitz_ws_status or _ws_gizwitz_login_status > 0) and not force:
+		if _ws_gizwitz_ws_status and _ws_gizwitz_login_status > 0:
+			logging.error('ws_gizwitz_send_message: login KO' )
+			logging.error('ws_gizwitz_send_message: nouvelle tentative login' )
+			if _ws_gizwitz_login_status < 2:
+				ws_gizwitz_send_login()
+				time.sleep(2)
+		else:
+			logging.error('ws_gizwitz_send_message: WebSocket KO' )
+			return
 	
-	logging.debug('on_open: '+ "Websocket opened FIN")
-	#Thread(target=run).start()
-	#run()
-
-def send_message_gizwitz( mess ):
-	global _heartbeat
-	_heartbeat = time.time()
-	def SendMessage(*args):
-		logging.debug('send_message_gizwitz' + mess)
+	global _ws_gizwitz_heartbeat_send
+	_ws_gizwitz_heartbeat_send = time.time()
+	def SendMessageToGizwits(*args):
+		logging.debug('ws_gizwitz_send_message - SendMessageToGizwits: ' + mess)
 		_websocket.send(mess)
-	Thread(target=SendMessage).start()
+	Thread(target=SendMessageToGizwits).start()
 
+def ws_gizwitz_send_login():
+	message = ( '{"cmd": "login_req",'
+				'"data": { "appid": "' + _heatzy_appid + '"'
+						', "uid": "'   + _heatzy_uid + '"'
+                    	', "token": "' + _heatzy_token + '"'
+                    	', "p0_type": "attrs_v4"'
+                    	', "heartbeat_interval": ' + str( _ws_gizwitz_ws_gizwitz_heartbeat_interval ) + ''
+						', "auto_subscribe": true }'
+				 '}'
+				)
+	ws_gizwitz_send_message( message , True)
 
 _log_level = 'debug'
 _socket_port = 55099
@@ -185,9 +240,15 @@ _pidfile = '/tmp/heatzyd.pid'
 _apikey = ''
 _callback = ''
 _cycle = 0.3
-_ws_url = 'eusandbox.gizwits.com'
-_ws_port = '8080'
-_heartbeat = time.time()
+_ws_gizwitz_url = 'eusandbox.gizwits.com'
+_ws_gizwitz_port = '8080'
+_ws_gizwitz_heartbeat_send = time.time()
+_ws_gizwitz_heartbeat_receive = time.time()
+_ws_gizwitz_ws_status = False
+#_ws_gizwitz_ws_status_receive = False
+_ws_gizwitz_login_status = 0
+_ws_gizwitz_heartbeat_ping = 60
+_ws_gizwitz_ws_gizwitz_heartbeat_interval = 600
 
 parser = argparse.ArgumentParser(description='Desmond Daemon for Jeedom plugin')
 parser.add_argument("--device", help="Device", type=str)
@@ -228,14 +289,12 @@ _socket_port = int(_socket_port)
 jeedom_utils.set_log_level(_log_level)
 
 logging.info('Start demond %s' , time.ctime())
-logging.info('Start demond %s' , time.time())
-logging.info('Start demond %s' , time.ctime(time.time()))
-logging.info('Log level: %s', _log_level)
-logging.info('Socket port: %s', _socket_port)
-logging.info('Socket host: %s', _socket_host)
-logging.info('PID file: %s', _pidfile)
-logging.info('Apikey: %s', _apikey)
-logging.info('Device: %s', _device)
+logging.debug('Log level: %s', _log_level)
+logging.debug('Socket port: %s', _socket_port)
+logging.debug('Socket host: %s', _socket_host)
+logging.debug('PID file: %s', _pidfile)
+logging.debug('Apikey: %s', _apikey)
+logging.debug('Device: %s', _device)
 
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
@@ -249,7 +308,6 @@ try:
 	# my_jeedom_serial = jeedom_serial(device=_device)  # if you need jeedom_serial
 	my_jeedom_socket = jeedom_socket(port=_socket_port, address=_socket_host)
     # https://github.com/lxrootard/eufy/blob/322ff841b71cd7db0e901caca8706fa4ce7452ed/resources/eufyd/eufyd.py#L287
-	# my_jeedom_com = jeedom_com(_apikey, _callback)
 	
 	# Start WebSocket connection with the container
 	start_websocket()

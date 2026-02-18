@@ -2,10 +2,22 @@
 - TODO : Commande Alerte fenetre ouverte (deja possible en scenario) => A faire
 - TODO : Alerte hors ligne (9042) => A faire
 - TODO
-  - Gestion des deconnexions / relance)
-  - Redesnce du KO demon dans jeedom
+  - Gestion des deconnexions / relance
   - Gestion des cas particuliers (robustesse)
+  - Changement de token - Verifier demarrage avec un token KO
+  - Pourquoi le demon est OK lorsque par d'internet au démarrage
 
+# 18/02/2026 (dev)
+- Demon
+  - Récupération du statut du module (OnLine / OffLine)
+  - Verification de websocket en ligne ou perdue (si pa de retour depuis x secondes)
+  - En cas de changement de niveau de log jeedom, le demon s'arrête (redémarrage auto au bout de qq minutes)
+  - En cas de changement de token, le demon s'arrête (redémarrage auto au bout de qq minutes)
+  
+# 17/02/2026 (dev)
+- Demon
+  - Gestion des arrêts/relances
+  
 # 16/02/2026 (dev)
 - Demon
   - Finalisation des allers-retours jeedom<->demon<->gizwits
