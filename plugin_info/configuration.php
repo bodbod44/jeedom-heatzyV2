@@ -64,13 +64,13 @@ if (!isConnect()) {
                 </select>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="socketport">
             <label class="col-lg-4 control-label">{{Port demon}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Port utilisé pour le demon}}"></i></sup></label>
             <div class="col-lg-6">
                 <input type="text" class="configKey form-control" data-l1key="socketport" style="width:100px;" />
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="Timeout_value">
             <label class="col-lg-4 control-label">{{Timeout sur les connexions euapi.gizwits.com}}</label>
             <div class="col-lg-6">             
                 <select class="configKey form-control" data-l1key="Timeout_value" title="Timeout sur les connexions euapi.gizwits.com (60sec par défaut)" style="width:100px;">
@@ -83,7 +83,7 @@ if (!isConnect()) {
                 </select>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="Freq_value">
             <label class="col-lg-4 control-label">{{Frequence de rafaichissement des commandes infos}}</label>
             <div class="col-lg-6">             
                 <select class="configKey form-control" data-l1key="Freq_value" title="Fréquence de rafaichissement des commandes depuis Heatzy (2 min par défaut)" style="width:100px;">
@@ -96,7 +96,7 @@ if (!isConnect()) {
                 </select>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="Freq_status">
             <label class="col-lg-4 control-label">{{Frequence de rafaichissement du statut}}</label>
             <div class="col-lg-6">
                 <select class="configKey form-control" data-l1key="Freq_status" title="Fréquence de rafaichissement des statuts du module depuis Heatzy (30 min par défaut)"  style="width:100px;">
@@ -110,10 +110,18 @@ if (!isConnect()) {
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Synchroniser}}</label>
+            <label class="col-lg-4 control-label">{{Synchroniser}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Récupère les modules présent sur le compte Heatzy et créer les commandes associéess}}"></i></sup></label>
             <div class="col-lg-2">
                 <a class="btn btn-info bt_syncheatzy"><i id='syncheatzy' class="fa fa-refresh"></i>
                 Synchroniser<span id="nbheatzy"></span>
+                </a>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Création des commandes par apprentissage}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Création des commandes par reconnaissance et apprentissage. Attention, cela peut prendre plusieurs minutes !!!}}"></i></sup></label>
+            <div class="col-lg-2">
+                <a class="btn btn-info bt_syncheatzybylearn"><i id='syncheatzybylearn' class="fa fa-refresh"></i>
+                Création des commandes par apprentissage<span id="nbheatzybylearn"></span>
                 </a>
             </div>
         </div>
@@ -152,4 +160,76 @@ $('.bt_syncheatzy').on('click',function(){
       
     $('#syncheatzy').removeClass('fa-spin');
 });
+
+$('.bt_syncheatzybylearn').on('click',function(){
+      $('#div_alert').showAlert({message: 'Synchronisation en cours. Ne pas toucher au plugin pendant 2min', level: 'info'});
+      
+      $('#syncheatzybylearn').addClass('fa-spin');
+      
+      $.ajax({// fonction permettant de faire de l'ajax
+      type: "POST", // méthode de transmission des données au fichier php
+      url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
+      data: {
+        action: "SyncheatzyByLearning",
+      },
+      dataType: 'json',
+      global: false,
+      error: function (request, status, error) {
+        handleAjaxError(request, status, error);
+      },
+      success: function (data) { // si l'appel a bien fonctionné
+      if (data.state != 'ok') {
+        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+        return;
+      }
+      else
+        $('#div_alert').showAlert({message: 'Synchronisation de '+data.result+' module(s)', level: 'info'});
+        $('#nbheatzybylearn').empty();
+        $('#nbheatzybylearn').append(' : '+data.result+' module(s)');
+    }
+      });
+      
+    $('#syncheatzy').removeClass('fa-spin');
+});
+
+//$('select[data-l1key="log::level::heatzy"]').on('change', function() {
+//$('a["bt_savePluginLogConfig"]').on('click', function() { 
+  $('a#bt_savePluginLogConfig').on('click', function() {
+   // $('input#[data-l1key="log::level::heatzy"]').on('click', function() {
+    //var level = $(this).val();
+    //alert('Changement niveau de log détecté ' + '<?php echo log::convertLogLevel(log::getLogLevel("heatzy")).'-'.log::getLogLevel("heatzy") ?>' );
+    alert( $('input[data-l1key="log::level::heatzy"]:checked').length ) ;
+    alert( $('input[data-l1key="log::level::heatzy"]:checked').val() ) ;//:checked').val();
+  $('#div_alert').showAlert({message: 'Changement niveau de log détecté'});
+
+    // Action immédiate
+});
+
+
+$('[data-l1key="API_Type"]').on('change',function(){
+	//alert( $('select[data-l1key="API_Type"]').value() ) ;
+  if( $('select[data-l1key="API_Type"]').value() == "WS" ){
+    $('div[id="socketport"]'   ).attr('style', 'display:xxx;') ;
+	$('div[id="Timeout_value"]').attr('style', 'display:none;') ;
+    $('div[id="Freq_value"]'   ).attr('style', 'display:none;') ;
+    $('div[id="Freq_status"]'  ).attr('style', 'display:none;') ;
+  }
+  else{
+    $('div[id="socketport"]'   ).attr('style', 'display:none;') ;
+	$('div[id="Timeout_value"]').attr('style', 'display:xxx;') ;
+    $('div[id="Freq_value"]'   ).attr('style', 'display:xxx;') ;
+    $('div[id="Freq_status"]'  ).attr('style', 'display:xxx;') ;
+  }
+});
+
+jeedom.config.load({
+    configuration: 'log::level::heatzy',
+    success: function(level) {
+        console.log('Niveau de log sélectionné :', level);
+    },
+    error: function(error) {
+        console.error(error);
+    }
+});
+
 </script>

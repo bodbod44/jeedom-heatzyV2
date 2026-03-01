@@ -67,7 +67,10 @@ function addCmdToTable(_cmd) {
          init(_cmd.logicalId) == 'WindowSwitchOn' ||
          init(_cmd.logicalId) == 'WindowSwitchOff' ||
          init(_cmd.logicalId) == 'derog_time_vacances' ||
-         init(_cmd.logicalId) == 'derog_time_boost'
+         init(_cmd.logicalId) == 'derog_time_boost' ||
+         init(_cmd.logicalId) == 'cur_power' ||
+		 init(_cmd.logicalId) == 'cur_current' ||
+		 init(_cmd.logicalId) == 'cur_voltage'
        )
         class_inutile = 'class_ExclureBodbod' ;
     if ( init(_cmd.logicalId) != 'refresh')

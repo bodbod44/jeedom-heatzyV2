@@ -127,6 +127,7 @@ def ws_gizwits_on_message(ws, msg):
 	global _ws_gizwitz_ws_status
 	global _ws_gizwitz_login_status
 	global _ws_gizwitz_heartbeat_receive
+	global _nb_appels
 	_ws_gizwitz_heartbeat_receive = time.time()
 	jsonMsg = json.loads(msg)
 	
@@ -143,6 +144,17 @@ def ws_gizwits_on_message(ws, msg):
 		logging.debug('ws_gizwits_on_message - message notification reçu : ' + msg)
 		if 'did' in jsonMsg['data']:
 			send_socket( msg )
+			MonDid = jsonMsg['data']['did']
+			logging.info( "did=" + MonDid )
+			if 'Cpt' in _nb_appels:
+				_nb_appels['Cpt'] += 1
+			else:
+				_nb_appels['Cpt'] = 1
+			if MonDid in _nb_appels:
+				_nb_appels[MonDid] += 1
+			else:
+				_nb_appels[MonDid] = 1
+			logging.info( _nb_appels )
 	# retour d'une erreur (format, login KO ...)
 	elif jsonMsg['cmd'] == 's2c_invalid_msg' and jsonMsg['data']['error_code'] > 0:
 		if jsonMsg['data']['error_code'] == 1003 or  jsonMsg['data']['error_code'] == 1009:
@@ -249,6 +261,7 @@ _ws_gizwitz_ws_status = False
 _ws_gizwitz_login_status = 0
 _ws_gizwitz_heartbeat_ping = 60
 _ws_gizwitz_ws_gizwitz_heartbeat_interval = 600
+_nb_appels = {}
 
 parser = argparse.ArgumentParser(description='Desmond Daemon for Jeedom plugin')
 parser.add_argument("--device", help="Device", type=str)
