@@ -25,32 +25,47 @@ try {
 	}
 
 	ajax::init();
+  
+  	require_once dirname(__FILE__) . '/../class/heatzy.class.php';
 
+	if (init('action') == 'deamon_start') {
+		ajax::success( heatzy::deamon_start() );
+	}
+
+	if (init('action') == 'deamon_stop') {
+		ajax::success( heatzy::deamon_stop() );
+	} 
+  
+	if (init('action') == 'deamon_ss') {
+		ajax::success( heatzy::deamon_stop() );	
+      	ajax::success( heatzy::deamon_start() );
+	}
+  
 	if (init('action') == 'SyncHeatzy') {
-		ajax::success( heatzy::Synchronize( true ) );
+		ajax::success( Synchro::SynchronizeHeatzy( true ) );
 	}
   
 	if (init('action') == 'SyncheatzyByLearning') {
-		ajax::success( heatzy::SynchronizeByLearning() );
+		ajax::success( Synchro::SynchronizeByLearning() );
 	}
   
 	if (init('action') == 'GetSchedulerList') {
-		require_once dirname(__FILE__) . '/../class/heatzy.class.php';
+		//require_once dirname(__FILE__) . '/../class/heatzy.class.php';
 		ajax::success( HttpGizwits::GetSchedulerList( config::byKey('UserToken','heatzy','none'), init('Did'), init('Skip'), init('Limit') ) );
 	}
   
     if (init('action') == 'CreateScheduler') {
-		require_once dirname(__FILE__) . '/../class/heatzy.class.php';
+		//require_once dirname(__FILE__) . '/../class/heatzy.class.php';
 		ajax::success( HttpGizwits::CreateScheduler(config::byKey('UserToken','heatzy','none'), init('Did'), json_decode(init('Param')) ) );
 	}
 
 	if (init('action') == 'UpdateScheduler') {
-		require_once dirname(__FILE__) . '/../class/heatzy.class.php';
+		//require_once dirname(__FILE__) . '/../class/heatzy.class.php';
 		ajax::success( HttpGizwits::UpdateScheduler(config::byKey('UserToken','heatzy','none'), init('Did'), init('Id'), json_decode(init('Param')) ) );
 	}
 
 	if (init('action') == 'DeleteScheduler') {
-		require_once dirname(__FILE__) . '/../class/heatzy.class.php';
+		//require_once dirname(__FILE__) . '/../class/heatzy.class.php';
 		ajax::success( HttpGizwits::DeleteScheduler(config::byKey('UserToken','heatzy','none'), init('Did'), init('Id') ) );
     }
 

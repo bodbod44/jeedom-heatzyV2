@@ -278,8 +278,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 						<div class="col-sm-6">
 							<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title=""  style="width:300px;" onchange="AffichageTemplateBodbod()">
 								<option value="0">{{Template heatzy bodbod}}</option>
-								<option value="1">{{Template heatzy l3flo (bientôt obselète)}}</option>
-								<option value="2">{{Template jeedom}}</option>
+								<option value="1">{{Template jeedom}}</option>
 							</select>
 						</div>
 					</div>

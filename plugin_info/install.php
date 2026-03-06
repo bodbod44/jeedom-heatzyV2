@@ -188,13 +188,25 @@ function heatzy_update() {
         $cmd = $eqLogic->getCmd(null, 'Confort-1'); if (is_object($cmd)){ $cmd->setName(__('Mode Confort-1', __FILE__)) ; $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'Confort-2'); if (is_object($cmd)){ $cmd->setName(__('Mode Confort-2', __FILE__)) ; $cmd->save(); }
       
-    } // foreach
+      	// Abandon du template l3flo - mettre 0 (template bodbod) si vide ou 1 (l3flo)
+        if( $eqLogic->getConfiguration('TypeTemplate', '1') == '1' ){
+			$this->setConfiguration('TypeTemplate', '0');
+			$this->save() ;
+        }      
+      
+    } // foreach eqLogics
+  
+  	// Force le type de connexion (API/WS) si non valorisé
+	if( config::byKey('API_Type','heatzy','') == '' ){
+		config::save('API_Type'  , 'REST'  , 'heatzy');
+	}
     
-   log::add('heatzy', 'debug',  __METHOD__.': heatzy_remove');
-   $cron = cron::byClassAndFunction('heatzy', 'Login');
-   if (is_object($cron)) {
-      $cron->remove();
-   }
+	log::add('heatzy', 'debug',  __METHOD__.': heatzy_remove');
+	$cron = cron::byClassAndFunction('heatzy', 'Login');
+	if (is_object($cron)) {
+		$cron->remove();
+	}
+  
 }
 
 function heatzy_remove() {

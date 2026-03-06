@@ -34,7 +34,7 @@ try {
             
             switch( $result['cmd'] ){
                 case 's2c_noti'; // Notification de changement de datapoint
-                    $eqLogic->updateHeatzyDid( '' , $result2 , false) ;
+                    $eqLogic->updateHeatzyDid( $result2 , false) ;
                     break;
                 case 's2c_online_status'; // Notification de changement de statut (online/offline)
                     //{"cmd":"s2c_online_status","data":{"did":"xxxxxxxxxxx","passcode":"xxxxxxxx","mac":"xxxxxxxxxx","online":true}}

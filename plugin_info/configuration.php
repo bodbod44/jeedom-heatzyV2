@@ -113,12 +113,12 @@ if (!isConnect()) {
             <label class="col-lg-4 control-label">{{Synchroniser}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Récupère les modules présent sur le compte Heatzy et créer les commandes associéess}}"></i></sup></label>
             <div class="col-lg-2">
                 <a class="btn btn-info bt_syncheatzy"><i id='syncheatzy' class="fa fa-refresh"></i>
-                Synchroniser<span id="nbheatzy"></span>
+                Synchroniser avec le compte Heatzy<span id="nbheatzy"></span>
                 </a>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Création des commandes par apprentissage}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Création des commandes par reconnaissance et apprentissage. Attention, cela peut prendre plusieurs minutes !!!}}"></i></sup></label>
+            <label class="col-lg-4 control-label">{{Création des commandes}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Création des commandes par reconnaissance et apprentissage. Attention, cela peut prendre plusieurs minutes !!!}}"></i></sup></label>
             <div class="col-lg-2">
                 <a class="btn btn-info bt_syncheatzybylearn"><i id='syncheatzybylearn' class="fa fa-refresh"></i>
                 Création des commandes par apprentissage<span id="nbheatzybylearn"></span>
@@ -131,78 +131,97 @@ if (!isConnect()) {
 <script>
 
 $('.bt_syncheatzy').on('click',function(){
-      $('#div_alert').showAlert({message: 'Synchronisation en cours. Ne pas toucher au plugin pendant 2min', level: 'info'});
-      
-      $('#syncheatzy').addClass('fa-spin');
-      
-      $.ajax({// fonction permettant de faire de l'ajax
-      type: "POST", // méthode de transmission des données au fichier php
-      url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
-      data: {
-        action: "SyncHeatzy",
-      },
-      dataType: 'json',
-      global: false,
-      error: function (request, status, error) {
-        handleAjaxError(request, status, error);
-      },
-      success: function (data) { // si l'appel a bien fonctionné
-      if (data.state != 'ok') {
-        $('#div_alert').showAlert({message: data.result, level: 'danger'});
-        return;
-      }
-      else
-        $('#div_alert').showAlert({message: 'Synchronisation de '+data.result+' module(s)', level: 'info'});
-        $('#nbheatzy').empty();
-        $('#nbheatzy').append(' : '+data.result+' module(s)');
-    }
-      });
-      
+    $('#div_alert').showAlert({message: 'Synchronisation en cours...', level: 'info'});
+
+    $('#syncheatzy').addClass('fa-spin');
+
+    $.ajax({// fonction permettant de faire de l'ajax
+        type: "POST", // méthode de transmission des données au fichier php
+        url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
+        data: {
+            action: "SyncHeatzy",
+        },
+        dataType: 'json',
+        global: false,
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) { // si l'appel a bien fonctionné
+            if (data.state != 'ok') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                return;
+            }
+            else
+                $('#div_alert').showAlert({message: 'Synchronisation de ' + data.result + ' module(s)', level: 'info'});
+            $('#nbheatzy').empty();
+            $('#nbheatzy').append(' : ' + data.result + ' module(s)');
+        }
+    });
+
     $('#syncheatzy').removeClass('fa-spin');
 });
 
 $('.bt_syncheatzybylearn').on('click',function(){
-      $('#div_alert').showAlert({message: 'Synchronisation en cours. Ne pas toucher au plugin pendant 2min', level: 'info'});
-      
-      $('#syncheatzybylearn').addClass('fa-spin');
-      
-      $.ajax({// fonction permettant de faire de l'ajax
-      type: "POST", // méthode de transmission des données au fichier php
-      url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
-      data: {
-        action: "SyncheatzyByLearning",
-      },
-      dataType: 'json',
-      global: false,
-      error: function (request, status, error) {
-        handleAjaxError(request, status, error);
-      },
-      success: function (data) { // si l'appel a bien fonctionné
-      if (data.state != 'ok') {
-        $('#div_alert').showAlert({message: data.result, level: 'danger'});
-        return;
-      }
-      else
-        $('#div_alert').showAlert({message: 'Synchronisation de '+data.result+' module(s)', level: 'info'});
-        $('#nbheatzybylearn').empty();
-        $('#nbheatzybylearn').append(' : '+data.result+' module(s)');
-    }
-      });
-      
+    $('#div_alert').showAlert({message: 'Vérification en cours...', level: 'info'});
+
+    $('#syncheatzybylearn').addClass('fa-spin');
+
+    $.ajax({// fonction permettant de faire de l'ajax
+        type: "POST", // méthode de transmission des données au fichier php
+        url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
+        data: {
+            action: "SyncheatzyByLearning",
+        },
+        dataType: 'json',
+        global: false,
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) { // si l'appel a bien fonctionné
+            if (data.state != 'ok') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                return;
+            }
+            else
+                $('#div_alert').showAlert({message: 'Synchronisation de ' + data.result + ' module(s)', level: 'info'});
+            $('#nbheatzybylearn').empty();
+            $('#nbheatzybylearn').append(' : ' + data.result + ' module(s)');
+        }
+    });
+
     $('#syncheatzy').removeClass('fa-spin');
 });
 
+/*
+function sleep(ms) {
+  const start = Date.now();
+  while (Date.now() - start < ms) {}
+}*/
+
 //$('select[data-l1key="log::level::heatzy"]').on('change', function() {
 //$('a["bt_savePluginLogConfig"]').on('click', function() { 
-  $('a#bt_savePluginLogConfig').on('click', function() {
-   // $('input#[data-l1key="log::level::heatzy"]').on('click', function() {
-    //var level = $(this).val();
-    //alert('Changement niveau de log détecté ' + '<?php echo log::convertLogLevel(log::getLogLevel("heatzy")).'-'.log::getLogLevel("heatzy") ?>' );
-    alert( $('input[data-l1key="log::level::heatzy"]:checked').length ) ;
-    alert( $('input[data-l1key="log::level::heatzy"]:checked').val() ) ;//:checked').val();
-  $('#div_alert').showAlert({message: 'Changement niveau de log détecté'});
+$('a#bt_savePluginLogConfig').on('click', function() { 
 
-    // Action immédiate
+  $('#div_alert').showAlert({message: 'Relance du demon...', level: 'info'});
+  sleep( 3000 ) ;
+    $.ajax({// fonction permettant de faire de l'ajax
+        type: "POST", // méthode de transmission des données au fichier php
+        url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
+        data: {
+            action: "deamon_start",
+        },
+        dataType: 'json',
+        global: false,
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) { // si l'appel a bien fonctionné
+            if (data.state != 'ok') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                return;
+            }
+        }
+    });
 });
 
 
