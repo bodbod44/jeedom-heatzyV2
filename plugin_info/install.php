@@ -193,6 +193,11 @@ function heatzy_update() {
 			$this->setConfiguration('TypeTemplate', '0');
 			$this->save() ;
         }      
+      	// Suppression d'une ancienne config plus utilisée
+        if( $eqLogic->getConfiguration('isTemplateCommun', 'xxx') != 'xxx' ){
+			$this->setConfiguration('isTemplateCommun', null);
+			$this->save() ;
+        }      
       
     } // foreach eqLogics
   

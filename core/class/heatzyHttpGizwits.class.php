@@ -15,7 +15,7 @@ class HttpGizwits {
     
     public static $_MaxError = 200 ;
     
-    public static $DebugExport = false ;
+    public static $DebugExport = True ;
 
     /*     * ***********************Methode static*************************** */
     /**

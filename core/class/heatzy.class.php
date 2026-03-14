@@ -60,7 +60,7 @@ class heatzy extends eqLogic {
         $return = array();
         $return['log'] = __CLASS__;
         $return['state'] = 'nok';
-        $pid_file = jeedom::getTmpFolder(__CLASS__) . '/heatzyd.pid';
+        $pid_file = jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
         if (file_exists($pid_file)) {
             if (@posix_getsid(trim(file_get_contents($pid_file)))) {
                 $return['state'] = 'ok';
@@ -136,7 +136,7 @@ class heatzy extends eqLogic {
         $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55099'); // port par défaut à modifier
         $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'http:127.0.0.1:port:comp') . '/plugins/heatzy/core/php/jeeHeatzy.php'; // chemin de la callback url à modifier (voir ci-dessous)
         $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
-        $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/heatzyd.pid';
+        $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
         $cmd .= ' --appid '.HttpGizwits::$HeatzyAppId ;
         $cmd .= ' --token '.config::byKey('UserToken', __CLASS__, 'xxx-token-xxx');
         $cmd .= ' --uid '.config::byKey('uid', __CLASS__, 'xxx-uid-xxx');
@@ -702,7 +702,7 @@ class heatzy extends eqLogic {
       	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') Device='.$tab_Devices[$product_key]['product_name'] ) ;
         
         foreach ($tab_Devices[$product_key]['cmds'] as $cmd) {
-          log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') Cmds='.$cmd ) ;
+          //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') Cmds='.$cmd ) ;
           $this->CreateCmd( $cmd ) ;
         }
           
@@ -727,10 +727,11 @@ class heatzy extends eqLogic {
             return false ;
         }
       
-      $tab_cmds = json_decode($json, true);       
+      $tab_cmds = json_decode($json, true);
+      if( $tab_cmds === false ) return false ;
 
-      log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Recherche de la commande '.$commande.'...' );
-      $cmd = $this->getCmd( null, $commande );
+      //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Recherche de la commande '.$commande.'...' );
+      $cmd = $this->getCmd( null, $tab_cmds[$commande]['LogicalId'] );
       if (!is_object($cmd)) {
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Commande '.$commande.' non trouvé. On va créer' );
         $cmd = new heatzyCmd();
@@ -749,6 +750,11 @@ class heatzy extends eqLogic {
         if($tab_cmds[$commande]['Config_tempHL']      !== null) $cmd->setConfiguration('tempHL'  , $tab_cmds[$commande]['Config_tempHL']  );
         if($tab_cmds[$commande]['setValue']           !== null) $cmd->setValue( $this->getCmd( null, $tab_cmds[$commande]['setValue'] )->getId() ) ;
         if($tab_cmds[$commande]['Display_param_step'] !== null) $cmd->setDisplay('parameters', ['step' => $tab_cmds[$commande]['Display_param_step'] ]);
+        
+        //$cmd->setTemplate('dashboard', 'default');
+        //$cmd->setTemplate('mobile', 'default');
+        //$cmd->setGeneric_type('GENERIC_INFO');
+        //$cmd->setEventOnly(1);
                 
         $cmd->setEqLogic_id(   $this->getId() );
         $cmd->setIsHistorized( $tab_cmds[$commande]['IsHistorized'] );

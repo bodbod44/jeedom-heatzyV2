@@ -1,6 +1,6 @@
 {
-	 "Confort-2":      { "prerequis":["mode"]       , "consigne":{"mode":"cft2"}                  , "after":{"mode":"stop"}  , "verif":true  , "create":["Confort-1"          ,"Confort-2"]}
-	,"derog_vacances": { "prerequis":["derog_mode"] , "consigne":{"derog_mode":1,"derog_time":1 } , "after":{"derog_mode":0} , "verif":false , "create":["derog_time_vacances","derog_vacances"]}
-	,"derog_boost":    { "prerequis":["derog_mode"] , "consigne":{"derog_mode":2,"derog_time":30} , "after":{"derog_mode":0} , "verif":false , "create":["derog_time_boost"   ,"derog_boost"]}
-	,"detect_presence":{ "prerequis":["derog_mode"] , "consigne":{"derog_mode":3}                 , "after":{"derog_mode":0} , "verif":false , "create":["derog_presence"     ,"detect_presence"]}
+	 "Confort-2":      { "prerequis":["mode"]       , "consigne":{"mode":"cft2"}                  , "after":{"mode":"stop"}  , "verif":true , "create":["Confort-1"          ,"Confort-2"]}
+	,"derog_vacances": { "prerequis":["derog_mode"] , "consigne":{"derog_mode":1,"derog_time":1 } , "after":{"derog_mode":0} , "verif":true , "create":["derog_off","derog_time_vacances","derog_vacances"]}
+	,"derog_boost":    { "prerequis":["derog_mode"] , "consigne":{"derog_mode":2,"derog_time":30} , "after":{"derog_mode":0} , "verif":true , "create":["derog_off","derog_time_boost"   ,"derog_boost"]}
+	,"derog_presence": { "prerequis":["derog_mode"] , "consigne":{"derog_mode":3}                 , "after":{"derog_mode":0} , "verif":true , "create":["derog_off","derog_presence"     ,"detect_presence"]}
 }

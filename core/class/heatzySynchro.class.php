@@ -6,7 +6,7 @@ class Synchro {
      *        
      * @return false en cas d'erreur le nombre de modules synchroniser       
      */
-//class Autre
+//class Synchro
     public static function LireJSON( $json_name ) {
         $json = file_get_contents(__DIR__.'/'.$json_name.'.json') ;
         if( $json ) {
@@ -29,7 +29,7 @@ class Synchro {
      *        
      * @return false en cas d'erreur le nombre de modules synchroniser       
      */
-//class heatzy extends eqLogic
+//class Synchro
     public static function SynchronizeHeatzy( $force = false ) {
             
           log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $force='.$force);
@@ -142,8 +142,9 @@ class Synchro {
                 if( $heatzy->getIsEnable() == 1 ){
                     $heatzy->setIsEnable(0);
                     $heatzy->setIsVisible(0) ;
-                    $heatzy->save();
                     $heatzy->checkAndUpdateCmd('IsOnLine', 0 );   
+                  	$heatzy->save();
+
                     $heatzy->setStatus('timeout','1');
                     log::add('heatzy', 'error', 'Le module -'.$heatzy->getName().'- ('.$heatzy->getLogicalId().') n est plus rattaché au compte. Il est maintenant désactivé et non visible (mais pas supprimé)' );   
                 }
@@ -162,7 +163,7 @@ class Synchro {
      *        
      * @return false en cas d'erreur le nombre de modules synchroniser       
      */
-//class heatzy extends eqLogic
+//class Synchro
     public static function SynchronizeByLearning(  ) {
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')' );
 
@@ -211,20 +212,125 @@ class Synchro {
         if( $tab_Learn === false) return false ;
         $eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
         foreach ($eqLogics as $eqLogic) {
-            foreach ($tab_Learn as $Learn) {
-                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') Learn='.$Learn ) ;
-            } //foreach ($tab_Acknow[$key]
-            //$eqLogic->getLogicalId()
-            //message::add("Heatzy", 'Etape 2/5 : Module '.$eqLogic->getLogicalId() );
-            //Apprentissage
-        }
+            //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') $key='.var_export( $eqLogic->getCmd( 'action' )->getLogicalId() , true) ) ;
+
+            foreach ($tab_Learn as $key => $attr) {
+                if( self::CmdsAllPresent( $attr['prerequis'] , $eqLogic ) and !self::CmdsAllPresent( $attr['create'] , $eqLogic )  ){
+                  	// Si les cmd prérequis sont présentes et que toutes les commandes cibles ne sont pas présentes
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') '.$eqLogic->getName().' ON VA CHERCHER ' ) ;
+
+                    $VerifOrdre = self::CheckOrders( $eqLogic , $attr['consigne'] , $attr['after'] , $attr['verif'] ) ;
+                    if( $VerifOrdre == true  ){
+                        foreach ($attr['create'] as $cmd_a_creer){
+                            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') '.$eqLogic->getName().' Création commande '.$cmd_a_creer ) ;
+                            $eqLogic->CreateCmd( $cmd_a_creer ) ;
+                        }
+                    }
+                }
+                else
+                   log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') '.$eqLogic->getName().' Prérequis et cible KO '.$key ) ;
+                   
+            } //foreach $tab_Learn
+          
+        } //foreach $eqLogics
         message::add("Heatzy", 'Etape 3/3 : Commandes créées par essai et erreur' );
-      log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' Etape 3/3 : Commandes créées par essai et erreur' );
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' Etape 3/3 : Commandes créées par essai et erreur' );
 
         sleep( 1 ) ;
         message::add("Heatzy", 'Apprentissage terminé' );
         sleep( 1 ) ;
         return '99' ;
+    }
+  
+    /**
+     * @brief Fonction qui permet de synchroniser
+     *        les modules heatzy
+     *        
+     * @return false en cas d'erreur le nombre de modules synchroniser       
+     */
+//class Synchro
+    public static function CmdsAllPresent( $prerequis , $eqLogic ) {
+              $CmdsAllPresent = true ;
+              foreach ($prerequis as $prerequis)
+                  if ( !is_object( $eqLogic->getCmd(null ,$prerequis ) ) ) {
+                    $CmdsAllPresent = false ;
+                    break ;
+                  }
+        return $CmdsAllPresent ;
+    }
+  
+    /**
+     * @brief Fonction qui permet de synchroniser
+     *        les modules heatzy
+     *        
+     * @return false en cas d'erreur le nombre de modules synchroniser       
+     */
+//class Synchro
+    public static function CheckOrders( $eqLogic , $consigne , $after , $verif ) {
+
+        // On tente de mettre la valeur - Appel API pour SET $valeur
+        //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$eqLogic->getName().' Consigne='.var_export($consigne, true) );
+        $ResultSet = HttpGizwits::SetConsigne( $eqLogic->getLogicalId(), array( 'attrs' => $consigne  ) );
+
+        if( $ResultSet['error_code'] == '9025' ){
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$eqLogic->getName().' - '.key($consigne).'=>'.$consigne[ key($consigne) ].' SET error 9025 attribut invalide');
+            return false;
+        }
+
+        if( $ResultSet['error_code'] == ''){
+            if( !$verif ){
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$eqLogic->getName().' - '.key($consigne).'=>'.$consigne[ key($consigne) ].' OK Pas besoin de verif (=>'.$ResultGet['attr'][ key($consigne)].')' );
+                //return true ;
+            }
+            else{
+                sleep(2); // Attente 2sec
+                // Appel API pour analyser le changement ou non de consigne
+                $ResultGet = HttpGizwits::GetConsigne( $eqLogic->getLogicalId() ) ;
+                if( $ResultGet['error_code'] == ''){
+                    if( $ResultGet['attr'][key($consigne)] == $consigne[key($consigne)] ){
+                        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$eqLogic->getName().' - '.key($consigne).'=>'.$consigne[ key($consigne) ].' - SET valorisé avec succes '.$ResultGet['attr'][key($consigne)]);
+                        //return true ;
+                    }
+                    else{
+                        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$eqLogic->getName().' - '.key($consigne).'=>'.$consigne[ key($consigne) ].' - SET valeur autre (KO-'.$ResultGet['attr'][key($consigne)].')');
+                        return false;
+                    }
+                }
+                else{
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$eqLogic->getName().' error_code1 GET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+                    return false;
+                }
+            }
+        }
+        else{
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$eqLogic->getName().' error_code2 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+            return false;
+        } //  if( $ResultSet['error_code'] == ''){
+
+
+        // On remet l'ordre initial
+        if( !empty($after) ){
+            sleep(2);
+            $ResultSet = HttpGizwits::SetConsigne( $eqLogic->getLogicalId(), array( 'attrs' => $after  ) );
+            if( $ResultSet['error_code'] != '' )
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' error_code3 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
+            else
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$eqLogic->getName().' - '.key($after).'=>'.$after[ key($after) ].' - SET after valorisé avec succes');
+        }
+
+        return true ;
+    }
+  
+    /**
+     * @brief Fonction qui permet de synchroniser
+     *        les modules heatzy
+     *        
+     * @return false en cas d'erreur le nombre de modules synchroniser       
+     */
+//class Synchro
+    public static function CreateCmdByLearning(  ) {
+
+        return true ;
     }
   
 } // Fin class Synchro

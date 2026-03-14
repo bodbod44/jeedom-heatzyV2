@@ -7,6 +7,9 @@
   - Changement de token - Verifier demarrage avec un token KO
   - Pourquoi le demon est OK lorsque par d'internet au démarrage
 
+En cours
+ - Gestion des widget (merci Yetz)
+
 # 18/02/2026 (dev)
 - Demon
   - Récupération du statut du module (OnLine / OffLine)

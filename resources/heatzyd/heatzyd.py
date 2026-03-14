@@ -47,9 +47,10 @@ def read_socket():
 				logging.debug("read_socket - message valide : %s", message)
 				if message['message']['cmd'] == 'login_req' or message['message']['cmd'] == 'c2s_read' or message['message']['cmd'] == 'c2s_write' :
 					ws_gizwitz_send_message( json.dumps( message['message']) )
-				if message['message']['cmd'] == 'stop' :
+				elif message['message']['cmd'] == 'stop' :
+					logging.debug("read_socket - stop")
 					shutdown()
-				if message['message']['cmd'] == 'log_level' :
+				elif message['message']['cmd'] == 'log_level' :
 					logging.debug("read_socket - changement du niveau de log - " + message['message']['log_level'])
 					jeedom_utils.set_log_level( message['message']['log_level'] )
 				else:
@@ -67,25 +68,24 @@ def send_socket( mess ):
 	Thread(target=Send_to_jeedom).start()
 
 def handler(signum=None, frame=None):
-	logging.debug("Signal %i caught, exiting...", int(signum))
+	logging.debug("Signal %i caught, exiting... (%s)", int(signum) , frame)
 	shutdown()
 
 
 def shutdown():
-	logging.debug("Shutdown")
-	logging.debug("Removing PID file %s", _pidfile)
+	logging.debug("shutdown - Removing PID file %s", _pidfile)
 
 	try:
 		os.remove(_pidfile)
 		logging.debug('shutdown - os.remove OK')
 	except Exception as e:
-		logging.error('Error removing PID file (os.remove) : %s', e)
+		logging.error('shutdown - Error removing PID file (os.remove) : %s', e)
 
 	try:
 		my_jeedom_socket.close()
 		logging.debug('shutdown - socket.close OK')
 	except Exception as e:
-		logging.error('Error closing my_jeedom_socket: %s', e)
+		logging.error('shutdown - Error closing my_jeedom_socket: %s', e)
 
 	# try:  # if you need jeedom_serial
 	#     my_jeedom_serial.close()
@@ -97,7 +97,7 @@ def shutdown():
 		_websocket.close()
 		logging.debug('shutdown - websocket.close OK')
 	except Exception as e:
-		logging.warning('Error closing _websocket: %s', e)
+		logging.warning('shutdown - Error closing _websocket: %s', e)
 
 	
 	logging.debug("Exit 0")
@@ -107,7 +107,7 @@ def shutdown():
 def start_websocket():
 	logging.debug("Starting websocket with the container")
 	websocket.enableTrace(False)
-	host = "ws://" + _ws_gizwitz_url + ":" + _ws_gizwitz_port + "/ws/app/v1"
+	host = _ws_gizwitz_ws + "://" + _ws_gizwitz_url + ":" + _ws_gizwitz_port + "/ws/app/v1"
 
 	_ws = websocket.WebSocketApp(host,
                                 on_open    = ws_gizwitz_on_open,
@@ -128,6 +128,7 @@ def ws_gizwits_on_message(ws, msg):
 	global _ws_gizwitz_login_status
 	global _ws_gizwitz_heartbeat_receive
 	global _nb_appels
+	logging.debug('ws_gizwits_on_message...')
 	_ws_gizwitz_heartbeat_receive = time.time()
 	jsonMsg = json.loads(msg)
 	
@@ -235,10 +236,10 @@ def ws_gizwitz_send_message( mess , force = False ):
 def ws_gizwitz_send_login():
 	message = ( '{"cmd": "login_req",'
 				'"data": { "appid": "' + _heatzy_appid + '"'
-						', "uid": "'   + _heatzy_uid + '"'
+						', "uid": "'   + _heatzy_uid   + '"'
                     	', "token": "' + _heatzy_token + '"'
                     	', "p0_type": "attrs_v4"'
-                    	', "heartbeat_interval": ' + str( _ws_gizwitz_ws_gizwitz_heartbeat_interval ) + ''
+                    	', "heartbeat_interval": ' + str( _ws_gizwitz_heartbeat_interval ) + ''
 						', "auto_subscribe": true }'
 				 '}'
 				)
@@ -252,28 +253,29 @@ _pidfile = '/tmp/heatzyd.pid'
 _apikey = ''
 _callback = ''
 _cycle = 0.3
+_ws_gizwitz_ws = 'wss'  # ws / wss
 _ws_gizwitz_url = 'eusandbox.gizwits.com'
-_ws_gizwitz_port = '8080'
+_ws_gizwitz_port = '8880'  # 8080 / 8880
 _ws_gizwitz_heartbeat_send = time.time()
 _ws_gizwitz_heartbeat_receive = time.time()
 _ws_gizwitz_ws_status = False
 #_ws_gizwitz_ws_status_receive = False
 _ws_gizwitz_login_status = 0
 _ws_gizwitz_heartbeat_ping = 60
-_ws_gizwitz_ws_gizwitz_heartbeat_interval = 600
+_ws_gizwitz_heartbeat_interval = 600
 _nb_appels = {}
 
 parser = argparse.ArgumentParser(description='Desmond Daemon for Jeedom plugin')
-parser.add_argument("--device", help="Device", type=str)
-parser.add_argument("--loglevel", help="Log Level for the daemon", type=str)
-parser.add_argument("--callback", help="Callback", type=str)
-parser.add_argument("--apikey", help="Apikey", type=str)
-parser.add_argument("--cycle", help="Cycle to send event", type=float)
-parser.add_argument("--pid", help="Pid file", type=str)
-parser.add_argument("--socketport", help="Port for socket server", type=str)
-parser.add_argument("--appid", help="App id heatzy", type=str)
-parser.add_argument("--token", help="token heatzy", type=str)
-parser.add_argument("--uid", help="uid heatzy", type=str)
+parser.add_argument("--device"    , help="Device"                  , type=str)
+parser.add_argument("--loglevel"  , help="Log Level for the daemon", type=str)
+parser.add_argument("--callback"  , help="Callback"                , type=str)
+parser.add_argument("--apikey"    , help="Apikey"                  , type=str)
+parser.add_argument("--cycle"     , help="Cycle to send event"     , type=float)
+parser.add_argument("--pid"       , help="Pid file"                , type=str)
+parser.add_argument("--socketport", help="Port for socket server"  , type=str)
+parser.add_argument("--appid"     , help="App id heatzy"           , type=str)
+parser.add_argument("--token"     , help="token heatzy"            , type=str)
+parser.add_argument("--uid"       , help="uid heatzy"              , type=str)
 args = parser.parse_args()
 
 if args.device:
