@@ -234,9 +234,9 @@ class heatzyCmd extends cmd {
         $mc = cache::byKey('heatzyWidgetdashboard' . $this->getEqLogic()->getId());
         $mc->remove();
 
-        $this->getEqLogic()->toHtml('mobile');
-        $this->getEqLogic()->toHtml('dashboard');
-        $this->getEqLogic()->refreshWidget();
+        //$this->getEqLogic()->toHtml('mobile');
+        //$this->getEqLogic()->toHtml('dashboard');
+        //$this->getEqLogic()->refreshWidget();
         log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' FIN EXECUTE' );
         return true;
     }

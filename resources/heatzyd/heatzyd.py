@@ -128,7 +128,7 @@ def ws_gizwits_on_message(ws, msg):
 	global _ws_gizwitz_login_status
 	global _ws_gizwitz_heartbeat_receive
 	global _nb_appels
-	logging.debug('ws_gizwits_on_message...')
+	#logging.debug('ws_gizwits_on_message...')
 	_ws_gizwitz_heartbeat_receive = time.time()
 	jsonMsg = json.loads(msg)
 	
@@ -168,7 +168,7 @@ def ws_gizwits_on_message(ws, msg):
 			logging.debug('ws_gizwits_on_message - ' + 'ws_gizwits websocket déconnecté goodbye (' + str(jsonMsg['data']['error_code']) + ') - ' + msg )
 		else:
 			logging.debug('ws_gizwits_on_message - ERROR : ' + str(jsonMsg['data']['error_code']) + ' - ' + jsonMsg['data']['msg'] + 'mess:' + msg )
-			logging.debug('ws_gizwits_on_message - '+ 'keep_running = ' + str(_websocket.keep_running) )
+			#logging.debug('ws_gizwits_on_message - '+ 'keep_running = ' + str(_websocket.keep_running) )
 	# retour du ping
 	elif jsonMsg['cmd'] == 'pong':
 		logging.debug('ws_gizwits_on_message - PING OK - ' + msg)
@@ -176,16 +176,16 @@ def ws_gizwits_on_message(ws, msg):
 		logging.error('ws_gizwits_on_message - message non connu : ' + msg)
 
 def ws_gizwits_on_error(ws, error):
-	logging.error('ws_gizwits_on_error: error '+ str(error) + '-' + 'keep_running=' + str(_websocket.keep_running) )
+	logging.error('ws_gizwits_on_error: error '+ str(error) )
 
 def ws_gizwits_on_close(ws, close_status_code, close_msg):
-	logging.debug('ws_gizwits_on_close: ' + 'Websocket closed (keep_running=' + str(_websocket.keep_running) + ')')
+	logging.debug('ws_gizwits_on_close: ' + 'Websocket closed')
 	shutdown()
 
 def ws_gizwitz_on_open(ws):
 	global _websocket
 	_websocket = ws
-	logging.debug('ws_gizwitz_on_open: ' + 'Websocket open... (keep_running=' + str(_websocket.keep_running) + ')')
+	logging.debug('ws_gizwitz_on_open: ' + 'Websocket open...')
 
 	global _ws_gizwitz_ws_status
 	_ws_gizwitz_ws_status = True
@@ -193,7 +193,7 @@ def ws_gizwitz_on_open(ws):
 	ws_gizwitz_send_login()
 	
 	def ping(*args):
-		logging.debug('ping: '+ 'keep_running = ' + str(_websocket.keep_running) )
+		logging.debug('ping' )
 		status_receive = True
 		while _websocket.keep_running:
 			if (time.time() - _ws_gizwitz_heartbeat_send) > _ws_gizwitz_heartbeat_ping:

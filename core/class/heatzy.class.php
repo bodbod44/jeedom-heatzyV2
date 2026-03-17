@@ -332,11 +332,7 @@ class heatzy extends eqLogic {
         if(isset($aDevice['attr']['mode']) || isset($aDevice['attr']['cur_temp']) || isset($aDevice['attr']['derog_mode']) ) {
 
             // Créer les commandes en fonction du contenu de la réponse
-            //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' CheckAndCreateCmd...');
-
-          	// Créer les commandes si besoin
             //$this->CheckAndCreateCmd($aDevice , $force) ;
-          	//$this->CheckAndCreateCmdByJson() ;
 
             if( $aDevice['attr']['mode'] == 'cft' ) {        /// Confort
                 $KeyMode = 'Confort';
@@ -381,6 +377,12 @@ class heatzy extends eqLogic {
                     return false;
                 }*/
             }
+          
+        	// Recherche la valeur de la clef du mode courant
+        	//log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.'): Mode '.$KeyMode);
+        	$aKeyVal = array_keys(self::$_HeatzyMode, $KeyMode);
+        	$this->checkAndUpdateCmd('EtatConsigne', $aKeyVal[0]);
+        	$this->checkAndUpdateCmd('mode', $KeyMode);
           
             // Consigne de température du mode éco (eco_temp ou eco_tempH+eco_tempL selon type de module)
             // L : La température est exprimée en dixièmes de degrés
@@ -447,6 +449,7 @@ class heatzy extends eqLogic {
             }
 
             // Détéction de présence 
+          	// A retravailler pour intégrer la consigne (pour éviter les faux positifs)
             if( $aDevice['attr']['derog_mode'] == 3 && array_keys(self::$_HeatzyMode, $KeyMode)[0] == 0){
                 $this->checkAndUpdateCmd('detect_presence', 1 );
             }
@@ -488,11 +491,11 @@ class heatzy extends eqLogic {
         }
         
         $this->save(); /// Enregistre les info
-        // Recherche la valeur de la clef du mode courant
-        //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.'): Mode '.$KeyMode);
-        $aKeyVal = array_keys(self::$_HeatzyMode, $KeyMode);
-        $this->checkAndUpdateCmd('EtatConsigne', $aKeyVal[0]);
-        $this->checkAndUpdateCmd('mode', $KeyMode);
+      
+        $this->toHtml('mobile');
+        $this->toHtml('dashboard');
+        $this->refreshWidget();
+      
         return true;
     }
 
@@ -576,113 +579,6 @@ class heatzy extends eqLogic {
         }
     }
 
-      /**
-     * @brief Fonction qui permet de savoir si le module gère certains ordres qui ne sont pas sur tous les modules
-     * Exemple : derogation présence, 4 ou 6 ordres
-     * 
-     * @param tableau retour API
-     */
-//class heatzy extends eqLogic
-    public function VerifOrdreAccepte( $aDevice , $attr , $valeur , $attr2 , $valeur2 , $verif_result , $valeurInit = false) {
-        if( $aDevice['attr'][$attr] == $valeur  ){
-            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET deja valorisé');
-            return true ;
-        }
-        else{
-            // On tente de mettre la valeur
-              if( $attr2 != '' )
-                $Consigne = array( 'attrs' => array ( $attr => $valeur , $attr2 => $valeur2 )  );
-              else
-                  $Consigne = array( 'attrs' => array ( $attr => $valeur )  );
-            $UserToken = config::byKey('UserToken','heatzy','none');
-            // Appel API pour SET $valeur
-            sleep(3); // Attente 3sec  
-            //$ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
-          	$ResultSet = HttpGizwits::SetConsigne( $this->getLogicalId(), $Consigne);
-
-            if( $ResultSet['error_code'] == '9025' ){
-                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' - '.$attr.'=>'.$valeur.' SET error 9025 attribut invalide');
-                return false;
-            }
-
-            if( $ResultSet['error_code'] == ''){
-                if( !$verif_result ){
-                    return true ;
-                }
-                else{       
-                    sleep(2); // Attente 2sec
-                    // Appel API pour analyser le changement ou non de consigne
-                    //$ResultGet = HttpGizwits::GetConsigne($UserToken, $this->getLogicalId() ) ;
-                  	$ResultGet = HttpGizwits::GetConsigne( $this->getLogicalId() ) ;
-                    if( $ResultGet['error_code'] == ''){
-                        if( $ResultGet['attr'][$attr] == $valeur ){
-                            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET valorisé avec succes');
-                            return true ;
-                        }
-                        else{
-                            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' - '.$attr.'=>'.$valeur.' - SET valeur autre (KO-'.$ResultGet['attr'][$attr].')');
-                        }
-                    }
-                    else
-                        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' error_code1 GET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
-                }
-            }
-            else
-                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' error_code2 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
-
-            if( $valeurInit == true ){
-                // On remet l'ordre initial
-                sleep(2);
-                $Consigne = array( 'attrs' => array ( $attr => $aDevice['attr'][$attr] )  );
-                //$ResultSet = HttpGizwits::SetConsigne($UserToken, $this->getLogicalId(), $Consigne);
-              	$ResultSet = HttpGizwits::SetConsigne( $this->getLogicalId(), $Consigne);
-                if( $ResultSet['error_code'] != '' )
-                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getName().' error_code3 SET='.$ResultSet['error_code'].' - '.$ResultSet['detail_message']);
-            }
-        }
-        return false ;
-    }
-
-
-  
-    /**
-     * @brief Fonction qui permet de créer les commandes en fonction du retour de l'API
-     * 
-     * @param tableau retour API
-     */
-//class heatzy extends eqLogic
-    public function CheckAndCreateCmdByJson() {  
-        $Product_Name = $this->getConfiguration('product', 'Heatzy')      ;
-        log::add('heatzy', 'info',  __METHOD__.'(ln '.__LINE__.')'.': *** MODULE HEATZY : '.$this->getName().' *** ('.$Product_Name.')' );
-        $json = file_get_contents(__DIR__.'/Devices.json');
-        if( $json ){
-            $tab = json_decode($json, true);             
-              //log::add('heatzy', 'info',  __METHOD__.'(ln '.__LINE__.')'.': name='.$tab['Modules'][$Product_Name]['cmds'] );
-                foreach ($tab['Modules'][$Product_Name]['cmds'] as $attr){
-                       //log::add('heatzy', 'info',  __METHOD__.'(ln '.__LINE__.')'.' : $cmd='.$attr. '->'.$tab['cmds'][$attr]['Name'] );  
-                       
-                       if ( !is_object( $this->getCmd(null, $attr ))) {
-                         	log::add('heatzy', 'info',  __METHOD__.'(ln '.__LINE__.')'.' NON TROUVE ('.$tab['cmds'][$attr].')' );  
-                       }
-                } // foreach Modules/cmds
-          
-                $cmds2 = $this->getCmd(null,null,null,true);
-                if (sizeof($cmds2) > 0) {
-                  foreach($cmds2 as $cmd2) {
-                      //log::add('heatzy', 'info',  __METHOD__.'(ln '.__LINE__.')'.' COMMANDE = '.$cmd2->getLogicalId().'-'.$cmd2->getName().$tab['Modules'][$Product_Name]['cmds'] );
-                    if( !in_array( $cmd2->getLogicalId() , $tab['Modules'][$Product_Name]['cmds'] ) )	
-                    //if( $tab['Modules'][$Product_Name]['cmds'][$cmd2->getLogicalId()] == null )
-                          log::add('heatzy', 'info',  __METHOD__.'(ln '.__LINE__.')'.' COMMANDE NON TROUVE = '.$cmd2->getLogicalId() );
-                    //else
-                      	//log::add('heatzy', 'info',  __METHOD__.'(ln '.__LINE__.')'.' COMMANDE     TROUVE = '.$cmd2->getLogicalId() );
-                  }
-                }
-		}
-		else{
-			log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Lecture du JSON impossible' );
-		}
-    }
-
     /**
      * @brief Fonction qui permet de créer les commandes en fonction du retour de l'API
      * 
@@ -690,22 +586,33 @@ class heatzy extends eqLogic {
      */
 //class heatzy extends eqLogic
     public function InitCmds() {  
-      
+
         $tab_Devices = Synchro::LireJSON( '_Devices' ) ;
         if( $tab_Devices === false){
-          	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') Lecture json KO' ) ;
-          	return false ;
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') Lecture json KO' ) ;
+            return false ;
         }
-      
-      	$product_key = $this->getConfiguration('product_key', '2') ;
-      	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') $product_key='.$product_key ) ;
-      	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') Device='.$tab_Devices[$product_key]['product_name'] ) ;
-        
+
+        $product_key  = $this->getConfiguration('product_key', '') ;
+
+        // Si le product_key n'est pas danqs le JSON, on cherche par nom (a defaut, on considère le product_key xxxxx par défaut)
+        if( $tab_Devices[$product_key]['cmds'] === null){
+        $product_name = $this->getConfiguration('product'    , '') ;
+            $product_key = 'xxxxxx' ;
+            foreach ($tab_Devices as $key => $cmd) {
+                if( $cmd['product_name']  == $product_name ){
+                    $product_key = $key ;
+                    break ;
+                }
+            }
+        }
+
+        //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') $product_key='.$product_key ) ;
         foreach ($tab_Devices[$product_key]['cmds'] as $cmd) {
-          //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') Cmds='.$cmd ) ;
-          $this->CreateCmd( $cmd ) ;
+            //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') Cmds='.$cmd ) ;
+            $this->CreateCmd( $cmd ) ;
         }
-          
+
     }
   
     /**
@@ -760,19 +667,21 @@ class heatzy extends eqLogic {
         $cmd->setIsHistorized( $tab_cmds[$commande]['IsHistorized'] );
         $cmd->setIsVisible(    $tab_cmds[$commande]['IsVisible'] );
         $cmd->save();
+        
+        return true ;
       } // !is_object($cmd)
       else{
         if( $MajOrder ){
-        	$cmd->setOrder( $tab_cmds[$commande]['Order'] );
-			$cmd->save();
+            $cmd->setOrder( $tab_cmds[$commande]['Order'] );
+            $cmd->save();
         }
         if( $MajName ){
-        	$cmd->setName(  __( $tab_cmds[$commande]['Name'] , __FILE__));
-			$cmd->save();
+            $cmd->setName(  __( $tab_cmds[$commande]['Name'] , __FILE__));
+            $cmd->save();
         }
       }
       
-      return true ;
+      return '' ;
     }
      
     /**
@@ -878,7 +787,7 @@ class heatzy extends eqLogic {
             }
         }
       
-		if( config::byKey('API_Type','heatzy','REST') != 'REST' ){ // Si WebSocket
+        if( config::byKey('API_Type','heatzy','REST') != 'REST' ){ // Si WebSocket
             /*if(  ( date("i") % 5 ) == 0 ){
                 log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Envoi du niveau de log' ) ;
                 self::sendToDaemon( 'log_level' , '' , array() ) ;

@@ -56,7 +56,9 @@ class Synchro {
           log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.count($aDevices ['devices']).'  module(s) trouvé');
         //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' $aDevice :'.var_export($aDevices, true));
       
-        $Nb_Add = 0;
+        //$Nb_Add = 0;
+      	$return['new'] = 0 ;
+      	$return['update'] = 0 ;
         $aSearchDid = [] ; //Va stocker les DID trouvé (pour vérifier ceux qui ont disparus)
         foreach ($aDevices['devices'] as $DeviceNum => $aDevice) {
             $aSearchDid[] = $aDevice['did'] ;
@@ -64,8 +66,12 @@ class Synchro {
             if (! is_object($eqLogic)) {   /// Creation des dids inexistants
                 $eqLogic = new heatzy();
             	$eqLogic->setIsVisible(1);
-                  $Nb_Add++ ;
+                  //$Nb_Add++ ;
+              	  $return['new']++ ;
             }
+          	else
+              $return['update']++ ;
+            
             $eqLogic->setEqType_name('heatzy');
             $eqLogic->setLogicalId($aDevice['did']);
 
@@ -131,9 +137,10 @@ class Synchro {
         } // foreach
         
         //log::add('heatzy', 'info', 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
-        if( $Nb_Add > 0)
-            log::add('heatzy', 'info', $Nb_Add.' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s) Heatzy rattaché(s) au compte');
-        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$Nb_Add.' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s) Heatzy rattaché(s) au compte');
+      	$return['delete'] = 0 ;
+        if( $return['new'] > 0)
+            log::add('heatzy', 'info', $return['new'].' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s) Heatzy rattaché(s) au compte');
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$return['new'].' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s) Heatzy rattaché(s) au compte');
         //message::add("Heatzy", 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
       
         // Recherche des équipements qui ne sont plus rattachés au compte
@@ -147,6 +154,7 @@ class Synchro {
 
                     $heatzy->setStatus('timeout','1');
                     log::add('heatzy', 'error', 'Le module -'.$heatzy->getName().'- ('.$heatzy->getLogicalId().') n est plus rattaché au compte. Il est maintenant désactivé et non visible (mais pas supprimé)' );   
+                  	$return['delete']++ ;
                 }
             }
         }
@@ -154,7 +162,9 @@ class Synchro {
       
         cache::set( 'Heatzy_Synchronize' , 0) ;
       
-        return count($aDevices['devices']);
+        //return count($aDevices['devices']);
+      //return count($aDevices['devices']);
+        return $return ;
     }
     
     /**
@@ -165,24 +175,11 @@ class Synchro {
      */
 //class Synchro
     public static function SynchronizeByLearning(  ) {
-        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')' );
-
-        message::add("Heatzy", 'Lancement de l\'apprentissage' );
-
-        $res = Synchro::SynchronizeHeatzy() ;
-        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchronize = '.$res );
-        if( $res == false ){
-            log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.') Problème lors de la synchronisation (Synchronize)' ) ;
-            return false ;
-        }
-        else
-            message::add("Heatzy", 'Etape 1/3 : '.$res.' modules synchronisés avec le compte Heatzy' );
-        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' Etape 1/3 : '.$res.' modules synchronisés avec le compte Heatzy' );
-
 
       	$tab_Acknow = self::LireJSON( '_Acknow' ) ;
         if( $tab_Acknow === false) return false ;      
         $eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
+        $return['cmd'] = 0 ;
         foreach ($eqLogics as $eqLogic) {
             $aRep = HttpGizwits::GetConsigne( $eqLogic->getLogicalId() ) ;
 
@@ -199,13 +196,14 @@ class Synchro {
                 if( isset( $tab_Acknow[ $key ] ) ){
                     //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') '.$eqLogic->getName().' TROUVE $attr='.$key.'=>'.$attr.'-'.$tab_Acknow[ $key ] ) ;
                     foreach ($tab_Acknow[$key] as $cmd_a_creer) {
-                        $eqLogic->CreateCmd( $cmd_a_creer ) ;
+                        if( $eqLogic->CreateCmd( $cmd_a_creer ) == true )
+                            $return['cmd']++ ;
                     } //foreach ($tab_Acknow[$key]
                 } //if( isset( $tab_Acknow
             } //foreach($aRep['attr']
         } //foreach ($eqLogics
-        message::add("Heatzy", 'Etape 2/3 : Commandes créées par lecture et reconneconnaissance de json de retour' );
-      	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' Etape 2/3 : Commandes créées par lecture et reconneconnaissance de json de retour' );
+        //message::add("Heatzy", 'Etape 2/3 : Commandes créées par lecture et reconneconnaissance de json de retour' );
+      	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' Etape 1/2 : Commandes créées par lecture et reconneconnaissance de json de retour' );
 
       
         $tab_Learn = self::LireJSON( '_Learn' ) ;
@@ -223,7 +221,8 @@ class Synchro {
                     if( $VerifOrdre == true  ){
                         foreach ($attr['create'] as $cmd_a_creer){
                             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') '.$eqLogic->getName().' Création commande '.$cmd_a_creer ) ;
-                            $eqLogic->CreateCmd( $cmd_a_creer ) ;
+                            if($eqLogic->CreateCmd( $cmd_a_creer ) == true )
+                                $return['cmd']++ ;
                         }
                     }
                 }
@@ -233,13 +232,14 @@ class Synchro {
             } //foreach $tab_Learn
           
         } //foreach $eqLogics
-        message::add("Heatzy", 'Etape 3/3 : Commandes créées par essai et erreur' );
+        message::add("Heatzy", 'Etape 2/2 : Commandes créées par essai et erreur' );
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' Etape 3/3 : Commandes créées par essai et erreur' );
 
-        sleep( 1 ) ;
+        //sleep( 1 ) ;
         message::add("Heatzy", 'Apprentissage terminé' );
-        sleep( 1 ) ;
-        return '99' ;
+        //sleep( 1 ) ;
+        //return '99' ;
+        return $return ;
     }
   
     /**

@@ -113,7 +113,7 @@ if (!isConnect()) {
             <label class="col-lg-4 control-label">{{Synchroniser}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Récupère les modules présent sur le compte Heatzy et créer les commandes associéess}}"></i></sup></label>
             <div class="col-lg-2">
                 <a class="btn btn-info bt_syncheatzy"><i id='syncheatzy' class="fa fa-refresh"></i>
-                Synchroniser avec le compte Heatzy<span id="nbheatzy"></span>
+                Synchroniser les modules avec le compte Heatzy<span id="nbheatzy"></span>
                 </a>
             </div>
         </div>
@@ -151,10 +151,17 @@ $('.bt_syncheatzy').on('click',function(){
                 $('#div_alert').showAlert({message: data.result, level: 'danger'});
                 return;
             }
-            else
-                $('#div_alert').showAlert({message: 'Synchronisation de ' + data.result + ' module(s)', level: 'info'});
+          
             $('#nbheatzy').empty();
-            $('#nbheatzy').append(' : ' + data.result + ' module(s)');
+            if( typeof data.result === 'object' ){
+                ResultMessage = 'Apprentisssage : ' + data.result['new'] + ' module(s) créé(s) + ' + data.result['update'] + ' module(s) actualisé(s) + ' + data.result['delete'] + ' module(s) désactivé(s)' ;
+                $('#div_alert').showAlert({message: ResultMessage, level: 'info'});
+                $('#nbheatzy').append(' : ' + ResultMessage );
+            }
+            else{
+                $('#div_alert').showAlert({message: 'Synchronisation de ' + data.result + ' module(s)', level: 'info'});
+                $('#nbheatzy').append(' : ' + data.result + ' module(s)');
+            }
         }
     });
 
@@ -162,7 +169,7 @@ $('.bt_syncheatzy').on('click',function(){
 });
 
 $('.bt_syncheatzybylearn').on('click',function(){
-    $('#div_alert').showAlert({message: 'Vérification en cours...', level: 'info'});
+    $('#div_alert').showAlert({message: 'Lancement de l\'apprentisssage... Veuillez patienter', level: 'info'});
 
     $('#syncheatzybylearn').addClass('fa-spin');
 
@@ -182,10 +189,17 @@ $('.bt_syncheatzybylearn').on('click',function(){
                 $('#div_alert').showAlert({message: data.result, level: 'danger'});
                 return;
             }
-            else
-                $('#div_alert').showAlert({message: 'Synchronisation de ' + data.result + ' module(s)', level: 'info'});
+            
             $('#nbheatzybylearn').empty();
-            $('#nbheatzybylearn').append(' : ' + data.result + ' module(s)');
+            if( typeof data.result === 'object' ){
+                ResultMessage = data.result['cmd'] + ' commandes créée(s)' ;
+                $('#div_alert').showAlert({message: 'Apprentisssage : ' + ResultMessage , level: 'info'});
+                $('#nbheatzybylearn').append(' : ' + ResultMessage );
+            }
+            else{
+                $('#div_alert').showAlert({message: 'Apprentisssage : ' + data.result + ' commandes créée(s)', level: 'info'});
+                $('#nbheatzybylearn').append(' : ' + data.result + ' commandes créée(s)');
+            }
         }
     });
 
