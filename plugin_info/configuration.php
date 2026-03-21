@@ -125,6 +125,22 @@ if (!isConnect()) {
                 </a>
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Réinitialiser l'ordre des commandes}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Réinitialiser l'ordre des commandes}}"></i></sup></label>
+            <div class="col-lg-2">
+                <a class="btn btn-info bt_syncheatzyorder"><i id='syncheatzyorder' class="fa fa-refresh"></i>
+                Réinitialiser l'ordre des commandes<span id="nbheatzyorder"></span>
+                </a>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Réinitialiser les noms des commandes}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Réinitialiser les noms des commandes}}"></i></sup></label>
+            <div class="col-lg-2">
+                <a class="btn btn-info bt_syncheatzyname"><i id='syncheatzyname' class="fa fa-refresh"></i>
+                Réinitialiser les noms des commandes<span id="nbheatzyname"></span>
+                </a>
+            </div>
+        </div>
     </fieldset>
 </form>
 
@@ -203,7 +219,61 @@ $('.bt_syncheatzybylearn').on('click',function(){
         }
     });
 
-    $('#syncheatzy').removeClass('fa-spin');
+    $('#syncheatzybylearn').removeClass('fa-spin');
+});
+
+$('.bt_syncheatzyorder').on('click',function(){
+    $('#syncheatzyorder').addClass('fa-spin');
+
+    $.ajax({// fonction permettant de faire de l'ajax
+        type: "POST", // méthode de transmission des données au fichier php
+        url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
+        data: {
+            action: "SyncheatzyUpdate",
+            mode: "order",
+        },
+        dataType: 'json',
+        global: false,
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) { // si l'appel a bien fonctionné
+            if (data.state != 'ok') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                return;
+            }            
+            $('#div_alert').showAlert({message: 'Tous les commandes ont été triées', level: 'info'});
+        }
+    });
+
+    $('#syncheatzyorder').removeClass('fa-spin');
+});
+
+$('.bt_syncheatzyname').on('click',function(){
+    $('#syncheatzyname').addClass('fa-spin');
+
+    $.ajax({// fonction permettant de faire de l'ajax
+        type: "POST", // méthode de transmission des données au fichier php
+        url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
+        data: {
+            action: "SyncheatzyUpdate",
+            mode: "name",
+        },
+        dataType: 'json',
+        global: false,
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) { // si l'appel a bien fonctionné
+            if (data.state != 'ok') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                return;
+            }
+            $('#div_alert').showAlert({message: 'Tous les commandes ont été renommées', level: 'info'});
+        }
+    });
+
+    $('#syncheatzyname').removeClass('fa-spin');
 });
 
 /*

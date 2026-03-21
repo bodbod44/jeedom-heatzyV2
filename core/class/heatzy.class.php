@@ -634,54 +634,53 @@ class heatzy extends eqLogic {
             return false ;
         }
       
-      $tab_cmds = json_decode($json, true);
-      if( $tab_cmds === false ) return false ;
+        $tab_cmds = json_decode($json, true);
+        if( $tab_cmds === false ) return false ;
 
-      //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Recherche de la commande '.$commande.'...' );
-      $cmd = $this->getCmd( null, $tab_cmds[$commande]['LogicalId'] );
-      if (!is_object($cmd)) {
-        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Commande '.$commande.' non trouvé. On va créer' );
-        $cmd = new heatzyCmd();
-        
-        $cmd->setLogicalId( $tab_cmds[$commande]['LogicalId'] );
-        $cmd->setName(  __( $tab_cmds[$commande]['Name'] , __FILE__));
-        $cmd->setOrder(     $tab_cmds[$commande]['Order'] );
-        $cmd->setType(      $tab_cmds[$commande]['Type'] );
-        $cmd->setSubType(   $tab_cmds[$commande]['SubType'] );
-        
-        if($tab_cmds[$commande]['Unite']              !== null) $cmd->setUnite( $tab_cmds[$commande]['Unite'] );
-        if($tab_cmds[$commande]['Config_infoName']    !== null) $cmd->setConfiguration('infoName', $tab_cmds[$commande]['Config_infoName']);
-        if($tab_cmds[$commande]['Config_value']       !== null) $cmd->setConfiguration('value'   , $tab_cmds[$commande]['Config_value']   );
-        if($tab_cmds[$commande]['Config_minValue']    !== null) $cmd->setConfiguration('minValue', $tab_cmds[$commande]['Config_minValue']);
-        if($tab_cmds[$commande]['Config_maxValue']    !== null) $cmd->setConfiguration('maxValue', $tab_cmds[$commande]['Config_maxValue']);
-        if($tab_cmds[$commande]['Config_tempHL']      !== null) $cmd->setConfiguration('tempHL'  , $tab_cmds[$commande]['Config_tempHL']  );
-        if($tab_cmds[$commande]['setValue']           !== null) $cmd->setValue( $this->getCmd( null, $tab_cmds[$commande]['setValue'] )->getId() ) ;
-        if($tab_cmds[$commande]['Display_param_step'] !== null) $cmd->setDisplay('parameters', ['step' => $tab_cmds[$commande]['Display_param_step'] ]);
-        
-        //$cmd->setTemplate('dashboard', 'default');
-        //$cmd->setTemplate('mobile', 'default');
-        //$cmd->setGeneric_type('GENERIC_INFO');
-        //$cmd->setEventOnly(1);
-                
-        $cmd->setEqLogic_id(   $this->getId() );
-        $cmd->setIsHistorized( $tab_cmds[$commande]['IsHistorized'] );
-        $cmd->setIsVisible(    $tab_cmds[$commande]['IsVisible'] );
-        $cmd->save();
-        
-        return true ;
-      } // !is_object($cmd)
-      else{
-        if( $MajOrder ){
-            $cmd->setOrder( $tab_cmds[$commande]['Order'] );
-            $cmd->save();
-        }
-        if( $MajName ){
+        //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Recherche de la commande '.$commande.'...' );
+        $cmd = $this->getCmd( null, $tab_cmds[$commande]['LogicalId'] );
+        if (!is_object($cmd)) {
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Commande '.$commande.' non trouvé. On va créer' );
+            $cmd = new heatzyCmd();
+
+            $cmd->setLogicalId( $tab_cmds[$commande]['LogicalId'] );
             $cmd->setName(  __( $tab_cmds[$commande]['Name'] , __FILE__));
+            $cmd->setOrder(     $tab_cmds[$commande]['Order'] );
+            $cmd->setType(      $tab_cmds[$commande]['Type'] );
+            $cmd->setSubType(   $tab_cmds[$commande]['SubType'] );
+
+            if($tab_cmds[$commande]['Unite']              !== null) $cmd->setUnite( $tab_cmds[$commande]['Unite'] );
+            if($tab_cmds[$commande]['Config_infoName']    !== null) $cmd->setConfiguration('infoName', $tab_cmds[$commande]['Config_infoName']);
+            if($tab_cmds[$commande]['Config_value']       !== null) $cmd->setConfiguration('value'   , $tab_cmds[$commande]['Config_value']   );
+            if($tab_cmds[$commande]['Config_minValue']    !== null) $cmd->setConfiguration('minValue', $tab_cmds[$commande]['Config_minValue']);
+            if($tab_cmds[$commande]['Config_maxValue']    !== null) $cmd->setConfiguration('maxValue', $tab_cmds[$commande]['Config_maxValue']);
+            if($tab_cmds[$commande]['Config_tempHL']      !== null) $cmd->setConfiguration('tempHL'  , $tab_cmds[$commande]['Config_tempHL']  );
+            if($tab_cmds[$commande]['setValue']           !== null) $cmd->setValue( $this->getCmd( null, $tab_cmds[$commande]['setValue'] )->getId() ) ;
+            if($tab_cmds[$commande]['Display_param_step'] !== null) $cmd->setDisplay('parameters', ['step' => $tab_cmds[$commande]['Display_param_step'] ]);
+
+            //$cmd->setTemplate('dashboard', 'default');
+            //$cmd->setTemplate('mobile', 'default');
+            //$cmd->setGeneric_type('GENERIC_INFO');
+            //$cmd->setEventOnly(1);
+
+            $cmd->setEqLogic_id(   $this->getId() );
+            $cmd->setIsHistorized( $tab_cmds[$commande]['IsHistorized'] );
+            $cmd->setIsVisible(    $tab_cmds[$commande]['IsVisible'] );
             $cmd->save();
+
+            return true ;
+        } // !is_object($cmd)
+        else{
+            if( $MajOrder ){
+                $cmd->setOrder( $tab_cmds[$commande]['Order'] );
+                $cmd->save();
+            }
+            if( $MajName ){
+                $cmd->setName(  __( $tab_cmds[$commande]['Name'] , __FILE__));
+                $cmd->save();
+            }
         }
-      }
-      
-      return '' ;
+        return '' ;
     }
      
     /**
@@ -1078,8 +1077,31 @@ class heatzy extends eqLogic {
         }
         $_version = jeedom::versionAlias($_version);
         $product = $this->getConfiguration('product', '');
+      
+      //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Name='.$this->getName().'- '.$this->getConfiguration('TypeTemplate', '') );
+      
+        switch( $this->getConfiguration('TypeTemplate', '') ){
+            case '':
+                $this->setConfiguration('TypeTemplate', '0');
+                $this->save() ;
+            case '0':
+                $html = template_replace( array_merge( $replace , $this->ReplacetoHtml()) , getTemplate('core', $_version, 'Dashboard','heatzy')); // template commun (bodbod)
+                break;
+        	case '2':
+				return parent::toHtml($_version);
+            	break;
+            default :
+                log::add('heatzy', 'warning', __METHOD__.': TypeTemplate inconnu ('.$this->getConfiguration('TypeTemplate').'), utilisation du template par défaut');
+                $html = template_replace( array_merge( $replace , $this->ReplacetoHtml()) , getTemplate('core', $_version, 'Dashboard','heatzy')); // template commun (bodbod)
+                break;
+        }
+        //cache::set('heatzy' . $_version . $this->getId(), $html, 0);
+        return $html;
+    }
+
+//class heatzy extends eqLogic
+    function ReplacetoHtml() {
     
-        //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Liste commandes - '.$this->getName());
         foreach ($this->getCmd() as $cmd) {    
             switch($cmd->getType()){
                 case 'info':
@@ -1113,24 +1135,11 @@ class heatzy extends eqLogic {
                     break;
             } // switch
         } //foreach cmd
-
+        
         //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Name='.$this->getName().'- '.var_export($replace, true) );
-      
-        switch( $this->getConfiguration('TypeTemplate', '') ){
-            case '':
-                $this->setConfiguration('TypeTemplate', '0');
-                $this->save() ;
-            case '0':
-                $html = template_replace($replace, getTemplate('core', $_version, 'Dashboard','heatzy')); // template commun (bodbod)
-                break;
-            default :
-                $html = template_replace($replace, getTemplate('core', $_version, 'xxx','heatzy')); // template jeedom
-                break;
-        }
-        //cache::set('heatzy' . $_version . $this->getId(), $html, 0);
-        return $html;
+        
+        return $replace;
     }
-
 
     /*     * **********************Getteur Setteur*************************** */
 }

@@ -11,7 +11,7 @@
   </div>
      <div class="verticalAlign">
       <div>
-         <span style="float:left; margin-left: 20px;margin-top: 0px;">
+         <span style="margin-left: 0px;margin-top: 0px;">
             <center>
                <!-- Affichage de la temperature courante -->
                <span class="cmd cmd-widget #cur_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" data-cmd_uid="#uid#" title="#cur_temp_CollectDate#" data-version="#version#" style="display:none;#cur_temp_display#;">
@@ -23,6 +23,10 @@
                <a><i class="fa fa-2x jeedomapp-humidity" style="margin-left: 10px" aria-hidden="true"></i></a>  
                <span style="margin-right: 5px;font-weight: bold;font-size: 1.8em;"></span>
                </span>
+              </center>
+         </span>
+         <span style="margin-left: 0px;margin-top: 0px;">
+           </center>
                <div style="margin-top:5px; margin-left: 10px">
                  
                   <!-- Affichage de la consigne eco -->
@@ -58,7 +62,7 @@
                </div>
             </center>
          </span>
-         <span style="margin-left: 20px;margin-top: 0px;">
+         <span style="margin-left: 0px;margin-top: 0px;">
             <center>
                <!-- Etat -->
                <span class="float:right" style="margin-right: 0px;margin-top: 0px;">
@@ -125,7 +129,7 @@
             </center>
          </span>
          <center>
-            <span style="margin-left: 10px;margin-top: 0px;">
+            <span style="margin-left: 0px;margin-top: 0px;">
                <!--  Plugzy -->
                <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
                <span title="" class="plug cursor action btn" data-cmd_id="#plugzy_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#plugzy_display#;">
@@ -158,7 +162,7 @@
                </span>
             </span>
          </center>
-         <span style="margin-left: 20px;margin-top: 0px; display:;">
+         <span style="margin-left: 0px;margin-top: 0px; display:;">
             <center>
                <!-- Derog mode -->
                <span class="float:right" style="margin-right: 0px;margin-top: 0px;">
@@ -270,6 +274,9 @@
          }
       }
       jeedom.cmd.update['#plugzy_id#']({display_value:'#plugzy_cmd#'});
+      
+   </script>
+   <script>
      
       jeedom.cmd.update['#etatprog_id#'] = function(_options){
          if(_options.display_value == 1) {
@@ -322,6 +329,9 @@
          }
       }
       jeedom.cmd.update['#WindowSwitch_id#']({display_value:'#WindowSwitch_cmd#'});
+      
+   </script>
+   <script>
     
       jeedom.cmd.update['#cur_temp_id#'] = function(_options){
          if (_options.display_unit === undefined)  _options.display_unit = '°C' ;
@@ -351,6 +361,9 @@
       }
       jeedom.cmd.update['#cur_humi_id#']({display_value:'#cur_humi_cmd# #cur_humi_unite#',collectDate:'#cur_humi_CollectDate#',valueDate:'#cur_humi_ValueDate#'});
       
+   </script>
+   <script>
+     
       jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
          $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
         if (_options.display_value == '0') {
@@ -417,7 +430,9 @@
          }
       }
       jeedom.cmd.update['#detect_presence_id#']({display_value:'#detect_presence_cmd#',collectDate:'#detect_presence_CollectDate#',valueDate:'#detect_presence_ValueDate#'});
-   
+
+   </script>
+   <script>
      
       // ************************* selecteur consigne eco *************************
       $('.cmd[data-cmd_uid="#uid#"][data-cmd_id="#eco_temp_consigne_id#"] .bt_plus').on('click', function () {
@@ -477,8 +492,11 @@
          $('.cmd[data-cmd_uid="#uid#"][data-cmd_id="#cft_temp_consigne_id#"] .in_value').val(_options.value+' #cft_temp_unite#')
       });
 
+   </script>
+   <script>
+     
       // ************************* slider vacances *************************
-      //if( !Number.isNaN( Number.parseInt('#derog_time_vacances_id#') ) && !Number.isNaN( Number.parseInt('#derog_vacances_id#') ) ){ 
+      if( !Number.isNaN( Number.parseInt('#derog_time_vacances_id#') ) && !Number.isNaN( Number.parseInt('#derog_vacances_id#') ) ){ 
          var stepderog_vacances_id_#uid# = 1
          if ($.issetWidgetOptParam('#derog_vacances_step#', 'step')) {
             stepderog_vacances_id_#uid# = parseFloat('#derog_vacances_step#')
@@ -494,8 +512,8 @@
             unite: '#derog_time_vacances_unite#'
          })
          if ($.issetWidgetOptParam('#derog_vacances_color#', 'color')) {
-            $(mySliderderog_vacances_id_#uid#.target).find('.noUi-handle').style('background', '#derog_vacances_color#', 'important')
-            $(mySliderderog_vacances_id_#uid#.target).find('.noUi-connect').style('background', '#derog_vacances_color#', 'important')
+            //$(mySliderderog_vacances_id_#uid#.target).find('.noUi-handle').style('background', '#derog_vacances_color#', 'important')
+            //$(mySliderderog_vacances_id_#uid#.target).find('.noUi-connect').style('background', '#derog_vacances_color#', 'important')
          }
          mySliderderog_vacances_id_#uid#.on('change', function(values, handle) {
            	jeedom.cmd.execute({id: '#derog_vacances_id#', value: {slider: values[handle].replace('#derog_time_vacances_unite#', '').trim()}})
@@ -503,10 +521,10 @@
          jeedom.cmd.addUpdateFunction('#derog_vacances_id#',function(_options) {
             mySliderderog_vacances_id_#uid#.set(_options.value)
          });
-      //}
+      }
      
       // ************************* slider boost *************************
-      //if( !Number.isNaN( Number.parseInt('#derog_time_boost_id#') ) && !Number.isNaN( Number.parseInt('#derog_boost_id#') ) ){ 
+      if( !Number.isNaN( Number.parseInt('#derog_time_boost_id#') ) && !Number.isNaN( Number.parseInt('#derog_boost_id#') ) ){ 
          var stepderog_boost_id_#uid# = 1
          if ($.issetWidgetOptParam('#derog_boost_step#', 'step')) {
             stepderog_boost_id_#uid# = parseFloat('#derog_boost_step#')
@@ -522,8 +540,8 @@
             unite: '#derog_time_boost_unite#'
          })
          if ($.issetWidgetOptParam('#derog_boost_color#', 'color')) {
-            //$(mySliderderog_boost_id_#uid#.target).find('.noUi-handle').style('background', '#derog_boost_color#', 'important')
-            //$(mySliderderog_boost_id_#uid#.target).find('.noUi-connect').style('background', '#derog_boost_color#', 'important')
+            $(mySliderderog_boost_id_#uid#.target).find('.noUi-handle').style('background', '#derog_boost_color#', 'important')
+            $(mySliderderog_boost_id_#uid#.target).find('.noUi-connect').style('background', '#derog_boost_color#', 'important')
          }
          mySliderderog_boost_id_#uid#.on('change', function(values, handle) {
             jeedom.cmd.execute({id: '#derog_boost_id#', value: {slider: values[handle].replace('#derog_time_boost_unite#', '').trim()}})
@@ -531,8 +549,6 @@
          jeedom.cmd.addUpdateFunction('#derog_boost_id#',function(_options) {
             mySliderderog_boost_id_#uid#.set(_options.value)
          });
-      //}
-
-     
+      }     
    </script>
 </div>

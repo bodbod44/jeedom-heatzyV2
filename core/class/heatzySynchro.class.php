@@ -266,6 +266,24 @@ class Synchro {
      * @return false en cas d'erreur le nombre de modules synchroniser       
      */
 //class Synchro
+    public static function MajAllCmds( $TypeMaj ) {
+      	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $TypeMaj='.$TypeMaj );
+        $eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
+        foreach ($eqLogics as $eqLogic) {
+            foreach ($eqLogic->getCmd() as $cmd) {
+                if( $TypeMaj == 'order' ) $eqLogic->CreateCmd( $cmd->getLogicalId() , true  , false ) ;
+                if( $TypeMaj == 'name'  ) $eqLogic->CreateCmd( $cmd->getLogicalId() , false , true  ) ;
+            } //foreach getCmd()          
+        } //foreach $eqLogics
+        return true ;
+    }  
+    /**
+     * @brief Fonction qui permet de synchroniser
+     *        les modules heatzy
+     *        
+     * @return false en cas d'erreur le nombre de modules synchroniser       
+     */
+//class Synchro
     public static function CheckOrders( $eqLogic , $consigne , $after , $verif ) {
 
         // On tente de mettre la valeur - Appel API pour SET $valeur

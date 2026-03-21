@@ -49,6 +49,10 @@ try {
 		ajax::success( Synchro::SynchronizeByLearning() );
 	}
   
+	if (init('action') == 'SyncheatzyUpdate') {
+		ajax::success( Synchro::MajAllCmds( init('mode') ) );
+	}
+  
 	if (init('action') == 'GetSchedulerList') {
 		//require_once dirname(__FILE__) . '/../class/heatzy.class.php';
 		ajax::success( HttpGizwits::GetSchedulerList( config::byKey('UserToken','heatzy','none'), init('Did'), init('Skip'), init('Limit') ) );
