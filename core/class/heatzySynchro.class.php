@@ -65,9 +65,11 @@ class Synchro {
             $eqLogic = eqLogic::byLogicalId( $aDevice['did'] , 'heatzy', false);
             if (! is_object($eqLogic)) {   /// Creation des dids inexistants
                 $eqLogic = new heatzy();
-            	$eqLogic->setIsVisible(1);
-                  //$Nb_Add++ ;
-              	  $return['new']++ ;
+                $eqLogic->setIsVisible(1);
+                $eqLogic->setConfiguration('TypeTemplate', '1');
+                
+                //$Nb_Add++ ;
+                $return['new']++ ;
             }
           	else
               $return['update']++ ;

@@ -15,19 +15,29 @@
             <center>
                <!-- Affichage de la temperature courante -->
                <span class="cmd cmd-widget #cur_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" data-cmd_uid="#uid#" title="#cur_temp_CollectDate#" data-version="#version#" style="display:none;#cur_temp_display#;">
-               <a><i class="fa fa-2x jeedom-thermometre" style="margin-left: 10px" aria-hidden="true"></i></a>  
-               <span style="margin-right: 5px;font-weight: bold;font-size: 1.8em;"></span>
+                  <a><i class="fa fa-2x jeedom-thermometre" style="margin-left: 10px" aria-hidden="true"></i></a>  
+                  <span style="margin-right: 5px;font-weight: bold;font-size: 1.8em;"></span>
+               </span>
+               <!-- Affichage de la temperature t1 -->
+               <span class="cmd cmd-widget #t1_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#t1_temp_id#" data-cmd_uid="#uid#" title="#t1_temp_CollectDate#" data-version="#version#" style="display:none;#t1_temp_display#;">
+                  <a><i class="fa fa-2x jeedom-thermometre" style="margin-left: 10px" aria-hidden="true"></i></a>  
+                  <span style="margin-right: 5px;font-weight: bold;font-size: 1.8em;"></span>
+               </span>
+               <!-- Affichage de la temperature t2 -->
+               <span class="cmd cmd-widget #t2_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#t2_temp_id#" data-cmd_uid="#uid#" title="#t2_temp_CollectDate#" data-version="#version#" style="display:none;#t2_temp_display#;">
+                  <a><i class="fa fa-2x jeedom-thermometre" style="margin-left: 10px" aria-hidden="true"></i></a>  
+                  <span style="margin-right: 5px;font-weight: bold;font-size: 1.8em;"></span>
                </span>
                <!-- Affichage du taux d'humidité -->
                <span class="cmd cmd-widget #cur_humi_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_humi_id#" data-cmd_uid="#uid#" title="#cur_humi_CollectDate#" data-version="#version#" style="display:none;#cur_humi_display#;">
-               <a><i class="fa fa-2x jeedomapp-humidity" style="margin-left: 10px" aria-hidden="true"></i></a>  
-               <span style="margin-right: 5px;font-weight: bold;font-size: 1.8em;"></span>
+                  <a><i class="fa fa-2x jeedomapp-humidity" style="margin-left: 10px" aria-hidden="true"></i></a>  
+                  <span style="margin-right: 5px;font-weight: bold;font-size: 1.8em;"></span>
                </span>
-              </center>
+            </center>
          </span>
          <span style="margin-left: 0px;margin-top: 0px;">
-           </center>
-               <div style="margin-top:5px; margin-left: 10px">
+            </center>
+               <div style="margin-top:0px; margin-left: 0px">
                  
                   <!-- Affichage de la consigne eco -->
                   <span class="cmd cmd-widget #eco_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#eco_temp_id#" data-cmd_uid="#uid#" style="margin-left:5px;display:none;#eco_temp_display#;" title="consigne eco" data-version="#version#">
@@ -66,23 +76,23 @@
             <center>
                <!-- Etat -->
                <span class="float:right" style="margin-right: 0px;margin-top: 0px;">
-               <span class="cmd cmd-widget #EtatConsigne_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#EtatConsigne_id#" data-cmd_uid="#uid#" style="margin-left:5px;display:none;#EtatConsigne_display#;" title="#EtatConsigne_CollectDate#" data-version="#version#">
-               <span class="iconCmd"></span>
-               </span>
+                  <span class="cmd cmd-widget #EtatConsigne_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#EtatConsigne_id#" data-cmd_uid="#uid#" style="margin-left:5px;display:none;#EtatConsigne_display#;" title="#EtatConsigne_CollectDate#" data-version="#version#">
+                     <span class="iconCmd"></span>
+                  </span>
                </span>
 
               <!-- WindowOpened -->
                <span class="float:right" style="margin-right: 0px;margin-top: 0px;">
-               <span class="cmd cmd-widget #WindowOpened_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#WindowOpened_id#" data-cmd_uid="#uid#" style="margin-left:5px;display:none;#WindowOpened_display#;" title="#WindowOpened_CollectDate#" data-version="#version#">
-               <span class="iconWindow"></span>
-               </span>
+                  <span class="cmd cmd-widget #WindowOpened_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#WindowOpened_id#" data-cmd_uid="#uid#" style="margin-left:5px;display:none;#WindowOpened_display#;" title="#WindowOpened_CollectDate#" data-version="#version#">
+                     <span class="iconWindow"></span>
+                  </span>
                </span>
               
               <!-- Detect_presence -->
                <span class="float:right" style="margin-right: 0px;margin-top: 0px;">
-               <span class="cmd cmd-widget #detect_presence_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#detect_presence_id#" data-cmd_uid="#uid#" style="margin-left:5px;display:none;#detect_presence_display#;" title="#detect_presence_CollectDate#" data-version="#version#">
-               <span class="iconPresence"></span>
-               </span>
+                  <span class="cmd cmd-widget #detect_presence_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#detect_presence_id#" data-cmd_uid="#uid#" style="margin-left:5px;display:none;#detect_presence_display#;" title="#detect_presence_CollectDate#" data-version="#version#">
+                     <span class="iconPresence"></span>
+                  </span>
                </span>
             </center>
          </span>
@@ -91,39 +101,39 @@
                <div style="margin-left: 0px" id="#EtatConsigne_id#" class="btn_mode">
                   <!-- Off -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Off_id#" data-cmd_uid="#uid#" data-version="#version#" style="display:none;#Off_display#;">
-                  <span title="Mode OFF" class="off cursor action btn">
-                  <i class="jeedom-off" style="font-size:1.2em"></i>
-                  </span>
+                     <span title="Mode OFF" class="off cursor action btn">
+                        <i class="jeedom-off" style="font-size:1.2em"></i>
+                     </span>
                   </span>
                   <!-- Confort -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort_id#" data-cmd_uid="#uid#" data-version="#version#" style="display:none;#Confort_display#;">
-                  <span title="Mode Confort" class="confort cursor action btn">
-                  <i class="meteo-soleil" style="font-size:1.4em"></i>
-                  </span>
+                     <span title="Mode Confort" class="confort cursor action btn">
+                        <i class="meteo-soleil" style="font-size:1.4em"></i>
+                     </span>
                   </span>
                   <!--  Confort-1 -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort-1_id#" data-cmd_uid="#uid#" data-version="#version#" style="display:none;#Confort-1_display#;">
-                  <span title="Mode Confort-1" class="confort cursor action btn">
-                  <i class="meteo-soleil" style="font-size:1.0em">-1</i>
-                  </span>
+                     <span title="Mode Confort-1" class="confort cursor action btn">
+                        <i class="meteo-soleil" style="font-size:1.0em">-1</i>
+                     </span>
                   </span>
                   <!--  Confort-2 -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Confort-2_id#" data-cmd_uid="#uid#" data-version="#version#" style="display:none;#Confort-2_display#;">
-                  <span title="Mode Confort-2" class="confort cursor action btn">
-                  <i class="meteo-soleil" style="font-size:1.0em">-2</i>
-                  </span>
+                     <span title="Mode Confort-2" class="confort cursor action btn">
+                        <i class="meteo-soleil" style="font-size:1.0em">-2</i>
+                     </span>
                   </span>
                   <!-- Eco -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#Eco_id#" data-cmd_uid="#uid#" data-version="#version#" style="display:none;#Eco_display#;">
-                  <span title="Mode Eco" class="eco cursor action btn">
-                  <i class="nature-night2" style="font-size:1.4em"></i>
-                  </span>
+                     <span title="Mode Eco" class="eco cursor action btn">
+                        <i class="nature-night2" style="font-size:1.4em"></i>
+                     </span>
                   </span>
                   <!--  Hors Gel -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#HorsGel_id#" data-cmd_uid="#uid#" data-version="#version#" style="display:none;#HorsGel_display#;">
-                  <span title="Mode Hors Gel" class="horsgel cursor action btn">
-                  <i class="nature-snowflake" style="font-size:1.4em"></i>
-                  </span>
+                     <span title="Mode Hors Gel" class="horsgel cursor action btn">
+                        <i class="nature-snowflake" style="font-size:1.4em"></i>
+                     </span>
                   </span>
                </div>
             </center>
@@ -132,33 +142,33 @@
             <span style="margin-left: 0px;margin-top: 0px;">
                <!--  Plugzy -->
                <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-               <span title="" class="plug cursor action btn" data-cmd_id="#plugzy_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#plugzy_display#;">
-               <i class="plugzy"></i>
-               </span>
+                  <span title="" class="plug cursor action btn" data-cmd_id="#plugzy_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#plugzy_display#;">
+                     <i class="plugzy"></i>
+                  </span>
                </span>
               <!--  programmation -->
                <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-               <span title="" class="prog cursor action btn" data-cmd_id="#etatprog_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#etatprog_display#;">
-               <i class="programmation"></i>
-               </span>
+                  <span title="" class="prog cursor action btn" data-cmd_id="#etatprog_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#etatprog_display#;">
+                     <i class="programmation"></i>
+                  </span>
                </span>
                <!--  Verrouillage (lock_switch) -->
                <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-               <span title="" class="lock cursor action btn" data-cmd_id="#etatlock_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#etatlock_display#;">
-               <i class="lock"></i>
-               </span>
+                  <span title="" class="lock cursor action btn" data-cmd_id="#etatlock_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#etatlock_display#;">
+                     <i class="lock"></i>
+                  </span>
                </span>
                <!--  Verrouillage (LOCK_C) -->
                <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-               <span title="" class="lock cursor action btn" data-cmd_id="#Lock_C_State_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#Lock_C_State_display#;">
-               <i class="lock"></i>
-               </span>
+                  <span title="" class="lock cursor action btn" data-cmd_id="#Lock_C_State_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#Lock_C_State_display#;">
+                     <i class="lock"></i>
+                  </span>
                </span>
                <!--  Fenetre ouverte -->
                <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-               <span title="" class="window cursor action btn" data-cmd_id="#WindowSwitch_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#WindowSwitch_display#;">
-               <i class="window"></i>
-               </span>
+                  <span title="" class="window cursor action btn" data-cmd_id="#WindowSwitch_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#WindowSwitch_display#;">
+                     <i class="window"></i>
+                  </span>
                </span>
             </span>
          </center>
@@ -166,38 +176,38 @@
             <center>
                <!-- Derog mode -->
                <span class="float:right" style="margin-right: 0px;margin-top: 0px;">
-               <span class="cmd cmd-widget #derog_mode_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#derog_mode_id#" data-cmd_uid="#uid#" style="margin-left:5px;display:none;#derog_mode_display#;" title="#derog_mode_CollectDate#" data-version="#version#">
-               <span class="iconCmd"></span>
-               </span>
+                  <span class="cmd cmd-widget #derog_mode_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#derog_mode_id#" data-cmd_uid="#uid#" style="margin-left:5px;display:none;#derog_mode_display#;" title="#derog_mode_CollectDate#" data-version="#version#">
+                     <span class="iconCmd"></span>
+                  </span>
                </span>
             </center>
          </span>
          <span style="margin-left: 0px;margin-top: 0px; display:;">
             <center>
-               <div style="margin-left: 0px;">
+               <div style="margin-left: 20px;">
                   <!-- Dérogation Off -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_off_id#" data-cmd_uid="#uid#" data-version="#version#" style="display:none;#derog_off_display#;">
-                  <span title="Dérogation OFF" class="off cursor action btn">
-                  <i class="jeedom-off" style="font-size:1.2em;"></i>
-                  </span>
+                     <span title="Dérogation OFF" class="off cursor action btn">
+                        <i class="jeedom-off" style="font-size:1.2em;"></i>
+                     </span>
                   </span>
                   <!-- Dérogation Vacances 
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_vacances_id#" data-cmd_uid="#uid#" data-version="#version#" style="display:none;#derog_vacances_display#;">
-                  <span title="Dérogation Vacances" class="vacances cursor action btn">
-                  <i class="fas fa-suitcase" style="font-size:1.3em;"></i>
-                  </span>
+                     <span title="Dérogation Vacances" class="vacances cursor action btn">
+                        <i class="fas fa-suitcase" style="font-size:1.3em;"></i>
+                     </span>
                   </span>-->
                   <!--  Dérogation Boost 
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_boost_id#" data-cmd_uid="#uid#" data-version="#version#" style="display:none;#derog_boost_display#;">
-                  <span title="Dérogation boost" class="boost cursor action btn">
-                  <i class="fas fa-rocket" style="font-size:1.3em;"></i>
-                  </span>
+                     <span title="Dérogation boost" class="boost cursor action btn">
+                        <i class="fas fa-rocket" style="font-size:1.3em;"></i>
+                     </span>
                   </span>-->
                   <!--  Dérogation presence -->
                   <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="#derog_presence_id#" data-cmd_uid="#uid#" data-version="#version#" style="display:none;#derog_presence_display#;">
-                  <span title="Dérogation Présence" class="presence cursor action btn">
-                  <i class="fas fa-user" style="font-size:1.3em;"></i>
-                  </span>
+                     <span title="Dérogation Présence" class="presence cursor action btn">
+                        <i class="fas fa-user" style="font-size:1.3em;"></i>
+                     </span>
                   </span>
                </div>
             </center>
@@ -340,6 +350,20 @@
       }
       jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd#',display_unit:'#cur_temp_unite#',collectDate:'#cur_temp_CollectDate#',valueDate:'#cur_temp_ValueDate#'});
       
+      jeedom.cmd.update['#t1_temp_id#'] = function(_options){
+         if (_options.display_unit === undefined)  _options.display_unit = '°C' ;
+         $('.cmd[data-cmd_id="#t1_temp_id#"][data-cmd_uid="#uid#"]').attr('title','Température de la sonde: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         $('.cmd[data-cmd_id="#t1_temp_id#"][data-cmd_uid="#uid#"] span').value(Number.parseFloat(_options.display_value).toFixed(1) + '' + _options.display_unit); 
+      }
+      jeedom.cmd.update['#t1_temp_id#']({display_value:'#t1_temp_cmd#',display_unit:'#t1_temp_unite#',collectDate:'#t1_temp_CollectDate#',valueDate:'#t1_temp_ValueDate#'});
+      
+      jeedom.cmd.update['#t2_temp_id#'] = function(_options){
+         if (_options.display_unit === undefined)  _options.display_unit = '°C' ;
+         $('.cmd[data-cmd_id="#t2_temp_id#"][data-cmd_uid="#uid#"]').attr('title','Température de la sonde: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
+         $('.cmd[data-cmd_id="#t2_temp_id#"][data-cmd_uid="#uid#"] span').value(Number.parseFloat(_options.display_value).toFixed(1) + '' + _options.display_unit); 
+      }
+      jeedom.cmd.update['#t2_temp_id#']({display_value:'#t2_temp_cmd#',display_unit:'#t2_temp_unite#',collectDate:'#t2_temp_CollectDate#',valueDate:'#t2_temp_ValueDate#'});
+      
       jeedom.cmd.update['#eco_temp_id#'] = function(_options){
          if (_options.display_unit === undefined)  _options.display_unit = '°C' ;
          $('.cmd[data-cmd_id="#eco_temp_id#"][data-cmd_uid="#uid#"]').attr('title','Valeur température éco<br>Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
@@ -367,15 +391,15 @@
       jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
          $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
         if (_options.display_value == '0') {
-            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i>');   /// Mode Confort
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em;color:#D60B0B;"></i>');   /// Mode Confort
          }else if (_options.display_value == '4') { 
-            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i><i style="font-size:0.5em">-1</i>');   /// Mode Confort-1
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em;color:#D6600B;"></i><i style="font-size:0.5em;color:#D6600B;">-1</i>');   /// Mode Confort-1
          }else if (_options.display_value == '5') {
-            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em"></i><i style="font-size:0.5em">-2</i>');   /// Mode Confort-2
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em;color:#D6960B;"></i><i style="font-size:0.5em;color:#D6960B;">-2</i>');   /// Mode Confort-2
          }else if (_options.display_value == '1') {
-            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco" style="font-size:2em"></i>');    /// Mode Eco
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco" style="font-size:2em;color:#3EAB3F;"></i>');    /// Mode Eco
          }else if (_options.display_value == '2') {
-            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg" style="font-size:2em"></i>');     /// Mode HorsGel
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg" style="font-size:2em;color:#140BD6;"></i>');     /// Mode HorsGel
          }else {
             $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-off" style="font-size:2em"></i>');    /// Mode Off
          }

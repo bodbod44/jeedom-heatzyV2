@@ -200,10 +200,10 @@ class heatzyCmd extends cmd {
                         if(isset($Result['error_message']) && isset($Result['error_code'])) {
                             log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' - '.$Result['error_code'].' - '.$Result['error_message'].' - '.$Result['detail_message']);
 
-                              if( $Result['error_code'] == '9017' || $Result['error_code'] == '9042' ){
-                                  // 9017 = Détaché du compte
-                                  // 9042 = Offline
-                                  $eqLogic->setStatus('timeout','1');
+                            if( $Result['error_code'] == '9017' || $Result['error_code'] == '9042' ){
+                                // 9017 = Détaché du compte
+                                // 9042 = Offline
+                                $eqLogic->setStatus('timeout','1');
                                 $eqLogic->checkAndUpdateCmd('IsOnLine', 0 );
                             }
                             return false;

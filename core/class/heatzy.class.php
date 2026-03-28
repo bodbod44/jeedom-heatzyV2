@@ -257,32 +257,19 @@ class heatzy extends eqLogic {
         $UserToken = $aResult['token'];
         $uid = $aResult['uid'];
         
-        if( config::byKey('UserToken', 'heatzy', '') != $UserToken || config::byKey('ExpireToken', 'heatzy', '') != $TokenExpire){
-            self::sendToDaemon( 'stop' , '' , array() ) ; // Force le demon a s'eteindre pour un redémarrage avec le nouveau token
+        if( config::byKey('UserToken', 'heatzy', '') != $UserToken || config::byKey('ExpireToken', 'heatzy', '') != $TokenExpire || config::byKey('uid', 'heatzy', '') != $uid){
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Génération du token heatzy : '.config::byKey('ExpireToken', 'heatzy', '').'/'.config::byKey('UserToken', 'heatzy', '').' -> '.$TokenExpire.'/'.$UserToken );
+            
             message::add("Heatzy", 'Génération du token heatzy : '.config::byKey('ExpireToken', 'heatzy', '').'/'.config::byKey('UserToken', 'heatzy', '').' -> '.$TokenExpire.'/'.$UserToken);
+            
+            // Sauvagrde les nouvelles valeurs
+            config::save('UserToken'  , $UserToken  , 'heatzy'); /// => Sauvegarde du token utilisateur
+            config::save('uid'        , $uid        , 'heatzy'); /// => uid
+            config::save('ExpireToken', $TokenExpire, 'heatzy'); /// => Sauvegarde de l'expiration du token
+            
+            //self::sendToDaemon( 'stop' , '' , array() ) ; // Force le demon a s'eteindre pour un redémarrage avec le nouveau token
+            self::deamon_start() ; // Force le demon a redémarrer avec le nouveau token
         }
-        //else
-        //    message::add("Heatzy", 'Génération du token heatzy -> Pas de changement');
-        
-        config::save('UserToken'  , $UserToken  , 'heatzy'); /// => Sauvegarde du token utilisateur
-        config::save('uid'        , $uid        , 'heatzy'); /// => uid
-        config::save('ExpireToken', $TokenExpire, 'heatzy'); /// => Sauvegarde de l'expiration du token
-        
-        /*
-        /// Prepare le prochain cron
-        $cron = cron::byClassAndFunction('heatzy', 'Login');
-        if (!is_object($cron)) {
-            $cron = new cron();
-            $cron->setClass('heatzy');
-            $cron->setFunction('Login');
-            $cron->setLastRun(date('Y-m-d H:i:s'));
-        }
-        
-        $nextLogin = date('i H d m * Y', strtotime($TokenExpire." - 1 day"));
-        log::add('heatzy', 'debug',  'cron prochain Login :'.$nextLogin);
-        $cron->setSchedule($nextLogin);
-        $cron->save();
-        */
         
         return true ;
     }
@@ -408,6 +395,14 @@ class heatzy extends eqLogic {
             if( isset ($aDevice['attr']['cur_tempH']) && isset ($aDevice['attr']['cur_tempL']) )
                 $this->checkAndUpdateCmd('cur_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cur_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cur_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
 
+            // t1_temp : t° de la sonde. 
+            if( isset ($aDevice['attr']['t1_temp']) )
+                $this->checkAndUpdateCmd('t1_temp', $aDevice['attr']['t1_temp'] );
+
+            // t2_temp : t° de sortie. 
+            if( isset ($aDevice['attr']['t2_temp']) )
+                $this->checkAndUpdateCmd('t2_temp', $aDevice['attr']['t2_temp'] );
+            
             // Taux d’humidité de l’air dans la pièce (%). 
             if( isset ($aDevice['attr']['cur_humi']) )
                 $this->checkAndUpdateCmd('cur_humi', $aDevice['attr']['cur_humi'] );
@@ -744,31 +739,7 @@ class heatzy extends eqLogic {
     */
 //class heatzy extends eqLogic
     public static function cron() {
-        /*log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': cron...');
-        $tab = HttpGizwits::GetProduitInfo('aa85e43fc4464e4d0000000000000000') ;
         
-        foreach($tab['entities'] as $element) {
-            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$element['display_name']);
-        }
-        
-        return false ;*/
-      
-      	sleep(30); // Ne pas interférer avec les appels à hh:mm:00
-
-        if( !cache::exist('Heatzy_Synchronize') ) cache::set( 'Heatzy_Synchronize' , 0) ;
-      
-        // Si Synchronise depuis plus de 15min, on rénit (peut arriver si plantage dans synchronize)
-        if( (strtotime(date("Y-m-d H:i:s")) - cache::byKey('Heatzy_Synchronize')->getValue()) > 900 && cache::byKey('Heatzy_Synchronize')->getValue() > 0 ){
-            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Réinit du cache Heatzy_Synchronize car > 600s (='.cache::byKey('Heatzy_Synchronize')->getValue().')' ) ;
-            cache::set( 'Heatzy_Synchronize' , 0) ;
-        }
-      
-        //Si synchro en cours, on arrête
-        if( cache::byKey('Heatzy_Synchronize')->getValue() > 0){
-            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Arret du cron car Synchronize en cours ...' ) ;
-            return false ;
-        }
-      
         $ExpireToken = config::byKey('ExpireToken','heatzy','none') ;
         $ExpireTokenTime = strtotime( $ExpireToken ) ;
 
@@ -792,6 +763,22 @@ class heatzy extends eqLogic {
                 self::sendToDaemon( 'log_level' , '' , array() ) ;
             }*/
             return ;
+        }
+      
+      	sleep(30); // Ne pas interférer avec les appels à hh:mm:00
+
+        if( !cache::exist('Heatzy_Synchronize') ) cache::set( 'Heatzy_Synchronize' , 0) ;
+      
+        // Si Synchronise depuis plus de 15min, on rénit (peut arriver si plantage dans synchronize)
+        if( (strtotime(date("Y-m-d H:i:s")) - cache::byKey('Heatzy_Synchronize')->getValue()) > 900 && cache::byKey('Heatzy_Synchronize')->getValue() > 0 ){
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Réinit du cache Heatzy_Synchronize car > 600s (='.cache::byKey('Heatzy_Synchronize')->getValue().')' ) ;
+            cache::set( 'Heatzy_Synchronize' , 0) ;
+        }
+      
+        //Si synchro en cours, on arrête
+        if( cache::byKey('Heatzy_Synchronize')->getValue() > 0){
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Arret du cron car Synchronize en cours ...' ) ;
+            return false ;
         }
         
         // Mise à jour du statut (Online/Offline + ajout noueau modules)        
@@ -1081,16 +1068,15 @@ class heatzy extends eqLogic {
       //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Name='.$this->getName().'- '.$this->getConfiguration('TypeTemplate', '') );
       
         switch( $this->getConfiguration('TypeTemplate', '') ){
-            case '':
-                $this->setConfiguration('TypeTemplate', '0');
-                $this->save() ;
             case '0':
+                return parent::toHtml($_version);
+                break;
+            case '1':
                 $html = template_replace( array_merge( $replace , $this->ReplacetoHtml()) , getTemplate('core', $_version, 'Dashboard','heatzy')); // template commun (bodbod)
                 break;
-        	case '2':
-				return parent::toHtml($_version);
-            	break;
             default :
+                $this->setConfiguration('TypeTemplate', '1');
+                $this->save() ;
                 log::add('heatzy', 'warning', __METHOD__.': TypeTemplate inconnu ('.$this->getConfiguration('TypeTemplate').'), utilisation du template par défaut');
                 $html = template_replace( array_merge( $replace , $this->ReplacetoHtml()) , getTemplate('core', $_version, 'Dashboard','heatzy')); // template commun (bodbod)
                 break;

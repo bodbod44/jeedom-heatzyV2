@@ -1,14 +1,16 @@
 {	
  	"mode":["mode","EtatConsigne","Confort","Eco","HorsGel","Off"]
 ,	"eco_temp":["eco_temp","eco_temp_consigne"]
-,	"eco_tempH":["eco_temp","eco_temp_consigne"]
-,	"eco_tempL":["eco_temp","eco_temp_consigne"]
+,	"eco_tempH":["eco_temp","eco_temp_consigneHL"]
+,	"eco_tempL":["eco_temp","eco_temp_consigneHL"]
 ,	"cft_temp":["cft_temp","cft_temp_consigne"]
-,	"cft_tempH":["cft_temp","cft_temp_consigne"]
-,	"cft_tempL":["cft_temp","cft_temp_consigne"]
+,	"cft_tempH":["cft_temp","cft_temp_consigneHL"]
+,	"cft_tempL":["cft_temp","cft_temp_consigneHL"]
 ,	"cur_temp":["cur_temp"]
 ,	"cur_tempH":["cur_temp"]
 ,	"cur_tempL":["cur_temp"]
+,	"t1_temp":["t1_temp"]
+,	"t2_temp":["t2_temp"]
 ,	"cur_humi":["cur_humi"]
 ,	"on_off":["plugzy","plugzyon","plugzyoff"]
 ,	"timer_switch":["etatprog","ProgOn","ProgOff"]
@@ -23,4 +25,4 @@
 ,	"signal_power":["signal_power"]
 ,	"energy_saving":["energy_saving"]
 ,	"kill_switch":["kill_switch"]
-}
+}	

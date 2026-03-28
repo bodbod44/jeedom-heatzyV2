@@ -80,6 +80,7 @@ class HttpGizwits {
         ///Décodage de la réponse
         $aRep = json_decode($result, true);
         if(isset($aRep['error_message'])) {
+            log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.': '.$aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
         if( self::$DebugExport )
@@ -645,7 +646,7 @@ class HttpGizwits {
                 return false; // Retour KO si trop de tentative récursive
         }
         else{ // Le serveur a répondu
-            
+            $aRep = json_decode($result, true);
             if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
                 log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': error_code '.$aRep['error_code'].' (Recurrence '.$Recurrence.')');
                 
@@ -809,7 +810,7 @@ class HttpGizwits {
                 return false;
         }
         else{ // Le serveur a répondu
-            
+            $aRep = json_decode($result, true);
             if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
                 log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': error_code '.$aRep['error_code'].' (Recurrence '.$Recurrence.')');
                 

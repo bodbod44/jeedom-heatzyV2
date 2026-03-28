@@ -263,9 +263,8 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 						<div class="col-sm-2 alert alert-info" style="width:100%;">
 							Ce parametre permet de choisir le template pemettant d'affiche les modules dans jeedom (bouton, image ...)
 							<ul>
-								<li>bodbod : Nouveau template commun à tous les modules</li>
-								<li>l3flo : Template issu de la version d'origine de l3flo (Ces templates ne sont plus maintenus. Il seront supprimés dans une prochaine version du plugin)</li>
 								<li>Jeedom : Utilisation du template de base jeedom</li>
+								<li>bodbod : Template du plugin commun à tous les modules</li>
 							</ul>
 						</div>
 					</div>
@@ -277,8 +276,8 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 						<label class="col-sm-4 control-label" style="width:120px;">Template</label>
 						<div class="col-sm-6">
 							<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title=""  style="width:300px;" onchange="AffichageTemplateBodbod()">
-								<option value="0">{{Template heatzy bodbod}}</option>
-								<option value="1">{{Template jeedom}}</option>
+								<option value="0">{{Template jeedom}}</option>
+								<option value="1">{{Template heatzy bodbod (par défaut)}}</option>
 							</select>
 						</div>
 					</div>
