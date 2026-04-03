@@ -758,10 +758,6 @@ class heatzy extends eqLogic {
         }
       
         if( config::byKey('API_Type','heatzy','REST') != 'REST' ){ // Si WebSocket
-            /*if(  ( date("i") % 5 ) == 0 ){
-                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Envoi du niveau de log' ) ;
-                self::sendToDaemon( 'log_level' , '' , array() ) ;
-            }*/
             return ;
         }
       
