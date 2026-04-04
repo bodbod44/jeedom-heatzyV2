@@ -63,14 +63,11 @@ class Synchro {
         foreach ($aDevices['devices'] as $DeviceNum => $aDevice) {
             $aSearchDid[] = $aDevice['did'] ;
             $eqLogic = eqLogic::byLogicalId( $aDevice['did'] , 'heatzy', false);
-            $IsNewDevice = false ;
             if (! is_object($eqLogic)) {   /// Creation des dids inexistants
                 $eqLogic = new heatzy();
-                $eqLogic->setIsVisible(1);
-                $eqLogic->setConfiguration('TypeTemplate', '1');
-                
-                $IsNewDevice = true ;
-                $return['new']++ ;
+            	$eqLogic->setIsVisible(1);
+                  //$Nb_Add++ ;
+              	  $return['new']++ ;
             }
           	else
               $return['update']++ ;
@@ -97,17 +94,29 @@ class Synchro {
             if(isset($aDevice['product_key']))
                 $eqLogic->setConfiguration('product_key',$aDevice['product_key']);
           
+            /*
+            /// Retourne les informations sur le produit
+            $aProductInfo = HttpGizwits::GetProduitInfo($aDevice['product_key']) ;
+            
+            if (isset ($aProductInfo['name']))
+                $eqLogic->setConfiguration('product',$aProductInfo['name']);
+            if (isset ($aProductInfo['product_key']))
+                        $eqLogic->setConfiguration('product_key',$aProductInfo['product_key']);
+
+            if  ( strcmp( $aProductInfo['name'] , "INEA" ) === 0 )
+                 $eqLogic->setConfiguration('heatzytype','flam');
+            else if ( strncmp ( $aProductInfo['name'] , "Flam" , 4 ) === 0 )
+                 $eqLogic->setConfiguration('heatzytype','flam');
+            else
+                 $eqLogic->setConfiguration('heatzytype','pilote');*/
+          
             /// Si connecté ou pas
             if( $aDevice['is_online'] == 'true')
                 $eqLogic->checkAndUpdateCmd('IsOnLine', 1 );
             else
                 $eqLogic->checkAndUpdateCmd('IsOnLine', 0 );
           
-            $eqLogic->save();
-            
-            // Création des commandes pour les nouveaux modules
-            if( $IsNewDevice )
-                $eqLogic->InitCmds()  ;
+              $eqLogic->save();
           
               // A mettre après le save (car le save met le statut à 0)
             if( $aDevice['is_online'] == 'true' ){
@@ -119,31 +128,33 @@ class Synchro {
                           
             // mise à jour du did
             if ($eqLogic->getIsEnable() == 1 && $eqLogic->getStatus('timeout') == 0 ) {
-                // Ne pas faire si timeout (car l'update va remettre reinit le timeout)
-                $eqLogic->updateHeatzyDid( null , $force );
+                  // Ne pas faire si timeout (car l'update va remettre reinit le timeout)
+              $eqLogic->InitCmds()  ;
+              $eqLogic->updateHeatzyDid( null , $force );
+              
             }
           
         } // foreach
         
         //log::add('heatzy', 'info', 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
+      	$return['delete'] = 0 ;
         if( $return['new'] > 0)
             log::add('heatzy', 'info', $return['new'].' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s) Heatzy rattaché(s) au compte');
         log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$return['new'].' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s) Heatzy rattaché(s) au compte');
         //message::add("Heatzy", 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
       
         // Recherche des équipements qui ne sont plus rattachés au compte
-        $return['delete'] = 0 ;
         foreach (eqLogic::byType('heatzy') as $heatzy) {
             if( !in_array($heatzy->getLogicalId() , $aSearchDid ) ){
                 if( $heatzy->getIsEnable() == 1 ){
                     $heatzy->setIsEnable(0);
                     $heatzy->setIsVisible(0) ;
                     $heatzy->checkAndUpdateCmd('IsOnLine', 0 );   
-                    $heatzy->save();
+                  	$heatzy->save();
 
                     $heatzy->setStatus('timeout','1');
                     log::add('heatzy', 'error', 'Le module -'.$heatzy->getName().'- ('.$heatzy->getLogicalId().') n est plus rattaché au compte. Il est maintenant désactivé et non visible (mais pas supprimé)' );   
-                    $return['delete']++ ;
+                  	$return['delete']++ ;
                 }
             }
         }
@@ -151,6 +162,8 @@ class Synchro {
       
         cache::set( 'Heatzy_Synchronize' , 0) ;
       
+        //return count($aDevices['devices']);
+      //return count($aDevices['devices']);
         return $return ;
     }
     
@@ -337,5 +350,33 @@ class Synchro {
 
         return true ;
     }
+  
+    /**
+     * @brief Fonction qui permet de synchroniser
+     *        les modules heatzy
+     *        
+     * @return false en cas d'erreur le nombre de modules synchroniser       
+     */
+//class Synchro
+    public static function StatsHeatzy(  ) {
+        $eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
+        foreach ($eqLogics as $eqLogic) {
+            $aRep = HttpGizwits::GetConsigne( $eqLogic->getLogicalId() ) ;
+            if( $aRep != false ){
+                // Anonymisation et ajout d'info
+                $aRep['did'] = 'xxxxxxxxxxxxxxxxxxxxxxxxxx' ;
+                $aRep['product_key'] = $eqLogic->getConfiguration('product_key', '') ;
+                $aRep['product_name'] = $eqLogic->getConfiguration('product', '') ;          
+
+                //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': SetStatsHeatzy...'.$eqLogic->getLogicalId().'-'.json_encode($aRep));
+
+                HttpGizwits::SetStatsHeatzy( json_encode( $aRep ) ) ;
+            }
+            sleep(1) ;
+        }
+        return true ;
+    }
+
+  
   
 } // Fin class Synchro

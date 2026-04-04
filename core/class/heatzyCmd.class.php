@@ -25,18 +25,16 @@ class heatzyCmd extends cmd {
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $_options1 : '.$_options ); 
             //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $_options2 : '.json_decode($_options, true) ); 
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $_options3 : '.var_export($_options, true) );
-        }      
+        }
       
-      
-        $Result = array();
-        
-        /// Lecture du token
+        $Result = array();        
       
         if ($this->getLogicalId() == 'refresh') {
             $this->getEqLogic()->updateHeatzyDid();
+            //Synchro::StatsHeatzy();
         }
         else if($this->getType() == 'info' ) {
-              return $this->getValue();
+            return $this->getValue();
         }
         else if($this->getType() == 'action' ) {
             
@@ -222,11 +220,11 @@ class heatzyCmd extends cmd {
                 } // REST
             } // if $Consigne != ''
             
-          if( config::byKey('API_Type','heatzy','REST') == 'REST' ){
-            /// Mise à jour de l'état
-            sleep(1); // tempo de 1sec pour laisser le temps a l'API de le prendre en compte et le restituer
-            $this->getEqLogic()->updateHeatzyDid();
-          }
+            if( config::byKey('API_Type','heatzy','REST') == 'REST' ){
+                /// Mise à jour de l'état
+                sleep(1); // tempo de 1sec pour laisser le temps a l'API de le prendre en compte et le restituer
+                $this->getEqLogic()->updateHeatzyDid();
+            }
             
         } /// Fin action
         $mc = cache::byKey('heatzyWidgetmobile' . $this->getEqLogic()->getId());

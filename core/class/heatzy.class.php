@@ -758,6 +758,10 @@ class heatzy extends eqLogic {
         }
       
         if( config::byKey('API_Type','heatzy','REST') != 'REST' ){ // Si WebSocket
+            /*if(  ( date("i") % 5 ) == 0 ){
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Envoi du niveau de log' ) ;
+                self::sendToDaemon( 'log_level' , '' , array() ) ;
+            }*/
             return ;
         }
       
@@ -934,34 +938,6 @@ class heatzy extends eqLogic {
      * Fonction exécutée automatiquement tous les jours par Jeedom*/
 //class heatzy extends eqLogic
     public static function cronDaily() {
-        //$aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
-        //$tmp = strtotime( "2025-06-20 20:20:20" ) ;
-          //$ExpireToken = strtotime( config::byKey('ExpireToken','heatzy','none') );
-        //message::add("Heatzy", '= '.$aujourdhui." - ".$tmp.' - '.$ExpireToken );
-        
-        
-        /*
-        $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
-        $cible = $tmp = strtotime( "2025-06-25 00:00:00" ) ; 
-        //message::add("Heatzy", '= '.($cible-(7*86400)).' - '.date('w', $aujourdhui).' - '.$aujourdhui.' - '.date('d/m', $aujourdhui) );
-        if( $aujourdhui > $cible ){
-            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : date cible dépassée 25/06' );
-        }
-        else if( $aujourdhui > ($cible - (7 * 86400) ) ){
-            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : tous les jours 25/06-7j' );
-        }
-        else if( $aujourdhui > ($cible - (15 * 86400) ) ){
-            if( (date('w', $aujourdhui )) == '4' )
-                message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui)." : 4 - =Jeudi - 25/06-15j" );
-            else
-                message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui)." : != Jeudi - 25/06-15j" );
-        }
-        else if( $aujourdhui > $cible ){
-            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : date cible dépassée 25/06' );
-        }
-        else
-            message::add("Heatzy", 'cronDaily heatzy du '.date('d/m w', $aujourdhui).' : Pas encore' );
-        */
         
         $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
         $cible = strtotime( "2025-07-01 00:00:00" ) ;         
@@ -988,7 +964,17 @@ class heatzy extends eqLogic {
             } //foreach
         } //if
         
-        //heatzy::Login();
+      
+      	$statsday = $this->getConfiguration('statsday', '') ;
+      	if( $statsday == ''){
+          $statsday = rand(0, 6) ;
+          $this->setConfiguration('statsday', $statsday );
+        }
+      
+      	if( date('w', $aujourdhui ) == $statsday ){
+      		sleep( rand(0, 7200) ) ;
+        	Synchro::StatsHeatzy() ;
+        }
     }
 
     /*     * *********************Méthodes d'instance************************* */

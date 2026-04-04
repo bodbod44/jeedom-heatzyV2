@@ -15,7 +15,7 @@ class HttpGizwits {
     
     public static $_MaxError = 200 ;
     
-    public static $DebugExport = True ;
+    public static $DebugExport = false ;
 
     /*     * ***********************Methode static*************************** */
     /**
@@ -968,4 +968,54 @@ class HttpGizwits {
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
         return $aRep;
     }
+  
+  
+  //class HttpGizwits
+    public static function SetStatsHeatzy( $data ) {
+
+        //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.': $data='.$data );
+        /// Parametres cUrl
+        $params = array(
+            CURLOPT_POST => 1,
+            CURLOPT_HTTPHEADER => array(
+                    'Accept: application/json'
+            ),
+            CURLOPT_URL => 'http://bodbod.whf.bz/insert.php',
+          	//CURLOPT_URL => 'http://192.168.3.118/insert.php',
+            CURLOPT_FRESH_CONNECT => 1,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FORBID_REUSE => 1,
+            //CURLOPT_CONNECTTIMEOUT => self::$ConnectTimeout,
+            CURLOPT_TIMEOUT => 100,
+            CURLOPT_POSTFIELDS => $data,
+        );
+
+        /// Initialisation de la ressources curl
+        $gizwits = curl_init();
+        if ($gizwits === false)
+          return false;
+
+        /// Configuration des options
+        curl_setopt_array($gizwits, $params);
+    
+        /// Excute la requete
+        $result = curl_exec($gizwits);
+    
+        /// Test le code retour http
+        $httpcode = curl_getinfo($gizwits, CURLINFO_HTTP_CODE);
+
+        /// Ferme la connexion
+        curl_close($gizwits);
+
+        if( $httpcode != 200 && $httpcode != 400 ){ // Si erreur technique
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode.' - timeout '.self::$Default_Timeout.' $result='.$result );
+        }
+        else{ // Le serveur a répondu
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.': $httpcode='.$httpcode );
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.': $result='.$result );
+        }
+        
+        return true;
+    }
+  
 }
