@@ -364,9 +364,11 @@ class Synchro {
             $aRep = HttpGizwits::GetConsigne( $eqLogic->getLogicalId() ) ;
             if( $aRep != false ){
                 // Anonymisation et ajout d'info
-                $aRep['did'] = 'xxxxxxxxxxxxxxxxxxxxxxxxxx' ;
+                $aRep['did'] = $eqLogic->getId() ; //unset($aRep['did']) ;//$aRep['did'] = 'xxxxxxxxxxxx' ;
+              	unset($aRep['updated_at']) ;
                 $aRep['product_key'] = $eqLogic->getConfiguration('product_key', '') ;
-                $aRep['product_name'] = $eqLogic->getConfiguration('product', '') ;          
+                $aRep['product_name'] = $eqLogic->getConfiguration('product', '') ;
+				$aRep['API'] = config::byKey('API_Type','heatzy','') ;
 
                 //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': SetStatsHeatzy...'.$eqLogic->getLogicalId().'-'.json_encode($aRep));
 

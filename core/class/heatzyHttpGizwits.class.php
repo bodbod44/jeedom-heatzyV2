@@ -1007,7 +1007,7 @@ class HttpGizwits {
         /// Ferme la connexion
         curl_close($gizwits);
 
-        if( $httpcode != 200 && $httpcode != 400 ){ // Si erreur technique
+        if( $httpcode != 200 ){ // Si erreur technique
             log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode.' - timeout '.self::$Default_Timeout.' $result='.$result );
         }
         else{ // Le serveur a répondu

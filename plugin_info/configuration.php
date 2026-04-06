@@ -282,31 +282,50 @@ function sleep(ms) {
   while (Date.now() - start < ms) {}
 }*/
 
-//$('select[data-l1key="log::level::heatzy"]').on('change', function() {
-//$('a["bt_savePluginLogConfig"]').on('click', function() { 
+
 $('a#bt_savePluginLogConfig').on('click', function() { 
 
   $('#div_alert').showAlert({message: 'Relance du demon...', level: 'info'});
-  sleep( 3000 ) ;
-    $.ajax({// fonction permettant de faire de l'ajax
-        type: "POST", // méthode de transmission des données au fichier php
-        url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
-        data: {
-            action: "deamon_start",
-        },
-        dataType: 'json',
-        global: false,
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        },
-        success: function (data) { // si l'appel a bien fonctionné
-            if (data.state != 'ok') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                return;
-            }
-        }
-    });
+  //sleep( 3000 ) ;
+  asyncCall() ;
+    //$('#div_alert').showAlert({message: 'FIN', level: 'info'});
 });
+
+async function asyncCall() {
+	await AppelAJAXStart();
+}
+
+function AppelAJAXStart() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("resolved");
+
+      		  $.ajax({// fonction permettant de faire de l'ajax
+              type: "POST", // méthode de transmission des données au fichier php
+              url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
+              data: {
+                  action: "deamon_start",
+              },
+              dataType: 'json',
+              global: false,
+              error: function (request, status, error) {
+                  handleAjaxError(request, status, error);
+              },
+              success: function (data) { // si l'appel a bien fonctionné
+                  if (data.state != 'ok') {
+                      $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                      return;
+                  }
+                  //$('#div_alert').showAlert({message: 'AJAX OK', level: 'info'});
+              }
+          });
+
+    }, 1000);
+  });
+
+}
+
+
 
 
 $('[data-l1key="API_Type"]').on('change',function(){

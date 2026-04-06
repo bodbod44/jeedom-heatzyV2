@@ -109,11 +109,6 @@ class heatzy extends eqLogic {
                 self::sendToDaemon( 'stop' , '' , array() ) ;
                 //sleep(1);
             }
-            else if(  $return['state'] == 'ok' && log::convertLogLevel(log::getLogLevel(__CLASS__)) != config::byKey('DemonLogLevel', __CLASS__ , '') ){
-                // Si niveau de log changé depuis lancement du demon
-                log::add('heatzy', 'info', __METHOD__.'(ln '.__LINE__.')'.' : Niveau de log different entre plugin et demon. Relance du demon');
-                self::sendToDaemon( 'stop' , '' , array() ) ;
-            }
         }
       
         return $return;
@@ -124,6 +119,7 @@ class heatzy extends eqLogic {
      */
 //class heatzy extends eqLogic
     public static function deamon_start() {
+      	log::add(__CLASS__, 'debug', __METHOD__.'(ln '.__LINE__.')'.' : deamon_start...');
         self::deamon_stop();
       	sleep(1) ;
         $deamon_info = self::deamon_info();
@@ -156,10 +152,6 @@ class heatzy extends eqLogic {
         if ($i >= 20) {
             log::add(__CLASS__, 'error', __('Impossible de lancer le démon Heatzy, vérifiez le log', __FILE__), 'unableStartDeamon');
             return false;
-        }
-        else{
-            // Demon démarré
-            config::save('DemonLogLevel' , log::convertLogLevel(log::getLogLevel(__CLASS__)) , 'heatzy'); 
         }
         
         message::removeAll(__CLASS__, 'unableStartDeamon');
@@ -848,11 +840,11 @@ class heatzy extends eqLogic {
     * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
     * synchronisation
     */
-    /*
+    
     public static function cron5() {        
-        $res = heatzy::SynchronizeHeatzy() ;
-        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchronize cron5 = '.$res );
-    }*/
+        //$res = heatzy::SynchronizeHeatzy() ;
+        //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchronize cron5 = '.$res );
+    }
   
   
     /**
@@ -928,11 +920,25 @@ class heatzy extends eqLogic {
     }
 
     /*
-     * Fonction exécutée automatiquement toutes les heures par Jeedom
+     * Fonction exécutée automatiquement toutes les heures par Jeedom*/
       public static function cronHourly() {
+      	/*$statsday = config::byKey('statsday', __CLASS__ , '') ;
+      	if( $statsday == ''){
+          $statsday = rand(0, 6) ;
+          config::save('statsday'  , $statsday  , __CLASS__);
+        }
+      
+      	if( date('w', $aujourdhui ) == $statsday ){
+      		sleep( rand(0, 7200) ) ;
+        	Synchro::StatsHeatzy() ;
+        }*/
+       
+		sleep( rand(0, 3000) ) ;
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchro::StatsHeatzy()...' );
+		Synchro::StatsHeatzy() ;
 
       }
-     */
+     
 
     /*
      * Fonction exécutée automatiquement tous les jours par Jeedom*/
@@ -942,17 +948,7 @@ class heatzy extends eqLogic {
         $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
         $cible = strtotime( "2025-07-01 00:00:00" ) ;         
         if( $aujourdhui > $cible && (date('w', $aujourdhui )) == '0' ){
-            // Vérification de l'utlisation des anciens templates
-            $eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
-            foreach ($eqLogics as $eqLogic) {
-              //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : '.$eqLogic->getName().' - TypeTemplate='.$eqLogic->getConfiguration('TypeTemplate', '') );
-              if( $eqLogic->getConfiguration('TypeTemplate', '') == 1){
-                message::add("Heatzy", 'Pour certains équipements heatzy, vous utilisez d ancien template -l3flo-. Ce dernier n est plus maintenu et sera supprimé dans une prochaine version. Je vous suggère de basculer vos équipements sur le template bodbod ou jeedom (parametre accessible dans l onglet -parametres- de chaque équipement)' );
-                break;
-              }
-            } // foreach
-
-          
+         
             // On cherche leplugin heatzy pour vérifier l'origine de l'installation
             foreach (update::all() as $update) {
                 if ($update->getLogicalId() == 'heatzy'){
@@ -963,18 +959,6 @@ class heatzy extends eqLogic {
                 } //if
             } //foreach
         } //if
-        
-      
-      	$statsday = $this->getConfiguration('statsday', '') ;
-      	if( $statsday == ''){
-          $statsday = rand(0, 6) ;
-          $this->setConfiguration('statsday', $statsday );
-        }
-      
-      	if( date('w', $aujourdhui ) == $statsday ){
-      		sleep( rand(0, 7200) ) ;
-        	Synchro::StatsHeatzy() ;
-        }
     }
 
     /*     * *********************Méthodes d'instance************************* */
