@@ -339,176 +339,163 @@ class heatzy extends eqLogic {
             $this->setConfiguration('lastCommunication', date('Y-m-d H:i:s', $aDevice['updated_at']));
         }
       
-        // Modes de chauffe
-        // Note : Théoriquement pilote_pro doit être lu avec cur_mode (mais le retour contient quand même mode)
-        if(isset($aDevice['attr']['mode']) || isset($aDevice['attr']['cur_temp']) || isset($aDevice['attr']['derog_mode']) ) {
 
-            // Créer les commandes en fonction du contenu de la réponse
-            //$this->CheckAndCreateCmd($aDevice , $force) ;
-
-            if( $aDevice['attr']['mode'] == 'cft' ) {        /// Confort
+        if( $aDevice['attr']['mode'] == 'cft' ) {        /// Confort
+            $KeyMode = 'Confort';
+        }
+        else if( $aDevice['attr']['mode'] == 'cft1' ) {  /// Confort-1
+            $KeyMode = 'Confort-1';
+        }
+        else if( $aDevice['attr']['mode'] == 'cft2' ) {  /// Confort-2
+            $KeyMode = 'Confort-2';
+        }
+        else if( $aDevice['attr']['mode'] == 'eco' ) {   /// Eco
+            $KeyMode = 'Eco';
+        }
+        else if( $aDevice['attr']['mode'] == 'fro' ) {   /// HorsGel
+            $KeyMode = 'HorsGel';
+        }
+        else if( $aDevice['attr']['mode'] == 'stop' ) {  /// Off
+            $KeyMode = 'Off';
+        }
+        else {       /// Premiere version du module pilote
+            $mode1 = $mode2 = 0;
+            $mode1=ord(substr($aDevice['attr']['mode'], 1,1));
+            $mode2=ord(substr($aDevice['attr']['mode'], 2,1));
+          
+            if($mode1 == 136 && $mode2 == 146) {  /// Confort
                 $KeyMode = 'Confort';
             }
-            else if( $aDevice['attr']['mode'] == 'cft1' ) {  /// Confort-1
-                $KeyMode = 'Confort-1';
-            }
-            else if( $aDevice['attr']['mode'] == 'cft2' ) {  /// Confort-2
-                $KeyMode = 'Confort-2';
-            }
-            else if( $aDevice['attr']['mode'] == 'eco' ) {   /// Eco
+            else if($mode1 == 187 && $mode2 == 143) { /// Eco
                 $KeyMode = 'Eco';
             }
-            else if( $aDevice['attr']['mode'] == 'fro' ) {   /// HorsGel
+            else if($mode1 == 167 && $mode2 == 163) { /// HorsGel
                 $KeyMode = 'HorsGel';
             }
-            else if( $aDevice['attr']['mode'] == 'stop' ) {  /// Off
+            else if($mode1 == 129 && $mode2 == 156) { /// Off
                 $KeyMode = 'Off';
-            }
-            else {       /// Premiere version du module pilote
-                $mode1 = $mode2 = 0;
-                $mode1=ord(substr($aDevice['attr']['mode'], 1,1));
-                $mode2=ord(substr($aDevice['attr']['mode'], 2,1));
-              
-                if($mode1 == 136 && $mode2 == 146) {  /// Confort
-                    $KeyMode = 'Confort';
-                }
-                else if($mode1 == 187 && $mode2 == 143) { /// Eco
-                    $KeyMode = 'Eco';
-                }
-                else if($mode1 == 167 && $mode2 == 163) { /// HorsGel
-                    $KeyMode = 'HorsGel';
-                }
-                else if($mode1 == 129 && $mode2 == 156) { /// Off
-                    $KeyMode = 'Off';
-                }/*
-                else {
-                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getLogicalId().' non connecte');
-                      $this->checkAndUpdateCmd('IsOnLine', 0 ); 
-                      $this->save(); /// Enregistre les info  
-                      $this->setStatus('timeout','1');
-                    return false;
-                }*/
-            }
-          
-        	// Recherche la valeur de la clef du mode courant
-        	//log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.'): Mode '.$KeyMode);
-        	$aKeyVal = array_keys(self::$_HeatzyMode, $KeyMode);
-        	$this->checkAndUpdateCmd('EtatConsigne', $aKeyVal[0]);
-        	$this->checkAndUpdateCmd('mode', $KeyMode);
-          
-            // Consigne de température du mode éco (eco_temp ou eco_tempH+eco_tempL selon type de module)
-            // L : La température est exprimée en dixièmes de degrés
-            // H : La température est exprimée en dizaines de degrés
-            if( isset ($aDevice['attr']['eco_temp']) )
-                $this->checkAndUpdateCmd('eco_temp', floatval( $aDevice['attr']['eco_temp'] / 10 ) );
-            if( isset ($aDevice['attr']['eco_tempH']) && isset ($aDevice['attr']['eco_tempL']) )
-                $this->checkAndUpdateCmd('eco_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['eco_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['eco_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
-
-            // Consigne de température du mode confort (cft_temp ou cft_tempH+cft_tempL selon type de module)
-            // L : La température est exprimée en dixièmes de degrés
-            // H : La température est exprimée en dizaines de degrés
-            if( isset ($aDevice['attr']['cft_temp']) )
-                $this->checkAndUpdateCmd('cft_temp', floatval( $aDevice['attr']['cft_temp'] / 10 ) );
-            if( isset ($aDevice['attr']['cft_tempH']) && isset ($aDevice['attr']['cft_tempL']) )
-                $this->checkAndUpdateCmd('cft_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cft_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cft_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
-
-            // cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. (cur_temp ou cur_tempH+cur_tempL selon type de module)
-            // L : La température est exprimée en dixièmes de degrés
-            // H : La température est exprimée en dizaines de degrés
-            if( isset ($aDevice['attr']['cur_temp']) )
-                $this->checkAndUpdateCmd('cur_temp', floatval( $aDevice['attr']['cur_temp'] / 10 ) );
-            if( isset ($aDevice['attr']['cur_tempH']) && isset ($aDevice['attr']['cur_tempL']) )
-                $this->checkAndUpdateCmd('cur_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cur_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cur_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
-
-            // t1_temp : t° de la sonde. 
-            if( isset ($aDevice['attr']['t1_temp']) )
-                $this->checkAndUpdateCmd('t1_temp', $aDevice['attr']['t1_temp'] );
-
-            // t2_temp : t° de sortie. 
-            if( isset ($aDevice['attr']['t2_temp']) )
-                $this->checkAndUpdateCmd('t2_temp', $aDevice['attr']['t2_temp'] );
-            
-            // Taux d’humidité de l’air dans la pièce (%). 
-            if( isset ($aDevice['attr']['cur_humi']) )
-                $this->checkAndUpdateCmd('cur_humi', $aDevice['attr']['cur_humi'] );
-
-            // Allumage du radiateur
-            if( isset ($aDevice['attr']['on_off']) )
-                $this->checkAndUpdateCmd('plugzy', $aDevice['attr']['on_off'] );
-
-            // Activation du mode programmation
-            if( isset ($aDevice['attr']['timer_switch']) )
-                $this->checkAndUpdateCmd('etatprog', $aDevice['attr']['timer_switch'] );
-
-            // Activation du verrouillage (lock_switch)
-            if( isset ($aDevice['attr']['lock_switch']) )
-                $this->checkAndUpdateCmd('etatlock', $aDevice['attr']['lock_switch'] );
-
-            // Activation du verrouillage (LOCK_C)
-            if( isset ($aDevice['attr']['LOCK_C']) )//Lock_C_State
-                $this->checkAndUpdateCmd('Lock_C_State', $aDevice['attr']['LOCK_C'] );
-                
-            // Activation de la détection de fenêtre ouverte 
-            if( isset ($aDevice['attr']['window_switch']) )
-                $this->checkAndUpdateCmd('WindowSwitch', $aDevice['attr']['window_switch'] );
-            
-            // Mode dérogation
-                // 0 : pas de dérogation
-                // 1 : mode vacances
-                // 2 : mode boost
-                // 3 : détection de presence
-            if( isset ($aDevice['attr']['derog_mode']) ){
-                $this->checkAndUpdateCmd('derog_mode', $aDevice['attr']['derog_mode'] );
-              
-                // Temps de dérogation
-                //  vacances en jours (j)
-                //  boost en minutes (min)
-                $derog_time = isset ($aDevice['attr']['derog_time']) ? $aDevice['attr']['derog_time'] : 0 ;
-                $this->checkAndUpdateCmd('derog_time_vacances', $aDevice['attr']['derog_mode'] == '1' ? $derog_time : 0 );
-                $this->checkAndUpdateCmd('derog_time_boost'   , $aDevice['attr']['derog_mode'] == '2' ? $derog_time : 0 );
-            }
-
-            // Détéction de présence 
-          	// A retravailler pour intégrer la consigne (pour éviter les faux positifs)
-            if( $aDevice['attr']['derog_mode'] == 3 && array_keys(self::$_HeatzyMode, $KeyMode)[0] == 0){
-                $this->checkAndUpdateCmd('detect_presence', 1 );
-            }
-            else{
-                $this->checkAndUpdateCmd('detect_presence', 0 );
-            }
-            /*
-            // Puissance consommée (en W) 
-            if( isset ($aDevice['attr']['cur_power']) )
-                $this->checkAndUpdateCmd('cur_power', $aDevice['attr']['cur_power'] );
-            
-            // Intensité consommée (en A)  
-            if( isset ($aDevice['attr']['cur_current']) )
-                $this->checkAndUpdateCmd('cur_current', $aDevice['attr']['cur_current'] );
-            
-            // Tension du réseau (en V) 
-            if( isset ($aDevice['attr']['cur_voltage']) )
-                $this->checkAndUpdateCmd('cur_voltage', $aDevice['attr']['cur_voltage'] );
-
-            // Puissance du signal 
-            if( isset ($aDevice['attr']['signal_power']) )
-                $this->checkAndUpdateCmd('signal_power', $aDevice['attr']['signal_power'] );
-
-            // energy_saving 
-            if( isset ($aDevice['attr']['energy_saving']) )
-                $this->checkAndUpdateCmd('energy_saving', $aDevice['attr']['energy_saving'] );
-            
-            // kill_switch 
-            if( isset ($aDevice['attr']['kill_switch']) )
-                $this->checkAndUpdateCmd('kill_switch', $aDevice['attr']['kill_switch'] );
-            */
-            //TODO $this->CalculExterne( $aDevice ) ;
+            }/*
+            else {
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getLogicalId().' non connecte');
+                  $this->checkAndUpdateCmd('IsOnLine', 0 ); 
+                  $this->save(); /// Enregistre les info  
+                  $this->setStatus('timeout','1');
+                return false;
+            }*/
         }
-        else {                                             
-            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': '.$this->getLogicalId().' non connecte');
-            $this->setStatus('timeout','1');
-            $this->save(); /// Enregistre les info
-            return false;
+      
+        // Recherche la valeur de la clef du mode courant
+        //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.'): Mode '.$KeyMode);
+        $aKeyVal = array_keys(self::$_HeatzyMode, $KeyMode);
+        $this->checkAndUpdateCmd('EtatConsigne', $aKeyVal[0]);
+        $this->checkAndUpdateCmd('mode', $KeyMode);
+      
+        // Consigne de température du mode éco (eco_temp ou eco_tempH+eco_tempL selon type de module)
+        // L : La température est exprimée en dixièmes de degrés
+        // H : La température est exprimée en dizaines de degrés
+        if( isset ($aDevice['attr']['eco_temp']) )
+            $this->checkAndUpdateCmd('eco_temp', floatval( $aDevice['attr']['eco_temp'] / 10 ) );
+        if( isset ($aDevice['attr']['eco_tempH']) && isset ($aDevice['attr']['eco_tempL']) )
+            $this->checkAndUpdateCmd('eco_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['eco_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['eco_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
+
+        // Consigne de température du mode confort (cft_temp ou cft_tempH+cft_tempL selon type de module)
+        // L : La température est exprimée en dixièmes de degrés
+        // H : La température est exprimée en dizaines de degrés
+        if( isset ($aDevice['attr']['cft_temp']) )
+            $this->checkAndUpdateCmd('cft_temp', floatval( $aDevice['attr']['cft_temp'] / 10 ) );
+        if( isset ($aDevice['attr']['cft_tempH']) && isset ($aDevice['attr']['cft_tempL']) )
+            $this->checkAndUpdateCmd('cft_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cft_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cft_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
+
+        // cur_temp : Température de la pièce, lue par le capteur. La température est exprimée en dixièmes de degrés. (cur_temp ou cur_tempH+cur_tempL selon type de module)
+        // L : La température est exprimée en dixièmes de degrés
+        // H : La température est exprimée en dizaines de degrés
+        if( isset ($aDevice['attr']['cur_temp']) )
+            $this->checkAndUpdateCmd('cur_temp', floatval( $aDevice['attr']['cur_temp'] / 10 ) );
+        if( isset ($aDevice['attr']['cur_tempH']) && isset ($aDevice['attr']['cur_tempL']) )
+            $this->checkAndUpdateCmd('cur_temp', floatval( bindec(str_pad(decbin($aDevice['attr']['cur_tempH']),  8, "0", STR_PAD_LEFT).str_pad(decbin($aDevice['attr']['cur_tempL']),  8, "0", STR_PAD_LEFT))) / 10 );
+
+        // t1_temp : t° de la sonde. 
+        if( isset ($aDevice['attr']['t1_temp']) )
+            $this->checkAndUpdateCmd('t1_temp', $aDevice['attr']['t1_temp'] );
+
+        // t2_temp : t° de sortie. 
+        if( isset ($aDevice['attr']['t2_temp']) )
+            $this->checkAndUpdateCmd('t2_temp', $aDevice['attr']['t2_temp'] );
+        
+        // Taux d’humidité de l’air dans la pièce (%). 
+        if( isset ($aDevice['attr']['cur_humi']) )
+            $this->checkAndUpdateCmd('cur_humi', $aDevice['attr']['cur_humi'] );
+
+        // Allumage du radiateur
+        if( isset ($aDevice['attr']['on_off']) )
+            $this->checkAndUpdateCmd('plugzy', $aDevice['attr']['on_off'] );
+
+        // Activation du mode programmation
+        if( isset ($aDevice['attr']['timer_switch']) )
+            $this->checkAndUpdateCmd('etatprog', $aDevice['attr']['timer_switch'] );
+
+        // Activation du verrouillage (lock_switch)
+        if( isset ($aDevice['attr']['lock_switch']) )
+            $this->checkAndUpdateCmd('etatlock', $aDevice['attr']['lock_switch'] );
+
+        // Activation du verrouillage (LOCK_C)
+        if( isset ($aDevice['attr']['LOCK_C']) )//Lock_C_State
+            $this->checkAndUpdateCmd('Lock_C_State', $aDevice['attr']['LOCK_C'] );
+            
+        // Activation de la détection de fenêtre ouverte 
+        if( isset ($aDevice['attr']['window_switch']) )
+            $this->checkAndUpdateCmd('WindowSwitch', $aDevice['attr']['window_switch'] );
+        
+        // Mode dérogation
+            // 0 : pas de dérogation
+            // 1 : mode vacances
+            // 2 : mode boost
+            // 3 : détection de presence
+        if( isset ($aDevice['attr']['derog_mode']) ){
+            $this->checkAndUpdateCmd('derog_mode', $aDevice['attr']['derog_mode'] );
+          
+            // Temps de dérogation
+            //  vacances en jours (j)
+            //  boost en minutes (min)
+            $derog_time = isset ($aDevice['attr']['derog_time']) ? $aDevice['attr']['derog_time'] : 0 ;
+            $this->checkAndUpdateCmd('derog_time_vacances', $aDevice['attr']['derog_mode'] == '1' ? $derog_time : 0 );
+            $this->checkAndUpdateCmd('derog_time_boost'   , $aDevice['attr']['derog_mode'] == '2' ? $derog_time : 0 );
         }
+
+        // Détéction de présence 
+        // A retravailler pour intégrer la consigne (pour éviter les faux positifs)
+        if( $aDevice['attr']['derog_mode'] == 3 && array_keys(self::$_HeatzyMode, $KeyMode)[0] == 0){
+            $this->checkAndUpdateCmd('detect_presence', 1 );
+        }
+        else{
+            $this->checkAndUpdateCmd('detect_presence', 0 );
+        }
+        
+        // Puissance consommée (en W) 
+        if( isset ($aDevice['attr']['cur_power']) )
+            $this->checkAndUpdateCmd('cur_power', $aDevice['attr']['cur_power'] );
+        
+        // Intensité consommée (en A)  
+        if( isset ($aDevice['attr']['cur_current']) )
+            $this->checkAndUpdateCmd('cur_current', $aDevice['attr']['cur_current'] );
+        
+        // Tension du réseau (en V) 
+        if( isset ($aDevice['attr']['cur_voltage']) )
+            $this->checkAndUpdateCmd('cur_voltage', $aDevice['attr']['cur_voltage'] );
+
+        // Puissance du signal 
+        if( isset ($aDevice['attr']['signal_power']) )
+            $this->checkAndUpdateCmd('signal_power', $aDevice['attr']['signal_power'] );
+
+        // energy_saving 
+        if( isset ($aDevice['attr']['energy_saving']) )
+            $this->checkAndUpdateCmd('energy_saving', $aDevice['attr']['energy_saving'] );
+        
+        // kill_switch 
+        if( isset ($aDevice['attr']['kill_switch']) )
+            $this->checkAndUpdateCmd('kill_switch', $aDevice['attr']['kill_switch'] );
+        
+        $this->CalculExterne( $aDevice ) ;
         
         $this->save(); /// Enregistre les info
       
@@ -530,16 +517,16 @@ class heatzy extends eqLogic {
                 
         // Prise en compte d'un capteur d'humidité externe
         $CapteurExtHumi = $this->getConfiguration('CapteurExtHumi', '');
-          $humi = -99 ;
+        $humi = -99 ;
         if( $CapteurExtHumi != '' ){ // Si capteur externe est bien parametré
             preg_match_all("/#([0-9]*)#/", $CapteurExtHumi, $matches);
             if (count($matches[1]) == 1) { // Si numéro de commande numérique
                 $res = cmd::byId( $matches[1][0] )->execCmd() ;
                 if( is_numeric($res) ){
-                  $humi = $res ;
-                  if (!is_object($this->getCmd(null, 'cur_humi')) )
-                      // TODO $this->CheckAndCreateCmd( array( "attr" => array( "cur_humi" => "0" ) ) ) ; // Simule la présence de $aDevice['attr']['cur_humi']
-                  $this->checkAndUpdateCmd('cur_humi', $humi );
+                    $humi = $res ;
+                    if (!is_object($this->getCmd(null, 'cur_humi')) )
+                        $this->CreateCmd( 'cur_humi' ) ;
+                    $this->checkAndUpdateCmd('cur_humi', $humi );
                 }
             }
         }
@@ -548,16 +535,16 @@ class heatzy extends eqLogic {
         
         // Prise en compte d'un capteur de température externe
         $CapteurExtTemp = $this->getConfiguration('CapteurExtTemp', '');
-          $Temp = -99 ;
+        $Temp = -99 ;
         if( $CapteurExtTemp != '' ){ // Si capteur externe est bien parametré
             preg_match_all("/#([0-9]*)#/", $CapteurExtTemp, $matches);
             if (count($matches[1]) == 1) { // Si numéro de commande numérique
                 $res = cmd::byId( $matches[1][0] )->execCmd() ;
                 if( is_numeric($Temp) ){
-                  $Temp = $res ;
-                  if (!is_object($this->getCmd(null, 'cur_temp')) )
-                      // TODO $this->CheckAndCreateCmd( array( "attr" => array( "cur_temp" => "0" ) ) ) ; // Simule la présence de $aDevice['attr']['cur_temp']
-                  $this->checkAndUpdateCmd('cur_temp', $Temp );
+                    $Temp = $res ;
+                    if (!is_object($this->getCmd(null, 'cur_temp')) )
+                        $this->CreateCmd( 'cur_temp' ) ;
+                    $this->checkAndUpdateCmd('cur_temp', $Temp );
                 }
             }
         }
@@ -575,7 +562,7 @@ class heatzy extends eqLogic {
         if ( is_object($cur_temp) && is_numeric($TendanceDegre) && is_numeric($TendanceDuree) ){
             $Temp = $cur_temp->execCmd() ;
             if( $Temp > -50 && $Temp < 100 ){
-                  $CurTemp = $this->getCmd(null, 'cur_temp'); 
+                $CurTemp = $this->getCmd(null, 'cur_temp'); 
                 if (!is_object($this->getCmd(null, 'WindowOpened')) || !is_object($this->getCmd(null, 'Tendance')))
                     // TODO $this->CheckAndCreateCmd( array( "attr" => array( "WindowOpened" => "0" , "Tendance" => "0" ) ) ) ; // $aDevice['attr']['WindowOpened']
                 //$this->CheckAndCreateCmd( array( "attr" => array( "Tendance" => "0" ) ) ) ; // $aDevice['attr']['Tendance']

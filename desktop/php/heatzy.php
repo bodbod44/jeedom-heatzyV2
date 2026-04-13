@@ -156,13 +156,13 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 	<div class="form-group">
     	<label class="col-sm-4 control-label">{{MAC}}</label>
         <div class="col-sm-6">
-        	<input type="text" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="mac"/>
+        	<input type="text" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="mac" readonly/>
         </div>
     </div>
 	<div class="form-group expertModeVisible">
     	<label class="col-sm-4 control-label">{{DID}}</label>
         <div class="col-sm-6">
-			<input type="text" class="eqLogicAttr form-control" data-l1key="logicalId"/>
+			<input type="text" class="eqLogicAttr form-control" data-l1key="logicalId" readonly/>
         </div>
     </div>
 	<div class="form-group">
@@ -207,6 +207,30 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 				<label class="col-sm-3 control-label">{{Clé du produit}}</label>
 				<div class="col-sm-3">
 					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="product_key" title="{{Clé du produit}}" style="font-size : 1em;cursor : default;"></span>
+				</div>
+			</div>
+            <div class="form-group">
+				<label class="col-sm-3 control-label">{{wifi_soft_version}}</label>
+				<div class="col-sm-3">
+					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="wifi_soft_version" title="{{wifi_soft_version}}" style="font-size : 1em;cursor : default;"></span>
+				</div>
+			</div>
+            <div class="form-group">
+				<label class="col-sm-3 control-label">{{wifi_hard_version}}</label>
+				<div class="col-sm-3">
+					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="wifi_hard_version" title="{{wifi_hard_version}}" style="font-size : 1em;cursor : default;"></span>
+				</div>
+			</div>
+            <div class="form-group">
+				<label class="col-sm-3 control-label">{{mcu_soft_version}}</label>
+				<div class="col-sm-3">
+					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="mcu_soft_version" title="{{mcu_soft_version}}" style="font-size : 1em;cursor : default;"></span>
+				</div>
+			</div>
+            <div class="form-group">
+				<label class="col-sm-3 control-label">{{mcu_hard_version}}</label>
+				<div class="col-sm-3">
+					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="mcu_hard_version" title="{{mcu_hard_version}}" style="font-size : 1em;cursor : default;"></span>
 				</div>
 			</div>
 		</fieldset>
@@ -308,7 +332,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 					<div class="form-group">
 						<label class="col-sm-2 control-label" style="width:250px;">{{Capteur de température (facultatif)}}</label>
 						<div class="input-group col-sm-2">
-							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtTemp" style="width:400px;">
+							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtTemp" style="width:400px;" readonly>
 							<span class="input-group-btn">
 								<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
 							</span>
@@ -317,7 +341,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 					<div class="form-group">
 						<label class="col-sm-2 control-label" style="width:250px;">{{Capteur d'humidité (facultatif)}}</label>
 						<div class="input-group col-sm-2">
-							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtHumi" style="width:400px;">
+							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtHumi" style="width:400px;" readonly>
 							<span class="input-group-btn">
 								<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
 							</span>

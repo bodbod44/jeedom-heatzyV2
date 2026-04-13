@@ -93,7 +93,18 @@ class Synchro {
 
             if(isset($aDevice['product_key']))
                 $eqLogic->setConfiguration('product_key',$aDevice['product_key']);
-          
+
+            if(isset($aDevice['wifi_soft_version']))
+                $eqLogic->setConfiguration('wifi_soft_version',$aDevice['wifi_soft_version']);
+            
+            if(isset($aDevice['wifi_hard_version']))
+                $eqLogic->setConfiguration('wifi_hard_version',$aDevice['wifi_hard_version']);
+            
+            if(isset($aDevice['mcu_soft_version']))
+                $eqLogic->setConfiguration('mcu_soft_version',$aDevice['mcu_soft_version']);
+            
+            if(isset($aDevice['mcu_hard_version']))
+                $eqLogic->setConfiguration('mcu_hard_version',$aDevice['mcu_hard_version']);
             /*
             /// Retourne les informations sur le produit
             $aProductInfo = HttpGizwits::GetProduitInfo($aDevice['product_key']) ;
