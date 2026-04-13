@@ -65,7 +65,7 @@ if (!isConnect()) {
             </div>
         </div>
         <div class="form-group" id="socketport">
-            <label class="col-lg-4 control-label">{{Port demon}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Port utilisé pour le demon}}"></i></sup></label>
+            <label class="col-lg-4 control-label">{{Port demon}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Port utilisé pour le demon.<br> Si vous le videz, le plugin ira le valoriser avec un port non utilisé}}"></i></sup></label>
             <div class="col-lg-6">
                 <input type="text" class="configKey form-control" data-l1key="socketport" style="width:100px;" />
             </div>
@@ -126,10 +126,10 @@ if (!isConnect()) {
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Réinitialiser l'ordre des commandes}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Réinitialiser l'ordre des commandes}}"></i></sup></label>
+            <label class="col-lg-4 control-label">{{Réinitialiser l''ordre des commandes}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Réinitialiser l''ordre des commandes}}"></i></sup></label>
             <div class="col-lg-2">
                 <a class="btn btn-info bt_syncheatzyorder"><i id='syncheatzyorder' class="fa fa-refresh"></i>
-                Réinitialiser l'ordre des commandes<span id="nbheatzyorder"></span>
+                Réinitialiser l''ordre des commandes<span id="nbheatzyorder"></span>
                 </a>
             </div>
         </div>
@@ -292,39 +292,95 @@ $('a#bt_savePluginLogConfig').on('click', function() {
 });
 
 async function asyncCall() {
-	await AppelAJAXStart();
+    await AppelAJAXStart();
 }
 
 function AppelAJAXStart() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve("resolved");
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("resolved");
 
-      		  $.ajax({// fonction permettant de faire de l'ajax
-              type: "POST", // méthode de transmission des données au fichier php
-              url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
-              data: {
-                  action: "deamon_start",
-              },
-              dataType: 'json',
-              global: false,
-              error: function (request, status, error) {
-                  handleAjaxError(request, status, error);
-              },
-              success: function (data) { // si l'appel a bien fonctionné
-                  if (data.state != 'ok') {
-                      $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                      return;
-                  }
-                  //$('#div_alert').showAlert({message: 'AJAX OK', level: 'info'});
-              }
-          });
-
-    }, 1000);
-  });
-
+            $.ajax({// fonction permettant de faire de l'ajax
+                type: "POST", // méthode de transmission des données au fichier php
+                url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
+                data: {
+                    action: "deamon_start",
+                },
+                dataType: 'json',
+                global: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) { // si l'appel a bien fonctionné
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        return;
+                    }
+                    //$('#div_alert').showAlert({message: 'AJAX OK', level: 'info'});
+                }
+            });
+        }, 1000);
+    });
 }
 
+
+function getPort() {
+            $.ajax({// fonction permettant de faire de l'ajax
+                type: "POST", // méthode de transmission des données au fichier php
+                url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
+                data: {
+                    action: "getPort",
+                },
+                dataType: 'json',
+                global: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) { // si l'appel a bien fonctionné
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        return;
+                    }
+                    //$('#div_alert').showAlert({message: 'AJAX OK', level: 'info'});
+                    alert( data.result ) ;
+                }
+            });
+}
+
+function getUsedPort() {
+            alert('ok') ;
+  				$.ajax({// fonction permettant de faire de l'ajax
+                type: "POST", // méthode de transmission des données au fichier php
+                url: "plugins/heatzy/core/ajax/heatzy.ajax.php", // url du fichier php
+                data: {
+                    action: "getUsedPort",
+                },
+                dataType: 'json',
+                global: false,
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) { // si l'appel a bien fonctionné
+                    if (data.state != 'ok') {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        return;
+                    }
+                    //$('#div_alert').showAlert({message: 'AJAX OK', level: 'info'});
+                    //alert( data.result ) ;
+                    
+                    $('#UsedPort').empty();
+                    $('#UsedPort').append( data.result );
+                    
+                }
+            });
+}
+
+
+$('a#bt_savePluginConfig').on('click', function() { 
+  //  val = $('input[data-l1key="socketport"]').setvalue('999') ;
+  //  val = $('.eqLogicAttr[data-l1key="socketport"]').value() ;
+  //alert('-' + val) ;
+});
 
 
 

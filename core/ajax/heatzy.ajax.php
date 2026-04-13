@@ -41,6 +41,14 @@ try {
       	ajax::success( heatzy::deamon_start() );
 	}
   
+	if (init('action') == 'getPort') {
+		ajax::success( heatzy::getPort() );	
+	} 
+  
+	if (init('action') == 'getUsedPort') {
+		ajax::success( heatzy::getUsedPort() );	
+	} 
+  
 	if (init('action') == 'SyncHeatzy') {
 		ajax::success( Synchro::SynchronizeHeatzy( true ) );
 	}

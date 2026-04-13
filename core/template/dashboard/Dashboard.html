@@ -391,15 +391,15 @@
       jeedom.cmd.update['#EtatConsigne_id#'] = function(_options){
          $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
         if (_options.display_value == '0') {
-            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em;color:#D60B0B;"></i>');   /// Mode Confort
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em;"></i>');   /// Mode Confort
          }else if (_options.display_value == '4') { 
-            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em;color:#D6600B;"></i><i style="font-size:0.5em;color:#D6600B;">-1</i>');   /// Mode Confort-1
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em;"></i><i style="font-size:0.5em;">-1</i>');   /// Mode Confort-1
          }else if (_options.display_value == '5') {
-            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em;color:#D6960B;"></i><i style="font-size:0.5em;color:#D6960B;">-2</i>');   /// Mode Confort-2
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-conf" style="font-size:2em;"></i><i style="font-size:0.5em;">-2</i>');   /// Mode Confort-2
          }else if (_options.display_value == '1') {
-            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco" style="font-size:2em;color:#3EAB3F;"></i>');    /// Mode Eco
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-eco" style="font-size:2em;"></i>');    /// Mode Eco
          }else if (_options.display_value == '2') {
-            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg" style="font-size:2em;color:#140BD6;"></i>');     /// Mode HorsGel
+            $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-hg" style="font-size:2em;"></i>');     /// Mode HorsGel
          }else {
             $('.cmd[data-cmd_id="#EtatConsigne_id#"][data-cmd_uid="#uid#"] > span.iconCmd').empty().append('<i class="icon jeedom-pilote-off" style="font-size:2em"></i>');    /// Mode Off
          }

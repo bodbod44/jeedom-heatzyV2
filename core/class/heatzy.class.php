@@ -74,7 +74,7 @@ class heatzy extends eqLogic {
         $password = config::byKey('password', __CLASS__ , '');
         $UserToken = config::byKey('UserToken', __CLASS__ , '');
         $ExpireToken = config::byKey('ExpireToken', __CLASS__ , '');
-        $socketport = config::byKey('socketport', __CLASS__ , '55099');
+        $socketport = config::byKey('socketport', __CLASS__ , '');
         $uid = config::byKey('uid', __CLASS__ , '');
 
         if( config::byKey('API_Type','heatzy','REST') == 'REST') {
@@ -92,9 +92,11 @@ class heatzy extends eqLogic {
         } elseif( strtotime( config::byKey('ExpireToken', __CLASS__ , '') ) <= time() ) {
             $return['launchable'] = 'nok';
             $return['launchable_message'] = __('Le token est expiré (relancez une synchronisation)', __FILE__);
-        } elseif( !is_numeric( config::byKey('socketport', __CLASS__ , '55099') ) ) {
+        } elseif( !is_numeric( config::byKey('socketport', __CLASS__ , '') ) ) {
             $return['launchable'] = 'nok';
-            $return['launchable_message'] = __('Port demon vide ou mal alimenté (essayer un port numérique comme 550xx)', __FILE__);
+            $return['launchable_message'] = __('Port non numérique (le plugin va le remplacer)', __FILE__);
+            config::save('socketport'  , self::getPort()  , 'heatzy');
+			self::getUsedPort() ;          
         } elseif( config::byKey('uid', __CLASS__ , '') == '' ) {
             $return['launchable'] = 'nok';
             $return['launchable_message'] = __('uid non valorisé (relancez une synchronisation)', __FILE__);
@@ -129,7 +131,7 @@ class heatzy extends eqLogic {
         $path = realpath(dirname(__FILE__) . '/../../resources/heatzyd');
         $cmd = system::getCmdPython3(__CLASS__) . " {$path}/heatzyd.py";
         $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
-        $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55099'); // port par défaut à modifier
+        $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55099' );
         $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'http:127.0.0.1:port:comp') . '/plugins/heatzy/core/php/jeeHeatzy.php'; // chemin de la callback url à modifier (voir ci-dessous)
         $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
         $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
@@ -194,38 +196,69 @@ class heatzy extends eqLogic {
         $payLoad = json_encode($params);
         //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $payLoad='.$payLoad);
         
-		if( $action == 'login' ){
-			$params['cmd'] = 'login_req' ;
+        if( $action == 'login' ){
+            $params['cmd'] = 'login_req' ;
         } else if( $action == 'read' ){
-			$params['cmd'] = 'c2s_read' ;
-		} else if( $action == 'execute' ){
-          	//{ "cmd": "c2s_write", "data": { "did": "xxxxxxxxxx", "attrs": { "name1": "", "name2": <value2>, } } }
-			//$message = '{ "cmd": "c2s_write", "data": { "did": "'.$did.'", "attrs": '.$payLoad.' } }' ;
-          	$message['message']['cmd'] = 'c2s_write' ;
-          	$message['message']['data']['did'] = $did ;
+            $params['cmd'] = 'c2s_read' ;
+        } else if( $action == 'execute' ){
+            //{ "cmd": "c2s_write", "data": { "did": "xxxxxxxxxx", "attrs": { "name1": "", "name2": <value2>, } } }
+            $message['message']['cmd'] = 'c2s_write' ;
+            $message['message']['data']['did'] = $did ;
             $message['message']['data']['attrs'] = $params['attrs'] ;
               //= '{ "cmd": "c2s_write", "data": { "did": "'.$did.'", "attrs": '.$payLoad.' } }' ;
-		} else if( $action == 'stop' ){
-          	$message['message']['cmd'] = 'stop' ;
-          	$message['message']['data']['did'] = $did ;
+        } else if( $action == 'stop' ){
+            $message['message']['cmd'] = 'stop' ;
+            $message['message']['data']['did'] = $did ;
             $message['message']['data']['attrs'] = $params['attrs'] ;
-      	} else if( $action == 'log_level' ){
-          	$message['message']['cmd'] = 'log_level' ;
+        } else if( $action == 'log_level' ){
+            $message['message']['cmd'] = 'log_level' ;
             $message['message']['log_level'] = log::convertLogLevel(log::getLogLevel(__CLASS__)) ;
-          	//$message['message']['data']['did'] = $did ;
+            //$message['message']['data']['did'] = $did ;
             //$message['message']['data']['attrs'] = $params['attrs'] ;
-      	} else{
-          	log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $action non trouvé ('.$action.')');
-          	return ;
-      	}
+        } else{
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $action non trouvé ('.$action.')');
+            return ;
+        }
       
-      	log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $mess ('.json_encode($message).')');
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $mess ('.json_encode($message).')');
             
-      	$payLoad = json_encode($message) ;
+        $payLoad = json_encode($message) ;
         $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-        socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55099')); //port par défaut de votre plugin à modifier
+        socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55099'));
         socket_write($socket, $payLoad, strlen($payLoad));
         socket_close($socket);
+    }
+  
+  
+     
+    /**
+     * @brief Fonction qui permet de fournir un port non utilisé pour le demon
+     */  
+    public static function getPort(){
+        $port = 55000;
+        $max_port = 55150;
+        while($port <= $max_port){
+            $connection = @fsockopen('localhost', $port);
+            if (!is_resource($connection))
+                return $port; 
+            $port++;
+        }
+    }
+  
+      /**
+     * @brief Fonction qui permet de fournir la liste des ports utilisés
+     */  
+    public static function getUsedPort(){
+        $port = 000;
+        $max_port = 55150;
+      	$result = '' ;
+        while($port <= $max_port){
+            $connection = @fsockopen('localhost', $port);
+            if (is_resource($connection))
+                $result .= ( $result == '' ? '' : ' | ').$port ;
+            $port++;
+        }
+      return $result ;
     }
      
     /**
@@ -1034,14 +1067,14 @@ class heatzy extends eqLogic {
       //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Name='.$this->getName().'- '.$this->getConfiguration('TypeTemplate', '') );
       
         switch( $this->getConfiguration('TypeTemplate', '') ){
-            case '0':
-                return parent::toHtml($_version);
-                break;
-            case '1':
+            case '0': // template bodbod
                 $html = template_replace( array_merge( $replace , $this->ReplacetoHtml()) , getTemplate('core', $_version, 'Dashboard','heatzy')); // template commun (bodbod)
                 break;
+            case '2': // template jeedom
+                return parent::toHtml($_version);
+                break;
             default :
-                $this->setConfiguration('TypeTemplate', '1');
+                $this->setConfiguration('TypeTemplate', '0');
                 $this->save() ;
                 log::add('heatzy', 'warning', __METHOD__.': TypeTemplate inconnu ('.$this->getConfiguration('TypeTemplate').'), utilisation du template par défaut');
                 $html = template_replace( array_merge( $replace , $this->ReplacetoHtml()) , getTemplate('core', $_version, 'Dashboard','heatzy')); // template commun (bodbod)

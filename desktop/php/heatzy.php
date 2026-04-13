@@ -276,8 +276,8 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 						<label class="col-sm-4 control-label" style="width:120px;">Template</label>
 						<div class="col-sm-6">
 							<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title=""  style="width:300px;" onchange="AffichageTemplateBodbod()">
-								<option value="0">{{Template jeedom}}</option>
-								<option value="1">{{Template heatzy bodbod (par défaut)}}</option>
+								<option value="0">{{Template heatzy bodbod (par défaut)}}</option>
+								<option value="2">{{Template jeedom}}</option>
 							</select>
 						</div>
 					</div>
@@ -468,16 +468,10 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
     });
 
     function AffichageTemplateBodbod() {
-      //const selectTypeTemplate = $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected') ;
       if( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').val() == 0 )
         $('.class_ExclureBodbod').attr('style', 'display:none;');
       else
         $('.class_ExclureBodbod').attr('style', 'display:xxx;');
-      //alert( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length + '-' + $('.class_inutile').length ) ;
-      //if( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length == 1 && $('.class_inutile').length == 0 )
-      //setTimeout(AffichageTemplateBodbod, 3000);
-      
-      //console.log( $('.eqLogicAttr[data-l1key="name"]').val() + '-' + $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length + '-' + $('.class_inutile').length ) ;
     }
     window.onload = AffichageTemplateBodbod; //note bien l'abscence de ()
 
