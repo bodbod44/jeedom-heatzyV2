@@ -99,7 +99,7 @@ function heatzy_update() {
         }
 
         // Pour lse Glow et Shine, on bascule les commandes créées par les anciennes verions
-        if( $eqLogic->getConfiguration('product', '') == 'Shine_ble' || $eqLogic->getConfiguration('product', '') == 'Glow_Simple_ble' ){
+        if( $eqLogic->getConfiguration('product_name', '') == 'Shine_ble' || $eqLogic->getConfiguration('product_name', '') == 'Glow_Simple_ble' ){
             
             $cmdAvant = $eqLogic->getCmd(null, 'etatlock');
             $cmdApres = $eqLogic->getCmd(null, 'Lock_C_State');
@@ -144,14 +144,12 @@ function heatzy_update() {
             }
         } // if Glow et Shine
       
-        
         $cmd = $eqLogic->getCmd(null, 'Confort');   if (is_object($cmd)){ $cmd->setName(__('Mode Confort'  , __FILE__)) ; $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'Eco');       if (is_object($cmd)){ $cmd->setName(__('Mode Eco'      , __FILE__)) ; $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'HorsGel');   if (is_object($cmd)){ $cmd->setName(__('Mode HorsGel'  , __FILE__)) ; $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'Off');       if (is_object($cmd)){ $cmd->setName(__('Mode Off'      , __FILE__)) ; $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'Confort-1'); if (is_object($cmd)){ $cmd->setName(__('Mode Confort-1', __FILE__)) ; $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'Confort-2'); if (is_object($cmd)){ $cmd->setName(__('Mode Confort-2', __FILE__)) ; $cmd->save(); }
-
        
         // Abandon du template l3flo - mettre 1 (template bodbod) si vide ou 0 (l3flo)
         if( $eqLogic->getConfiguration('TypeTemplate', '1') == '1' ){
@@ -166,6 +164,14 @@ function heatzy_update() {
         // Suppression d'une ancienne config plus utilisée
         if( $eqLogic->getConfiguration('isTemplateCommun', 'xxx') != 'xxx' ){
             $eqLogic->setConfiguration('isTemplateCommun', null);
+            $eqLogic->save() ;
+        }
+        
+        // Modification du "product" par "product_name"
+        if( $eqLogic->getConfiguration('product', 'xxx') != 'xxx' ){
+            $val = $eqLogic->getConfiguration('product', 'xxx') ;
+            $eqLogic->setConfiguration('product_name', $val);
+            $eqLogic->setConfiguration('product', null);
             $eqLogic->save() ;
         }
       

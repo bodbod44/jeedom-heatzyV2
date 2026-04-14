@@ -89,7 +89,7 @@ class Synchro {
                 $eqLogic->setConfiguration('mac',implode(':',str_split($aDevice['mac'], 2)));
 
             if(isset($aDevice['product_name']))
-                $eqLogic->setConfiguration('product',$aDevice['product_name']);
+                $eqLogic->setConfiguration('product_name',$aDevice['product_name']);
 
             if(isset($aDevice['product_key']))
                 $eqLogic->setConfiguration('product_key',$aDevice['product_key']);
@@ -105,22 +105,13 @@ class Synchro {
             
             if(isset($aDevice['mcu_hard_version']))
                 $eqLogic->setConfiguration('mcu_hard_version',$aDevice['mcu_hard_version']);
-            /*
-            /// Retourne les informations sur le produit
-            $aProductInfo = HttpGizwits::GetProduitInfo($aDevice['product_key']) ;
             
-            if (isset ($aProductInfo['name']))
-                $eqLogic->setConfiguration('product',$aProductInfo['name']);
-            if (isset ($aProductInfo['product_key']))
-                        $eqLogic->setConfiguration('product_key',$aProductInfo['product_key']);
-
-            if  ( strcmp( $aProductInfo['name'] , "INEA" ) === 0 )
-                 $eqLogic->setConfiguration('heatzytype','flam');
-            else if ( strncmp ( $aProductInfo['name'] , "Flam" , 4 ) === 0 )
-                 $eqLogic->setConfiguration('heatzytype','flam');
-            else
-                 $eqLogic->setConfiguration('heatzytype','pilote');*/
-          
+            //if(isset($aDevice['gw_did']))
+            //    $eqLogic->setConfiguration('gw_did',$aDevice['gw_did']);
+            
+            //if(isset($aDevice['type']))
+            //    $eqLogic->setConfiguration('type',$aDevice['type']);
+        
             /// Si connecté ou pas
             if( $aDevice['is_online'] == 'true')
                 $eqLogic->checkAndUpdateCmd('IsOnLine', 1 );
@@ -378,7 +369,7 @@ class Synchro {
                 $aRep['did'] = $eqLogic->getId() ; //unset($aRep['did']) ;//$aRep['did'] = 'xxxxxxxxxxxx' ;
               	unset($aRep['updated_at']) ;
                 $aRep['product_key'] = $eqLogic->getConfiguration('product_key', '') ;
-                $aRep['product_name'] = $eqLogic->getConfiguration('product', '') ;
+                $aRep['product_name'] = $eqLogic->getConfiguration('product_name', '') ;
 				$aRep['API'] = config::byKey('API_Type','heatzy','') ;
 
                 //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': SetStatsHeatzy...'.$eqLogic->getLogicalId().'-'.json_encode($aRep));

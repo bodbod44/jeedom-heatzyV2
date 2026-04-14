@@ -604,7 +604,7 @@ class heatzy extends eqLogic {
 
         // Si le product_key n'est pas danqs le JSON, on cherche par nom (a defaut, on considère le product_key xxxxx par défaut)
         if( $tab_Devices[$product_key]['cmds'] === null){
-        $product_name = $this->getConfiguration('product'    , '') ;
+        $product_name = $this->getConfiguration('product_name' , '') ;
             $product_key = 'xxxxxx' ;
             foreach ($tab_Devices as $key => $cmd) {
                 if( $cmd['product_name']  == $product_name ){
@@ -879,8 +879,8 @@ class heatzy extends eqLogic {
             if($heatzy->getIsEnable() != 1 )
                 continue;
 
-            if($heatzy->getConfiguration('product', 'Heatzy') != 'Flam_Week2' &&
-            $heatzy->getConfiguration('product', 'Heatzy') != 'Heatzy' )
+            if($heatzy->getConfiguration('product_name', 'Heatzy') != 'Flam_Week2' &&
+            $heatzy->getConfiguration('product_name', 'Heatzy') != 'Heatzy' )
                 continue;
 
             $EtatProg='1'; /// Par defaut les taches sont actives
@@ -1049,7 +1049,7 @@ class heatzy extends eqLogic {
             return $replace;
         }
         $_version = jeedom::versionAlias($_version);
-        $product = $this->getConfiguration('product', '');
+        //$product = $this->getConfiguration('product_name', '');
       
       //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Name='.$this->getName().'- '.$this->getConfiguration('TypeTemplate', '') );
       

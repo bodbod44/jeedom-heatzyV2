@@ -90,9 +90,9 @@ class HttpGizwits {
     }
   
    /**
-     * @brief Fonction qui permet de récuperer la liste des devices did
+     * @brief Fonction qui permet de récuperer la définitio, des datapoint
      * 
-     * @param $UserToken   Token utilisateur d'acces au cloud
+     * @param $ProductKey   Type de produit
      * 
      * @return Un tableau associatif ou false en cas d'erreur
      */

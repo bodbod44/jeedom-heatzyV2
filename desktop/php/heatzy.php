@@ -82,9 +82,9 @@ foreach ($eqLogics as $eqLogic) {
 	$opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
 	echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
 	echo "<center>";
-	if(file_exists('plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product', '').'.png'))
-		echo '<img src="plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product', '').'.png" width="100" height="100"/>'; // Logo personnalisé
-	else if($eqLogic->getConfiguration('product', '')=='Flam_Week2') 	        /// Pour heatzy INEA
+	if(file_exists('plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product_name', '').'.png'))
+		echo '<img src="plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product_name', '').'.png" width="100" height="100"/>'; // Logo personnalisé
+	else if($eqLogic->getConfiguration('product_name', '')=='Flam_Week2') 	        /// Pour heatzy INEA
 		echo '<img src="plugins/heatzy/core/template/images/LOGO_FLAM.png" width="100" height="100"/>';
 	else
 		echo '<img src="plugins/heatzy/core/template/images/LOGO_PILOTE.png" width="100" height="100"/>';
@@ -200,7 +200,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
             <div class="form-group">
 				<label class="col-sm-3 control-label">{{Produit}}</label>
 				<div class="col-sm-3">
-					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="product" title="{{Type de produit}}" style="font-size : 1em;cursor : default;"></span>
+					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="product_name" title="{{Type de produit}}" style="font-size : 1em;cursor : default;"></span>
 				</div>
 			</div>
             <div class="form-group">
@@ -332,18 +332,20 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 					<div class="form-group">
 						<label class="col-sm-2 control-label" style="width:250px;">{{Capteur de température (facultatif)}}</label>
 						<div class="input-group col-sm-2">
-							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtTemp" style="width:400px;" readonly>
+							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtTemp" style="width:400px;">
 							<span class="input-group-btn">
 								<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
+                          		<!-- <a class="btn btn-default btn-sm"><i class="fa fa-minus-circle" onclick="$('input[data-l2key=CapteurExtTemp]').val('');"></i></a> -->
 							</span>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-2 control-label" style="width:250px;">{{Capteur d'humidité (facultatif)}}</label>
 						<div class="input-group col-sm-2">
-							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtHumi" style="width:400px;" readonly>
+							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtHumi" style="width:400px;">
 							<span class="input-group-btn">
-								<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
+								<a class="btn btn-default btn-sm listCmdInfo" onclick="alert('ok')"><i class="fa fa-list-alt"></i></a>
+                                <!-- <a class="btn btn-default btn-sm"><i class="fa fa-minus-circle" onclick="$('input[data-l2key=CapteurExtHumi]').val('');"></i></a> -->
 							</span>
 						</div>
 					</div>

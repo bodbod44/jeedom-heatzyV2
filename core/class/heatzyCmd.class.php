@@ -52,7 +52,7 @@ class heatzyCmd extends cmd {
                 $ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'ProgOn') {
-                if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2'){
+                if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
                     $eqLogic->GestProg(true);
                 }
                 else {
@@ -61,7 +61,7 @@ class heatzyCmd extends cmd {
                 $ForUpdate = 1 ;
             }
             else if ($this->getLogicalId() == 'ProgOff') {
-                if( $eqLogic->getConfiguration('product', '') == 'Heatzy' || $eqLogic->getConfiguration('product', '') == 'Flam_Week2'){
+                if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
                     $eqLogic->GestProg(false);
                 }
                 else {
@@ -154,7 +154,7 @@ class heatzyCmd extends cmd {
               
                 //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' mode = '. var_export($Mode, true));
               
-                if( $eqLogic->getConfiguration('product', 'Heatzy') == 'Heatzy') {    /// Premiere version du module pilote
+                if( $eqLogic->getConfiguration('product_name', 'Heatzy') == 'Heatzy') {    /// Premiere version du module pilote
                     $Consigne = array( 'raw' => array(1, 1, $Mode[0]) ) ;
                 }
                 else {
