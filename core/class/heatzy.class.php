@@ -777,7 +777,7 @@ class heatzy extends eqLogic {
             return ;
         }
       
-      	sleep(30); // Ne pas interférer avec les appels à hh:mm:00
+        sleep(30); // Ne pas interférer avec les appels à hh:mm:00
 
         if( !cache::exist('Heatzy_Synchronize') ) cache::set( 'Heatzy_Synchronize' , 0) ;
       
@@ -866,7 +866,6 @@ class heatzy extends eqLogic {
         //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchronize cron5 = '.$res );
     }
   
-  
     /**
     * Fonction exécutée automatiquement toutes les 30minutes par Jeedom
     * seulement pour les modules Heatzy et Flam_Week2
@@ -942,20 +941,20 @@ class heatzy extends eqLogic {
     /*
      * Fonction exécutée automatiquement toutes les heures par Jeedom*/
       public static function cronHourly() {
-      	/*$statsday = config::byKey('statsday', __CLASS__ , '') ;
-      	if( $statsday == ''){
+        /*$statsday = config::byKey('statsday', __CLASS__ , '') ;
+        if( $statsday == ''){
           $statsday = rand(0, 6) ;
           config::save('statsday'  , $statsday  , __CLASS__);
         }
       
-      	if( date('w', $aujourdhui ) == $statsday ){
-      		sleep( rand(0, 7200) ) ;
-        	Synchro::StatsHeatzy() ;
+        if( date('w', $aujourdhui ) == $statsday ){
+            sleep( rand(0, 7200) ) ;
+            Synchro::StatsHeatzy() ;
         }*/
        
-		sleep( rand(0, 3000) ) ;
+        sleep( rand(0, 3000) ) ;
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchro::StatsHeatzy()...' );
-		Synchro::StatsHeatzy() ;
+        Synchro::StatsHeatzy() ;
 
       }
      
@@ -973,7 +972,7 @@ class heatzy extends eqLogic {
             foreach (update::all() as $update) {
                 if ($update->getLogicalId() == 'heatzy'){
                     if( $update->getSource()  != 'market' ){
-                        message::add("Heatzy", 'Votre plugin HEATZY a été installé depuis une version autre que le market (github ou fichier). La version officielle du plugin HEATZY a été mise à jour sur le market il y a peu. Je vous invite à aller sur le market et réinstaller le pugin HEATZY. Votre configuration (compte, appareils et commandes) sera conservée. Merci' );
+                        message::add("Heatzy", 'Votre plugin HEATZY a été installé depuis une version autre que le market (github ou fichier). La version officielle du plugin HEATZY a été mise à jour sur le market. Je vous invite à aller sur le market et réinstaller le pugin HEATZY. Votre configuration (compte, appareils et commandes) sera conservée. Merci' );
                         break;
                     } //if
                 } //if
@@ -988,7 +987,7 @@ class heatzy extends eqLogic {
      */
 //class heatzy extends eqLogic
     public function preInsert() {
-        $this->setCategory('heating', 1);
+        
     }
 
 //class heatzy extends eqLogic

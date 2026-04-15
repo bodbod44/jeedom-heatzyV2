@@ -171,6 +171,15 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
         	<textarea class="eqLogicAttr form-control" data-l1key="comment" ></textarea>
 		</div>
 	</div>
+	<div class="form-group">
+    	<label class="col-sm-4 control-label">{{Planning de programmation}}</label>
+        <div class="col-sm-6">
+                <a class="btn btn-info bt_planning" id="bt_planning"><i class="fa fa-refresh"></i>
+                Voir le planning de la semaine<span id="planning"></span>
+                </a>
+		</div>
+	</div>
+    
   </fieldset>
 </form>
 </div>
