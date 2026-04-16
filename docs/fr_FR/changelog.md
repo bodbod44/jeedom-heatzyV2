@@ -1,15 +1,20 @@
 # xx/06/2025 (dev)
 - TODO : Commande Alerte fenetre ouverte (deja possible en scenario) => A faire
 - TODO : Alerte hors ligne (9042) => A faire
-- TODO
-  - Gestion des deconnexions / relance
-  - Gestion des cas particuliers (robustesse)
-  - Changement de token - Verifier demarrage avec un token KO
-  - Pourquoi le demon est OK lorsque par d'internet au démarrage
-
+- TODO : Traduction
 En cours
  - Gestion des widget (merci Yetz)
 
+# 16/04/2026 (dev)
+- Ajout d'une modal pour montrer le planning de programmation de la semaine
+- Si le port du demon n'est pas valorisé le plugin le valorise avec un port libre
+- Mise en place d'un système de statistique (anonyme) permettant d'améliorer de suivre l'utlisation et améliorer le plugin
+- Refonte du systeme de création des commandes (parametré dans le pluigin, reconnaissancee t apprentissage)
+- Ajout d'un bouton permettant de remettre l'ordre d'origine dans les commandes (n'influe pas sur l'ordre d'affichage du tempalte bodbod)
+- Ajout d'un bouton permettant de remettre le libellé d'origine de chaque commandes
+- Amélioration de la fonction toHtml (merci Yetz)
+- Prise en comp te de certaines remarques de Yetz ([voir cet article sur blog.sinecu.re](https://blog.sinecu.re/fr/2026/02/27/rendre-un-radiateur-intelligent-et-domotise-decret-2030-heatzy-pilote-thermostat-z-wave-jeedom-et-reflexions-sur-le-mode-connecte/#Integration_du_module_a_Jeedom))
+  
 # 18/02/2026 (dev)
 - Demon
   - Récupération du statut du module (OnLine / OffLine)
@@ -41,7 +46,7 @@ En cours
 - Ajout d'un demon
 
 # 29/01/2026 (dev)
-- Calcul des dates dans le JSON des tâches planifiées
+- Calcul des dates dans les exemples du JSON des tâches planifiées
 
 # 08/01/2026 (dev)
 - Ajout du n° de ligne dans les logs

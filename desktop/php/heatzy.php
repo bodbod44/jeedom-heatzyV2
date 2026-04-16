@@ -333,8 +333,8 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 					<div class="form-group">
 						<label class="col-sm-5 control-label" style="width:110px;"><i class="fas fa-info"></i>&nbsp;{{Important}}</label>
 						<div class="col-sm-5 alert alert-info" style="width:100%">
-							Pour les modules qui ne possèdent pas de capteur de température, il est possible d'utiliser ce parametre pour utilisateur un autre capteur présent dans jeedom.
-							<br>
+							Pour les modules qui ne possèdent pas de capteur de température, il est possible d'utiliser ce parametre pour utilisateur un autre capteur présent dans jeedom.<br>
+							Ces capeurs externes n'influencent pas le comportement des modules mais peuvent être affichés sur le widget ou encore activer les fonctionnalités "fenêtre ouverte" et "tendance de température"<br>
 							Pour les modules qui possèdent déjà un capteur de température interne (Pro, Glow, Shine ...), le capteur externe sera pris par le plugin et le capteur interne sera ignoré (le module lui même continuera de fonctionner avec son propre catpeur interne).
 						</div>
 					</div>
