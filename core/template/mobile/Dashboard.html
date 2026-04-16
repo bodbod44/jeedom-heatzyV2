@@ -52,11 +52,6 @@
                   <i class="nature-snowflake" style="font-size:1.0em"></i>
                   </span>
                   </span>
-                  <!--  programmation -->
-                  <span class="cmd cmd-widget" data-type="action" data-subtype="other" data-cmd_id="" data-version="#version#">
-                  <span title="" class="prog cursor action btn" data-cmd_id="#etatprog_id#" data-cmd_uid="#uid#" data-type="info" data-subtype="numeric" data-version="#version#" style="display:none;#etatprog_display#;">
-                  <i class="programmation"></i>
-                  </span>
                   </span>
                   <!-- Affichage de la temperature courante -->
                   <span class="cmd cmd-widget #cur_temp_history# tooltips" data-type="numeric" data-subtype="binary" data-cmd_id="#cur_temp_id#" data-cmd_uid="#uid#" title="#cur_temp_CollectDate#" data-version="#version#" style="display:none;#cur_temp_display#;">
@@ -112,62 +107,12 @@
       }
       jeedom.cmd.update['#plugzy_id#']({display_value:'#plugzy_cmd#'});
      
-      jeedom.cmd.update['#etatprog_id#'] = function(_options){
-         if(_options.display_value == 1) {
-            $('.prog[data-cmd_id="#etatprog_id#"][data-cmd_uid="#uid#"]').empty().append('<i class="fa fa-toggle-on progoff" style="font-size : 1.0em;color: #00FF00;"></i>');
-            $('.prog[data-cmd_id="#etatprog_id#"][data-cmd_uid="#uid#"]').attr('title', 'Désactiver la programmation');
-            $('.prog[data-cmd_id="#etatprog_id#"][data-cmd_uid="#uid#"]').parent().attr('data-cmd_id', '#ProgOff_id#');
-         } else {
-            $('.prog[data-cmd_id="#etatprog_id#"][data-cmd_uid="#uid#"]').empty().append('<i class="fa fa-toggle-off progon" style="font-size : 1.0em;color: #FF0000;"></i>');
-            $('.prog[data-cmd_id="#etatprog_id#"][data-cmd_uid="#uid#"]').attr('title', 'Activer la programmation');
-            $('.prog[data-cmd_id="#etatprog_id#"][data-cmd_uid="#uid#"]').parent().attr('data-cmd_id', '#ProgOn_id#');
-         }
-      }
-      jeedom.cmd.update['#etatprog_id#']({display_value:'#etatprog_cmd#'});
-      
-      jeedom.cmd.update['#etatlock_id#'] = function(_options){ 
-         if(_options.display_value == 1) {
-            $('.lock[data-cmd_id="#etatlock_id#"][data-cmd_uid="#uid#"]').empty().append('<i class="fa fa-toggle-on lockoff" style="font-size : 1.2em;color: #00FF00;"></i>');
-            $('.lock[data-cmd_id="#etatlock_id#"][data-cmd_uid="#uid#"]').attr('title', 'Désactiver le verrouillage');
-            $('.lock[data-cmd_id="#etatlock_id#"][data-cmd_uid="#uid#"]').parent().attr('data-cmd_id', '#LockOff_id#');
-         } else {
-            $('.lock[data-cmd_id="#etatlock_id#"][data-cmd_uid="#uid#"]').empty().append('<i class="fa fa-toggle-off lockon" style="font-size : 1.2em;color: #FF0000;"></i>');
-            $('.lock[data-cmd_id="#etatlock_id#"][data-cmd_uid="#uid#"]').attr('title', 'Activer le verrouillage');
-            $('.lock[data-cmd_id="#etatlock_id#"][data-cmd_uid="#uid#"]').parent().attr('data-cmd_id', '#LockOn_id#');
-         }
-      }
-      jeedom.cmd.update['#etatlock_id#']({display_value:'#etatlock_cmd#'});
      
-      jeedom.cmd.update['#WindowSwitch_id#'] = function(_options){ 
-         if(_options.display_value == 1) {
-            $('.window[data-cmd_id="#WindowSwitch_id#"][data-cmd_uid="#uid#"]').empty().append('<i class="fa fa-toggle-on windowoff" style="font-size : 1.2em;color: #00FF00;"></i>');
-            $('.window[data-cmd_id="#WindowSwitch_id#"][data-cmd_uid="#uid#"]').attr('title', 'Désactiver la vérification de fenetre ouverte');
-            $('.window[data-cmd_id="#WindowSwitch_id#"][data-cmd_uid="#uid#"]').parent().attr('data-cmd_id', '#WindowSwitchOff_id#');
-         } else {
-            $('.window[data-cmd_id="#WindowSwitch_id#"][data-cmd_uid="#uid#"]').empty().append('<i class="fa fa-toggle-off windowon" style="font-size : 1.2em;color: #FF0000;"></i>');
-            $('.window[data-cmd_id="#WindowSwitch_id#"][data-cmd_uid="#uid#"]').attr('title', 'Activer la vérification de fenetre ouverte');
-            $('.window[data-cmd_id="#WindowSwitch_id#"][data-cmd_uid="#uid#"]').parent().attr('data-cmd_id', '#WindowSwitchOn_id#');
-         }
-      }
-      jeedom.cmd.update['#WindowSwitch_id#']({display_value:'#WindowSwitch_cmd#'});
-    
       jeedom.cmd.update['#cur_temp_id#'] = function(_options){
          $('.cmd[data-cmd_id="#cur_temp_id#"][data-cmd_uid="#uid#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
          $('.cmd[data-cmd_id="#cur_temp_id#"][data-cmd_uid="#uid#"] span').value(_options.display_value);
       }
       jeedom.cmd.update['#cur_temp_id#']({display_value:'#cur_temp_cmd##cur_temp_unite#',collectDate:'#cur_temp_CollectDate#',valueDate:'#cur_temp_ValueDate#'});
-      
-      jeedom.cmd.update['#eco_temp_id#'] = function(_options){
-         $('.cmd[data-cmd_id="#eco_temp_id#"][data-cmd_uid="#uid#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-         $('.cmd[data-cmd_id="#eco_temp_id#"][data-cmd_uid="#uid#"] span').value(_options.display_value);
-      }
-      jeedom.cmd.update['#eco_temp_id#']({display_value:': #eco_temp_cmd# #eco_temp_unite#',collectDate:'#eco_temp_CollectDate#',valueDate:'#eco_temp_ValueDate#'});
-      
-      jeedom.cmd.update['#cft_temp_id#'] = function(_options){
-         $('.cmd[data-cmd_id="#cft_temp_id#"][data-cmd_uid="#uid#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);
-         $('.cmd[data-cmd_id="#cft_temp_id#"][data-cmd_uid="#uid#"] span').value(_options.display_value);
-      }
-      jeedom.cmd.update['#cft_temp_id#']({display_value:': #cft_temp_cmd# #cft_temp_unite#',collectDate:'#cft_temp_CollectDate#',valueDate:'#cft_temp_ValueDate#'});
       
       jeedom.cmd.update['#cur_humi_id#'] = function(_options){
          $('.cmd[data-cmd_id="#cur_humi_id#"][data-cmd_uid="#uid#"]').attr('title','Date de valeur: ' + _options.valueDate + '<br>Date de collecte: ' + _options.collectDate);

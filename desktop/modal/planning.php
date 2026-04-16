@@ -42,8 +42,12 @@ else if( !isset( $result['attr']['p1_data1'] ) ){
     echo 'Attributs du planning non trouvés' ;
 }
 else{
-    echo '<table border=1>'."\n" ;
-    echo '  <tr>'."\n" ;
+    echo '<br>Programmation : <b>'.($result['attr']['timer_switch'] == 0 ? '<FONT COLOR="red">Désactivé</FONT>' : '<FONT COLOR="green">Activé</FONT>').'</b><br><br>' ;
+
+	
+	echo '<table border=1>'."\n" ;
+    
+	echo '  <tr>'."\n" ;
     echo '    <th style="text-align:center">Heures</th>'."\n" ;
     for ($j = 1; $j <= 7; $j++)
         echo '    <th style="text-align:center">'.array('','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche')[$j].'</th>'."\n" ;
@@ -54,7 +58,7 @@ else{
             echo '  <tr align="center">'."\n" ;
             echo '    <td width="70">'.str_pad($h, 2, '0', STR_PAD_LEFT).'h'.str_pad($m, 2, '0', STR_PAD_LEFT).'</td>'."\n" ;
             for ($j = 1; $j <= 7; $j++) {
-                $mode = FindMode( $result , $j , $h , $m ) ;
+                $mode = FindMode( $result['attr'] , $j , $h , $m ) ;
                 echo '    <td style="background-color:'.Mode2Color($mode).';" width="70">'.$mode.'</td>'."\n" ;
             } // for $j
             echo '  </tr>'."\n" ;
@@ -64,9 +68,9 @@ else{
 }
 
 
-function FindMode( $tab , $j , $h , $m ){
+function FindMode( $tab_attr , $j , $h , $m ){
     $data = floor( $h / 2 ) + 1 ;  
-    $bin = str_pad( decbin($tab['attr']['p'.$j.'_data'.$data]) , 8 , '0' , STR_PAD_LEFT) ;  
+    $bin = str_pad( decbin($tab_attr['p'.$j.'_data'.$data]) , 8 , '0' , STR_PAD_LEFT) ;  
     // 01 01 01 01 => x+1h30 x+1 x+0h30 x
     $deb = ( floor( $h / 2 ) == ( $h / 2 ) ? 4 : 0) + ( $m == 0 ? 2 : 0) ;
     switch ( substr( $bin , $deb , 2 ) ) {
