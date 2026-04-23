@@ -1,55 +1,16 @@
-# xx/06/2025 (dev)
-- TODO : Commande Alerte fenetre ouverte (deja possible en scenario) => A faire
-- TODO : Alerte hors ligne (9042) => A faire
-- TODO : Traduction
-En cours
- - Gestion des widget (merci Yetz)
-
-# 16/04/2026 (dev)
-- Ajout d'une modal pour montrer le planning de programmation de la semaine
-- Si le port du demon n'est pas valorisé le plugin le valorise avec un port libre
-- Mise en place d'un système de statistique (anonyme) permettant d'améliorer de suivre l'utlisation et améliorer le plugin
-- Refonte du systeme de création des commandes (parametré dans le pluigin, reconnaissancee t apprentissage)
+# 23/04/2026 (beta)
+- Ajout d'un demon pour améliorer la gestion des appels
+  - Si le port du demon n'est pas valorisé le plugin le valorise avec un port libre
+  - Le choix du type d'appel est laissé à l'utilisateur
+- Refonte du systeme de création des commandes (parametré dans le pluigin, reconnaissancee et apprentissage)
+- Ajout d'une modale pour afficher le planning de programmation de la semaine
 - Ajout d'un bouton permettant de remettre l'ordre d'origine dans les commandes (n'influe pas sur l'ordre d'affichage du tempalte bodbod)
 - Ajout d'un bouton permettant de remettre le libellé d'origine de chaque commandes
+- Calcul des dates dans les exemples du JSON des tâches planifiées
+- Ajout du n° de ligne dans les logs
 - Amélioration de la fonction toHtml (merci Yetz)
 - Prise en comp te de certaines remarques de Yetz ([voir cet article sur blog.sinecu.re](https://blog.sinecu.re/fr/2026/02/27/rendre-un-radiateur-intelligent-et-domotise-decret-2030-heatzy-pilote-thermostat-z-wave-jeedom-et-reflexions-sur-le-mode-connecte/#Integration_du_module_a_Jeedom))
-  
-# 18/02/2026 (dev)
-- Demon
-  - Récupération du statut du module (OnLine / OffLine)
-  - Verification de websocket en ligne ou perdue (si pa de retour depuis x secondes)
-  - En cas de changement de niveau de log jeedom, le demon s'arrête (redémarrage auto au bout de qq minutes)
-  - En cas de changement de token, le demon s'arrête (redémarrage auto au bout de qq minutes)
-  
-# 17/02/2026 (dev)
-- Demon
-  - Gestion des arrêts/relances
-  
-# 16/02/2026 (dev)
-- Demon
-  - Finalisation des allers-retours jeedom<->demon<->gizwits
-  - Ajout d'un choix dans la configuration (API/WS)
-    
-# 15/02/2026 (dev)
-- Demon
-  - Amélioration du demon (thread)
-  - Gestion de la réponse vers jeeedom
-
-# 14/02/2026 (dev)
-- Implémentation du websocket
-
-# 13/02/2026 (dev)
-- Correction du demon
-
-# 10/02/2026 (dev)
-- Ajout d'un demon
-
-# 29/01/2026 (dev)
-- Calcul des dates dans les exemples du JSON des tâches planifiées
-
-# 08/01/2026 (dev)
-- Ajout du n° de ligne dans les logs
+- Mise en place d'un système de statistiques (anonymisés) permettant de suivre l'utlisation et améliorer le plugin
 
 # 23/11/2025 (stable)
 - Ajout d'une modale permettant de gérer les tâches planifiées Heatzy (Visualisation, Création, Mise à jour, et suppression)
