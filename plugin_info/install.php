@@ -99,7 +99,7 @@ function heatzy_update() {
         }
 
         // Pour lse Glow et Shine, on bascule les commandes créées par les anciennes verions
-        if( $eqLogic->getConfiguration('product', '') == 'Shine_ble' || $eqLogic->getConfiguration('product', '') == 'Glow_Simple_ble' ){
+        if( $eqLogic->getConfiguration('product_name', '') == 'Shine_ble' || $eqLogic->getConfiguration('product_name', '') == 'Glow_Simple_ble' ){
             
             $cmdAvant = $eqLogic->getCmd(null, 'etatlock');
             $cmdApres = $eqLogic->getCmd(null, 'Lock_C_State');
@@ -144,57 +144,50 @@ function heatzy_update() {
             }
         } // if Glow et Shine
       
-          // Mise à jour des setOrder pour trier les commandes (pour plus de clareté)
-        $cmd = $eqLogic->getCmd(null, 'refresh');              if (is_object($cmd)){ $cmd->setOrder(0);  $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'IsOnLine');             if (is_object($cmd)){ $cmd->setOrder(1);  $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'cur_temp');             if (is_object($cmd)){ $cmd->setOrder(10); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'cur_humi');             if (is_object($cmd)){ $cmd->setOrder(11); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'eco_temp');             if (is_object($cmd)){ $cmd->setOrder(12); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'eco_temp_consigne');    if (is_object($cmd)){ $cmd->setOrder(13); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'cft_temp');             if (is_object($cmd)){ $cmd->setOrder(14); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'cft_temp_consigne');    if (is_object($cmd)){ $cmd->setOrder(15); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'Tendance');             if (is_object($cmd)){ $cmd->setOrder(16); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'WindowOpened');         if (is_object($cmd)){ $cmd->setOrder(17); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'EtatConsigne');         if (is_object($cmd)){ $cmd->setOrder(20); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'mode');                 if (is_object($cmd)){ $cmd->setOrder(21); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'Confort');              if (is_object($cmd)){ $cmd->setOrder(22); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'Eco');                  if (is_object($cmd)){ $cmd->setOrder(23); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'HorsGel');              if (is_object($cmd)){ $cmd->setOrder(24); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'Off');                  if (is_object($cmd)){ $cmd->setOrder(25); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'Confort-1');            if (is_object($cmd)){ $cmd->setOrder(26); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'Confort-2');            if (is_object($cmd)){ $cmd->setOrder(27); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'etatprog');             if (is_object($cmd)){ $cmd->setOrder(30); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'ProgOn');               if (is_object($cmd)){ $cmd->setOrder(31); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'ProgOff');              if (is_object($cmd)){ $cmd->setOrder(32); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'etatlock');             if (is_object($cmd)){ $cmd->setOrder(33); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'LockOn');               if (is_object($cmd)){ $cmd->setOrder(34); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'LockOff');              if (is_object($cmd)){ $cmd->setOrder(35); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'WindowSwitch');         if (is_object($cmd)){ $cmd->setOrder(39); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'WindowSwitchOn');       if (is_object($cmd)){ $cmd->setOrder(40); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'WindowSwitchOff');      if (is_object($cmd)){ $cmd->setOrder(41); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'derog_mode');           if (is_object($cmd)){ $cmd->setOrder(60); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'derog_off');            if (is_object($cmd)){ $cmd->setOrder(62); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'derog_time_vacances');  if (is_object($cmd)){ $cmd->setOrder(63); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'derog_vacances');       if (is_object($cmd)){ $cmd->setOrder(64); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'derog_time_boost');     if (is_object($cmd)){ $cmd->setOrder(65); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'derog_boost');          if (is_object($cmd)){ $cmd->setOrder(66); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'derog_presence');       if (is_object($cmd)){ $cmd->setOrder(67); $cmd->save(); }
-        $cmd = $eqLogic->getCmd(null, 'detect_presence');      if (is_object($cmd)){ $cmd->setOrder(68); $cmd->save(); }
-        
         $cmd = $eqLogic->getCmd(null, 'Confort');   if (is_object($cmd)){ $cmd->setName(__('Mode Confort'  , __FILE__)) ; $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'Eco');       if (is_object($cmd)){ $cmd->setName(__('Mode Eco'      , __FILE__)) ; $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'HorsGel');   if (is_object($cmd)){ $cmd->setName(__('Mode HorsGel'  , __FILE__)) ; $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'Off');       if (is_object($cmd)){ $cmd->setName(__('Mode Off'      , __FILE__)) ; $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'Confort-1'); if (is_object($cmd)){ $cmd->setName(__('Mode Confort-1', __FILE__)) ; $cmd->save(); }
         $cmd = $eqLogic->getCmd(null, 'Confort-2'); if (is_object($cmd)){ $cmd->setName(__('Mode Confort-2', __FILE__)) ; $cmd->save(); }
+       
+        // Abandon du template l3flo - mettre 1 (template bodbod) si vide ou 0 (l3flo)
+        if( $eqLogic->getConfiguration('TypeTemplate', '1') == '1' ){
+            $eqLogic->setConfiguration('TypeTemplate', '0');
+            $eqLogic->save() ;
+        }
+        // Le template jeedom devient le 1
+        if( $eqLogic->getConfiguration('TypeTemplate', 'x') == '2' ){
+            //$eqLogic->setConfiguration('TypeTemplate', '1');
+            //$eqLogic->save() ;
+        }
+        // Suppression d'une ancienne config plus utilisée
+        if( $eqLogic->getConfiguration('isTemplateCommun', 'xxx') != 'xxx' ){
+            $eqLogic->setConfiguration('isTemplateCommun', null);
+            $eqLogic->save() ;
+        }
+        
+        // Modification du "product" par "product_name"
+        if( $eqLogic->getConfiguration('product', 'xxx') != 'xxx' ){
+            $val = $eqLogic->getConfiguration('product', 'xxx') ;
+            $eqLogic->setConfiguration('product_name', $val);
+            $eqLogic->setConfiguration('product', null);
+            $eqLogic->save() ;
+        }
       
-    } // foreach
+    } // foreach eqLogics
+  
+    // Force le type de connexion (API/WS) si non valorisé
+    if( config::byKey('API_Type','heatzy','') == '' ){
+        config::save('API_Type'  , 'WS'  , 'heatzy');
+    }
     
-   log::add('heatzy', 'debug',  __METHOD__.': heatzy_remove');
-   $cron = cron::byClassAndFunction('heatzy', 'Login');
-   if (is_object($cron)) {
-      $cron->remove();
-   }
+    log::add('heatzy', 'debug',  __METHOD__.': heatzy_remove');
+    $cron = cron::byClassAndFunction('heatzy', 'Login');
+    if (is_object($cron)) {
+        $cron->remove();
+    }
+  
 }
 
 function heatzy_remove() {

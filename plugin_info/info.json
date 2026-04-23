@@ -5,7 +5,7 @@
 	"licence" : "AGPL",
 	"author" : "l3flo/bodbod",
 	"require" : "3.1.7",
-	"category" : "devicecommunication",	
+	"category" : "wellness",
 	"changelog" : "https://github.com/bodbod44/jeedom-heatzyV2/blob/master/docs/#language#/changelog.md",
 	"changelog_beta" : "https://github.com/bodbod44/jeedom-heatzyV2/blob/beta/docs/#language#/changelog.md",
 	"documentation" : "https://github.com/bodbod44/jeedom-heatzyV2/blob/master/docs/#language#/index.md",
@@ -14,6 +14,7 @@
 		"forum": "https://community.jeedom.com/tag/plugin-heatzy"
 	},
 	"include" : {"type" : "php" , "file" : "heatzy.inc" },
-  	"hasDependency" : false,
-	"hasOwnDeamon" : false
+	"hasDependency" : true,
+	"hasOwnDeamon" : true,
+	"maxDependancyInstallTime" : 10
 }

@@ -1,0 +1,21 @@
+{
+  "pre-install": {
+  },
+  "apt" : {
+    "python3" : {},
+    "python3-pip" : {},
+    "python3-setuptools" : {},
+    "python3-pyudev" : {}
+  },
+  "pip3": {
+    "pyserial" : {"reinstall" : true},
+    "requests" : {"reinstall" : true},
+    "pyudev" : {"reinstall" : true},
+    "websocket-client" : {"reinstall" : true},
+    "Thread" : {"reinstall" : true}
+  },
+  "plugin": {
+  },
+  "post-install": {
+  }
+}
