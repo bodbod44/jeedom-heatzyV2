@@ -123,7 +123,7 @@ class heatzy extends eqLogic {
     public static function deamon_start() {
       	log::add(__CLASS__, 'debug', __METHOD__.'(ln '.__LINE__.')'.' : deamon_start...');
         self::deamon_stop();
-      	sleep(1) ;
+      	//sleep(1) ;
         $deamon_info = self::deamon_info();
         if ($deamon_info['launchable'] != 'ok') {
             throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
@@ -563,9 +563,10 @@ class heatzy extends eqLogic {
             $Temp = $cur_temp->execCmd() ;
             if( $Temp > -50 && $Temp < 100 ){
                 $CurTemp = $this->getCmd(null, 'cur_temp'); 
-                if (!is_object($this->getCmd(null, 'WindowOpened')) || !is_object($this->getCmd(null, 'Tendance')))
-                    // TODO $this->CheckAndCreateCmd( array( "attr" => array( "WindowOpened" => "0" , "Tendance" => "0" ) ) ) ; // $aDevice['attr']['WindowOpened']
-                //$this->CheckAndCreateCmd( array( "attr" => array( "Tendance" => "0" ) ) ) ; // $aDevice['attr']['Tendance']
+                if (!is_object($this->getCmd(null, 'WindowOpened')))
+                    $this->CreateCmd( 'WindowOpened' ) ;
+                if (!is_object($this->getCmd(null, 'Tendance')))
+                        $this->CreateCmd( 'Tendance' ) ;
                 $startTendance = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') .' - '.$TendanceDuree.' min'));
                 $tendance = Round( $cur_temp->getTendance( $startTendance , date('Y-m-d H:i:s') ) , 4 ) ;
                 $this->checkAndUpdateCmd('Tendance', $tendance );
