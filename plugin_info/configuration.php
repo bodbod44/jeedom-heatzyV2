@@ -110,7 +110,7 @@ if (!isConnect()) {
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Synchroniser}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Récupère les modules présent sur le compte Heatzy et créer les commandes associéess}}"></i></sup></label>
+            <label class="col-lg-4 control-label">{{Synchroniser}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Récupère les modules présents sur le compte Heatzy et créer les commandes associées}}"></i></sup></label>
             <div class="col-lg-2">
                 <a class="btn btn-info bt_syncheatzy"><i id='syncheatzy' class="fa fa-refresh"></i>
                 Synchroniser les modules avec le compte Heatzy<span id="nbheatzy"></span>
@@ -126,7 +126,7 @@ if (!isConnect()) {
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Réinitialiser l''ordre des commandes}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Réinitialiser l''ordre des commandes}}"></i></sup></label>
+            <label class="col-lg-4 control-label">{{Réinitialiser l'ordre des commandes}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Réinitialiser l'ordre des commandes}}"></i></sup></label>
             <div class="col-lg-2">
                 <a class="btn btn-info bt_syncheatzyorder"><i id='syncheatzyorder' class="fa fa-refresh"></i>
                 Réinitialiser l''ordre des commandes<span id="nbheatzyorder"></span>
@@ -134,10 +134,10 @@ if (!isConnect()) {
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Réinitialiser les noms des commandes}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Réinitialiser les noms des commandes}}"></i></sup></label>
+            <label class="col-lg-4 control-label">{{Réinitialiser le nom des commandes}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Réinitialiser le nom des commandes}}"></i></sup></label>
             <div class="col-lg-2">
                 <a class="btn btn-info bt_syncheatzyname"><i id='syncheatzyname' class="fa fa-refresh"></i>
-                Réinitialiser les noms des commandes<span id="nbheatzyname"></span>
+                Réinitialiser le nom des commandes<span id="nbheatzyname"></span>
                 </a>
             </div>
         </div>
