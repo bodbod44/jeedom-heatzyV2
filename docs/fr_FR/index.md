@@ -52,12 +52,20 @@ Puis cliquez sur synchroniser pour récupérer la liste des modules Heatzy pilot
 
 * **Email** : votre adresse email utilisé lors de votre enregistrement dans le cloud
 * **Mot de passe** : votre mot de passe d'accès renseigné lors de votre enregistrement dans le cloud
+* **uid** : votre id heatzy
 * **Token** : votre token d'accès au cloud, après la synchronisation de vos modules
 * **Expire** : la date d'expiration du token d'accès au cloud, après la synchronisation de vos modules
-* **Timeout sur les connexions euapi.gizwits.com** (60sec par défaut) : Timeout sur les connexions euapi.gizwits.com. Une valeur trop basse peut provoquer des remontées d'erreurs en cas de surcharge des serveurs heatzy/gizwits
-* **Fréquence de rafraichissement des commandes** (1min par défaut) : Fréquence des appels à l'API heatzy pour récupérer les informations type mode, température, activations ...
-* **Fréquence de rafraichissement du statut du module** (5min par défaut) : Fréquence des appels à l'API heatzy pour récupérer le statut OnLine/Offline et pour l'ajout des nouveau xmodules rattachés au compte
+* **Type d API utilisé**
+  * **API REST** : Type d'appel utiilsé depuis le début du plugin
+    * **Timeout sur les connexions euapi.gizwits.com** (60sec par défaut) : Timeout sur les connexions euapi.gizwits.com. Une valeur trop basse peut provoquer des remontées d'erreurs en cas de surcharge des serveurs heatzy/gizwits
+    * **Fréquence de rafraichissement des commandes** (1min par défaut) : Fréquence des appels à l'API heatzy pour récupérer les informations type mode, température, activations ...
+    * **Fréquence de rafraichissement du statut du module** (5min par défaut) : Fréquence des appels à l'API heatzy pour récupérer le statut OnLine/Offline et pour l'ajout des nouveau xmodules rattachés au compte
+  * **WebSocket** : Nouveau type d'appel permettant une synchronisation en temps réel
+    * **Port demon** : Port utilisé dans jeedom pour communication jeedom<-> demon. Si le port est vide, le plugin la valorisera avec un port non utilisé
 * **Synchroniser** : permet de synchroniser vos modules Heatzy avec le cloud
+* **Création des commandes** : permet de forcer la création des commandes
+* **Réinitialiser l'ordre des commandes** : permet de remettre les commandes dans l'ordre d'origine
+* **Réinitialiser les noms des commandes** : permet de remettre le nom des commandes d'origine
 
 
 Configuration des objets connectés Heatzy
@@ -68,7 +76,7 @@ La configuration des modules Heatzy est accessible à partir du menu 'Plugins' >
 
 Une fois que vous cliquez sur un équipement vous retrouvez la configuration de l'équipement :
 
-![heatzy4](../images/detail_equipement3.png)
+![heatzy4](../images/detail_equipement4.png)
 
 Vous retrouvez dans la section **Général**
 
@@ -79,6 +87,9 @@ Vous retrouvez dans la section **Général**
 * **Visible** : le rend visible sur le dashboard
 * **MAC** : l'adresse MAC du module Heatzy
 * **DID** : l'identifiant du module Heatzy
+* **Commentaire** : Commentaire libre
+* **Planning de programmation** : Affichage d'une modale avec le planning de la semaine (si programmation activée)
+![heatzy12](../images/Planning programmation.png)
 
 Vous retrouvez dans la section **Informations**
 
@@ -87,6 +98,10 @@ Vous retrouvez dans la section **Informations**
 * **Dernière mise à jour** : date et heure de mise à jour de l'équipement
 * **Type** : pilote ou flam
 * **Produit** : le type de produit de la marque heatzy
+* **wifi_soft_version** : version wifi_soft
+* **wifi_hard_version** : version wifi_hard
+* **mcu_soft_version** : version mcu_soft
+* **mcu_hard_version** : version mcu_hard
 
 Configuration des commandes des objets connectés Heatzy
 -------------
