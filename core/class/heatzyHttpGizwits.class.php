@@ -685,63 +685,6 @@ class HttpGizwits {
         //   if(isset($aRep['error_message'])) {
         //       throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         //   }
-     
-     /*
-        if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) { 
-            // erreur token invalide, alors on va en chercher un nouveau
-            if( heatzy::Login() ){
-              
-                $UserToken = config::byKey('UserToken','heatzy','none');
-                
-                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() OK - Nouveau Token ('.$UserToken.')');
-              
-                /// Parametres cUrl
-                $params = array(
-                    CURLOPT_POST => 1,
-                    CURLOPT_HTTPHEADER => array(
-                            'Accept: application/json',
-                            'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
-                            'X-Gizwits-User-token: '.$UserToken
-                    ),
-                    CURLOPT_URL => self::$UrlGizwits.'/app/control/'.$Did,
-                    CURLOPT_FRESH_CONNECT => 1,
-                    CURLOPT_RETURNTRANSFER => 1,
-                    CURLOPT_FORBID_REUSE => 1,
-                    CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout ),
-                    CURLOPT_POSTFIELDS => $data
-                );
-
-                /// Initialisation de la ressources curl
-                $gizwits = curl_init();
-                if ($gizwits === false)
-                  return false;
-
-                /// Configuration des options
-                curl_setopt_array($gizwits, $params);
-            
-                /// Excute la requete
-                $result = curl_exec($gizwits);
-            
-                /// Test le code retour http
-                $httpcode = curl_getinfo($gizwits, CURLINFO_HTTP_CODE);
-
-                /// Ferme la connexion
-                curl_close($gizwits);
-
-                if( $httpcode != 200 && $httpcode != 400 ){
-                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
-                    return false;
-                }
-
-                ///Décodage de la réponse
-                $aRep = json_decode($result, true);
-            }
-            else{
-                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() KO');
-                return false;
-            }
-        }
-    */
         
         return $aRep;
     }
@@ -851,56 +794,118 @@ class HttpGizwits {
         //if(isset($aRep['error_message'])) {
         //    throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         // }
-      /*
-        if( $aRep['error_code'] == '9004' || $aRep['error_code'] == '9006' ) {
-            // erreur token invalide, alors on va en chercher un nouveau
-            if( heatzy::Login() ){
+        
+        if( self::$DebugExport ){
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($params, true));
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
+        }
+        
+        return $aRep;
+    }
+    
+    /**
+     * @brief Fonction qui permet de récuperer les groupes de modules
+     * 
+     * @return Un tableau associatif ou false en cas d'erreur
+     */
+//class HttpGizwits
+    public static function GetGroups() {
               
-                $UserToken = config::byKey('UserToken','heatzy','none');
-                
-                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() OK - Nouveau Token ('.$UserToken.')');
+      	$UserToken = config::byKey('UserToken','heatzy','');
               
-                /// Parametres cUrl
-                $params = array(
-                    CURLOPT_HTTPHEADER => array(
-                        'Accept: application/json',
-                        'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
-                        'X-Gizwits-User-token: '.$UserToken
-                    ),
-                    CURLOPT_URL => self::$UrlGizwits.'/app/devdata/'.$Did.'/latest',
-                    CURLOPT_RETURNTRANSFER => 1,
-                    CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy',self::$Default_Timeout )
-                );
+        /// Parametres cUrl
+        $params = array(
+            CURLOPT_HTTPHEADER => array(
+                'Accept: application/json',
+                'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                'X-Gizwits-User-token: '.$UserToken
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/group',
+            CURLOPT_RETURNTRANSFER => 1,
+            //CURLOPT_CONNECTTIMEOUT => self::$ConnectTimeout,
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', self::$Default_Timeout )
+        );
+        /// Initialisation de la ressources curl
+        $gizwits = curl_init();
+        if ($gizwits === false)
+            return false;
+        /// Configuration des options
+        curl_setopt_array($gizwits, $params);
+        
+        /// Excute la requete
+        $result = curl_exec($gizwits);
+      
+        /// Test le code retour http
+        $httpcode = curl_getinfo($gizwits, CURLINFO_HTTP_CODE);
+
+        /// Ferme la connexion
+        curl_close($gizwits);
+
+        if( $httpcode != 200 && $httpcode != 400 ){
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- erreur http '.$httpcode.' - timeout '.config::byKey('Timeout_value','heatzy',self::$Default_Timeout ).'s (Recurrence '.$Recurrence.')');
+            return false ;
+        }
+        
+        $aRep = json_decode($result, true);
+        
+        if( self::$DebugExport ){
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($params, true));
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($aRep, true));
+        }
+        
+        return $aRep;
+    }
+    
+    
+    /**
+     * @brief Fonction qui permet de récuperer les did d'un groupe
+     * 
+     * @return Un tableau associatif ou false en cas d'erreur
+     */
+//class HttpGizwits
+    public static function GetDidByGroup( $group ) {
               
-                /// Initialisation de la ressources curl
-                $gizwits = curl_init();
-                if ($gizwits === false)
-                    return false;
-                /// Configuration des options
-                curl_setopt_array($gizwits, $params);
+        $UserToken = config::byKey('UserToken','heatzy','');
+      
+        if(empty($group) || empty($UserToken)){
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
+            return false;
+        }
+              
+        /// Parametres cUrl
+        $params = array(
+            CURLOPT_HTTPHEADER => array(
+                'Accept: application/json',
+                'X-Gizwits-Application-Id: '.self::$HeatzyAppId,
+                'X-Gizwits-User-token: '.$UserToken
+            ),
+            CURLOPT_URL => self::$UrlGizwits.'/app/group/'.$group.'/devices',
+            CURLOPT_RETURNTRANSFER => 1,
+            //CURLOPT_CONNECTTIMEOUT => self::$ConnectTimeout,
+            CURLOPT_TIMEOUT => config::byKey('Timeout_value','heatzy', self::$Default_Timeout )
+        );
+        /// Initialisation de la ressources curl
+        $gizwits = curl_init();
+        if ($gizwits === false)
+            return false;
+        /// Configuration des options
+        curl_setopt_array($gizwits, $params);
+        
+        /// Excute la requete
+        $result = curl_exec($gizwits);
+      
+        /// Test le code retour http
+        $httpcode = curl_getinfo($gizwits, CURLINFO_HTTP_CODE);
 
-                /// Excute la requete
-                $result = curl_exec($gizwits);
+        /// Ferme la connexion
+        curl_close($gizwits);
 
-                /// Test le code retour http
-                $httpcode = curl_getinfo($gizwits, CURLINFO_HTTP_CODE);
-
-                /// Ferme la connexion
-                curl_close($gizwits);
-
-                if( $httpcode != 200 && $httpcode != 400 ){
-                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
-                    return false;
-                }
-
-                ///Décodage de la réponse
-                $aRep = json_decode($result, true);
-            }
-            else{
-                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() KO');
-                return false;
-            }
-        }*/
+        if( $httpcode != 200 && $httpcode != 400 ){
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- erreur http '.$httpcode.' - timeout '.config::byKey('Timeout_value','heatzy',self::$Default_Timeout ).'s (Recurrence '.$Recurrence.')');
+            return false ;
+        }
+        
+        $aRep = json_decode($result, true);
         
         if( self::$DebugExport ){
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.':'.var_export($params, true));

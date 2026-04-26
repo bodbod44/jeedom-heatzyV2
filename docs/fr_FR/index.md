@@ -32,9 +32,10 @@ Configuration
 
 Page du plugin
 -------------
-![heatzy2](../images/configuration_equipement_Gestion2.png)
+![heatzy2](../images/configuration_equipement_Gestion3.png)
 * **Configuration** : Fenetre permettant de configurer le plugin (compte heatzy, niveau de log, fréquence de rafraichissement...)
 * **Santé** : Modale permettant de visualiser la bonne santé des modules (si connecté, dernière comminucation ...)
+* **Groupes de modules** : Modale permettant d'afficher les groupes avec les modules associés. Les groupes peuvent permettre de donner des consignes à des "zones" (groupes)
 * **Tâches programmées** : Modale permettant de gérer les tâches planifiées Heatzy (réservé à un public averti)
 * **Documentation plugin** : Lien pointant sur la documentation de ce plugin
 * **Documentation utilisateur Heatzy** : Lien pointant sur la documentation Heatzy (sur un Drive Heatzy)
@@ -42,13 +43,14 @@ Page du plugin
 * **Debug utilisateur Heatzy** : Modale permettant de sortir tous le contenu brute du parametrage (uniquement visible lorsque le niveau de log est debug)
 
 
-Configuration du plugin
+Configuration du plugin heatzy
 -------------
 Après téléchargement du plugin, il vous suffit juste d'activer celui-ci et de saisir l'adresse mail et le mot de passe pour accéder au cloud Heatzy.
 
 Puis cliquez sur synchroniser pour récupérer la liste des modules Heatzy pilotes associés à votre compte.
 
-![heatzy1](../images/configuration4.png)
+![heatzy1](../images/configuration_api.png)
+![heatzy13](../images/configuration_ws.png)
 
 * **Email** : votre adresse email utilisé lors de votre enregistrement dans le cloud
 * **Mot de passe** : votre mot de passe d'accès renseigné lors de votre enregistrement dans le cloud
@@ -68,7 +70,7 @@ Puis cliquez sur synchroniser pour récupérer la liste des modules Heatzy pilot
 * **Réinitialiser les noms des commandes** : permet de remettre le nom des commandes d'origine
 
 
-Configuration des objets connectés Heatzy
+Configuration des modules connectés Heatzy
 -------------
 La configuration des modules Heatzy est accessible à partir du menu 'Plugins' > 'Objets connectés'.
 
@@ -89,7 +91,8 @@ Vous retrouvez dans la section **Général**
 * **DID** : l'identifiant du module Heatzy
 * **Commentaire** : Commentaire libre
 * **Planning de programmation** : Affichage d'une modale avec le planning de la semaine (si programmation activée)
-![heatzy12](../images/Planning programmation.png)
+
+![heatzy12](../images/planning_programmation.png)
 
 Vous retrouvez dans la section **Informations**
 
@@ -103,7 +106,7 @@ Vous retrouvez dans la section **Informations**
 * **mcu_soft_version** : version mcu_soft
 * **mcu_hard_version** : version mcu_hard
 
-Configuration des commandes des objets connectés Heatzy
+Configuration des commandes des modules connectés Heatzy
 -------------
 
 ### Wigdet dashboard desktop
@@ -221,7 +224,7 @@ Et d'une commande info **Tendance Température** de type _numeric_ :
 
 * **Template** : Choix du template d'affichage
   * template **bodbod** : Nouveau template unique et commun à tous les modules *(les commandes non prises en charge par le module ne sont pas affichées)*
-  * template **l3flo** : Template d'origine créé par l3flo (<span style="color: #FF0000">/!\ Ces templates n'est plus maintenu et disparaitra des une future version</span>)
+  * ~~template l3flo : Template d'origine du plugin créé par l3flo~~ Supprimé
   * template **jeedom** : Laisse jeedom créer les commandes et informations par défaut
 * Capteur de température externe (facultatif)
   * Cela permet d'avoir la température pour les modules qui n'ont pas de capteur
@@ -234,48 +237,6 @@ Et d'une commande info **Tendance Température** de type _numeric_ :
   * **Durée (min)**
   * Pour détécter une chute de 2° en moins de 5min, mettre 2 (°) et 5 (min)
   * **Commande d'alerte** : Alerte en cas de detection de fenetre ouverte
-
-**Tableau des commandes possible par modules :**
-
-*(les futurs modules qui ne sont pas dans ce tableau seront naturellement pris en charg si l'utilisation de l'APi est la même)*
- | Commande | Type | Pilote_Soc | Pilote_Soc3 | Pilote_Pro | Elec_Pro | Glow | Shine | Flam_Week2 | INEA | Cool | Relais | 
- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | 
- | Etat Consigne<br>4 ordres : 0/1/2/3<br>6 ordres : 0/1/2/3/4/5 | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
- | Mode<br>4 ordres : Confort/Eco/Hors Gel/Off<br>6 ordres : Confort/Confort-1/Confort-2/Eco/Hors Gel/Off | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
- | Confort | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
- | Confort-1 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 
- | Confort-2 | action | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 
- | Eco | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
- | Hors Gel | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
- | Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
- | Température courante | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
- | Température Confort | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
- | Consigne Température Confort | action | N/A | N/A | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
- | Température Eco | info | N/A | N/A | Oui | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
- | Consigne Température Eco | action | N/A | N/A | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
- | Humidité courante | info | N/A | N/A | Oui | N/A | N/A | N/A | N/A | N/A | N/A | N/A | 
- | Etat Programmation | info | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
- | Programmation On | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
- | Programmation Off | action | Oui | Oui | Oui | Oui | Oui | Oui | Oui | Oui | N/A | N/A | 
- | Etat Vérouillage | info | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | N/A | N/A | 
- | Vérouillage On | action | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | N/A | N/A | 
- | Vérouillage Off | action | Oui | Oui | Oui | Oui | N/A | N/A | Oui | Oui | N/A | N/A | 
- | Etat Fenetre Ouverte | info | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | N/A | N/A | 
- | Fenetre Ouverte On | action | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | N/A | N/A | 
- | Fenetre Ouverte Off | action | N/A | N/A | Oui | N/A | N/A | N/A | ? | ? | N/A | N/A | 
- | Etat On_Off (plugzy ou OnOff) | info | N/A | N/A | N/A | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
- | On | action | N/A | N/A | N/A | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
- | Off | action | N/A | N/A | N/A | N/A | Oui | Oui | Oui | N/A | N/A | N/A | 
- | Mode dérogation | info | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
- | Derogation OFF | action | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
- | Derogation Vacances | action | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
- | Délai Derogation Vacances (en jours) | info | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
- | Derogation Boost | action | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
- | Délai Derogation Boost (en min) | info | Oui | Oui | Oui | ? | Oui | Oui | ? | ? | N/A | N/A | 
- | Derogation Présence | action | N/A | N/A | Oui | ? | N/A | N/A | ? | ? | N/A | N/A | 
- | Détéction Présence | info | N/A | N/A | Oui | ? | N/A | N/A | ? | ? | N/A | N/A | 
-
-
 
 **Utilisation des tâches planifiées Heatzy (Réservé à un public averti !!!)**
 
@@ -339,5 +300,5 @@ Reportez vous aux manuels des produits : https://drive.google.com/drive/folders/
 Les erreurs renvoyées par l'API gizwits sont repartoriés ici : https://docs.gizwits.com/en-us/AppDev/APICloudSDK.html#Error-codes
 Ces sont des libellés tchniques et pas forcement compréhensibles par tout le monde.
 N'hésitez pas à faire un message sur le forum jeedom (avec le tag heatzy).
-En Octobre 2025 à l'approche de l'hiver, beaucoup d'utliateur ont réactivé leurs modules Heatzy provoquant des saturations des serveurs GizWits.
+En Octobre 2025 à l'approche de l'hiver, beaucoup d'utiliateurs ont réactivés leurs modules Heatzy provoquant des saturations des serveurs GizWits.
 Cela s'est traduit par des temps de latence sur les commandes et une grosses remontés d'erreurs dan le plugin jeedom Heatzy (beaucoup d'appels KO). Une mécanique de réémission d'appel a été mise en place pour limiter les conséquences.

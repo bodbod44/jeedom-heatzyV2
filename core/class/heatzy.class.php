@@ -112,6 +112,14 @@ class heatzy extends eqLogic {
                 //sleep(1);
             }
         }
+        else{
+            $plugin = plugin::byId('heatzy');
+            $dep_info = $plugin->dependancy_info(true);
+            if( $dep_info['state'] != 'ok' ){
+                $return['launchable'] = 'nok';
+                $return['launchable_message'] = __('dépendance KO. Relancez manuellement les dépendances)', __FILE__);
+            }
+        }
       
         return $return;
     }
