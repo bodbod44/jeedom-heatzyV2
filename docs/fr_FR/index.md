@@ -32,9 +32,10 @@ Configuration
 
 Page du plugin
 -------------
-![heatzy2](../images/configuration_equipement_Gestion2.png)
+![heatzy2](../images/configuration_equipement_Gestion3.png)
 * **Configuration** : Fenetre permettant de configurer le plugin (compte heatzy, niveau de log, fréquence de rafraichissement...)
 * **Santé** : Modale permettant de visualiser la bonne santé des modules (si connecté, dernière comminucation ...)
+* **Groupes de modules** : Modale permettant d'afficher les groupes avec les modules associés. Les groupes peuvent permettre de donner des consignes à des "zones" (groupes)
 * **Tâches programmées** : Modale permettant de gérer les tâches planifiées Heatzy (réservé à un public averti)
 * **Documentation plugin** : Lien pointant sur la documentation de ce plugin
 * **Documentation utilisateur Heatzy** : Lien pointant sur la documentation Heatzy (sur un Drive Heatzy)
@@ -90,6 +91,7 @@ Vous retrouvez dans la section **Général**
 * **DID** : l'identifiant du module Heatzy
 * **Commentaire** : Commentaire libre
 * **Planning de programmation** : Affichage d'une modale avec le planning de la semaine (si programmation activée)
+
 ![heatzy12](../images/planning_programmation.png)
 
 Vous retrouvez dans la section **Informations**

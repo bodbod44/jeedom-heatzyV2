@@ -1,4 +1,4 @@
-# 25/04/2026 (dev)
+# 26/04/2026 (beta)
 - Ajout d'un message sur le demon si dépendance KO
 - Ajout de données dans les stats
 - Modification du planning de programation pour mettre en évidence le créneau en cours
@@ -9,7 +9,7 @@
 - Ajout d'un demon pour améliorer la gestion des appels
   - Si le port du demon n'est pas valorisé le plugin le valorise avec un port libre
   - Le choix du type d'appel est laissé à l'utilisateur
-- La configuration du plugin se trouve maintenant dans la rubrique "confort" (au lieu de "objets connactés")
+- La configuration du plugin se trouve maintenant dans la rubrique "confort" (au lieu de "objets connectés")
 - Refonte du systeme de création des commandes (parametré dans le pluigin, reconnaissancee et apprentissage)
 - Ajout d'une modale pour afficher le planning de programmation de la semaine
 - Ajout d'un bouton permettant de remettre l'ordre d'origine dans les commandes (n'influe pas sur l'ordre d'affichage du tempalte bodbod)

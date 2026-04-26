@@ -26,6 +26,11 @@ if( false ){
     foreach ($_GET as $key => $value)    echo '$_GET['.$key.']='.$value.'<br>' ;
     foreach ($_POST as $key => $value)   echo '$_POST['.$key.']='.$value.'<br>' ;
     foreach ($_ENV as $key => $value)    echo '$_ENV['.$key.']='.$value.'<br>' ;
+    
+
+    foreach (jeedom::health() as $datas) {
+        echo 'name: '.$datas['name']. ', comment: ' .$datas['comment'].', state: '.$datas['state'].', result: '.$datas['result']."<br>\n";
+    }
 }
 
 

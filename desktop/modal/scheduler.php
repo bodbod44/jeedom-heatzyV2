@@ -55,7 +55,8 @@ function GetSchedulersByDid( did ){
         success: function(data) {
             if (data.state != 'ok') {
                 // L'appel s'est fait, mais le traitement PHP a échoué (par exemple une exception)
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                //$('#div_alert').showAlert({message: data.result, level: 'danger'});
+                $.fn.showAlert({message: data.result, level: 'danger'});
                 return;
             }
           if( data.result != ""){
@@ -167,7 +168,8 @@ function DeleteScheduler( did , Id ){
             if (data.state != 'ok') {
                 // L'appel s'est fait, mais le traitement PHP a échoué (par exemple une exception)
               alert('suppr ko');
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                //$('#div_alert').showAlert({message: data.result, level: 'danger'});
+                $.fn.showAlert({message: data.result, level: 'danger'});
                 return;
             }
             // Succès : La classe a été appelée et a renvoyé une réponse

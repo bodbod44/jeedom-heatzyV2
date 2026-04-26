@@ -40,8 +40,8 @@ if( $resultGetGroups === false ){
     echo 'Problème lors de la récupération des données' ;
 }
 else if( !isset( $resultGetGroups['0']['group_name'] ) ){
-    echo 'non trouvé<br>' ;
-    echo var_export( $resultGetGroups , true) ;
+    echo 'Aucun groupe trouvé<br>' ;
+    //echo var_export( $resultGetGroups , true) ;
 }
 else{
     echo '<ul>'  ;
