@@ -4,7 +4,7 @@
 	"description" : "Plugin permettant d'intéragir avec les modules connectés Heatzy (Pilote, Pilote_Pro, Flam, Plugzy, Glow, Shine ...). Les intercations avec l'application mobile offcielle restent pleinement fonctionnelles.",
 	"licence" : "AGPL",
 	"author" : "l3flo/bodbod",
-	"require" : "3.1.7",
+	"require" : "4.2",
 	"category" : "wellness",
 	"changelog" : "https://github.com/bodbod44/jeedom-heatzyV2/blob/master/docs/#language#/changelog.md",
 	"changelog_beta" : "https://github.com/bodbod44/jeedom-heatzyV2/blob/beta/docs/#language#/changelog.md",

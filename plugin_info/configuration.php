@@ -147,7 +147,8 @@ if (!isConnect()) {
 <script>
 
 $('.bt_syncheatzy').on('click',function(){
-    $('#div_alert').showAlert({message: 'Synchronisation en cours...', level: 'info'});
+    //$('#div_alert').showAlert({message: 'Synchronisation en cours...', level: 'info'});
+    $.fn.showAlert({message: 'Synchronisation en cours...', level: 'info'});
 
     $('#syncheatzy').addClass('fa-spin');
 
@@ -164,18 +165,21 @@ $('.bt_syncheatzy').on('click',function(){
         },
         success: function (data) { // si l'appel a bien fonctionné
             if (data.state != 'ok') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                //$('#div_alert').showAlert({message: data.result, level: 'danger'});
+                $.fn.showAlert({message: data.result, level: 'danger'});
                 return;
             }
           
             $('#nbheatzy').empty();
             if( typeof data.result === 'object' ){
                 ResultMessage = 'Apprentisssage : ' + data.result['new'] + ' module(s) créé(s) + ' + data.result['update'] + ' module(s) actualisé(s) + ' + data.result['delete'] + ' module(s) désactivé(s)' ;
-                $('#div_alert').showAlert({message: ResultMessage, level: 'info'});
+                //$('#div_alert').showAlert({message: ResultMessage, level: 'info'});
+                $.fn.showAlert({message: ResultMessage, level: 'info'});
                 $('#nbheatzy').append(' : ' + ResultMessage );
             }
             else{
-                $('#div_alert').showAlert({message: 'Synchronisation de ' + data.result + ' module(s)', level: 'info'});
+                //$('#div_alert').showAlert({message: 'Synchronisation de ' + data.result + ' module(s)', level: 'info'});
+                $.fn.showAlert({message: 'Synchronisation de ' + data.result + ' module(s)', level: 'info'});
                 $('#nbheatzy').append(' : ' + data.result + ' module(s)');
             }
         }
@@ -185,7 +189,8 @@ $('.bt_syncheatzy').on('click',function(){
 });
 
 $('.bt_syncheatzybylearn').on('click',function(){
-    $('#div_alert').showAlert({message: 'Lancement de l\'apprentisssage... Veuillez patienter', level: 'info'});
+    //$('#div_alert').showAlert({message: 'Lancement de l\'apprentisssage... Veuillez patienter', level: 'info'});
+    $.fn.showAlert({message: 'Lancement de l\'apprentisssage... Veuillez patienter', level: 'info'});
 
     $('#syncheatzybylearn').addClass('fa-spin');
 
@@ -202,18 +207,21 @@ $('.bt_syncheatzybylearn').on('click',function(){
         },
         success: function (data) { // si l'appel a bien fonctionné
             if (data.state != 'ok') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                //$('#div_alert').showAlert({message: data.result, level: 'danger'});
+                $.fn.showAlert({message: data.result, level: 'danger'});
                 return;
             }
             
             $('#nbheatzybylearn').empty();
             if( typeof data.result === 'object' ){
                 ResultMessage = data.result['cmd'] + ' commandes créée(s)' ;
-                $('#div_alert').showAlert({message: 'Apprentisssage : ' + ResultMessage , level: 'info'});
+                //$('#div_alert').showAlert({message: 'Apprentisssage : ' + ResultMessage , level: 'info'});
+                $.fn.showAlert({message: 'Apprentisssage : ' + ResultMessage , level: 'info'});
                 $('#nbheatzybylearn').append(' : ' + ResultMessage );
             }
             else{
-                $('#div_alert').showAlert({message: 'Apprentisssage : ' + data.result + ' commandes créée(s)', level: 'info'});
+                //$('#div_alert').showAlert({message: 'Apprentisssage : ' + data.result + ' commandes créée(s)', level: 'info'});
+                $.fn.showAlert({message: 'Apprentisssage : ' + data.result + ' commandes créée(s)', level: 'info'});
                 $('#nbheatzybylearn').append(' : ' + data.result + ' commandes créée(s)');
             }
         }
@@ -239,10 +247,12 @@ $('.bt_syncheatzyorder').on('click',function(){
         },
         success: function (data) { // si l'appel a bien fonctionné
             if (data.state != 'ok') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                //$('#div_alert').showAlert({message: data.result, level: 'danger'});
+                $.fn.showAlert({message: data.result, level: 'danger'});
                 return;
             }            
-            $('#div_alert').showAlert({message: 'Tous les commandes ont été triées', level: 'info'});
+            //$('#div_alert').showAlert({message: 'Tous les commandes ont été triées', level: 'info'});
+            $.fn.showAlert({message: 'Tous les commandes ont été triées', level: 'info'});
         }
     });
 
@@ -266,10 +276,12 @@ $('.bt_syncheatzyname').on('click',function(){
         },
         success: function (data) { // si l'appel a bien fonctionné
             if (data.state != 'ok') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                //$('#div_alert').showAlert({message: data.result, level: 'danger'});
+                $.fn.showAlert({message: data.result, level: 'danger'});
                 return;
             }
-            $('#div_alert').showAlert({message: 'Tous les commandes ont été renommées', level: 'info'});
+            //$('#div_alert').showAlert({message: 'Tous les commandes ont été renommées', level: 'info'});
+            $.fn.showAlert({message: 'Tous les commandes ont été renommées', level: 'info'});
         }
     });
 
@@ -285,7 +297,8 @@ function sleep(ms) {
 
 $('a#bt_savePluginLogConfig').on('click', function() { 
 
-  $('#div_alert').showAlert({message: 'Relance du demon...', level: 'info'});
+  //$('#div_alert').showAlert({message: 'Relance du demon...', level: 'info'});
+  $.fn.showAlert({message: 'Relance du demon...', level: 'info'});
   //sleep( 3000 ) ;
   asyncCall() ;
     //$('#div_alert').showAlert({message: 'FIN', level: 'info'});
@@ -313,7 +326,8 @@ function AppelAJAXStart() {
                 },
                 success: function (data) { // si l'appel a bien fonctionné
                     if (data.state != 'ok') {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        //$('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        $.fn.showAlert({message: data.result, level: 'danger'});
                         return;
                     }
                     //$('#div_alert').showAlert({message: 'AJAX OK', level: 'info'});
@@ -338,7 +352,8 @@ function getPort() {
                 },
                 success: function (data) { // si l'appel a bien fonctionné
                     if (data.state != 'ok') {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        //$('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        $.fn.showAlert({message: data.result, level: 'danger'});
                         return;
                     }
                     //$('#div_alert').showAlert({message: 'AJAX OK', level: 'info'});
@@ -362,7 +377,8 @@ function getUsedPort() {
                 },
                 success: function (data) { // si l'appel a bien fonctionné
                     if (data.state != 'ok') {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        //$('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        $.fn.showAlert({message: data.result, level: 'danger'});
                         return;
                     }
                     //$('#div_alert').showAlert({message: 'AJAX OK', level: 'info'});

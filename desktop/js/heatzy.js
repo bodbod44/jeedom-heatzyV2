@@ -28,11 +28,16 @@ $('#bt_scheduler').on('click', function () {
   $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=scheduler').dialog('open');
 });
 
+$('#bt_groups').on('click', function () {
+  $('#md_modal').dialog({title: "{{Groupes Heatzy}}"});
+  $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=groups').dialog('open');
+});
+
 $('#bt_planning').on('click', function () {
   params = new URLSearchParams(document.location.search);
   //id = params.get("id");
-  $('#md_modal').dialog({title: "{{Planning}}"});
-  $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=planning&toto=2&id='+params.get("id")).dialog('open');
+  $('#md_modal').dialog({title: "{{Planning (lecture seule)}}"});
+  $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=planning&id='+params.get("id")).dialog('open');
 });
 
 $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});

@@ -370,15 +370,25 @@ class Synchro {
             $aRep = HttpGizwits::GetConsigne( $eqLogic->getLogicalId() ) ;
             if( $aRep != false ){
                 // Anonymisation et ajout d'info
-                $aRep['did'] = $eqLogic->getId() ; //unset($aRep['did']) ;//$aRep['did'] = 'xxxxxxxxxxxx' ;
-              	unset($aRep['updated_at']) ;
-                $aRep['product_key'] = $eqLogic->getConfiguration('product_key', '') ;
-                $aRep['product_name'] = $eqLogic->getConfiguration('product_name', '') ;
-				$aRep['API'] = config::byKey('API_Type','heatzy','') ;
+                $stats['did'] = $eqLogic->getId() ; //unset($stats['did']) ;//$stats['did'] = 'xxxxxxxxxxxx' ;
+                //unset($stats['updated_at']) ;
+                $stats['product_key'] = $eqLogic->getConfiguration('product_key', '') ;
+                $stats['product_name'] = $eqLogic->getConfiguration('product_name', '') ;
+                $stats['API'] = config::byKey('API_Type','heatzy','') ;
+                
+                foreach (jeedom::health() as $datas) {
+                    //echo 'name: '.$datas['name']. ', comment: ' .$datas['comment'].', state: '.$datas['state'].', result: '.$datas['result']."<br>\n";
+                    if($datas['name'] == 'Version Jeedom'                             ) $stats['jeedom']   = $datas['result'] ;
+                    if($datas['name'] == 'Version OS' && strlen($datas['result']) < 20) $stats['os']       = $datas['result'] ;
+                    if($datas['name'] == 'Version PHP'                                ) $stats['php']      = $datas['result'] ;
+                    if($datas['name'] == 'Matériel'                                   ) $stats['materiel'] = $datas['result'] ;
+                }
+                
+                $stats['attr'] = $aRep['attr'] ;
 
-                //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': SetStatsHeatzy...'.$eqLogic->getLogicalId().'-'.json_encode($aRep));
+                //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': SetStatsHeatzy...'.$eqLogic->getLogicalId().'-'.json_encode($stats));
 
-                HttpGizwits::SetStatsHeatzy( json_encode( $aRep ) ) ;
+                HttpGizwits::SetStatsHeatzy( json_encode( $stats ) ) ;
             }
             sleep(1) ;
         }
