@@ -104,10 +104,11 @@ def shutdown():
 	sys.stdout.flush()
 	os._exit(0)
 
-def start_websocket():
-	logging.debug("Starting websocket with the container")
+def start_websocket_gizwits():
+	logging.debug("Starting websocket gizwits")
 	websocket.enableTrace(False)
 	host = _ws_gizwitz_ws + "://" + _ws_gizwitz_url + ":" + _ws_gizwitz_port + "/ws/app/v1"
+	logging.debug("host=" + host)
 
 	_ws = websocket.WebSocketApp(host,
                                 on_open    = ws_gizwitz_on_open,
@@ -121,9 +122,39 @@ def start_websocket():
 	#Thread(target=_ws.run_forever, daemon=True , kwargs={'ping_interval': 30, 'ping_timeout' : 2}).start()
 	Thread(target=_ws.run_forever, daemon=True ).start()
 	logging.info("Websocket started")
+
+def ws_gizwitz_on_open(ws):
+	logging.debug('ws_gizwitz_on_open: ' + 'Websocket open...')
+	global _websocket
+	_websocket = ws
+
+	global _ws_gizwitz_ws_status
+	_ws_gizwitz_ws_status = True
+
+	ws_gizwitz_send_login()
 	
+	def ping(*args):
+		logging.debug('ping' )
+		status_receive = True
+		while _websocket.keep_running:
+			if (time.time() - _ws_gizwitz_heartbeat_send) > _ws_gizwitz_heartbeat_ping:
+				logging.debug('ping: '+ '_ws_gizwitz_ws_status=' + str(_ws_gizwitz_ws_status) )
+				ws_gizwitz_send_message( '{"cmd": "ping"}' )
+			time.sleep(1)
+			if status_receive == True and (time.time() - _ws_gizwitz_heartbeat_receive) > (_ws_gizwitz_heartbeat_ping + 20):
+				logging.debug('ping: '+ 'Hummm, je ne vois plus de communication' )
+				status_receive = False
+			if status_receive == False and (time.time() - _ws_gizwitz_heartbeat_receive) < (_ws_gizwitz_heartbeat_ping + 20):
+				logging.debug('ping: '+ 'Hummm, la connexion semble rétablie' )
+				status_receive = True
+				
+			time.sleep(9)
+	Thread(target=ping).start()	
+	logging.debug('ws_gizwitz_on_open: '+ "Websocket opened")
+
 # lecture du websocket (récéptino d'un message gizwits)
 def ws_gizwits_on_message(ws, msg):
+	logging.debug("ws_gizwits_on_message: ")
 	global _ws_gizwitz_ws_status
 	global _ws_gizwitz_login_status
 	global _ws_gizwitz_heartbeat_receive
@@ -169,36 +200,6 @@ def ws_gizwits_on_error(ws, error):
 def ws_gizwits_on_close(ws, close_status_code, close_msg):
 	logging.debug('ws_gizwits_on_close: ' + 'Websocket closed')
 	shutdown()
-
-def ws_gizwitz_on_open(ws):
-	global _websocket
-	_websocket = ws
-	logging.debug('ws_gizwitz_on_open: ' + 'Websocket open...')
-
-	global _ws_gizwitz_ws_status
-	_ws_gizwitz_ws_status = True
-
-	ws_gizwitz_send_login()
-	
-	def ping(*args):
-		logging.debug('ping' )
-		status_receive = True
-		while _websocket.keep_running:
-			if (time.time() - _ws_gizwitz_heartbeat_send) > _ws_gizwitz_heartbeat_ping:
-				logging.debug('ping: '+ '_ws_gizwitz_ws_status=' + str(_ws_gizwitz_ws_status) )
-				ws_gizwitz_send_message( '{"cmd": "ping"}' )
-			time.sleep(1)
-			if status_receive == True and (time.time() - _ws_gizwitz_heartbeat_receive) > (_ws_gizwitz_heartbeat_ping + 20):
-				logging.info('ping: '+ 'Hummm, je ne vois plus de communication' )
-				status_receive = False
-			if status_receive == False and (time.time() - _ws_gizwitz_heartbeat_receive) < (_ws_gizwitz_heartbeat_ping + 20):
-				logging.info('ping: '+ 'Hummm, la connexion semble rétablie' )
-				status_receive = True
-				
-			time.sleep(9)
-	Thread(target=ping).start()	
-	logging.debug('ws_gizwitz_on_open: '+ "Websocket opened")
-
 
 def ws_gizwitz_send_message( mess , force = False ):
 	global _ws_gizwitz_ws_status
@@ -309,11 +310,13 @@ try:
 		shutdown()
 	# my_jeedom_serial = jeedom_serial(device=_device)  # if you need jeedom_serial
 	my_jeedom_socket = jeedom_socket(port=_socket_port, address=_socket_host)
-    # https://github.com/lxrootard/eufy/blob/322ff841b71cd7db0e901caca8706fa4ce7452ed/resources/eufyd/eufyd.py#L287
+	# https://github.com/lxrootard/eufy/blob/322ff841b71cd7db0e901caca8706fa4ce7452ed/resources/eufyd/eufyd.py#L287
 	
 	# Start WebSocket connection with the container
-	start_websocket()
+	logging.debug('start_websocket_gizwits()...')
+	start_websocket_gizwits()
 	
+	logging.debug('listen()...')
 	listen()
 except Exception as e:
 	#logging.debug('Fatal error')

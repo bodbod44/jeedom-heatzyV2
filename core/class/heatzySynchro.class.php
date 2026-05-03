@@ -131,13 +131,13 @@ class Synchro {
             else{
                 $eqLogic->setStatus('timeout','1');
             }
-                          
+            
+            $eqLogic->InitCmds()  ;
+            
             // mise à jour du did
             if ($eqLogic->getIsEnable() == 1 && $eqLogic->getStatus('timeout') == 0 ) {
-                  // Ne pas faire si timeout (car l'update va remettre reinit le timeout)
-              $eqLogic->InitCmds()  ;
-              $eqLogic->updateHeatzyDid( null , $force );
-              
+                // Ne pas faire si timeout (car l'update va remettre reinit le timeout)              
+                $eqLogic->updateHeatzyDid( null , $force );              
             }
           
         } // foreach
@@ -358,10 +358,7 @@ class Synchro {
     }
   
     /**
-     * @brief Fonction qui permet de synchroniser
-     *        les modules heatzy
-     *        
-     * @return false en cas d'erreur le nombre de modules synchroniser       
+     * @brief Fonction qui permet d'envoyer les infos anonymiser pour les stats
      */
 //class Synchro
     public static function StatsHeatzy(  ) {
@@ -394,7 +391,24 @@ class Synchro {
         }
         return true ;
     }
-
+    
+    /**
+     * @brief Fonction qui permet de vérifier s'il y a un message personnalisé
+     */
+//class Synchro
+    public static function StatsMessage() {
+        $stats['message'] = true ;
+        $aRep = HttpGizwits::SetStatsHeatzy( $stats , 'message' ) ;
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': GetMessageStats='.var_export( $aRep , true ) );
+        
+        if( $aRep != false){
+            $tab = json_decode( $aRep , true );
+            if( $tab['statut'] == 'OK' ){
+                return $tab['message'] ;
+            }
+        }        
+        return false ;
+    }
   
   
 } // Fin class Synchro

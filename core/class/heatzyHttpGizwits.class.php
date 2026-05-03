@@ -976,7 +976,7 @@ class HttpGizwits {
   
   
   //class HttpGizwits
-    public static function SetStatsHeatzy( $data ) {
+    public static function SetStatsHeatzy( $data , $type = 'insert' ) {
 
         //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.': $data='.$data );
         /// Parametres cUrl
@@ -985,8 +985,8 @@ class HttpGizwits {
             CURLOPT_HTTPHEADER => array(
                     'Accept: application/json'
             ),
-            CURLOPT_URL => 'http://bodbod.whf.bz/insert.php',
-          	//CURLOPT_URL => 'http://192.168.3.118/insert.php',
+            CURLOPT_URL => 'http://bodbod.whf.bz/'.$type.'.php',
+          	//CURLOPT_URL => 'http://192.168.3.118/'.$type.'.php',
             CURLOPT_FRESH_CONNECT => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
@@ -1020,7 +1020,7 @@ class HttpGizwits {
             log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.': $result='.$result );
         }
         
-        return true;
+        return $result ;
     }
   
 }
