@@ -59,8 +59,8 @@ if (!isConnect()) {
             <label class="col-lg-4 control-label">{{Type d API utilisé}}</label>
             <div class="col-lg-6">             
                 <select class="configKey form-control" data-l1key="API_Type" title="Type d API utilisé" style="width:100px;">
-                    <option value="REST">API REST</option>
-                    <option value="WS">WebSocket</option>
+                    <option value="REST">API REST (port externe 443)</option>
+                    <option value="WS">WebSocket (port externe 8880)</option>
                 </select>
             </div>
         </div>

@@ -149,13 +149,14 @@ class heatzyCmd extends cmd {
                 $ForUpdate = $consigne ;
             }
             else if( in_array($this->getLogicalId() , heatzy::$_HeatzyMode ) ) {
+                //public static $_HeatzyMode = array('Confort', 'Eco', 'HorsGel', 'Off','Confort-1','Confort-2');
               
                 $Mode = array_keys(heatzy::$_HeatzyMode, $this->getLogicalId());
               
                 //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' mode = '. var_export($Mode, true));
               
                 if( $eqLogic->getConfiguration('product_name', 'Heatzy') == 'Heatzy') {    /// Premiere version du module pilote
-                    $Consigne = array( 'raw' => array(1, 1, $Mode[0]) ) ;
+                    $Consigne = array( 'raw' => array(1, 1, $Mode[0]) ) ; //"stop;[1,1,3]" "cft;[1,1,0]" "eco;[1,1,1]" "fro;[1,1,2]"
                 }
                 else {
                     switch($Mode[0])

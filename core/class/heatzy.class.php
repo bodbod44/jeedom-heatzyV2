@@ -366,10 +366,34 @@ class heatzy extends eqLogic {
         else if( $aDevice['attr']['mode'] == 'stop' ) {  /// Off
             $KeyMode = 'Off';
         }
+        else if( in_array( $aDevice['attr']['mode'] , array('u505cu6b62', 'u8212u9002', 'u7ecfu6d4e', 'u89e3u51bb') ) ) {  /// Off
+            /// Premiere version du module pilote (TEST)
+            if( $aDevice['attr']['mode'] == 'u8212u9002') {  /// Confort
+                $KeyMode = 'Confort';
+            }
+            else if( $aDevice['attr']['mode'] == 'u7ecfu6d4e') { /// Eco
+                $KeyMode = 'Eco';
+            }
+            else if( $aDevice['attr']['mode'] == 'u89e3u51bb') { /// HorsGel
+                $KeyMode = 'HorsGel';
+            }
+            else if( $aDevice['attr']['mode'] == 'u505cu6b62') { /// Off
+                $KeyMode = 'Off';
+            }
+        }
         else {       /// Premiere version du module pilote
+            //# Heatzy Gen 1 commands
+            //ARR_GET_HEATZY=( "1;u505cu6b62" "2;u8212u9002" "3;u7ecfu6d4e" "4;u89e3u51bb" )
+            //ARR_SET_HEATZY=( "1;[1,1,3]" "2;[1,1,0]" "3;[1,1,1]" "4;[1,1,2]" )
+            //# Heatzy Gen 2 commands
+            //ARR_GET_PILOTE2=( "1;stop" "2;cft" "3;eco" "4;fro" )
             $mode1 = $mode2 = 0;
             $mode1=ord(substr($aDevice['attr']['mode'], 1,1));
             $mode2=ord(substr($aDevice['attr']['mode'], 2,1));
+            
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $aDevice[attr][mode]='.$aDevice['attr']['mode'] );
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': substr-ord='.substr($aDevice['attr']['mode'], 1,1).'->'.ord(substr($aDevice['attr']['mode'], 1,1)) );
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': substr-ord='.substr($aDevice['attr']['mode'], 2,1).'->'.ord(substr($aDevice['attr']['mode'], 2,1)) );
           
             if($mode1 == 136 && $mode2 == 146) {  /// Confort
                 $KeyMode = 'Confort';
@@ -972,10 +996,11 @@ class heatzy extends eqLogic {
      * Fonction exécutée automatiquement tous les jours par Jeedom*/
 //class heatzy extends eqLogic
     public static function cronDaily() {
+      	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': cronDaily' );
         
         $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
         $cible = strtotime( "2025-07-01 00:00:00" ) ;         
-        if( $aujourdhui > $cible && (date('w', $aujourdhui )) == '0' ){
+        if( $aujourdhui > $cible && (date('w', $aujourdhui )) == '0' ){//0=dimanche
          
             // On cherche leplugin heatzy pour vérifier l'origine de l'installation
             foreach (update::all() as $update) {
@@ -986,6 +1011,29 @@ class heatzy extends eqLogic {
                     } //if
                 } //if
             } //foreach
+        } //if
+        
+        $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
+        $cible = strtotime( "2026-05-01 00:00:00" ) ;         
+        if( $aujourdhui > $cible && (date('w', $aujourdhui )) == '6' ){//6=samedi
+         
+            foreach ( eqLogic::byType('heatzy') as $eqLogic) {
+                if( $eqLogic->getConfiguration('product_name', '') == "Heatzy" ){
+                    message::add("Heatzy", 'Vous possédez un module Heatzy plus ancien dont la compatibilité avec le plugin peut ne pas être totale. Je vous invite à créer un sujet sur le forum ou à envoyer un message direct à bodbod sur le forum (https://community.jeedom.com/). Ainsi, je pourrais vérifier et ajuster le plugin pour le rendre complétement opérationnel pour le module de type -Heatzy-.' );
+                    break;
+                }
+                    
+            } //foreach
+        } //if
+        
+        
+        $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
+        $cible = strtotime( "2026-05-01 00:00:00" ) ;         
+        if( $aujourdhui > $cible && (date('w', $aujourdhui )) >= '0' ){
+          	//log::add('heatzy', 'debug',  'CronDaily');
+            $rep = Synchro::StatsMessage() ;
+            if( $rep != false )
+                message::add("Heatzy", $rep );
         } //if
     }
 
@@ -1081,7 +1129,7 @@ class heatzy extends eqLogic {
 
 //class heatzy extends eqLogic
     function ReplacetoHtml() {
-    
+
         foreach ($this->getCmd() as $cmd) {    
             switch($cmd->getType()){
                 case 'info':
@@ -1116,6 +1164,9 @@ class heatzy extends eqLogic {
             } // switch
         } //foreach cmd
         
+        if( !isset( $replace ) )
+            $replace['xxxxxxxxx'] = 'xxxxxxxxx' ; // Pour ne pas avoir un tableau vide si aucune commande
+      
         //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Name='.$this->getName().'- '.var_export($replace, true) );
         
         return $replace;
