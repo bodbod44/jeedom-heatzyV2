@@ -1,3 +1,9 @@
+# 03/05/2026 (beta)
+- Doute sur le fonctionnement des modules plus ancien type "Heatzy"
+  - Ajout d'un message hebdo invitant les utilisateus a me contacter pour vérification et amélioration
+  - Une modification a quand même été apportée en ce sens
+- Ajout de la possibilité pour le dev de remonter une info à l'utilisateur (dans des cas très spécifique en vue d'améliorer le plugin)
+
 # 26/04/2026 (beta)
 - Ajout d'un message sur le demon si dépendance KO
 - Ajout de données dans les stats
