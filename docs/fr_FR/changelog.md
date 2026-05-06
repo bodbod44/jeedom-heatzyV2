@@ -1,3 +1,8 @@
+# 06/05/2026 (beta)
+- Mise à jour d ela doc avec des détails sur les erreurs API
+- Complétion du ReadMe
+- Remontée de la version du plugin installée dans les stats
+
 # 03/05/2026 (beta)
 - Doute sur le fonctionnement des modules plus ancien type "Heatzy"
   - Ajout d'un message hebdo invitant les utilisateus a me contacter pour vérification et amélioration

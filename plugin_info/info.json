@@ -1,7 +1,7 @@
 {
 	"id" : "heatzy",
 	"name" : "Heatzy",
-	"description" : "Plugin permettant d'intéragir avec les modules connectés Heatzy (Pilote, Pilote_Pro, Flam, Plugzy, Glow, Shine ...). Les intercations avec l'application mobile offcielle restent pleinement fonctionnelles.",
+	"description" : "Plugin permettant d'intéragir avec les modules et radiateurs connectés Heatzy (Pilote, Pilote_Pro, Flam, Plugzy, Glow, Shine ...). Les intercations avec l'application mobile officielle restent pleinement fonctionnelles. Les actions faites sur jeedom sont visibles en temps réel sur l'application et vice versa",
 	"licence" : "AGPL",
 	"author" : "l3flo/bodbod",
 	"require" : "4.2",
