@@ -295,10 +295,23 @@ Dans un premier temps, fermer votre application mobile et revérifiez.
 S'il a été supprimé de l'application, le plugin ne pourra rien faire.
 Reportez vous aux manuels des produits : https://drive.google.com/drive/folders/1pbrZ7RRNZf8yzdbH-cd7Fk9ih2j7WZFd
 
-**Le plugin renvoit des erreurs 8xxx ou 9xxx, a quoi correspondent-ils ?**
-
-Les erreurs renvoyées par l'API gizwits sont repartoriés ici : https://docs.gizwits.com/en-us/AppDev/APICloudSDK.html#Error-codes
-Ces sont des libellés tchniques et pas forcement compréhensibles par tout le monde.
-N'hésitez pas à faire un message sur le forum jeedom (avec le tag heatzy).
-En Octobre 2025 à l'approche de l'hiver, beaucoup d'utiliateurs ont réactivés leurs modules Heatzy provoquant des saturations des serveurs GizWits.
-Cela s'est traduit par des temps de latence sur les commandes et une grosses remontés d'erreurs dan le plugin jeedom Heatzy (beaucoup d'appels KO). Une mécanique de réémission d'appel a été mise en place pour limiter les conséquences.
+**Le plugin renvoit des erreurs suivantes, a quoi correspondent-elles ?**
+- Type d'appel "API REST"
+  - Erreurs courantes liées à l'authentification
+    - 9004 - GIZ_OPENAPI_TOKEN_INVALID
+      - Le plugin doit normalement relancer une regénération du token de manière transparente. Si les erreurs subisistent, tentez une resynchronisation dans la configuration du plugin.
+    - 9005 - GIZ_OPENAPI_USER_NOT_EXIST
+      - Vérifez que l'email saisie correspond bien a votre compte Heatzy (le même que celui utilisé dans l'application mobile Heatzy).
+    - 9006 - GIZ_OPENAPI_TOKEN_EXPIRED
+      - Le plugin doit normalement relancer une regénération du token de manière transparente. Si les erreurs subisistent, tentez une resynchronisation dans la configuration du plugin.
+    - 9020 - GIZ_OPENAPI_USERNAME_PASSWORD_ERROR
+      - Vérifez que le mot de passe est bien saisie et correspond à celui du compte Heatzy(le même que celui utilisé dans l'application mobile Heatzy).
+  - Autre erreurs 8xxx ou 9xxx
+    - Les erreurs renvoyées par l'API gizwits sont repartoriés ici : https://docs.gizwits.com/en-us/AppDev/APICloudSDK.html#Error-codes.
+    - Ces sont des libellés tchniques et pas forcement compréhensibles par tout le monde.
+    - N'hésitez pas à faire un message sur le forum jeedom (avec le tag heatzy).
+    - En Octobre 2025 à l'approche de l'hiver, beaucoup d'utiliateurs ont réactivés leurs modules Heatzy provoquant des saturations des serveurs GizWits.
+    - Cela s'est traduit par des temps de latence sur les commandes et une grosses remontés d'erreurs dan le plugin jeedom Heatzy (beaucoup d'appels KO). Une mécanique de réémission d'appel a été mise en place pour limiter les conséquences.
+- Type d'appel "WebSocket"
+  - Erreur "[Errno 113] No route to host" ou "[Errno 110] Connection timed out"
+     - Vérfiez que votre firewall ne bloque pas le port 8880

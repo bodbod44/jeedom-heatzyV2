@@ -381,6 +381,14 @@ class Synchro {
                     if($datas['name'] == 'Matériel'                                   ) $stats['materiel'] = $datas['result'] ;
                 }
                 
+                // On cherche leplugin heatzy pour vérifier la version installée
+                foreach (update::all() as $update) {
+                    if ($update->getLogicalId() == 'heatzy'){
+                        $stats['HeatzyVersion'] = $update->getLocalVersion() ;
+                        break ;
+                    }
+                } //foreach
+                
                 $stats['attr'] = $aRep['attr'] ;
 
                 //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': SetStatsHeatzy...'.$eqLogic->getLogicalId().'-'.json_encode($stats));

@@ -701,7 +701,7 @@ class heatzy extends eqLogic {
             //$cmd->setTemplate('dashboard', 'default');
             //$cmd->setTemplate('mobile', 'default');
             //$cmd->setGeneric_type('GENERIC_INFO');
-            //$cmd->setEventOnly(1);
+            //$cmd->setEventOnly(1); // obselete 4.2
 
             $cmd->setEqLogic_id(   $this->getId() );
             $cmd->setIsHistorized( $tab_cmds[$commande]['IsHistorized'] );
