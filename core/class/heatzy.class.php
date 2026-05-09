@@ -77,7 +77,10 @@ class heatzy extends eqLogic {
         $socketport = config::byKey('socketport', __CLASS__ , '');
         $uid = config::byKey('uid', __CLASS__ , '');
 
-        if( config::byKey('API_Type','heatzy','REST') == 'REST') {
+        // Force le type de connexion (API/WS) si non valorisé
+        if( config::byKey('API_Type',__CLASS__,'') == '' ){
+            config::save('API_Type'  , 'WS'  , 'heatzy');
+        } elseif( config::byKey('API_Type',__CLASS__,'REST') == 'REST') {
             $return['launchable'] = 'nok';
             $return['launchable_message'] = __('Le type de conexion n\'est pas Websocket (donc pas besoin du demon)', __FILE__);
         } elseif( config::byKey('email', __CLASS__ , '') == '') {
@@ -96,15 +99,15 @@ class heatzy extends eqLogic {
             $return['launchable'] = 'nok';
             $return['launchable_message'] = __('Port non numérique (le plugin va le remplacer)', __FILE__);
             config::save('socketport'  , self::getPort()  , 'heatzy');
-			self::getUsedPort() ;          
+            //self::getUsedPort() ;          
         } elseif( config::byKey('uid', __CLASS__ , '') == '' ) {
             $return['launchable'] = 'nok';
             $return['launchable_message'] = __('uid non valorisé (relancez une synchronisation)', __FILE__);
         }
       
-		//log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : '.$return['state'].'-'.$return['launchable'] );
+        //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : '.$return['state'].'-'.$return['launchable'] );
       
-      	if( $return['state'] == 'ok'){
+        if( $return['state'] == 'ok'){
             if( $return['launchable'] == 'nok' ){
                 // Si le demon est déjà lancé alors que les parametres ne sont plus reunis (modif après lancement)
                 log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : envoi stop au demon...');
@@ -259,14 +262,14 @@ class heatzy extends eqLogic {
     public static function getUsedPort(){
         $port = 000;
         $max_port = 55150;
-      	$result = '' ;
+        $result = '' ;
         while($port <= $max_port){
             $connection = @fsockopen('localhost', $port);
             if (is_resource($connection))
                 $result .= ( $result == '' ? '' : ' | ').$port ;
             $port++;
         }
-      return $result ;
+        return $result ;
     }
      
     /**

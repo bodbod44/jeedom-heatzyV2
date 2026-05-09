@@ -19,12 +19,10 @@
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function heatzy_install() {
-    /*
-   log::add('heatzy', 'debug',  __METHOD__.': heatzy_install');
-   $cron = cron::byClassAndFunction('heatzy', 'Login');
-   if (is_object($cron)) {
-      $cron->remove();
-   } */
+    // Force le type de connexion (API/WS) si non valorisé
+    if( config::byKey('API_Type','heatzy','') == '' ){
+        config::save('API_Type'  , 'WS'  , 'heatzy');
+    }
 }
 
 function heatzy_update() {
