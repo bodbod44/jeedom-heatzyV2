@@ -1,3 +1,25 @@
+# 09/05/2026 (stable)
+- Ajout d'un demon pour améliorer la gestion des appels
+  - Si le port du demon n'est pas valorisé le plugin le valorise avec un port libre
+  - Le choix du type d'appel est laissé à l'utilisateur
+- La configuration du plugin se trouve maintenant dans la rubrique "confort" (au lieu de "objets connectés")
+- Refonte du systeme de création des commandes (parametré dans le pluigin, reconnaissancee et apprentissage)
+- Ajout d'une modale pour afficher le planning de programmation de la semaine
+- Ajout d'un bouton permettant de remettre l'ordre d'origine dans les commandes (n'influe pas sur l'ordre d'affichage du tempalte bodbod)
+- Ajout d'un bouton permettant de remettre le libellé d'origine de chaque commandes
+- Calcul des dates dans les exemples du JSON des tâches planifiées
+- Ajout du n° de ligne dans les logs
+- Amélioration de la fonction toHtml (merci Yetz)
+- Prise en comp te de certaines remarques de Yetz ([voir cet article sur blog.sinecu.re](https://blog.sinecu.re/fr/2026/02/27/rendre-un-radiateur-intelligent-et-domotise-decret-2030-heatzy-pilote-thermostat-z-wave-jeedom-et-reflexions-sur-le-mode-connecte/#Integration_du_module_a_Jeedom))
+- Mise en place d'un système de statistiques (anonymisés) permettant de suivre l'utlisation et améliorer le plugin
+- Modification des showAlert (Deprecated 4.2)
+- Ajout d'une modale affichant les groupes de modules
+- Doute sur le fonctionnement des modules plus ancien type "Heatzy"
+  - Ajout d'un message hebdo invitant les utilisateus a me contacter pour vérification et amélioration
+  - Une modification a quand même été apportée en ce sens
+- Mise à jour de la doc avec des détails sur les erreurs API
+- Testé sur Trixie (Debian 13.4 / jeedom 4.5.3 / Python 3.13.5 / PHP 8.4.16)
+
 # 23/11/2025 (stable)
 - Ajout d'une modale permettant de gérer les tâches planifiées Heatzy (Visualisation, Création, Mise à jour, et suppression)
 

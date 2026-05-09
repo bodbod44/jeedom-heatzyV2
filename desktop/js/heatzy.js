@@ -28,6 +28,18 @@ $('#bt_scheduler').on('click', function () {
   $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=scheduler').dialog('open');
 });
 
+$('#bt_groups').on('click', function () {
+  $('#md_modal').dialog({title: "{{Groupes Heatzy}}"});
+  $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=groups').dialog('open');
+});
+
+$('#bt_planning').on('click', function () {
+  params = new URLSearchParams(document.location.search);
+  //id = params.get("id");
+  $('#md_modal').dialog({title: "{{Planning (lecture seule)}}"});
+  $('#md_modal').load('index.php?v=d&plugin=heatzy&modal=planning&id='+params.get("id")).dialog('open');
+});
+
 $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
 /*
  * Fonction pour l'ajout de commande, appellé automatiquement par plugin.template
@@ -66,8 +78,12 @@ function addCmdToTable(_cmd) {
          init(_cmd.logicalId) == 'LockOff' ||
          init(_cmd.logicalId) == 'WindowSwitchOn' ||
          init(_cmd.logicalId) == 'WindowSwitchOff' ||
+         init(_cmd.logicalId) == 'Tendance' ||
          init(_cmd.logicalId) == 'derog_time_vacances' ||
-         init(_cmd.logicalId) == 'derog_time_boost'
+         init(_cmd.logicalId) == 'derog_time_boost' ||
+         init(_cmd.logicalId) == 'cur_power' ||
+		 init(_cmd.logicalId) == 'cur_current' ||
+		 init(_cmd.logicalId) == 'cur_voltage'
        )
         class_inutile = 'class_ExclureBodbod' ;
     if ( init(_cmd.logicalId) != 'refresh')

@@ -24,53 +24,60 @@ foreach ($eqLogics as $eqLogic) {
    <legend><i class="fa fa-cog"></i>  {{Gestion}}</legend>
    <div class="eqLogicThumbnailContainer">
   
-	  <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;">
+	  <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 100px;margin-left : 10px;">
 	    <center>
-	      <i class="fa fa-wrench" style="font-size : 4em;color:#767676;"></i>
+	      <i class="fa fa-wrench" style="font-size : 3em;color:#767676;"></i>
 	    </center>
-	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Configuration}}</center></span>
+	    <span style="font-size : 1.0em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Configuration}}</center></span>
 	  </div>
   
-	  <div class="cursor expertModeVisible" id="bt_healthHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
+	  <div class="cursor expertModeVisible" id="bt_healthHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 100px;margin-left : 10px;" >
 	    <center>
-	        <i class="fa fa-medkit" style="font-size : 4em;color:#767676;"></i>
+	        <i class="fa fa-medkit" style="font-size : 3em;color:#767676;"></i>
 	    </center>
-	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Santé}}</center></span>
+	    <span style="font-size : 1.0em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Santé}}</center></span>
 	  </div>
   
-	  <div class="cursor expertModeVisible" id="bt_scheduler" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;display:<?php if(log::getLogLevel('heatzy') == 100 || true ) echo 'display' ; else echo 'none' ; ?>" >
+	  <div class="cursor expertModeVisible" id="bt_groups" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 100px;margin-left : 10px;display:<?php if(log::getLogLevel('heatzy') == 100 || true ) echo 'display' ; else echo 'none' ; ?>" >
 	    <center>
-	        <i class="fa fa-tasks" style="font-size : 4em;color:#767676;"></i>
+	        <i class="fa fa-link" style="font-size : 3em;color:#767676;"></i>
 	    </center>
-	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Tâches programmées}}</center></span>
+	    <span style="font-size : 1.0em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Groupes de modules}}</center></span>
+	  </div>
+	  
+	  <div class="cursor expertModeVisible" id="bt_scheduler" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 100px;margin-left : 10px;display:<?php if(log::getLogLevel('heatzy') == 100 || true ) echo 'display' ; else echo 'none' ; ?>" >
+	    <center>
+	        <i class="fa fa-tasks" style="font-size : 3em;color:#767676;"></i>
+	    </center>
+	    <span style="font-size : 1.0em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Tâches programmées}}</center></span>
 	  </div>
   
-	  <div class="cursor expertModeVisible" id="bt_DocPlugin" onclick="window.open('https://bodbod44.github.io/jeedom-heatzyV2/fr_FR/', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
+	  <div class="cursor expertModeVisible" id="bt_DocPlugin" onclick="window.open('https://bodbod44.github.io/jeedom-heatzyV2/fr_FR/', '_blank');" style="background-color : #ffffff; height : 100px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
 	    <center>
-	        <i class="fa fa-book-open" style="font-size : 4em;color:#767676;"></i>
+	        <i class="fa fa-book-open" style="font-size : 3em;color:#767676;"></i>
 	    </center>
-	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Documentation<br>plugin}}</center></span>
+	    <span style="font-size : 1.0em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Documentation<br>plugin}}</center></span>
 	  </div>
   
-	  <div class="cursor expertModeVisible" id="bt_ManualHeatzy" onclick="window.open('https://drive.google.com/drive/folders/1pbrZ7RRNZf8yzdbH-cd7Fk9ih2j7WZFd', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
+	  <div class="cursor expertModeVisible" id="bt_ManualHeatzy" onclick="window.open('https://drive.google.com/drive/folders/1pbrZ7RRNZf8yzdbH-cd7Fk9ih2j7WZFd', '_blank');" style="background-color : #ffffff; height : 100px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
 	    <center>
-	        <i class="fa fa-book-reader" style="font-size : 4em;color:#767676;"></i>
+	        <i class="fa fa-book-reader" style="font-size : 3em;color:#767676;"></i>
 	    </center>
-	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Manuels utilisateur<br>Heatzy}}</center></span>
+	    <span style="font-size : 1.0em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Manuels utilisateur<br>Heatzy}}</center></span>
 	  </div>
   
-	  <div class="cursor expertModeVisible" id="bt_AssistanceHeatzy" onclick="window.open('https://community.jeedom.com/tag/plugin-heatzy', '_blank');" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
+	  <div class="cursor expertModeVisible" id="bt_AssistanceHeatzy" onclick="window.open('https://community.jeedom.com/tag/plugin-heatzy', '_blank');" style="background-color : #ffffff; height : 100px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;" >
 	    <center>
-	        <i class="fa fa-ambulance" style="font-size : 4em;color:#767676;"></i>
+	        <i class="fa fa-ambulance" style="font-size : 3em;color:#767676;"></i>
 	    </center>
-	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Assistance}}</center></span>
+	    <span style="font-size : 1.0em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Assistance}}</center></span>
 	  </div>
   
-	  <div class="cursor expertModeVisible" id="bt_debugHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 150px;margin-left : 10px;display:<?php if(log::getLogLevel('heatzy') == 100) echo 'display' ; else echo 'none' ; ?>" >
+	  <div class="cursor expertModeVisible" id="bt_debugHeatzy" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 100px;margin-left : 10px;display:<?php if(log::getLogLevel('heatzy') == 100) echo 'display' ; else echo 'none' ; ?>" >
 	    <center>
-	        <i class="fa fa-search-location" style="font-size : 4em;color:#767676;"></i>
+	        <i class="fa fa-search-location" style="font-size : 3em;color:#767676;"></i>
 	    </center>
-	    <span style="font-size : 1.1em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Debug}}</center></span>
+	    <span style="font-size : 1.0em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Debug}}</center></span>
 	  </div>
   
 </div>
@@ -80,16 +87,16 @@ foreach ($eqLogics as $eqLogic) {
   <?php
 foreach ($eqLogics as $eqLogic) {
 	$opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-	echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;' . $opacity . '" >';
+	echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 100px;margin-left : 5px;' . $opacity . '" >';
 	echo "<center>";
-	if(file_exists('plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product', '').'.png'))
-		echo '<img src="plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product', '').'.png" width="100" height="100"/>'; // Logo personnalisé
-	else if($eqLogic->getConfiguration('product', '')=='Flam_Week2') 	        /// Pour heatzy INEA
+	if(file_exists('plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product_name', '').'.png'))
+		echo '<img src="plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product_name', '').'.png" width="100" height="100"/>'; // Logo personnalisé
+	else if($eqLogic->getConfiguration('product_name', '')=='Flam_Week2') 	        /// Pour heatzy INEA
 		echo '<img src="plugins/heatzy/core/template/images/LOGO_FLAM.png" width="100" height="100"/>';
 	else
 		echo '<img src="plugins/heatzy/core/template/images/LOGO_PILOTE.png" width="100" height="100"/>';
 	echo "</center>";
-	echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;"><center>' . $eqLogic->getHumanName(true, true) . '</center></span>';
+	echo '<span style="font-size : 1.0em;position:relative; top : 15px;word-break: normal;white-space: pre-wrap;word-wrap: break-word;"><center>' . $eqLogic->getHumanName(true, true) . '</center></span>';
 	echo '</div>';
 }
 ?>
@@ -156,13 +163,13 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 	<div class="form-group">
     	<label class="col-sm-4 control-label">{{MAC}}</label>
         <div class="col-sm-6">
-        	<input type="text" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="mac"/>
+        	<input type="text" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="mac" readonly/>
         </div>
     </div>
 	<div class="form-group expertModeVisible">
     	<label class="col-sm-4 control-label">{{DID}}</label>
         <div class="col-sm-6">
-			<input type="text" class="eqLogicAttr form-control" data-l1key="logicalId"/>
+			<input type="text" class="eqLogicAttr form-control" data-l1key="logicalId" readonly/>
         </div>
     </div>
 	<div class="form-group">
@@ -171,6 +178,15 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
         	<textarea class="eqLogicAttr form-control" data-l1key="comment" ></textarea>
 		</div>
 	</div>
+	<div class="form-group">
+    	<label class="col-sm-4 control-label">{{Planning de programmation}}</label>
+        <div class="col-sm-6">
+                <a class="btn btn-info bt_planning" id="bt_planning"><i class="fa fa-refresh"></i>
+                Voir le planning de la semaine<span id="planning"></span>
+                </a>
+		</div>
+	</div>
+    
   </fieldset>
 </form>
 </div>
@@ -200,13 +216,37 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
             <div class="form-group">
 				<label class="col-sm-3 control-label">{{Produit}}</label>
 				<div class="col-sm-3">
-					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="product" title="{{Type de produit}}" style="font-size : 1em;cursor : default;"></span>
+					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="product_name" title="{{Type de produit}}" style="font-size : 1em;cursor : default;"></span>
 				</div>
 			</div>
             <div class="form-group">
 				<label class="col-sm-3 control-label">{{Clé du produit}}</label>
 				<div class="col-sm-3">
 					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="product_key" title="{{Clé du produit}}" style="font-size : 1em;cursor : default;"></span>
+				</div>
+			</div>
+            <div class="form-group">
+				<label class="col-sm-3 control-label">{{wifi_soft_version}}</label>
+				<div class="col-sm-3">
+					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="wifi_soft_version" title="{{wifi_soft_version}}" style="font-size : 1em;cursor : default;"></span>
+				</div>
+			</div>
+            <div class="form-group">
+				<label class="col-sm-3 control-label">{{wifi_hard_version}}</label>
+				<div class="col-sm-3">
+					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="wifi_hard_version" title="{{wifi_hard_version}}" style="font-size : 1em;cursor : default;"></span>
+				</div>
+			</div>
+            <div class="form-group">
+				<label class="col-sm-3 control-label">{{mcu_soft_version}}</label>
+				<div class="col-sm-3">
+					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="mcu_soft_version" title="{{mcu_soft_version}}" style="font-size : 1em;cursor : default;"></span>
+				</div>
+			</div>
+            <div class="form-group">
+				<label class="col-sm-3 control-label">{{mcu_hard_version}}</label>
+				<div class="col-sm-3">
+					<span class="eqLogicAttr label label-default" data-l1key="configuration" data-l2key="mcu_hard_version" title="{{mcu_hard_version}}" style="font-size : 1em;cursor : default;"></span>
 				</div>
 			</div>
 		</fieldset>
@@ -263,9 +303,8 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 						<div class="col-sm-2 alert alert-info" style="width:100%;">
 							Ce parametre permet de choisir le template pemettant d'affiche les modules dans jeedom (bouton, image ...)
 							<ul>
-								<li>bodbod : Nouveau template commun à tous les modules</li>
-								<li>l3flo : Template issu de la version d'origine de l3flo (Ces templates ne sont plus maintenus. Il seront supprimés dans une prochaine version du plugin)</li>
 								<li>Jeedom : Utilisation du template de base jeedom</li>
+								<li>bodbod : Template du plugin commun à tous les modules</li>
 							</ul>
 						</div>
 					</div>
@@ -277,8 +316,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 						<label class="col-sm-4 control-label" style="width:120px;">Template</label>
 						<div class="col-sm-6">
 							<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TypeTemplate" title=""  style="width:300px;" onchange="AffichageTemplateBodbod()">
-								<option value="0">{{Template heatzy bodbod}}</option>
-								<option value="1">{{Template heatzy l3flo (bientôt obselète)}}</option>
+								<option value="0">{{Template heatzy bodbod (par défaut)}}</option>
 								<option value="2">{{Template jeedom}}</option>
 							</select>
 						</div>
@@ -302,8 +340,8 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 					<div class="form-group">
 						<label class="col-sm-5 control-label" style="width:110px;"><i class="fas fa-info"></i>&nbsp;{{Important}}</label>
 						<div class="col-sm-5 alert alert-info" style="width:100%">
-							Pour les modules qui ne possèdent pas de capteur de température, il est possible d'utiliser ce parametre pour utilisateur un autre capteur présent dans jeedom.
-							<br>
+							Pour les modules qui ne possèdent pas de capteur de température, il est possible d'utiliser ce parametre pour utilisateur un autre capteur présent dans jeedom.<br>
+							Ces capeurs externes n'influencent pas le comportement des modules mais peuvent être affichés sur le widget ou encore activer les fonctionnalités "fenêtre ouverte" et "tendance de température"<br>
 							Pour les modules qui possèdent déjà un capteur de température interne (Pro, Glow, Shine ...), le capteur externe sera pris par le plugin et le capteur interne sera ignoré (le module lui même continuera de fonctionner avec son propre catpeur interne).
 						</div>
 					</div>
@@ -313,6 +351,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtTemp" style="width:400px;">
 							<span class="input-group-btn">
 								<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
+                          		<!-- <a class="btn btn-default btn-sm"><i class="fa fa-minus-circle" onclick="$('input[data-l2key=CapteurExtTemp]').val('');"></i></a> -->
 							</span>
 						</div>
 					</div>
@@ -321,7 +360,8 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
 						<div class="input-group col-sm-2">
 							<input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="CapteurExtHumi" style="width:400px;">
 							<span class="input-group-btn">
-								<a class="btn btn-default btn-sm listCmdInfo"><i class="fa fa-list-alt"></i></a>
+								<a class="btn btn-default btn-sm listCmdInfo" onclick="alert('ok')"><i class="fa fa-list-alt"></i></a>
+                                <!-- <a class="btn btn-default btn-sm"><i class="fa fa-minus-circle" onclick="$('input[data-l2key=CapteurExtHumi]').val('');"></i></a> -->
 							</span>
 						</div>
 					</div>
@@ -470,16 +510,10 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
     });
 
     function AffichageTemplateBodbod() {
-      //const selectTypeTemplate = $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected') ;
       if( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').val() == 0 )
         $('.class_ExclureBodbod').attr('style', 'display:none;');
       else
         $('.class_ExclureBodbod').attr('style', 'display:xxx;');
-      //alert( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length + '-' + $('.class_inutile').length ) ;
-      //if( $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length == 1 && $('.class_inutile').length == 0 )
-      //setTimeout(AffichageTemplateBodbod, 3000);
-      
-      //console.log( $('.eqLogicAttr[data-l1key="name"]').val() + '-' + $('[data-l1key="configuration"][data-l2key="TypeTemplate"] option:selected').length + '-' + $('.class_inutile').length ) ;
     }
     window.onload = AffichageTemplateBodbod; //note bien l'abscence de ()
 
