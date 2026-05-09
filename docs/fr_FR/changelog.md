@@ -1,22 +1,4 @@
-# 06/05/2026 (beta)
-- Mise à jour d ela doc avec des détails sur les erreurs API
-- Complétion du ReadMe
-- Remontée de la version du plugin installée dans les stats
-
-# 03/05/2026 (beta)
-- Doute sur le fonctionnement des modules plus ancien type "Heatzy"
-  - Ajout d'un message hebdo invitant les utilisateus a me contacter pour vérification et amélioration
-  - Une modification a quand même été apportée en ce sens
-- Ajout de la possibilité pour le dev de remonter une info à l'utilisateur (dans des cas très spécifique en vue d'améliorer le plugin)
-
-# 26/04/2026 (beta)
-- Ajout d'un message sur le demon si dépendance KO
-- Ajout de données dans les stats
-- Modification du planning de programation pour mettre en évidence le créneau en cours
-- Modification des showAlert (Deprecated 4.2)
-- Ajout d'une modale affichant les groupes de modules
-
-# 23/04/2026 (beta)
+# 09/05/2026 (stable)
 - Ajout d'un demon pour améliorer la gestion des appels
   - Si le port du demon n'est pas valorisé le plugin le valorise avec un port libre
   - Le choix du type d'appel est laissé à l'utilisateur
@@ -30,6 +12,13 @@
 - Amélioration de la fonction toHtml (merci Yetz)
 - Prise en comp te de certaines remarques de Yetz ([voir cet article sur blog.sinecu.re](https://blog.sinecu.re/fr/2026/02/27/rendre-un-radiateur-intelligent-et-domotise-decret-2030-heatzy-pilote-thermostat-z-wave-jeedom-et-reflexions-sur-le-mode-connecte/#Integration_du_module_a_Jeedom))
 - Mise en place d'un système de statistiques (anonymisés) permettant de suivre l'utlisation et améliorer le plugin
+- Modification des showAlert (Deprecated 4.2)
+- Ajout d'une modale affichant les groupes de modules
+- Doute sur le fonctionnement des modules plus ancien type "Heatzy"
+  - Ajout d'un message hebdo invitant les utilisateus a me contacter pour vérification et amélioration
+  - Une modification a quand même été apportée en ce sens
+- Mise à jour de la doc avec des détails sur les erreurs API
+- Testé sur Trixie (Debian 13.4 / jeedom 4.5.3 / Python 3.13.5 / PHP 8.4.16)
 
 # 23/11/2025 (stable)
 - Ajout d'une modale permettant de gérer les tâches planifiées Heatzy (Visualisation, Création, Mise à jour, et suppression)

@@ -32,7 +32,7 @@ class Synchro {
 //class Synchro
     public static function SynchronizeHeatzy( $force = false ) {
             
-          log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $force='.$force);
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $force='.$force);
       
         if( !cache::exist('Heatzy_Synchronize') ) cache::set( 'Heatzy_Synchronize' , 1) ;
         cache::set( 'Heatzy_Synchronize' , strtotime(date("Y-m-d H:i:s")) ) ;
@@ -53,12 +53,11 @@ class Synchro {
             return false;
         }
         
-          log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.count($aDevices ['devices']).'  module(s) trouvé');
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.count($aDevices ['devices']).'  module(s) trouvé');
         //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' $aDevice :'.var_export($aDevices, true));
       
-        //$Nb_Add = 0;
-      	$return['new'] = 0 ;
-      	$return['update'] = 0 ;
+        $return['new'] = 0 ;
+        $return['update'] = 0 ;
         $aSearchDid = [] ; //Va stocker les DID trouvé (pour vérifier ceux qui ont disparus)
         foreach ($aDevices['devices'] as $DeviceNum => $aDevice) {
             $aSearchDid[] = $aDevice['did'] ;
@@ -70,11 +69,13 @@ class Synchro {
                 $eqLogic->setDisplay('width', '240px');
                 $eqLogic->setDisplay('height', '300px');
                 
+                $eqLogic->setConfiguration('TypeTemplate', '0');
+                
                 //$Nb_Add++ ;
                 $return['new']++ ;
             }
             else
-              $return['update']++ ;
+                $return['update']++ ;
             
             $eqLogic->setEqType_name('heatzy');
             $eqLogic->setLogicalId($aDevice['did']);
@@ -182,7 +183,7 @@ class Synchro {
 //class Synchro
     public static function SynchronizeByLearning(  ) {
 
-      	$tab_Acknow = self::LireJSON( '_Acknow' ) ;
+        $tab_Acknow = self::LireJSON( '_Acknow' ) ;
         if( $tab_Acknow === false) return false ;      
         $eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
         $return['cmd'] = 0 ;
@@ -220,7 +221,7 @@ class Synchro {
 
             foreach ($tab_Learn as $key => $attr) {
                 if( self::CmdsAllPresent( $attr['prerequis'] , $eqLogic ) and !self::CmdsAllPresent( $attr['create'] , $eqLogic )  ){
-                  	// Si les cmd prérequis sont présentes et que toutes les commandes cibles ne sont pas présentes
+                    // Si les cmd prérequis sont présentes et que toutes les commandes cibles ne sont pas présentes
                     log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.') '.$eqLogic->getName().' ON VA CHERCHER ' ) ;
 
                     $VerifOrdre = self::CheckOrders( $eqLogic , $attr['consigne'] , $attr['after'] , $attr['verif'] ) ;
@@ -256,12 +257,12 @@ class Synchro {
      */
 //class Synchro
     public static function CmdsAllPresent( $prerequis , $eqLogic ) {
-              $CmdsAllPresent = true ;
-              foreach ($prerequis as $prerequis)
-                  if ( !is_object( $eqLogic->getCmd(null ,$prerequis ) ) ) {
-                    $CmdsAllPresent = false ;
-                    break ;
-                  }
+        $CmdsAllPresent = true ;
+        foreach ($prerequis as $prerequis)
+            if ( !is_object( $eqLogic->getCmd(null ,$prerequis ) ) ) {
+                $CmdsAllPresent = false ;
+                break ;
+            }
         return $CmdsAllPresent ;
     }
   
