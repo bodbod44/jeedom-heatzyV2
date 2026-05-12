@@ -363,6 +363,17 @@ class Synchro {
      */
 //class Synchro
     public static function StatsHeatzy(  ) {
+        
+        if( (date("H") % config::byKey('Freq_stats','heatzy','1') ) == 0 ){
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchro::StatsHeatzy()...' );
+            sleep( rand(0, 3000) ) ;
+        }
+        else{
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchro::StatsHeatzy() KO' );
+            return false ;
+        }
+        
+        
         $eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
         foreach ($eqLogics as $eqLogic) {
             $aRep = HttpGizwits::GetConsigne( $eqLogic->getLogicalId() ) ;
@@ -390,7 +401,11 @@ class Synchro {
                     }
                 } //foreach
                 
-                $stats['attr'] = $aRep['attr'] ;
+                if( isset($aRep['attr']) )
+                    $stats['attr'] = $aRep['attr'] ;
+                
+                if( isset($aRep['error_code']) )
+                    $stats['error_code'] = $aRep['error_code'] ;
 
                 //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': SetStatsHeatzy...'.$eqLogic->getLogicalId().'-'.json_encode($stats));
 
@@ -412,10 +427,22 @@ class Synchro {
         
         if( $aRep != false){
             $tab = json_decode( $aRep , true );
-            if( $tab['statut'] == 'OK' ){
-                return $tab['message'] ;
+            
+            if( $tab != null ){            
+                // Si consigne Freq_stats, on applique
+                if( isset( $tab['Freq_stats']) && is_numeric( $tab['Freq_stats'] ) ){
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Freq_stats='.$tab['Freq_stats'] );
+                    config::save('Freq_stats', $tab['Freq_stats'] , 'heatzy')
+                }
+                
+                // Récupération du message
+                if( $tab['statut'] == 'OK' ){
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Message reçu='.$tab['message'] );
+                    return $tab['message'] ;
+                }
             }
-        }        
+        }
+        
         return false ;
     }
   

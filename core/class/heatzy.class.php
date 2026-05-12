@@ -976,23 +976,9 @@ class heatzy extends eqLogic {
 
     /*
      * Fonction exécutée automatiquement toutes les heures par Jeedom*/
-      public static function cronHourly() {
-        /*$statsday = config::byKey('statsday', __CLASS__ , '') ;
-        if( $statsday == ''){
-          $statsday = rand(0, 6) ;
-          config::save('statsday'  , $statsday  , __CLASS__);
-        }
-      
-        if( date('w', $aujourdhui ) == $statsday ){
-            sleep( rand(0, 7200) ) ;
-            Synchro::StatsHeatzy() ;
-        }*/
-       
-        sleep( rand(0, 3000) ) ;
-        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchro::StatsHeatzy()...' );
+    public static function cronHourly() {
         Synchro::StatsHeatzy() ;
-
-      }
+    }
      
 
     /*
