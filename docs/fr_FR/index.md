@@ -8,18 +8,21 @@ Ce plugin permet de gérer vos modules pilote et flam de la marque Heatzy.
 Les modules gérés sont :
 
 * **Heatzy**
+* **Pilote2**
 * **Flam/Plugzy**
 * **Pilote seconde génération**
 * **Pilote SoC**
 * **Pilote SoC3**
 * **Pilote_Pro**
 * **Elec Pro (Acova version)**
-* **Radiateur Glow**
+* **Radiateur Glow_Simple**
+* **Radiateur Glow_Simple_ble**
 * **Radiateur Shine**
 * **Radiateur Onyx**
 * **Radiateur Bloom**
 * **Radiateur Flat**
 * **Radiateur INEA**
+
 
 Pré-requis
 === 
@@ -258,9 +261,19 @@ FAQ
 
 **Quelle est la fréquence de rafraîchissement ?**
 
-Le système récupère l'état des modules **toutes les minutes**. L'état de la programmation est rafraîchie toutes les 30 minutes pour les modules Heatzy et Flam.
+Il existe deux modes de rafraichissement selon le type d'appel
+- Appel "API REST"
+  - Le plugin va aller chercher les mises à jour des informations **toutes les X minutes** (x étant parametrage dans la config du plugin)
+  - Les actions sont envoyées en temps réel
+- Appel WebSocket (avec le demon)
+  - Le plugin va se connecter une fois au lancement du demon
+  - Ensuite, ce sont les serveurs gizwits qui envoient **les mises à jour en temps réel**
+  - Le plugin recoit donc les changements en **temps réel (<0.5s)** peut importe d'ou vient le changement (appli, plugin, temperature, programmation ...)
+  - Les actions sont envoyées en temps réel
 
+>L'état de la programmation est rafraîchie toutes les 30 minutes pour les modules Heatzy et Flam.
 >Pour les modules Heatzy et Flam, il est possible de désactiver le rafraîchissement de l'état de la programmation en décochant la fonctionnalités **con30** depuis la page de configuration du plugin. Pour les autres modules la programmation est lu dans la commande **timer_switch**.
+>Je ne possède pas ce type de module. Il est donc difficle pour moi de voir ce que je peux améliorer. N'hésitez pas a me contacter via le foruim community
 
 **Lorsque je désactive la programmation, l'état n'est pas mis à jour ?**
 
@@ -274,19 +287,29 @@ Un nouveau token est demandé au cloud automatiquement 24h avant que celui-ci ex
 **Peut-on commander les modules en local (sans cloud) ?**
 
 Malheureusement, cette fonctionnalité n'existe pas sur les modules Heatzy.
-Une requete a été formulée en ce sens aux équipes Heatzy
+Une requete a été formulée en ce sens aux équipes Heatzy.
+Mon petit doigt m'a dit que les prochains modules devraient changer de protocol de communication ouvrant la voie a une possible commande en local (a suivre)
+
+**Le plugin fait-il des appels vers l'exterieur ?**
+
+Oui, le pugin fait deux types d'appel :
+- Appels vers les serverus gizwits. Ces serveur sont spécifiques a l'IOT et sont utilisés par Heatzy pour la communication avec les modules
+- Appels vers un serveur de statistique. Régulièrement, le plugin envoie des données anonymisées me permettant de faire des statitistiques et surtout de mieux visualiser la différence entre les modules pour améliorer le plugin. Ne possedant pas tous les modeles de modules ou radiateus, il est très difficile pour moi d'améliorer la gestion de ces modules sans ces statistiques.
 
 **Mon équipement n'est pas rafraîchi ?**
 
 Vérifiez si l'équipement est bien activé.
-                                               
+
 **Je viens de mettre à jour le plugin, que dois-je faire ?**
 
-Il est conseillé de synchroniser les modules via la page de configuration du plugin.                            
-                                               
+Il est conseillé de synchroniser les modules via la page de configuration du plugin.
+
 **J'ai un type de module qui n'est pas répertorié sur cette page, que faire ?**
 
-Le plugin va créer de lui même toutes les commandes qui sont connues dans les autres modules.<br>
+Le plugin va créer de lui même toutes les commandes qu'il estime être utilisées. Pour cela, il s'appuie sur 3 méthodes :
+- Le plugin possede sa propre base de commande par plugin (parametré en dur et mise à jour par le dev quand il detecte des manques)
+- Le plugin va scanner le retour de l'API pour détécter les commandes manquantes (ex : création de la commande température s'il voit une donnée cur_temp)
+- Le plugin va aussi prcéder par apprentissage (ex : tester le reaction d'une consigne cft2 pour vérifier si le mode confort-2 est accepté ce qui signifie qu'il s'agit d'un module 6 ordres).
 S'il manque des commandes, n'hésitez pas à faire un message sur le forum jeedom (avec le tag heatzy)
 
 **Mon module n'est plus dans l'application Heatzy, que faire ?**
