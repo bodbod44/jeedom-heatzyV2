@@ -1,11 +1,13 @@
 
-# xx/05/2026 (beta)
-- Ajustements des commandes
+# 16/05/2026 (stable)
+- Ajustements des commandes créées par défaut pour les nouveaux modules
   - Module "Glow_Simple" : Ajout de la commande lock, temp_eco (valeur+consigne), temp_confort (valeur+consigne), Tendance de t° et détéction ouverture fenetre
   - Module "Glow_Simple_ble" : Ajout de la commande lock
   - Module "onyx" : Ajout de la commande lock, temp_eco (valeur+consigne), temp_confort (valeur+consigne), Tendancede t° et détéction ouverture fenetre
   - Module "Elec_Pro" : Ajout des commandes lock et dérogation
   - Module "Pilote_Soc_C3" : Ajout des commandes lock et dérogation
+- Mise à jour de la documentation
+- Ajout des infos du plugin dans les statistiques
 
 # 09/05/2026 (stable)
 - Ajout d'un demon pour améliorer la gestion des appels
