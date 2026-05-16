@@ -1,31 +1,42 @@
 <?php
   
 class Synchro {
-     /* @brief Fonction qui permet de synchroniser
-     *        les modules heatzy
+     /* @brief Fonction générique qui permet de lire un JSON
      *        
-     * @return false en cas d'erreur le nombre de modules synchroniser       
+     * @return : false ou résultat sous forme de tableau
      */
 //class Synchro
-    public static function LireJSON( $json_name ) {
+    public static function LireJSON( $json_name , $format = 'tab' ) {
         $json = file_get_contents(__DIR__.'/'.$json_name.'.json') ;
         if( $json ) {
             $tab = json_decode( $json , true );
             if( !$tab ){
-                log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.') Problème decode '.$json_name.'.json' ) ;
+                log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.') JSON invalide - Problème decode '.$json_name.'.json' ) ;
                 return false ;
             }
         }
         else{
             log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.') Problème lecture '.$json_name.'.json' ) ;
             return false ;
-        }
-        return $tab ;
+        }        
+        
+        switch( $format ){
+            case 'tab':
+                return $tab ;
+                break;
+            case 'json':
+                return $json ;
+                break;
+            default :
+                log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : Type de format de sortie inconnu ('.$format.')');
+                break;
+        } // switch
+
+        return $false ;
     }
 
     /**
-     * @brief Fonction qui permet de synchroniser
-     *        les modules heatzy
+     * @brief Fonction qui permet de synchroniser les modules heatzy avec le compte
      *        
      * @return false en cas d'erreur le nombre de modules synchroniser       
      */
@@ -169,22 +180,21 @@ class Synchro {
       
         cache::set( 'Heatzy_Synchronize' , 0) ;
       
-        //return count($aDevices['devices']);
-      //return count($aDevices['devices']);
         return $return ;
     }
     
     /**
-     * @brief Fonction qui permet de synchroniser
-     *        les modules heatzy
-     *        
-     * @return false en cas d'erreur le nombre de modules synchroniser       
+     * @brief Fonction qui permet d'ajouter les commandes par
+     *   - Reconnaissance en fonction du contenu du JSON
+     *   - Apprentissage en essayant (ex cft-1 ou derog-3)
+     * @return true/false
      */
 //class Synchro
     public static function SynchronizeByLearning(  ) {
 
         $tab_Acknow = self::LireJSON( '_Acknow' ) ;
-        if( $tab_Acknow === false) return false ;      
+        if( $tab_Acknow === false) return false ;
+        
         $eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
         $return['cmd'] = 0 ;
         foreach ($eqLogics as $eqLogic) {
@@ -244,16 +254,13 @@ class Synchro {
 
         //sleep( 1 ) ;
         message::add("Heatzy", 'Apprentissage terminé' );
-        //sleep( 1 ) ;
-        //return '99' ;
         return $return ;
     }
   
     /**
-     * @brief Fonction qui permet de synchroniser
-     *        les modules heatzy
+     * @brief Fonction qui permet de vérifier que les commandes passés en parametre sont présentent ou pas sur l'equipement
      *        
-     * @return false en cas d'erreur le nombre de modules synchroniser       
+     * @return true/false
      */
 //class Synchro
     public static function CmdsAllPresent( $prerequis , $eqLogic ) {
@@ -267,10 +274,9 @@ class Synchro {
     }
   
     /**
-     * @brief Fonction qui permet de synchroniser
-     *        les modules heatzy
+     * @brief Fonction qui permet de réinitialiser l'ordre des commandes ou le nom (libellé) des commandes
      *        
-     * @return false en cas d'erreur le nombre de modules synchroniser       
+     * @return true
      */
 //class Synchro
     public static function MajAllCmds( $TypeMaj ) {
@@ -283,12 +289,12 @@ class Synchro {
             } //foreach getCmd()          
         } //foreach $eqLogics
         return true ;
-    }  
+    }
+    
     /**
-     * @brief Fonction qui permet de synchroniser
-     *        les modules heatzy
+     * @brief Fonction qui permet de d'envoyer des ordres pour vérifier s'ils sont acceptés
      *        
-     * @return false en cas d'erreur le nombre de modules synchroniser       
+     * @return false en cas d'echec
      */
 //class Synchro
     public static function CheckOrders( $eqLogic , $consigne , $after , $verif ) {
@@ -347,22 +353,24 @@ class Synchro {
     }
   
     /**
-     * @brief Fonction qui permet de synchroniser
-     *        les modules heatzy
-     *        
-     * @return false en cas d'erreur le nombre de modules synchroniser       
+     * @brief Fonction qui permet d'envoyer les infos anonymisées pour les stats
      */
 //class Synchro
-    public static function CreateCmdByLearning(  ) {
-
-        return true ;
-    }
-  
-    /**
-     * @brief Fonction qui permet d'envoyer les infos anonymiser pour les stats
-     */
-//class Synchro
-    public static function StatsHeatzy(  ) {
+    public static function StatsHeatzy( $force = false ) {
+        
+        if( $force == false ){
+            $Freq_stats = config::byKey('Freq_stats','heatzy','1') ;
+            if( (date("H") % $Freq_stats ) == 0 ){
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchro::StatsHeatzy()...' );
+                sleep( rand(0, 3000 ) ) ;
+            }
+            else{
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchro::StatsHeatzy() KO' );
+                return false ;
+            }
+        }
+        
+        
         $eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
         foreach ($eqLogics as $eqLogic) {
             $aRep = HttpGizwits::GetConsigne( $eqLogic->getLogicalId() ) ;
@@ -385,18 +393,25 @@ class Synchro {
                 // On cherche leplugin heatzy pour vérifier la version installée
                 foreach (update::all() as $update) {
                     if ($update->getLogicalId() == 'heatzy'){
-                        $stats['HeatzyVersion'] = $update->getLocalVersion() ;
+                        $stats['PluginSource']     = $update->getSource() ;
+                        $stats['PluginVersion']    = $update->getLocalVersion() ;
+                        $stats['PluginBranche']    = $update->getConfiguration( 'version' , '') ;
+                        $stats['PluginUpdateDate'] = $update->getUpdateDate() ;
                         break ;
                     }
                 } //foreach
                 
-                $stats['attr'] = $aRep['attr'] ;
+                if( isset($aRep['attr']) )
+                    $stats['attr'] = $aRep['attr'] ;
+                
+                if( isset($aRep['error_code']) )
+                    $stats['error_code'] = $aRep['error_code'] ;
 
                 //log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': SetStatsHeatzy...'.$eqLogic->getLogicalId().'-'.json_encode($stats));
 
                 HttpGizwits::SetStatsHeatzy( json_encode( $stats ) ) ;
             }
-            sleep(1) ;
+            sleep(3) ;
         }
         return true ;
     }
@@ -412,10 +427,22 @@ class Synchro {
         
         if( $aRep != false){
             $tab = json_decode( $aRep , true );
-            if( $tab['statut'] == 'OK' ){
-                return $tab['message'] ;
+            
+            if( $tab != null ){            
+                // Si consigne Freq_stats, on applique
+                if( isset( $tab['Freq_stats']) && is_numeric( $tab['Freq_stats'] ) && $tab['Freq_stats'] >=1 && $tab['Freq_stats'] <= 23 ){
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Freq_stats='.$tab['Freq_stats'] );
+                    config::save('Freq_stats', $tab['Freq_stats'] , 'heatzy') ;
+                }
+                
+                // Récupération du message
+                if( $tab['statut'] == 'OK' ){
+                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Message reçu='.$tab['message'] );
+                    return $tab['message'] ;
+                }
             }
-        }        
+        }
+        
         return false ;
     }
   
