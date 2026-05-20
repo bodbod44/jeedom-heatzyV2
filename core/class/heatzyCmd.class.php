@@ -31,7 +31,8 @@ class heatzyCmd extends cmd {
       
         if ($this->getLogicalId() == 'refresh') {
             $this->getEqLogic()->updateHeatzyDid();
-            //Synchro::StatsHeatzy();
+            //Synchro::StatsHeatzy( true );
+            //Synchro::StatsMessage();
         }
         else if($this->getType() == 'info' ) {
             return $this->getValue();

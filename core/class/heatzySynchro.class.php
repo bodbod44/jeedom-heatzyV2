@@ -361,15 +361,17 @@ class Synchro {
         if( $force == false ){
             $Freq_stats = config::byKey('Freq_stats','heatzy','1') ;
             if( (date("H") % $Freq_stats ) == 0 ){
-                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchro::StatsHeatzy()...' );
-                sleep( rand(0, 3000 ) ) ;
+                $delai_sleep = rand(0, 3300 ) ;
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchro::StatsHeatzy()... (Attente=3300 * '.$Freq_stats.'='.$delai_sleep.'s)' );
+                sleep( $delai_sleep ) ;
             }
             else{
                 log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchro::StatsHeatzy() KO' );
                 return false ;
             }
         }
-        
+      else
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Mode forcé' );
         
         $eqLogics = eqLogic::byType('heatzy'); // récup tous les équipements heatzy
         foreach ($eqLogics as $eqLogic) {
@@ -430,9 +432,15 @@ class Synchro {
             
             if( $tab != null ){            
                 // Si consigne Freq_stats, on applique
-                if( isset( $tab['Freq_stats']) && is_numeric( $tab['Freq_stats'] ) && $tab['Freq_stats'] >=1 && $tab['Freq_stats'] <= 23 ){
-                    log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Freq_stats='.$tab['Freq_stats'] );
-                    config::save('Freq_stats', $tab['Freq_stats'] , 'heatzy') ;
+                if( isset( $tab['Freq_stats']) && is_numeric( $tab['Freq_stats'] )){
+                    if( $tab['Freq_stats'] >= 0 && $tab['Freq_stats'] <= 1 ){
+                        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Freq_stats='.$tab['Freq_stats'].' => suppression de la config' );
+                        config::remove('Freq_stats' , 'heatzy') ;
+                    }
+                    if( $tab['Freq_stats'] >= 2 && $tab['Freq_stats'] <= 23 ){
+                        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Freq_stats='.$tab['Freq_stats'] );
+                        config::save('Freq_stats', $tab['Freq_stats'] , 'heatzy') ;
+                    }
                 }
                 
                 // Récupération du message

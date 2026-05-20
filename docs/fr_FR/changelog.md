@@ -1,3 +1,5 @@
+# 20/05/2026 (dev)
+- Remove Freq_stats sur message
 
 # 16/05/2026 (stable)
 - Ajustements des commandes créées par défaut pour les nouveaux modules
