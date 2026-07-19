@@ -423,6 +423,9 @@ class Synchro {
      */
 //class Synchro
     public static function StatsMessage() {
+        
+        sleep( rand(0, 3300 ) ) ;
+                
         $stats['message'] = true ;
         $aRep = HttpGizwits::SetStatsHeatzy( $stats , 'message' ) ;
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': GetMessageStats='.var_export( $aRep , true ) );
