@@ -86,8 +86,9 @@ foreach ($eqLogics as $eqLogic) {
 <div class="eqLogicThumbnailContainer">
   <?php
 foreach ($eqLogics as $eqLogic) {
-	$opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
-	echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 100px;margin-left : 5px;' . $opacity . '" >';
+    $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
+	//echo '<div class="eqLogicDisplayCard cursor '.$opacity.'" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 100px;margin-left : 5px;" >';
+    echo '<div class="eqLogicDisplayCard cursor ' . $opacity . '" data-eqLogic_id="' . $eqLogic->getId() . '" style="width : 100px;">';
 	echo "<center>";
 	if(file_exists('plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product_name', '').'.png'))
 		echo '<img src="plugins/heatzy/core/template/images/'.$eqLogic->getConfiguration('product_name', '').'.png" width="100" height="100"/>'; // Logo personnalisé
