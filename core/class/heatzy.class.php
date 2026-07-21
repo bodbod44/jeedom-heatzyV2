@@ -1019,7 +1019,7 @@ class heatzy extends eqLogic {
         $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
         $cible = strtotime( "2026-05-01 00:00:00" ) ;         
         if( $aujourdhui > $cible && (date('w', $aujourdhui )) >= '0' ){
-          	//log::add('heatzy', 'debug',  'CronDaily');
+            //log::add('heatzy', 'debug',  'CronDaily');
             $rep = Synchro::StatsMessage() ;
             if( $rep != false )
                 message::add("Heatzy", $rep );
