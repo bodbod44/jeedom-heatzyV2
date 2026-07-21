@@ -1,5 +1,6 @@
-# 20/05/2026 (dev)
-- Remove Freq_stats sur message
+# 21/07/2026 (stable)
+- Correction de l'opacity sur la page configuration
+- Modfication des comptabilités du plugin (info.json)
 
 # 16/05/2026 (stable)
 - Ajustements des commandes créées par défaut pour les nouveaux modules
