@@ -386,8 +386,10 @@ class heatzy extends eqLogic {
         else if( $aDevice['attr']['mode'] == 'stop' ) {  /// Off
             $KeyMode = 'Off';
         }
-        else if( in_array( $aDevice['attr']['mode'] , array('u505cu6b62', 'u8212u9002', 'u7ecfu6d4e', 'u89e3u51bb') ) ) {  /// Off
-            /// Premiere version du module pilote (TEST)
+        else if( in_array( $aDevice['attr']['mode'] , array('u505cu6b62', 'u8212u9002', 'u7ecfu6d4e', 'u89e3u51bb') ) ) {
+            /// Premiere version du module pilote (TEST)          
+          	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Premiere version du module pilote (V1) '.$aDevice['attr']['mode'] );
+          
             if( $aDevice['attr']['mode'] == 'u8212u9002') {  /// Confort
                 $KeyMode = 'Confort';
             }
@@ -402,6 +404,7 @@ class heatzy extends eqLogic {
             }
         }
         else {       /// Premiere version du module pilote
+          	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Premiere version du module pilote (V2) '.$aDevice['attr']['mode'] );
             //# Heatzy Gen 1 commands
             //ARR_GET_HEATZY=( "1;u505cu6b62" "2;u8212u9002" "3;u7ecfu6d4e" "4;u89e3u51bb" )
             //ARR_SET_HEATZY=( "1;[1,1,3]" "2;[1,1,0]" "3;[1,1,1]" "4;[1,1,2]" )
@@ -414,7 +417,7 @@ class heatzy extends eqLogic {
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $aDevice[attr][mode]='.$aDevice['attr']['mode'] );
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': substr-ord='.substr($aDevice['attr']['mode'], 1,1).'->'.ord(substr($aDevice['attr']['mode'], 1,1)) );
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': substr-ord='.substr($aDevice['attr']['mode'], 2,1).'->'.ord(substr($aDevice['attr']['mode'], 2,1)) );
-          
+
             if($mode1 == 136 && $mode2 == 146) {  /// Confort
                 $KeyMode = 'Confort';
             }

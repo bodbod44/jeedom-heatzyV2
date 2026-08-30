@@ -1,3 +1,7 @@
+# 30/08/2026 (beta)
+- Correction pour le pilote_V1 en WebSocket (merci @SylvainF et @toysnic)
+- TODO mode programmation
+
 # 21/07/2026 (stable)
 - Correction de l'opacity sur la page configuration
 - Modfication des comptabilités du plugin (info.json)

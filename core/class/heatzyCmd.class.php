@@ -186,7 +186,8 @@ class heatzyCmd extends cmd {
               
             
             if( $Consigne != '' ){
-              	if( config::byKey('API_Type','heatzy','REST') == 'REST' ){
+					// or $this->getEqLogic()->getConfiguration('product_name', '') == 'Heatzy'
+              	if( config::byKey('API_Type','heatzy','REST') == 'REST' or $this->getEqLogic()->getConfiguration('product_name', '') == 'Heatzy' ){
                     log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' :$Consigne != null : ');
                     //$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
                     $Result = HttpGizwits::SetConsigne( $eqLogic->getLogicalId(), $Consigne);
@@ -214,19 +215,22 @@ class heatzyCmd extends cmd {
                             $eqLogic->checkAndUpdateCmd('IsOnLine', 1 );
                         }
                     } // $Result === false
+                  
                 } // if REST
 				else{
                     // Envoi au demon
+                  	//$Consigne = array( 'raw' => array(1, 1, 2 ) ) ; //"stop;[1,1,3]" "cft;[1,1,0]" "eco;[1,1,1]" "fro;[1,1,2]"
                     log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' Envoi au demon : '.json_encode($Consigne) );
                     $this->getEqLogic()->sendToDaemon( 'execute' , $this->getEqLogic()->getLogicalId() , $Consigne ) ; 
                 } // REST
             } // if $Consigne != ''
-            
+          
             if( config::byKey('API_Type','heatzy','REST') == 'REST' ){
                 /// Mise à jour de l'état
                 sleep(1); // tempo de 1sec pour laisser le temps a l'API de le prendre en compte et le restituer
                 $this->getEqLogic()->updateHeatzyDid();
             }
+
             
         } /// Fin action
         $mc = cache::byKey('heatzyWidgetmobile' . $this->getEqLogic()->getId());
