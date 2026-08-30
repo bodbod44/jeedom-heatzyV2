@@ -210,12 +210,24 @@ class heatzy extends eqLogic {
         if( $action == 'login' ){
             $params['cmd'] = 'login_req' ;
         } else if( $action == 'read' ){
-            $params['cmd'] = 'c2s_read' ;
-        } else if( $action == 'execute' ){
-            //{ "cmd": "c2s_write", "data": { "did": "xxxxxxxxxx", "attrs": { "name1": "", "name2": <value2>, } } }
-            $message['message']['cmd'] = 'c2s_write' ;
+            $message['message']['cmd'] = 'c2s_read' ;
             $message['message']['data']['did'] = $did ;
-            $message['message']['data']['attrs'] = $params['attrs'] ;
+            $message['message']['data']['names'] = array( 'derog_mode' , 'derog_time' ) ;
+        } else if( $action == 'execute' ){
+            if( isset($params['attrs']) ){
+                //{ "cmd": "c2s_write", "data": { "did": "xxxxxxxxxx", "attrs": { "name1": "", "name2": <value2>, } } }
+                $message['message']['cmd'] = 'c2s_write' ;
+                $message['message']['data']['did'] = $did ;
+                $message['message']['data']['attrs'] = $params['attrs'] ;
+            }
+            else if( isset($params['raw']) ){
+                //{"cmd":"s2c_raw","data":{"did":"xxxxxxxxxx","raw":[0,0,0,3,109,0,0,145,4,6,36 ...
+                $message['message']['cmd'] = 'c2s_raw' ;
+                $message['message']['data']['did'] = $did ;
+                $message['message']['data']['raw']   = $params['raw'] ;
+            }
+            else
+                log::add('heatzy', 'error', __METHOD__.'(ln '.__LINE__.')'.' : Type de message non connu - $params='.var_export( $params , true ));
               //= '{ "cmd": "c2s_write", "data": { "did": "'.$did.'", "attrs": '.$payLoad.' } }' ;
         } else if( $action == 'stop' ){
             $message['message']['cmd'] = 'stop' ;
@@ -233,11 +245,16 @@ class heatzy extends eqLogic {
       
         log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : $mess ('.json_encode($message).')');
             
-        $payLoad = json_encode($message) ;
-        $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-        socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55099'));
-        socket_write($socket, $payLoad, strlen($payLoad));
-        socket_close($socket);
+        if( isset($message['message']['cmd']) ){
+            $payLoad = json_encode($message) ;
+            $socket = socket_create(AF_INET, SOCK_STREAM, 0);
+            socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55099'));
+            socket_write($socket, $payLoad, strlen($payLoad));
+            socket_close($socket);
+        }
+        else{
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' : cmd null');
+        }
     }
   
   
