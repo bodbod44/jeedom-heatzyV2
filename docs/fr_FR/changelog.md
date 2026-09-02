@@ -1,6 +1,9 @@
 # 30/08/2026 (beta)
-- Correction pour le pilote_V1 en WebSocket (merci @SylvainF et @toysnic)
-- TODO mode programmation
+- Correction et amélioration de la prise en charge des modules Heatzy (Première version du module - Pilote_V1)
+  - Correction de l'envoi et récéption de commande en WebSocket (merci @SylvainF et @toysnic pour les tests)
+  - Correction de l'activation et désactivation de la programmation
+  - Mise à jour de l'affichage de l'état de la programmation (actif si au moins une tâche est active)
+  - L'affichage du planning de programmation n'est pas pris en charge pour ce module
 
 # 21/07/2026 (stable)
 - Correction de l'opacity sur la page configuration

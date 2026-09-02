@@ -753,7 +753,8 @@ class heatzy extends eqLogic {
      */
 //class heatzy extends eqLogic
     public function GestProg($EtatProg) {
-        $Skip = 0;            /// Nombre d'element sauté
+
+      	$Skip = 0;            /// Nombre d'element sauté
         $Limit = 100;        /// Limite du nombre de tache
         
         /// Lecture du token
@@ -762,6 +763,8 @@ class heatzy extends eqLogic {
         do {
             /// Lecture des taches par pas de $Limit
             $aTasks = HttpGizwits::GetSchedulerList($UserToken, $this->getLogicalId(), $Skip, $Limit);
+          
+          	log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : count($aTasks)='.count($aTasks) );
             
             /// Boucle de mise à jour des taches
             foreach ($aTasks as $TaskNum => $aTask) {
@@ -784,6 +787,9 @@ class heatzy extends eqLogic {
                 unset($aTask['scene_id']);
                 unset($aTask['group_id']);
                 unset($aTask['id']);
+              
+              	unset($aTask['attrs_config']) ;
+              
                 $aTask['enabled']=$EtatProg;
                 
                 /// Mise a jour de la tache
@@ -798,7 +804,8 @@ class heatzy extends eqLogic {
             $Skip += count($aTasks);
         } while(!empty($aTasks) && count($aTasks) >= $Limit);
         
-        log::add('heatzy', 'debug',   $this->getLogicalId() . ' : '.$Skip.' taches mise a jour');
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : '.$Skip.' taches mise a jour');
+      	return $Skip ;
     }
 
     /**
@@ -854,8 +861,8 @@ class heatzy extends eqLogic {
         if( $Freq_status > 0  ){ // Si param != off
             if( ( date("i") % $Freq_status ) == 0 ){ // Si on tombe bien sur le x minute
                 // Le synchronize permet d'aouter les nouveaux modules rattachés et de vérifier le statut online/offline
-                $res = Synchro::SynchronizeHeatzy() ;
-                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchronize cron5 = '.$res );
+                //$res = Synchro::SynchronizeHeatzy() ;
+                log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Synchronize cron = '.$res );
                 
                 // Le synchronize contient déjà un update (donc pas la peine d'aller plus loin)
                 return true ;
@@ -928,13 +935,14 @@ class heatzy extends eqLogic {
     * */
 //class heatzy extends eqLogic
     public static function cron30() {
-
+		log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : cron30' );
+      
         foreach (eqLogic::byType('heatzy') as $heatzy) {
 
             if($heatzy->getIsEnable() != 1 )
                 continue;
 
-            if($heatzy->getConfiguration('product_name', 'Heatzy') != 'Flam_Week2' &&
+            if( $heatzy->getConfiguration('product_name', 'Heatzy') != 'Flam_Week2' &&
             $heatzy->getConfiguration('product_name', 'Heatzy') != 'Heatzy' )
                 continue;
 
@@ -948,7 +956,7 @@ class heatzy extends eqLogic {
             else {
                 /// Lecture des taches de ce module
                 $Skip = 0;            /// Nombre d'element sauté
-                $Limit = 100;        /// Limite du nombre de tache
+                $Limit = 100;         /// Limite du nombre de tache
 
                 /// Lecture du token
                 $UserToken = config::byKey('UserToken','heatzy','none');
@@ -956,17 +964,19 @@ class heatzy extends eqLogic {
                 do {
                     /// Lecture des taches par pas de $Limit
                     $aTasks = HttpGizwits::GetSchedulerList($UserToken, $heatzy->getLogicalId(), $Skip, $Limit);
+                  
+                  	log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : count($aTasks)='.count($aTasks)  );
 
                     /// Boucle des taches
                     foreach ($aTasks as $TaskNum => $aTask) {
-                        if($aTask['enabled'] === false ) {    /// Sort de la boucle des taches à la premiere tache trouvée
-                            $EtatProg='0';
+                        if($aTask['enabled'] === true ) {    /// Sort de la boucle des taches à la premiere tache trouvée
+                            $EtatProg='1';
                             break;
                         }
                     }
                     $Skip += count($aTasks);
 
-                    if($EtatProg === '0' ) {/// Sort de la boucle des recherches des taches si au moins une est désactivée
+                    if($EtatProg === '1' ) {/// Sort de la boucle des recherches des taches si au moins une est désactivée
                         break;
                     }
                 } while(!empty($aTasks) && count($aTasks) >= $Limit);
@@ -977,10 +987,10 @@ class heatzy extends eqLogic {
             /// Mise à jour de l'etat EtatProg
             $heatzy->checkAndUpdateCmd('etatprog', $EtatProg);
 
-            if( $EtatProg === '0' )
-                log::add('heatzy', 'debug',   $heatzy->getLogicalId() .  ' : programmation desactive');
+            if( $EtatProg === '1' )
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog active. Au moins une tâche active');
             else
-                log::add('heatzy', 'debug',   $heatzy->getLogicalId() . ' : programmation active');
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog inactive. Aucune tâche active');
 
             $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
             $mc->remove();

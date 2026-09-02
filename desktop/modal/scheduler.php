@@ -28,7 +28,9 @@ buffer = "";
     $eqLogics = heatzy::byType('heatzy') ;
     echo '$tab_heatzy = ['."\n" ;
     foreach ($eqLogics as $eqLogic) {
-        echo '["'.$eqLogic->getHumanName().'","'.$eqLogic->getLogicalId().'"],'."\n" ;
+      	if( $eqLogic->getIsEnable() == 1 ){
+        	echo '["'.$eqLogic->getHumanName().'","'.$eqLogic->getLogicalId().'"],'."\n" ;
+        }
     }
     echo '];'."\n" ;
 ?>  
@@ -100,6 +102,7 @@ function CreateScheduler( did , Param ){
     		Param['created_at'] = LaDate.toISOString().substring(0, 19) ;
           	Param["id"] = data.result["id"] ;
           	Param["did"] = did ;
+            Param["enabled"] = "true" ;
           	InsertLigne( Param , did ) ;
             RazForm() ; // Reinit le formulaire si appel OK
         }
@@ -142,6 +145,7 @@ function UpdateScheduler( did , Id , Param ){
     		Param['created_at'] = LaDate.toISOString().substring(0, 19) ;
           	Param["id"] = data.result["id"] ;
           	Param["did"] = did ;
+            Param["enabled"] = "true" ;
           	InsertLigne( Param ) ;
           
             // Reinit le formulaire
@@ -196,17 +200,18 @@ function InsertLigne( variable , LogicalId ){
     let tbody = document.getElementById('myTable_' + variable["did"]).getElementsByTagName('tbody')[0];              
     let row = tbody.insertRow(); // insère une nouvelle ligne
     row.id = "row_" + variable["id"] ;
-    row.insertCell(0).textContent = variable["created_at"] ;
-    row.insertCell(1).textContent = variable["date"] ;
-    row.insertCell(2).textContent = variable["time"] ;
-  	row.insertCell(3).textContent = variable["days"] ;
-    row.insertCell(4).textContent = variable["repeat"] ;
-    row.insertCell(5).textContent = variable["start_date"] ;
-    row.insertCell(6).textContent = variable["end_date"] ;
-    row.insertCell(7).textContent = json_encode(variable["attrs"]) ;
-    row.insertCell(8).textContent = variable["remark"] ;
+    row.insertCell(0).innerHTML   = '<input type="checkbox" id="enabled" name="enabled"' + (variable["enabled"] ? " checked" : "") + ' disabled />'  ;
+    row.insertCell(1).textContent = variable["created_at"] ;
+    row.insertCell(2).textContent = variable["date"] ;
+    row.insertCell(3).textContent = variable["time"] ;
+  	row.insertCell(4).textContent = variable["days"] ;
+    row.insertCell(5).textContent = variable["repeat"] ;
+    row.insertCell(6).textContent = variable["start_date"] ;
+    row.insertCell(7).textContent = variable["end_date"] ;
+    row.insertCell(8).textContent = json_encode(variable["attrs"]) ;
+    row.insertCell(9).textContent = variable["remark"] ;
     HumanName = 'HumanName' ;
-    row.insertCell(9).innerHTML   = "<img src=\"plugins/heatzy/plugin_info/modif.png\" alt=\"xxxx\" width=\"20\" onclick=\"AlimFormUpdate('" + variable["did"] + "' , '" + variable['id'] + "' )\" />&nbsp;<img src=\"plugins/heatzy/plugin_info/delete.png\" alt=\"xxxx\" width=\"25\" onclick=\"DeleteScheduler( '" + variable["did"] + "' , '" + variable["id"] + "' ) ; \" />" ;
+    row.insertCell(10).innerHTML   = "<img src=\"plugins/heatzy/plugin_info/modif.png\" alt=\"xxxx\" width=\"20\" onclick=\"AlimFormUpdate('" + variable["did"] + "' , '" + variable['id'] + "' )\" />&nbsp;<img src=\"plugins/heatzy/plugin_info/delete.png\" alt=\"xxxx\" width=\"25\" onclick=\"DeleteScheduler( '" + variable["did"] + "' , '" + variable["id"] + "' ) ; \" />" ;
 }
 
 function VerifFormulaire(){
@@ -343,7 +348,9 @@ function InjecteExemple( selectObject ){
                 <option value="">--Please choose an option--</option>
                 <?php
                     foreach ($eqLogics as $eqLogic) {
+                      if( $eqLogic->getIsEnable() == 1 ){
                         echo "	<option value=\"".$eqLogic->getLogicalId()."\">".$eqLogic->getHumanName()."</option>" ;
+                      }
                 }
                 ?>
             </select>
@@ -376,28 +383,31 @@ function InjecteExemple( selectObject ){
 <?php
     echo '<i>Les équipents non affichés ne possèdent pas des tâches</i>' ;
     foreach ($eqLogics as $eqLogic) {
-        echo '<div id="div_'.$eqLogic->getLogicalId().'" style="display:none;">' ;
-        echo '</br>&nbsp;';
-        echo '<h4>'.$eqLogic->getHumanName().'</h4>';
-        echo '<table  class="table table-condensed tablesorter" id="myTable_'.$eqLogic->getLogicalId().'">
-            <thead>
-                <tr>
-                    <th>Date création</th>
-                    <th>date</th>
-                    <th>time</th>
-                    <th>days</th>
-                    <th>repeat</th>
-                    <th>start_date</th>
-                    <th>end_date</th>
-                    <th>attrs</th>
-                    <th>remark</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>' ;
-        echo '</div>' ;
+      	if( $eqLogic->getIsEnable() == 1 ){
+          echo '<div id="div_'.$eqLogic->getLogicalId().'" style="display:none;">' ;
+          echo '</br>&nbsp;';
+          echo '<h4>'.$eqLogic->getHumanName().'</h4>';
+          echo '<table  class="table table-condensed tablesorter" id="myTable_'.$eqLogic->getLogicalId().'">
+              <thead>
+                  <tr>
+                      <th>Active</th>
+                      <th>Date création</th>
+                      <th>date</th>
+                      <th>time</th>
+                      <th>days</th>
+                      <th>repeat</th>
+                      <th>start_date</th>
+                      <th>end_date</th>
+                      <th>attrs</th>
+                      <th>remark</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+              </tbody>
+          </table>' ;
+          echo '</div>' ;
+        }
     }
 ?>
   

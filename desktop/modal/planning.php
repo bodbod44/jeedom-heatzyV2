@@ -39,16 +39,12 @@ $MonEqLogic = eqLogic::byId( $_GET['id'] ) ;
 
 echo '<h2>'.$MonEqLogic->getName().'</h2>'."\n" ;
 
-$result = HttpGizwits::GetConsigne( $MonEqLogic->getLogicalId() ) ;
+$result = RecupDonnees( $MonEqLogic ) ;
 
-if( $result === false ){
-    echo 'Problème lors de la récupération des données' ;
-}
-else if( !isset( $result['attr']['p1_data1'] ) ){
-    echo 'Attributs du planning non trouvés' ;
+if( is_string($result) ){
+    echo $result ;  // Affichage du message d'erreur
 }
 else{
-  
     echo '<style>'."\n" ;
     echo '.blink {' ;
     echo '  animation: blink 0.5s infinite;' ;
@@ -67,27 +63,27 @@ else{
     echo '  100% { background-color:#FFFFFF; }' ;
     echo '}' ; 
     echo '</style>'."\n" ;
-  
+
     echo '<br>Programmation : <b>'.($result['attr']['timer_switch'] == 0 ? '<FONT COLOR="red">Désactivée</FONT>' : '<FONT COLOR="green">Activée</FONT>').'</b><br><br>' ;
 
     echo '<table border=1>'."\n" ;
-    
+
     echo '  <tr>'."\n" ;
     echo '    <th style="text-align:center">Heures</th>'."\n" ;
     for ($j = 1; $j <= 7; $j++){
-      	$joursem = array('','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche')[$j] ;
-  		$class = ( date('N') == $j ? ' class="blink"' : '') ; // clignote si aujourd'hui
-       	echo '    <th style="text-align:center"><div'.$class.'>'.$joursem.'</div></th>'."\n" ;
+        $joursem = array('','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche')[$j] ;
+        $class = ( date('N') == $j ? ' class="blink"' : '') ; // clignote si aujourd'hui
+        echo '    <th style="text-align:center"><div'.$class.'>'.$joursem.'</div></th>'."\n" ;
     }
     echo '  </tr>'."\n" ;
 
     for ($h = 0; $h <= 23; $h++) {
         for ($m = 0; $m <= 30; $m = $m + 30) {
             echo '  <tr align="center">'."\n" ;
-          	$class = ( date('H') == $h && date('i') >= $m && date('i') < $m+30 ? ' class="blink"' : '') ; // clignote l'heure actuel
+            $class = ( date('H') == $h && date('i') >= $m && date('i') < $m+30 ? ' class="blink"' : '') ; // clignote l'heure actuel
             echo '    <td width="70"><div'.$class.'>'.str_pad($h, 2, '0', STR_PAD_LEFT).'h'.str_pad($m, 2, '0', STR_PAD_LEFT).'</div></td>'."\n" ;
             for ($j = 1; $j <= 7; $j++) {
-                $mode = FindMode( $result['attr'] , $j , $h , $m ) ;
+                $mode = FindModeByAttrs( $result['attr'] , $j , $h , $m ) ;
                 if( date('N') == $j && date('H') == $h && date('i') >= $m && date('i') < $m+30 )
                     echo '    <td style="color:'.Mode2Color($mode).';font-weight: bold;" width="70"><div class="blink">'.$mode.'</div></td>'."\n" ;
                 else
@@ -100,7 +96,7 @@ else{
 }
 
 
-function FindMode( $tab_attr , $j , $h , $m ){
+function FindModeByAttrs( $tab_attr , $j , $h , $m ){
     $data = floor( $h / 2 ) + 1 ; // Créneau de 2h. Démarre à px_data1
     $bin = str_pad( decbin($tab_attr['p'.$j.'_data'.$data]) , 8 , '0' , STR_PAD_LEFT) ;  // Convertis en binaire (01010101) et ajoute des 0 au début
     // 01 01 01 01 => x+1h30 x+1 x+0h30 x (premier créneau à droite)
@@ -113,6 +109,11 @@ function FindMode( $tab_attr , $j , $h , $m ){
     }  
 }
 
+function FindModeByTab( $tab , $j , $h , $m ){
+    //return $tab[ $h * 2 + $m / 30 ][ $j - 1 ] ;
+    return ($h * 2 + $m / 30).'-'.($j - 1) ;
+}
+
 function Mode2Color( $mode ){
     switch ( $mode ) {
         case 'confort':  return '#700702' ; break;
@@ -120,6 +121,35 @@ function Mode2Color( $mode ){
         case 'hors gel': return '#101459' ; break;
         default:   return '#FFFFFF' ;
     }
+}
+
+function RecupDonnees( $MonEqLogic ){
+    if( $MonEqLogic->getConfiguration('product_name', '') == "Heatzy"){
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Type Heatzy');
+        return RecupDonnees_PiloteV1( $MonEqLogic ) ;
+    }
+    else{
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : Diff de Heatzy');
+        return RecupDonnees_pX_dataY( $MonEqLogic ) ;
+    }
+    return false ;
+}
+
+function RecupDonnees_PiloteV1( $MonEqLogic ){
+    return true ;
+    return '<p style="color:red;">Fonctionnalité non prise en charge pour ce type de module</p>' ; 
+}
+
+function RecupDonnees_pX_dataY( $MonEqLogic ){
+    $result = HttpGizwits::GetConsigne( $MonEqLogic->getLogicalId() ) ;
+    if( $result === false ){
+        return '<p style="color:red;">Problème lors de la récupération des données</p>' ;
+    }
+    else if( !isset( $result['attr']['p1_data1'] ) ){
+        return '<p style="color:red;">Problème : Attributs pX_dataY non trouvés</p>' ;
+    }
+    
+    return $result ;
 }
 
 ?>
