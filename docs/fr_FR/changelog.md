@@ -1,9 +1,11 @@
-# 30/08/2026 (beta)
-- Correction et amélioration de la prise en charge des modules Heatzy (Première version du module - Pilote_V1)
+# 05/09/2026 (beta)
+- En mode API REST, la modification de l'affichage (après un clic sur un nouveau mode par ex) ne sera plus forcé et attendra la bonne prise en compte par heatzy (enviro 2sec) pour éviter les faux positifs.
+- Correction et amélioration de la prise en charge des modules de première génération (Heatzy - Pilote_V1)
   - Correction de l'envoi et récéption de commande en WebSocket (merci @SylvainF et @toysnic pour les tests)
   - Correction de l'activation et désactivation de la programmation
   - Mise à jour de l'affichage de l'état de la programmation (actif si au moins une tâche est active)
-  - L'affichage du planning de programmation n'est pas pris en charge pour ce module
+  - Prise en charge de l'affichage du planning de programmation pour ce module (merci @toysnic pour sa patience lors de mes nombreuses demandes)
+- L'affichage des tâches programmées n'est plus limitées à 20 par modules
 
 # 21/07/2026 (stable)
 - Correction de l'opacity sur la page configuration

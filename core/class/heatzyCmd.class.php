@@ -55,8 +55,8 @@ class heatzyCmd extends cmd {
             else if ($this->getLogicalId() == 'ProgOn') {
                 if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
                     $eqLogic->GestProg(true);
-                  	//$eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , 1 ) ;
-                  	$ForUpdate = 1 ;
+                    //$eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , 1 ) ;
+                    $ForUpdate = 1 ;
                 }
                 else {
                     $Consigne = array( 'attrs' => array ( 'timer_switch' => 1 )  );
@@ -66,8 +66,8 @@ class heatzyCmd extends cmd {
             else if ($this->getLogicalId() == 'ProgOff') {
                 if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
                     $eqLogic->GestProg(false);
-                  	//$eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , 0 ) ;
-                  	$ForUpdate = 1 ;
+                    //$eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , 0 ) ;
+                    $ForUpdate = 0 ;
                 }
                 else {
                     $Consigne = array( 'attrs' => array ( 'timer_switch' => 0 )  );
@@ -161,25 +161,25 @@ class heatzyCmd extends cmd {
                 //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' mode = '. var_export($Mode, true));
               
                 if( $eqLogic->getConfiguration('product_name', 'Heatzy') == 'Heatzy') {    /// Premiere version du module pilote
-                    $Consigne = array( 'raw' => array(1, 1, $Mode[0]) ) ; //"stop;[1,1,3]" "cft;[1,1,0]" "eco;[1,1,1]" "fro;[1,1,2]"
+                    // API REST  :            $Consigne = array( 'raw' => array(1, 1, $Mode[0]) ) ; //"stop;[1,1,3]" "cft;[1,1,0]" "eco;[1,1,1]" "fro;[1,1,2]"
+                    // API REST + WebSocket : $Consigne = array( 'attrs' => array ( 'mode' => '舒适'  )  ); // cft:舒适  eco:经济   fro:解冻   sstop:停止
+                    switch($Mode[0]){
+                        case 0: $Mode = '舒适'; break; // cft
+                        case 1: $Mode = '经济'; break; // eco
+                        case 2: $Mode = '解冻'; break; // fro
+                        case 3: $Mode = '停止'; break; // stop
+                    }
+                    $Consigne = array( 'attrs' => array ( 'mode' => $Mode  )  );
                 }
                 else {
-                    switch($Mode[0])
-                    {
-                    case 0:
-                       $Mode = 'cft'; break;
-                    case 1:
-                       $Mode = 'eco'; break;
-                    case 2:
-                       $Mode = 'fro'; break;
-                    case 3:
-                       $Mode = 'stop'; break;
-                    case 4:
-                       $Mode = 'cft1'; break;
-                    case 5:
-                       $Mode = 'cft2'; break;
-                    }
-                  
+                    switch($Mode[0]){
+                        case 0: $Mode = 'cft'; break;
+                        case 1: $Mode = 'eco'; break;
+                        case 2: $Mode = 'fro'; break;
+                        case 3: $Mode = 'stop'; break;
+                        case 4: $Mode = 'cft1'; break;
+                        case 5: $Mode = 'cft2'; break;
+                    }                  
                     $Consigne = array( 'attrs' => array ( 'mode' => $Mode )  );
                 }
                 //$ForUpdate = '' ;
@@ -187,11 +187,11 @@ class heatzyCmd extends cmd {
             else{
                 log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : Commande inconnue : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');
             }/// Le mode
-              
+                     
             
             if( $Consigne != '' ){
-					// or $this->getEqLogic()->getConfiguration('product_name', '') == 'Heatzy'
-              	if( config::byKey('API_Type','heatzy','REST') == 'REST' or $this->getEqLogic()->getConfiguration('product_name', '') == 'Heatzy' ){
+                // or $this->getEqLogic()->getConfiguration('product_name', '') == 'Heatzy'
+                if( config::byKey('API_Type','heatzy','REST') == 'REST' ){
                     log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' :$Consigne != null : ');
                     //$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
                     $Result = HttpGizwits::SetConsigne( $eqLogic->getLogicalId(), $Consigne);
@@ -219,9 +219,10 @@ class heatzyCmd extends cmd {
                     } // $Result === false
                   
                 } // if REST
-				else{
+                else{
                     // Envoi au demon
-                  	//$Consigne = array( 'raw' => array(1, 1, 2 ) ) ; //"stop;[1,1,3]" "cft;[1,1,0]" "eco;[1,1,1]" "fro;[1,1,2]"
+                    //$Consigne = array( 'raw' => array(1, 1, 2 ) ) ; //"stop;[1,1,3]" "cft;[1,1,0]" "eco;[1,1,1]" "fro;[1,1,2]"
+                  
                     log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' Envoi au demon : '.json_encode($Consigne) );
                     $this->getEqLogic()->sendToDaemon( 'execute' , $this->getEqLogic()->getLogicalId() , $Consigne ) ; 
                 } // REST
@@ -232,18 +233,18 @@ class heatzyCmd extends cmd {
                 sleep(2); // tempo de 1sec pour laisser le temps a l'API de le prendre en compte et le restituer
                 $this->getEqLogic()->updateHeatzyDid();
             }
-          	else{
+            else{
       
-          		// Mise à jour de la commande
-      		 	if($ForUpdate != '' ){
-					log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
-					$eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , $ForUpdate ) ;
-              	 
-          			$this->getEqLogic()->toHtml('mobile');
-          			$this->getEqLogic()->toHtml('dashboard');
-          			$this->getEqLogic()->refreshWidget();
-             	}
-          	}
+                // Mise à jour de la commande
+                if($ForUpdate != '' ){
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
+                    $eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , $ForUpdate ) ;
+
+                    $this->getEqLogic()->toHtml('mobile');
+                    $this->getEqLogic()->toHtml('dashboard');
+                    $this->getEqLogic()->refreshWidget();
+                }
+            }
 
             
         } /// Fin action

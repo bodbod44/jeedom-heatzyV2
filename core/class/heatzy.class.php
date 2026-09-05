@@ -745,6 +745,85 @@ class heatzy extends eqLogic {
         }
         return '' ;
     }
+    
+    /**
+    * Fonction exécutée automatiquement toutes les 30minutes par Jeedom
+    * seulement pour les modules Heatzy et Flam_Week2
+    * */
+//class heatzy extends eqLogic
+    public function VerifProg() {
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : VerifProg' );
+      
+        foreach (eqLogic::byType('heatzy') as $heatzy) {
+
+            if($heatzy->getIsEnable() != 1 )
+                continue;
+
+            if( $heatzy->getConfiguration('product_name', 'Heatzy') != 'Flam_Week2' &&
+            $heatzy->getConfiguration('product_name', 'Heatzy') != 'Heatzy' )
+                continue;
+
+            $EtatProg = null; /// Par defaut les taches sont actives
+
+            /// Si le module est en timeout on ne verifie pas la programmation
+            if ( $heatzy->getStatus('timeout', '0') == '1' ) {
+            /// Mise à jour de l'etat de la programmation désactivé
+                $EtatProg = false ;
+            }
+            else {
+                /// Lecture des taches de ce module
+                $Skip = 0;            /// Nombre d'element sauté
+                $Limit = 100;         /// Limite du nombre de tache
+
+                /// Lecture du token
+                $UserToken = config::byKey('UserToken','heatzy','none');
+
+                do {
+                    /// Lecture des taches par pas de $Limit
+                    $aTasks = HttpGizwits::GetSchedulerList($UserToken, $heatzy->getLogicalId(), $Skip, $Limit);
+                  
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : count($aTasks)='.count($aTasks)  );
+
+                    /// Boucle des taches
+                    foreach ($aTasks as $TaskNum => $aTask) {
+                        if($aTask['repeat'] === 'mon' && $aTask['date'] === '' && $aTask['time'] === '00:00' ) {    /// Sort de la boucle des taches à la premiere tache trouvée
+                            $EtatProg = $aTask['enabled'] ;
+                            break;
+                        }
+                    }
+                    $Skip += count($aTasks);
+
+                    if($EtatProg !== null ) {/// Sort de la boucle des recherches des taches si au moins une est désactivée
+                        break;
+                    }
+                } while(!empty($aTasks) && count($aTasks) >= $Limit);
+
+                if($Skip === 0 && empty($aTasks)) /// Si pas de saut c'est qu'il n'y a pas de programmation
+                    $EtatProg = false;
+            }
+            /// Mise à jour de l'etat EtatProg
+            $heatzy->checkAndUpdateCmd('etatprog', $EtatProg);
+
+            if( $EtatProg === null ){
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Programmation non determinée (pas trouvé le lundo 00:00)');
+                log::add('heatzy', 'error', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Programmation non determinée');
+            }
+            else if( $EtatProg === true )
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog active. Au moins une tâche active');
+            else
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog inactive. Aucune tâche active');
+
+            $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
+            $mc->remove();
+            $mc = cache::byKey('heatzyWidgetdashboard' . $heatzy->getId());
+            $mc->remove();
+
+            $heatzy->toHtml('mobile');
+            $heatzy->toHtml('dashboard');
+            $heatzy->refreshWidget();
+
+        }/// Fin boucle des modules
+    }
      
     /**
      * @brief Fonction qui permet d'activer/désactiver la programmation
@@ -935,73 +1014,7 @@ class heatzy extends eqLogic {
     * */
 //class heatzy extends eqLogic
     public static function cron30() {
-		log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : cron30' );
-      
-        foreach (eqLogic::byType('heatzy') as $heatzy) {
-
-            if($heatzy->getIsEnable() != 1 )
-                continue;
-
-            if( $heatzy->getConfiguration('product_name', 'Heatzy') != 'Flam_Week2' &&
-            $heatzy->getConfiguration('product_name', 'Heatzy') != 'Heatzy' )
-                continue;
-
-            $EtatProg='1'; /// Par defaut les taches sont actives
-
-            /// Si le module est en timeout on ne verifie pas la programmation
-            if ( $heatzy->getStatus('timeout', '0') == '1' ) {
-            /// Mise à jour de l'etat de la programmation désactivé
-                $EtatProg='0';
-            }
-            else {
-                /// Lecture des taches de ce module
-                $Skip = 0;            /// Nombre d'element sauté
-                $Limit = 100;         /// Limite du nombre de tache
-
-                /// Lecture du token
-                $UserToken = config::byKey('UserToken','heatzy','none');
-
-                do {
-                    /// Lecture des taches par pas de $Limit
-                    $aTasks = HttpGizwits::GetSchedulerList($UserToken, $heatzy->getLogicalId(), $Skip, $Limit);
-                  
-                  	log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : count($aTasks)='.count($aTasks)  );
-
-                    /// Boucle des taches
-                    foreach ($aTasks as $TaskNum => $aTask) {
-                        if($aTask['enabled'] === true ) {    /// Sort de la boucle des taches à la premiere tache trouvée
-                            $EtatProg='1';
-                            break;
-                        }
-                    }
-                    $Skip += count($aTasks);
-
-                    if($EtatProg === '1' ) {/// Sort de la boucle des recherches des taches si au moins une est désactivée
-                        break;
-                    }
-                } while(!empty($aTasks) && count($aTasks) >= $Limit);
-
-                if($Skip === 0 && empty($aTasks)) /// Si pas de saut c'est qu'il n'y a pas de programmation
-                    $EtatProg = '0';
-            }
-            /// Mise à jour de l'etat EtatProg
-            $heatzy->checkAndUpdateCmd('etatprog', $EtatProg);
-
-            if( $EtatProg === '1' )
-                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog active. Au moins une tâche active');
-            else
-                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog inactive. Aucune tâche active');
-
-            $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
-            $mc->remove();
-            $mc = cache::byKey('heatzyWidgetdashboard' . $heatzy->getId());
-            $mc->remove();
-
-            $heatzy->toHtml('mobile');
-            $heatzy->toHtml('dashboard');
-            $heatzy->refreshWidget();
-
-        }/// Fin boucle des modules
+        VerifProg() ;
     }
 
     /*
@@ -1037,8 +1050,8 @@ class heatzy extends eqLogic {
         if( $aujourdhui > $cible && (date('w', $aujourdhui )) == '6' ){//6=samedi
          
             foreach ( eqLogic::byType('heatzy') as $eqLogic) {
-                if( $eqLogic->getConfiguration('product_name', '') == "Heatzy" ){
-                    message::add("Heatzy", 'Vous possédez un module Heatzy plus ancien dont la compatibilité avec le plugin peut ne pas être totale. Je vous invite à créer un sujet sur le forum ou à envoyer un message direct à bodbod sur le forum (https://community.jeedom.com/). Ainsi, je pourrais vérifier et ajuster le plugin pour le rendre complétement opérationnel pour le module de type -Heatzy-.' );
+                if( $eqLogic->getConfiguration('product_name', '') == "Flam_Week2" ){
+                    message::add("Heatzy", 'Vous possédez un module Heatzy Flam_Week2 dont la compatibilité avec le plugin peut ne pas être totale. Je vous invite à créer un sujet sur le forum ou à envoyer un message direct à bodbod sur le forum (https://community.jeedom.com/). Ainsi, je pourrais vérifier et ajuster le plugin pour le rendre complétement opérationnel pour le module de type -Flam_Week2-.' );
                     break;
                 }
                     
