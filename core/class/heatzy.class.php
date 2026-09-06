@@ -835,6 +835,7 @@ class heatzy extends eqLogic {
 
         $Skip = 0;            /// Nombre d'element sauté
         $Limit = 100;        /// Limite du nombre de tache
+        $Cpt = 0 ;
         
         /// Lecture du token
         $UserToken = config::byKey('UserToken','heatzy','none');
@@ -850,40 +851,48 @@ class heatzy extends eqLogic {
 
                 /// Sauvegarde de l'Id
                 $Id = $aTask['id'];
-
-                /// On envoie le minimum => suppression des données inutiles
-                unset($aTask['remark']);
-                unset($aTask['end_date']);
-                unset($aTask['did']);
-                unset($aTask['created_at']);
-                unset($aTask['enabled']);
-                unset($aTask['updated_at']);
-                unset($aTask['product_key']);
-                unset($aTask['days']);
-                unset($aTask['raw']);
-                unset($aTask['start_date']);
-                unset($aTask['date']);
-                unset($aTask['scene_id']);
-                unset($aTask['group_id']);
-                unset($aTask['id']);
-              
-              	unset($aTask['attrs_config']) ;
-              
-                $aTask['enabled']=$EtatProg;
                 
-                /// Mise a jour de la tache
-                $aTaskResul = HttpGizwits::UpdateScheduler($UserToken, $this->getLogicalId(), $Id, $aTask);
-                if ($aTaskResul === false ) {
-                    throw new Exception(__('Erreur : mise à jour de la tache', __FILE__));
-                }
-                if ($aTaskResul['id'] != $Id) {
-                    throw new Exception(__('Erreur : identifiant de tache invalide', __FILE__));
+                if( strlen($aTask['repeat']) === 3 && $aTask['date'] === '' && in_array( substr( $aTask['time'] , -2) , array( '00' , '30' ) ) ) {
+                    /// On envoie le minimum => suppression des données inutiles
+                    unset($aTask['remark']);
+                    unset($aTask['end_date']);
+                    unset($aTask['did']);
+                    unset($aTask['created_at']);
+                    unset($aTask['enabled']);
+                    unset($aTask['updated_at']);
+                    unset($aTask['product_key']);
+                    unset($aTask['days']);
+                    unset($aTask['raw']);
+                    unset($aTask['start_date']);
+                    unset($aTask['date']);
+                    unset($aTask['scene_id']);
+                    unset($aTask['group_id']);
+                    unset($aTask['id']);
+                  
+                    unset($aTask['attrs_config']) ;
+                  
+                    $aTask['enabled']=$EtatProg;
+                    
+                    /// Mise a jour de la tache
+                    $aTaskResul = HttpGizwits::UpdateScheduler($UserToken, $this->getLogicalId(), $Id, $aTask);
+                    if ($aTaskResul === false ) {
+                        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId().' : Erreur : mise à jour de la tache - '.var_export( $aTaskResul , true) );
+                        throw new Exception(__('Erreur : mise à jour de la tache', __FILE__));
+                    }
+                    else if ($aTaskResul['id'] != $Id) {
+                        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId().' : Erreur : identifiant de tache invalide - '.var_export( $aTaskResul , true) );
+                        throw new Exception(__('Erreur : identifiant de tache invalide', __FILE__));
+                    }
+                    else{
+                        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId().' : UpdateScheduler OK '.var_export( $aTaskResul , true) );
+                        $Cpt++ ;
+                    }
                 }
             }
             $Skip += count($aTasks);
         } while(!empty($aTasks) && count($aTasks) >= $Limit);
         
-        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : '.$Skip.' taches mise a jour');
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : '.$Cpt.' taches mise a jour (sur '.$Skip.' tâches trouvées)');
         return $Skip ;
     }
 

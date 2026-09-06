@@ -177,9 +177,11 @@ function RecupDonnees_PiloteV1( $MonEqLogic ){
             }
 
             //if( $aTask['enabled'] === true ){
-            if( isset( $aTask['time'] ) ){
-                $heure = explode(":", $aTask['time'] )[0] ;
-                $minute = explode(":", $aTask['time'] )[1] ;
+            if( isset( $aTask['time'] ) && strlen($aTask['time'] ?? '') === 5 ){
+                //$heure = explode(":", $aTask['time'] )[0] ;
+                $heure = substr( $aTask['time'] , 0 , 2) ;
+                //$minute = explode(":", $aTask['time'] )[1] ;
+                $minute = substr( $aTask['time'] , -2) ;
                 if( $heure  < 0 or $heure > 23  ) $heure = null ;
                 if( $minute < 0 or $minute > 59 ) $minute = null ;
             }
