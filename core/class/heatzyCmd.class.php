@@ -33,6 +33,10 @@ class heatzyCmd extends cmd {
             $this->getEqLogic()->updateHeatzyDid();
             //Synchro::StatsHeatzy( true );
             //Synchro::StatsMessage();
+            
+            if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
+                heatzy::VerifProg() ;
+            }
         }
         else if($this->getType() == 'info' ) {
             return $this->getValue();

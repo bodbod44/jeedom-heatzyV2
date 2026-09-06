@@ -763,12 +763,13 @@ class heatzy extends eqLogic {
             $heatzy->getConfiguration('product_name', 'Heatzy') != 'Heatzy' )
                 continue;
 
-            $EtatProg = null; /// Par defaut les taches sont actives
+            $EtatProg1 = null;
+            $EtatProg2 = null;
 
             /// Si le module est en timeout on ne verifie pas la programmation
             if ( $heatzy->getStatus('timeout', '0') == '1' ) {
             /// Mise à jour de l'etat de la programmation désactivé
-                $EtatProg = false ;
+                $EtatProg1 = false ;
             }
             else {
                 /// Lecture des taches de ce module
@@ -786,32 +787,41 @@ class heatzy extends eqLogic {
 
                     /// Boucle des taches
                     foreach ($aTasks as $TaskNum => $aTask) {
-                        if($aTask['repeat'] === 'mon' && $aTask['date'] === '' && $aTask['time'] === '00:00' ) {    /// Sort de la boucle des taches à la premiere tache trouvée
-                            $EtatProg = $aTask['enabled'] ;
+                        if($aTask['repeat'] === 'mon' && $aTask['date'] === '' && $aTask['time'] === '00:00' && isset( $aTask['attrs']['mode'] ) ) {
+                            /// Tâche du lundi trouvé. On sort de la boucle
+                            $EtatProg1 = $aTask['enabled'] ;
                             break;
+                        }
+                        if(strlen($aTask['repeat']) === 3 && $aTask['date'] === '' && in_array( substr( $aTask['time'] , -2) , array( '00' ,'30' ) ) && isset( $aTask['attrs']['mode'] ) ) {
+                            // Une tâche en semaine trouvée. On continue a chercher
+                            $EtatProg2 = $aTask['enabled'] ;
                         }
                     }
                     $Skip += count($aTasks);
 
-                    if($EtatProg !== null ) {/// Sort de la boucle des recherches des taches si au moins une est désactivée
+                    if($EtatProg1 !== null ) {/// Sort de la boucle des recherches des taches si au moins une est désactivée
                         break;
                     }
                 } while(!empty($aTasks) && count($aTasks) >= $Limit);
-
-                if($Skip === 0 && empty($aTasks)) /// Si pas de saut c'est qu'il n'y a pas de programmation
-                    $EtatProg = false;
             }
-            /// Mise à jour de l'etat EtatProg
-            $heatzy->checkAndUpdateCmd('etatprog', $EtatProg);
 
-            if( $EtatProg === null ){
-                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Programmation non determinée (pas trouvé le lundo 00:00)');
+            if( $Skip === 0 && empty($aTasks) ){ /// Si pas de saut c'est qu'il n'y a pas de programmation
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog trouvé. Aucune tâche trouvée' );
+                $heatzy->checkAndUpdateCmd('etatprog', false);
+            }
+            else if( $EtatProg1 !== null ){
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog trouvé. Tâche du lundi '.($EtatProg1 ? 'active' : 'inactive') );
+                /// Mise à jour de l'etat EtatProg1
+                $heatzy->checkAndUpdateCmd('etatprog', $EtatProg1);
+            }
+            else if( $EtatProg2 !== null ){
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog trouvé. Tâche en semaine '.($EtatProg2 ? 'active' : 'inactive') );
+                /// Mise à jour de l'etat EtatProg2
+                $heatzy->checkAndUpdateCmd('etatprog', $EtatProg2);
+            }
+            else{
                 log::add('heatzy', 'error', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Programmation non determinée');
             }
-            else if( $EtatProg === true )
-                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog active. Au moins une tâche active');
-            else
-                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog inactive. Aucune tâche active');
 
             $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
             $mc->remove();
@@ -852,7 +862,7 @@ class heatzy extends eqLogic {
                 /// Sauvegarde de l'Id
                 $Id = $aTask['id'];
                 
-                if( strlen($aTask['repeat']) === 3 && $aTask['date'] === '' && in_array( substr( $aTask['time'] , -2) , array( '00' , '30' ) ) ) {
+                if( strlen($aTask['repeat']) === 3 && $aTask['date'] === '' && isset( $aTask['attrs']['mode'] ) ) {
                     /// On envoie le minimum => suppression des données inutiles
                     unset($aTask['remark']);
                     unset($aTask['end_date']);

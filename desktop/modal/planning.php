@@ -71,8 +71,8 @@ else{
     if( isset( $result['timer_switch'] ) ){
         echo '<br>Programmation : <b>'.($result['timer_switch'] == 0 ? '<FONT COLOR="red">Désactivée</FONT>' : '<FONT COLOR="green">Activée</FONT>').'</b>' ;
     }
-  	else
-      log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') $result[timer_switch] non valorisé' );
+    else
+      log::add('heatzy', 'error', __METHOD__.'(ln '.__LINE__.') '.$MonEqLogic->getName().' - $result[timer_switch] non valorisé' );
 
     echo '<br><br><table border=1>'."\n" ;
 
@@ -155,6 +155,9 @@ function RecupDonnees_PiloteV1( $MonEqLogic ){
     /// Lecture des taches de ce module
     $Skip = 0;            /// Nombre d'element sauté
     $Limit = 100;         /// Limite du nombre de tache
+  
+    $timer_switch1 = null ;
+    $timer_switch2 = null ;
 
     /// Lecture du token
     $UserToken = config::byKey('UserToken','heatzy','none');
@@ -165,16 +168,12 @@ function RecupDonnees_PiloteV1( $MonEqLogic ){
 
         //$aTasks = array(0 => array('remark' => '','repeat' => 'mon, wed','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:47','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 1,),'time' => '21:30','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),1 =>array ('remark' => '','repeat' => 'sun','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:47','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 1,),'time' => '22:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),2 =>array ('remark' => '','repeat' => 'fri','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:47','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 2,),'time' => '22:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),3 =>array ('remark' => '','repeat' => 'fri','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:47','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 1,),'time' => '12:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),4 =>array ('remark' => '','repeat' => 'fri','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:47','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 2,),'time' => '09:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),5 =>array ('remark' => '','repeat' => 'thu','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:46','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 1,),'time' => '12:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),6 =>array ('remark' => '','repeat' => 'thu','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:46','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 2,),'time' => '09:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),7 =>array ('remark' => '','repeat' => 'wed','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:46','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 1,),'time' => '08:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),8 =>array ('remark' => '','repeat' => 'wed','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:46','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 0,),'time' => '05:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),9 =>array ('remark' => '','repeat' => 'tue','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:46','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 1,),'time' => '08:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),10 =>array ('remark' => '','repeat' => 'tue','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:46','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 0,),'time' => '05:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),11 =>array ('remark' => '','repeat' => 'mon','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:46','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 1,),'time' => '13:30','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),12 =>array ('remark' => '','repeat' => 'mon','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:46','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 2,),'time' => '09:30','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),13 =>array ('remark' => '','repeat' => 'mon','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:46','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 1,),'time' => '06:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),14 =>array ('remark' => '','repeat' => 'mon','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:45','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 0,),'time' => '02:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),15 =>array ('remark' => '','repeat' => 'mon','did' => 'didxxxxxxdid','created_at' => '2026-09-02T21:16:45','enabled' => true,'days' =>array (),'product_key' => '9420ae048da545c88fc6274d204dd25f','raw' => '','attrs' =>array ('mode' => 1,),'time' => '00:00','date' => '','attrs_config' =>array (),'scene_id' => '','group_id' => '','id' => 'xxxxxxxxxxxxxx',),) ;
 
-        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$MonEqLogic->getLogicalId().' : count($aTasks)='.count($aTasks)  );
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$MonEqLogic->getLogicalId().' : count($aTasks)='.count($aTasks ?? array()) );
 
         /// Boucle des taches
         foreach ($aTasks as $TaskNum => $aTask) {
-
             //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') $aTask='.var_export( $aTask , true )  );
-            
-            if( $aTask['repeat'] == 'mon' && $aTask['time'] == '00:00' ){
-                $tab['timer_switch'] = $aTask['enabled'] ;
-            }
+           
 
             //if( $aTask['enabled'] === true ){
             if( isset( $aTask['time'] ) && strlen($aTask['time'] ?? '') === 5 ){
@@ -201,6 +200,16 @@ function RecupDonnees_PiloteV1( $MonEqLogic ){
             }
             else{
                 $mode = null ;
+            }
+          
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') repeat='.$aTask['repeat'].' - time='.$aTask['time'].' - enabled='.($aTask['enabled'] ? '1' : '0').' - mode='.$mode  );
+          
+            if( $aTask['repeat'] == 'mon' && $aTask['time'] == '00:00' && $mode !== null ){
+                $timer_switch1 = $aTask['enabled'] ;
+            }
+          
+            if( strlen($aTask['repeat']) === 3 && in_array( $minute , array( 00 , 30 ) ) && $mode !== null ){
+                $timer_switch2 = $aTask['enabled'] ;
             }
 
             if( isset( $aTask['repeat'] ) && $heure !== null && in_array( $minute , array( '00' ,'30' ) ) ) {    /// Sort de la boucle des taches à la premiere tache trouvée
@@ -233,13 +242,14 @@ function RecupDonnees_PiloteV1( $MonEqLogic ){
             } // if != null
             //} // if enabled
 
-            $Skip += count($aTasks);
+            $Skip += (count($aTasks ?? array() ) ) ;
 
         } // foreach ($aTasks
-    } while(!empty($aTasks) && count($aTasks) >= $Limit);
+    } while(!empty($aTasks) && count($aTasks ?? array()) >= $Limit);
 
     //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') $tab='.var_export( $tab , true )  );
 
+    /*
     // Remplissage des zones vides
     $mode = null ;
     for ($j = 0; $j < 7; $j++) {
@@ -250,15 +260,31 @@ function RecupDonnees_PiloteV1( $MonEqLogic ){
                 $tab[$h][$j] = $mode ;
         }
     }
+  
     //if( $tab[$h][$j] === null ) // Si le lundi minuit est null, on reprend celui du dimanche soir, a priori, il y a une tâche d'office le lundi matin à 00:00
     //$tab[$h][$j] = $tab[6][47] ;
     $dernier = $tab[47][6] ;
     $h = 0 ;
-    do {
+    while( $tab[$h][0] == null && $h < 48 ){
         //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') $dernier=*'.$dernier.'*'  );
         $tab[$h][0] = $dernier ;
         $h++ ;
-    } while( $tab[$h][0] == null && $h < 48 );
+    }*/
+
+    if( $timer_switch1 !== null ){
+        $tab['timer_switch'] = $timer_switch1 ;
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') timer_switch trouvé sur time1 (lundi 00:00)'  );
+    }
+    else if( $timer_switch2 !== null ){
+      $tab['timer_switch'] = $timer_switch2 ;
+      log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') timer_switch trouvé sur time2 (une autre prog)'  );
+    }
+    else if( $Skip === 0 ){
+      $tab['timer_switch'] = false ;
+      log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') timer_switch trouvé sur skip (aucune tâche trouvée)'  );
+    }
+    else
+        log::add('heatzy', 'error', __METHOD__.'(ln '.__LINE__.') timer_switch non trouvé dans la boucle'  );
   
     return $tab ;
     //return '<p style="color:red;">Fonctionnalité non prise en charge pour ce type de module</p>' ; 
