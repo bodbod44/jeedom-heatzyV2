@@ -6,6 +6,7 @@
   - Mise à jour de l'affichage de l'état de la programmation (actif si au moins une tâche est active)
   - Prise en charge de l'affichage du planning de programmation pour ce module (merci @toysnic pour sa patience lors de mes nombreuses demandes)
 - L'affichage des tâches programmées n'est plus limitées à 20 par modules
+- La mise à jour et supression des tâches programmées ont été améliorées (rejeu sur échec)
 
 # 21/07/2026 (stable)
 - Correction de l'opacity sur la page configuration

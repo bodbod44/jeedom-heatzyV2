@@ -221,7 +221,7 @@ class HttpGizwits {
      * @return Un tableau associatif ou false en cas d'erreur
      */
 //class HttpGizwits
-    public static function GetSchedulerList($UserToken, $Did, $Skip = 0, $Limit = 30) {
+    public static function GetSchedulerList($UserToken, $Did, $Skip = 0, $Limit = 50, $Recurrence = 0) {
 
         /*
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $UserToken='.$UserToken);
@@ -265,9 +265,28 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
-            return false;
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- erreur http '.$httpcode.' - timeout '.config::byKey('Timeout_value','heatzy',self::$Default_Timeout ).'s (Recurrence '.$Recurrence.')');
+            
+            if( $Recurrence < self::$RecurrenceAPI ){
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
+                sleep( 1 + 2 ** $Recurrence ); // tempo (augmente avec le cumul des essais - A la puissance de la recurrence)
+                
+                //$aRep = self::GetSchedulerList($UserToken, $Did, $Skip, $Limit, $Recurrence + 1) ;
+                $aRep = self::GetSchedulerList($UserToken, $Did, $Skip, $Limit, $Recurrence+ 1) ;
+                if( $aRep === false ){
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
+                    return false;
+                }
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
+            }
+            else
+                return false;
         }
+        else{ // Le serveur a répondu
+            $aRep = json_decode($result, true);
+        }
+      
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
 
         ///Décodage de la réponse
         $aRep = json_decode($result, true);
@@ -372,7 +391,7 @@ class HttpGizwits {
      * @return Un tableau associatif ou false en cas d'erreur
      */
 //class HttpGizwits
-    public static function UpdateScheduler($UserToken, $Did, $Id, $Param) {
+    public static function UpdateScheduler($UserToken, $Did, $Id, $Param, $Recurrence = 0) {
 
         /*
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $UserToken='.$UserToken);
@@ -425,12 +444,31 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
-            return false;
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- erreur http '.$httpcode.' - timeout '.config::byKey('Timeout_value','heatzy',self::$Default_Timeout ).'s (Recurrence '.$Recurrence.')');
+            
+            if( $Recurrence < self::$RecurrenceAPI ){
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
+                sleep( 1 + 2 ** $Recurrence ); // tempo (augmente avec le cumul des essais - A la puissance de la recurrence)
+                
+                //$aRep = self::UpdateScheduler($UserToken, $Did, $Id, $Param, $Recurrence + 1) ;
+                $aRep = self::UpdateScheduler($UserToken, $Did, $Id, $Param, $Recurrence + 1) ;
+                if( $aRep === false ){
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
+                    return false;
+                }
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
+            }
+            else
+                return false;
         }
+        else{ // Le serveur a répondu
+            $aRep = json_decode($result, true);
+        }
+      
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
         
         ///Décodage de la réponse
-        $aRep = json_decode($result, true);
+        //$aRep = json_decode($result, true);
     
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
@@ -452,7 +490,7 @@ class HttpGizwits {
      * @return true ou false en cas d'erreur
      */
 //class HttpGizwits
-    public static function DeleteScheduler($UserToken, $Did, $Id ) {
+    public static function DeleteScheduler($UserToken, $Did, $Id, $Recurrence = 0 ) {
     
         /*
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $UserToken='.$UserToken);
@@ -500,12 +538,28 @@ class HttpGizwits {
         curl_close($gizwits);
 
         if( $httpcode != 200 && $httpcode != 400 ){
-            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': erreur http '.$httpcode);
-            return false;
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- erreur http '.$httpcode.' - timeout '.config::byKey('Timeout_value','heatzy',self::$Default_Timeout ).'s (Recurrence '.$Recurrence.')');
+            
+            if( $Recurrence < self::$RecurrenceAPI ){
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
+                sleep( 1 + 2 ** $Recurrence ); // tempo (augmente avec le cumul des essais - A la puissance de la recurrence)
+                
+                //$aRep = self::DeleteScheduler($UserToken, $Did, $Id, $Recurrence + 1) ;
+                $aRep = self::DeleteScheduler($UserToken, $Did, $Id, $Recurrence + 1) ;
+                if( $aRep === false ){
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
+                    return false;
+                }
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative OK (Recurrence '.$Recurrence.')');
+            }
+            else
+                return false;
         }
+        else{ // Le serveur a répondu
+            $aRep = json_decode($result, true);
+        }
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
         
-        ///Décodage de la réponse
-        $aRep = json_decode($result, true);
     
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
@@ -601,7 +655,7 @@ class HttpGizwits {
 //class HttpGizwits
     public static function SetConsigne($Did, $Consigne, $Recurrence = 0) {
         
-		$UserToken = config::byKey('UserToken','heatzy','');
+        $UserToken = config::byKey('UserToken','heatzy','');
       
         if(empty($UserToken) || empty($Did) || empty($Consigne)){
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
@@ -652,10 +706,10 @@ class HttpGizwits {
             
             if( $Recurrence < self::$RecurrenceAPI ){
                 log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
-                sleep(2); // tempo
+                sleep( 1 + 2 ** $Recurrence ); // tempo (augmente avec le cumul des essais - A la puissance de la recurrence)
                 
                 //$aRep = self::SetConsigne($UserToken, $Did, $Consigne , $Recurrence + 1) ;
-              	$aRep = self::SetConsigne( $Did, $Consigne , $Recurrence + 1) ;
+                $aRep = self::SetConsigne( $Did, $Consigne , $Recurrence + 1) ;
                 if( $aRep === false ){
                     log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
                     return false;
@@ -759,10 +813,10 @@ class HttpGizwits {
             
             if( $Recurrence < self::$RecurrenceAPI ){
                 log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
-                sleep(2); // tempo
+                sleep( 1 + 2 ** $Recurrence ); // tempo (augmente avec le cumul des essais - A la puissance de la recurrence)
                 
                 //$aRep = self::GetConsigne($UserToken, $Did , $Recurrence + 1) ;
-              $aRep = self::GetConsigne( $Did , $Recurrence + 1) ;
+                $aRep = self::GetConsigne( $Did , $Recurrence + 1) ;
                 if( $aRep === false ){
                     log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
                     return false;
@@ -786,7 +840,7 @@ class HttpGizwits {
                         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': Login() OK - Nouveau Token ('.$UserToken.') (Recurrence '.$Recurrence.')');
                         
                         //$aRep = self::GetConsigne($UserToken, $Did , $Recurrence + 1) ;
-                      	$aRep = self::GetConsigne( $Did , $Recurrence + 1) ;
+                        $aRep = self::GetConsigne( $Did , $Recurrence + 1) ;
                         if( $aRep === false ){
                             log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
                             return false;

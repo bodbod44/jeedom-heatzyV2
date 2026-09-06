@@ -751,7 +751,7 @@ class heatzy extends eqLogic {
     * seulement pour les modules Heatzy et Flam_Week2
     * */
 //class heatzy extends eqLogic
-    public function VerifProg() {
+    public static function VerifProg() {
         log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : VerifProg' );
       
         foreach (eqLogic::byType('heatzy') as $heatzy) {
@@ -833,7 +833,7 @@ class heatzy extends eqLogic {
 //class heatzy extends eqLogic
     public function GestProg($EtatProg) {
 
-      	$Skip = 0;            /// Nombre d'element sauté
+        $Skip = 0;            /// Nombre d'element sauté
         $Limit = 100;        /// Limite du nombre de tache
         
         /// Lecture du token
@@ -843,7 +843,7 @@ class heatzy extends eqLogic {
             /// Lecture des taches par pas de $Limit
             $aTasks = HttpGizwits::GetSchedulerList($UserToken, $this->getLogicalId(), $Skip, $Limit);
           
-          	log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : count($aTasks)='.count($aTasks) );
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : count($aTasks)='.count($aTasks) );
             
             /// Boucle de mise à jour des taches
             foreach ($aTasks as $TaskNum => $aTask) {
@@ -884,7 +884,7 @@ class heatzy extends eqLogic {
         } while(!empty($aTasks) && count($aTasks) >= $Limit);
         
         log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : '.$Skip.' taches mise a jour');
-      	return $Skip ;
+        return $Skip ;
     }
 
     /**
@@ -1014,7 +1014,7 @@ class heatzy extends eqLogic {
     * */
 //class heatzy extends eqLogic
     public static function cron30() {
-        VerifProg() ;
+        self::VerifProg() ;
     }
 
     /*
@@ -1028,7 +1028,7 @@ class heatzy extends eqLogic {
      * Fonction exécutée automatiquement tous les jours par Jeedom*/
 //class heatzy extends eqLogic
     public static function cronDaily() {
-      	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': cronDaily' );
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': cronDaily' );
         
         $aujourdhui =  strtotime( date(  "Y-m-d H:i:s" ) ) ;
         $cible = strtotime( "2025-07-01 00:00:00" ) ;         
