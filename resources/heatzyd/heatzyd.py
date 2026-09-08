@@ -45,7 +45,7 @@ def read_socket():
 		if 'apikey' in message and 'message' in message:
 			if message['apikey'] == _apikey:
 				logging.debug("read_socket - message valide : %s", message)
-				if message['message']['cmd'] == 'login_req' or message['message']['cmd'] == 'c2s_read' or message['message']['cmd'] == 'c2s_write' :
+				if message['message']['cmd'] == 'login_req' or message['message']['cmd'] == 'c2s_read' or message['message']['cmd'] == 'c2s_write' or message['message']['cmd'] == 'c2s_raw' :
 					ws_gizwitz_send_message( json.dumps( message['message']) )
 				elif message['message']['cmd'] == 'stop' :
 					logging.debug("read_socket - stop")
@@ -162,7 +162,7 @@ def ws_gizwits_on_message(ws, msg):
 	_ws_gizwitz_heartbeat_receive = time.time()
 	jsonMsg = json.loads(msg)
 	
-	# retour du login
+	# LOGIN-RES - retour du login
 	if jsonMsg['cmd'] == 'login_res' and 'success' in jsonMsg['data']:
 		if jsonMsg['data']['success'] == True :
 			_ws_gizwitz_login_status = 0
@@ -170,12 +170,38 @@ def ws_gizwits_on_message(ws, msg):
 		else:
 			_ws_gizwitz_login_status += 1
 			logging.debug('ws_gizwits_on_message - ERROR Login KO : ' + msg)
-	# notification de changement depuis gizwits
-	elif jsonMsg['cmd'] == 's2c_noti' or jsonMsg['cmd'] == 's2c_online_status':
+			
+	# S2C_NOTI - notification de changement depuis gizwits
+	elif jsonMsg['cmd'] == 's2c_noti':
 		logging.debug('ws_gizwits_on_message - message notification reçu : ' + msg)
 		if 'did' in jsonMsg['data']:
 			send_socket( msg )
-	# retour d'une erreur (format, login KO ...)
+			
+	# S2C_RAW - notification de changement depuis gizwits
+	elif jsonMsg['cmd'] == 's2c_raw':
+		logging.debug('ws_gizwits_on_message - message notification RAW reçu : ' + msg)
+		if 'did' in jsonMsg['data']:
+			send_socket( msg )
+			
+	# S2C_ONLINE_STATUS - notification de changement de statut "online_status"
+	elif jsonMsg['cmd'] == 's2c_online_status':
+		logging.debug('ws_gizwits_on_message - message notification online_status : ' + msg)
+		if 'did' in jsonMsg['data']:
+			send_socket( msg )
+			
+	# S2C_ACK - notification de changement de statut "online_status"
+	elif jsonMsg['cmd'] == 's2c_ack':
+		logging.debug('ws_gizwits_on_message - S2C_ACK non pris en charge par le plugin : ' + msg)
+		
+	# SUBSCRIBE_RES - notification de changement de statut "online_status"
+	elif jsonMsg['cmd'] == 'subscribe_res':
+		logging.debug('ws_gizwits_on_message - SUBSCRIBE_RES non pris en charge par le plugin : ' + msg)
+		
+	# S2C_BINDING_CHANGED - notification de changement de statut "online_status"
+	elif jsonMsg['cmd'] == 's2c_binding_changed':
+		logging.debug('ws_gizwits_on_message - S2C_BINDING_CHANGED non pris en charge par le plugin : ' + msg)
+		
+	# S2C_INVALI_MSG - retour d'une erreur (format, login KO ...)
 	elif jsonMsg['cmd'] == 's2c_invalid_msg' and jsonMsg['data']['error_code'] > 0:
 		if jsonMsg['data']['error_code'] == 1003 or  jsonMsg['data']['error_code'] == 1009:
 			_ws_gizwitz_login_status += 1
@@ -188,7 +214,8 @@ def ws_gizwits_on_message(ws, msg):
 		else:
 			logging.debug('ws_gizwits_on_message - ERROR : ' + str(jsonMsg['data']['error_code']) + ' - ' + jsonMsg['data']['msg'] + 'mess:' + msg )
 			#logging.debug('ws_gizwits_on_message - '+ 'keep_running = ' + str(_websocket.keep_running) )
-	# retour du ping
+			
+	# PONG - retour du ping
 	elif jsonMsg['cmd'] == 'pong':
 		logging.debug('ws_gizwits_on_message - PING OK - ' + msg)
 	else:
@@ -223,6 +250,7 @@ def ws_gizwitz_send_message( mess , force = False ):
 	Thread(target=SendMessageToGizwits).start()
 
 def ws_gizwitz_send_login():
+	#p0_type": "attrs_v4
 	message = ( '{"cmd": "login_req",'
 				'"data": { "appid": "' + _heatzy_appid + '"'
 						', "uid": "'   + _heatzy_uid   + '"'

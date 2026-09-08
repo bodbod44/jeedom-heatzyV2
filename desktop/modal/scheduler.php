@@ -22,13 +22,15 @@ if (!isConnect('admin')) {
 ?>
 
 <script>
-buffer = "";
+//buffer = "";
 <?php
     // Créé un tablmeau avec le nom et l'id de tous les modules
     $eqLogics = heatzy::byType('heatzy') ;
     echo '$tab_heatzy = ['."\n" ;
     foreach ($eqLogics as $eqLogic) {
-        echo '["'.$eqLogic->getHumanName().'","'.$eqLogic->getLogicalId().'"],'."\n" ;
+        if( $eqLogic->getIsEnable() == 1 ){
+            echo '["'.$eqLogic->getHumanName().'","'.$eqLogic->getLogicalId().'"],'."\n" ;
+        }
     }
     echo '];'."\n" ;
 ?>  
@@ -40,16 +42,15 @@ function GetSchedulers( ){
     });
 };
 
-function GetSchedulersByDid( did ){  
+function GetSchedulersByDid( did , deb = 0 ){  
     // Va chercher la liste des tâches pour un module donné
+  	Nb = 100 ;
     $.ajax({
         type: 'POST',
         url: 'plugins/heatzy/core/ajax/heatzy.ajax.php', // Chemin vers votre fichier AJAX
         data: {
-            action: 'GetSchedulerList', // Nom de l'action à exécuter (voir switch en PHP)
-            Did: did[1] ,
-            Skip: 0,
-            Limit: 20
+            action: 'GetSchedulerListFull', // Nom de l'action à exécuter (voir switch en PHP)
+            Did: did[1]
         },
         dataType: 'json',
         success: function(data) {
@@ -67,6 +68,7 @@ function GetSchedulersByDid( did ){
             alert("Erreur pour " + did[0] + did[1], err);
         }
     });
+    return false ;
 };
 
 function CreateScheduler( did , Param ){
@@ -75,8 +77,8 @@ function CreateScheduler( did , Param ){
         url: 'plugins/heatzy/core/ajax/heatzy.ajax.php', // Chemin vers votre fichier AJAX
         data: {
             action: 'CreateScheduler', // Nom de l'action à exécuter (voir switch en PHP)
-              Did: did ,
-              Param: json_encode(Param)
+            Did: did ,
+            Param: json_encode(Param)
         },
         dataType: 'json',
         error: function(request, status, error) {
@@ -96,12 +98,15 @@ function CreateScheduler( did , Param ){
                 return;
             }
             // Succès : La classe a été appelée et a renvoyé une réponse
-    		const LaDate = new Date();
-    		Param['created_at'] = LaDate.toISOString().substring(0, 19) ;
-          	Param["id"] = data.result["id"] ;
-          	Param["did"] = did ;
-          	InsertLigne( Param , did ) ;
+            const LaDate = new Date();
+            Param['created_at'] = LaDate.toISOString().substring(0, 19) ;
+            Param["id"] = data.result["id"] ;
+            Param["did"] = did ;
+            Param["enabled"] = "true" ;
+            InsertLigne( Param , did ) ;
             RazForm() ; // Reinit le formulaire si appel OK
+            
+            $('#div_alert').showAlert({message: 'Ajout effectué', level: 'success'}); //'info', 'success', 'warning', 'danger'
         }
     });  
 }
@@ -112,9 +117,9 @@ function UpdateScheduler( did , Id , Param ){
         url: 'plugins/heatzy/core/ajax/heatzy.ajax.php', // Chemin vers votre fichier AJAX
         data: {
             action: 'UpdateScheduler', // Nom de l'action à exécuter (voir switch en PHP)
-              Did: did ,
-          	  Id: Id ,
-              Param: json_encode(Param)
+            Did: did ,
+            Id: Id ,
+            Param: json_encode(Param)
         },
         dataType: 'json',
         error: function(request, status, error) {
@@ -136,16 +141,19 @@ function UpdateScheduler( did , Id , Param ){
             }
             // Succès : La classe a été appelée et a renvoyé une réponse            
             var row = document.getElementById( 'row_' + Id );
-    		row.parentNode.removeChild(row);
+            row.parentNode.removeChild(row);
           
-    		const LaDate = new Date();
-    		Param['created_at'] = LaDate.toISOString().substring(0, 19) ;
-          	Param["id"] = data.result["id"] ;
-          	Param["did"] = did ;
-          	InsertLigne( Param ) ;
+            const LaDate = new Date();
+            Param['created_at'] = LaDate.toISOString().substring(0, 19) ;
+            Param["id"] = data.result["id"] ;
+            Param["did"] = did ;
+            Param["enabled"] = "true" ;
+            InsertLigne( Param ) ;
           
             // Reinit le formulaire
             RazForm() ;
+            
+            $('#div_alert').showAlert({message: 'Mise à jour effectuée', level: 'success'}); //'info', 'success', 'warning', 'danger'
         }
     });  
 }
@@ -179,6 +187,8 @@ function DeleteScheduler( did , Id ){
             if( document.getElementById('myTable_' + did ).rows.length == 1 ){
               document.getElementById('div_' + did ).style.display = "none" ;
             }
+            
+            $('#div_alert').showAlert({message: 'Suppression effectuée', level: 'success'}); //'info', 'success', 'warning', 'danger'
         }
     });
 }
@@ -192,21 +202,22 @@ function InsertLignes( TabScheduler , LogicalId ){
 
 function InsertLigne( variable , LogicalId ){
     // Insert les lignes
-    document.getElementById('div_' + variable['did']).style.display = "" ;              
-    let tbody = document.getElementById('myTable_' + variable["did"]).getElementsByTagName('tbody')[0];              
+    document.getElementById('div_' + variable['did']).style.display = "" ;
+    let tbody = document.getElementById('myTable_' + variable["did"]).getElementsByTagName('tbody')[0];
     let row = tbody.insertRow(); // insère une nouvelle ligne
     row.id = "row_" + variable["id"] ;
-    row.insertCell(0).textContent = variable["created_at"] ;
-    row.insertCell(1).textContent = variable["date"] ;
-    row.insertCell(2).textContent = variable["time"] ;
-  	row.insertCell(3).textContent = variable["days"] ;
-    row.insertCell(4).textContent = variable["repeat"] ;
-    row.insertCell(5).textContent = variable["start_date"] ;
-    row.insertCell(6).textContent = variable["end_date"] ;
-    row.insertCell(7).textContent = json_encode(variable["attrs"]) ;
-    row.insertCell(8).textContent = variable["remark"] ;
+    row.insertCell(0).innerHTML   = (variable["enabled"] ? "V" : "x") ;
+    row.insertCell(1).textContent = variable["created_at"] ;
+    row.insertCell(2).textContent = variable["date"] ;
+    row.insertCell(3).textContent = variable["time"] ;
+  	row.insertCell(4).textContent = variable["days"] ;
+    row.insertCell(5).textContent = variable["repeat"] ;
+    row.insertCell(6).textContent = variable["start_date"] ;
+    row.insertCell(7).textContent = variable["end_date"] ;
+    row.insertCell(8).textContent = json_encode(variable["attrs"]) ;
+    row.insertCell(9).textContent = variable["remark"] ;
     HumanName = 'HumanName' ;
-    row.insertCell(9).innerHTML   = "<img src=\"plugins/heatzy/plugin_info/modif.png\" alt=\"xxxx\" width=\"20\" onclick=\"AlimFormUpdate('" + variable["did"] + "' , '" + variable['id'] + "' )\" />&nbsp;<img src=\"plugins/heatzy/plugin_info/delete.png\" alt=\"xxxx\" width=\"25\" onclick=\"DeleteScheduler( '" + variable["did"] + "' , '" + variable["id"] + "' ) ; \" />" ;
+    row.insertCell(10).innerHTML   = "<img src=\"plugins/heatzy/plugin_info/modif.png\" alt=\"xxxx\" width=\"20\" onclick=\"AlimFormUpdate('" + variable["did"] + "' , '" + variable['id'] + "' )\" />&nbsp;<img src=\"plugins/heatzy/plugin_info/delete.png\" alt=\"xxxx\" width=\"25\" onclick=\"DeleteScheduler( '" + variable["did"] + "' , '" + variable["id"] + "' ) ; \" />" ;
 }
 
 function VerifFormulaire(){
@@ -242,20 +253,21 @@ function AlimFormUpdate( LogicalId , id ){
 
     // ReConstruction du JSON depuis les infos du tableau html
     Json  = '{' + "\n" ;
-    Json += '    "attrs":' + document.getElementById('row_' + id ).cells[7].textContent + ',' + "\n" ;
-    if(document.getElementById('row_' + id ).cells[1].textContent != '')
-        Json += '    "date": "' + document.getElementById('row_' + id ).cells[1].textContent + '",' + "\n" ;
+    Json += '    "attrs":' + document.getElementById('row_' + id ).cells[8].textContent + ',' + "\n" ;
     if(document.getElementById('row_' + id ).cells[2].textContent != '')
-        Json += '    "time": "' + document.getElementById('row_' + id ).cells[2].textContent + '",' + "\n" ;
+        Json += '    "date": "' + document.getElementById('row_' + id ).cells[2].textContent + '",' + "\n" ;
     if(document.getElementById('row_' + id ).cells[3].textContent != '')
-        Json += '    "days": [' + document.getElementById('row_' + id ).cells[3].textContent + '],' + "\n" ;
+        Json += '    "time": "' + document.getElementById('row_' + id ).cells[3].textContent + '",' + "\n" ;
     if(document.getElementById('row_' + id ).cells[4].textContent != '')
-        Json += '    "repeat": "' + document.getElementById('row_' + id ).cells[4].textContent + '",' + "\n" ;
+        Json += '    "days": [' + document.getElementById('row_' + id ).cells[4].textContent + '],' + "\n" ;
     if(document.getElementById('row_' + id ).cells[5].textContent != '')
-        Json += '    "start_date": "' + document.getElementById('row_' + id ).cells[5].textContent + '",' + "\n" ;
+        Json += '    "repeat": "' + document.getElementById('row_' + id ).cells[5].textContent + '",' + "\n" ;
     if(document.getElementById('row_' + id ).cells[6].textContent != '')
-        Json += '    "end_date": "' + document.getElementById('row_' + id ).cells[6].textContent + '",' + "\n" ;
-    Json += '    "remark": "' + document.getElementById('row_' + id ).cells[8].textContent + '"' + "\n" ;
+        Json += '    "start_date": "' + document.getElementById('row_' + id ).cells[6].textContent + '",' + "\n" ;
+    if(document.getElementById('row_' + id ).cells[7].textContent != '')
+        Json += '    "end_date": "' + document.getElementById('row_' + id ).cells[7].textContent + '",' + "\n" ;
+    Json += '    "remark": "' + document.getElementById('row_' + id ).cells[9].textContent + '",' + "\n" ;
+    Json += '    "enabled": "' + (document.getElementById('row_' + id ).cells[0].textContent == 'V' ? true : false) + '"' + "\n" ;
     Json += '}' + "\n" ;
 
     document.getElementById("Param").value = Json ;
@@ -302,8 +314,8 @@ function InjecteExemple( selectObject ){
             break;
         case 'hebdo':
             Json  = '{' + "\n" ;
-            Json += '	"attrs":{' + "\n" ;
-            Json += '		"derog_mode": 3' + "\n" ;
+            Json += '   "attrs":{' + "\n" ;
+            Json += '       "derog_mode": 3' + "\n" ;
             Json += '    },' + "\n" ;
             Json += '    "repeat": "mon, tue, wed, thu, fri, sat, sun",' + "\n" ;
             Json += '    "time": "09:00",' + "\n" ;
@@ -315,16 +327,16 @@ function InjecteExemple( selectObject ){
             break;
         case 'mens':
             Json  ='{' + "\n" ;
-            Json += '	"attrs":{' + "\n" ;
-            Json += '		"timer_switch":1,' + "\n" ;
-            Json += '		"derog_mode":0' + "\n" ;
-            Json += '	},' + "\n" ;
-            Json += '	"days":[1, 2],' + "\n" ;
-            Json += '	"time": "09:00",' + "\n" ;
-            Json += '	"repeat": "day",' + "\n" ;
-            Json += '	"start_date": "' + StartDate + '",' + "\n" ;
-            Json += '	"end_date": "' + EndDate + '",' + "\n" ;
-            Json += '	"remark": "Activer la programmation au début de chaque mois"' + "\n" ;
+            Json += '   "attrs":{' + "\n" ;
+            Json += '       "timer_switch":1,' + "\n" ;
+            Json += '       "derog_mode":0' + "\n" ;
+            Json += '   },' + "\n" ;
+            Json += '   "days":[1, 2],' + "\n" ;
+            Json += '   "time": "09:00",' + "\n" ;
+            Json += '   "repeat": "day",' + "\n" ;
+            Json += '   "start_date": "' + StartDate + '",' + "\n" ;
+            Json += '   "end_date": "' + EndDate + '",' + "\n" ;
+            Json += '   "remark": "Activer la programmation au début de chaque mois"' + "\n" ;
             Json += '}' + "\n" ;
             document.getElementById ('Param').value = Json ;
             break;
@@ -343,7 +355,9 @@ function InjecteExemple( selectObject ){
                 <option value="">--Please choose an option--</option>
                 <?php
                     foreach ($eqLogics as $eqLogic) {
+                      if( $eqLogic->getIsEnable() == 1 ){
                         echo "	<option value=\"".$eqLogic->getLogicalId()."\">".$eqLogic->getHumanName()."</option>" ;
+                      }
                 }
                 ?>
             </select>
@@ -376,31 +390,34 @@ function InjecteExemple( selectObject ){
 <?php
     echo '<i>Les équipents non affichés ne possèdent pas des tâches</i>' ;
     foreach ($eqLogics as $eqLogic) {
-        echo '<div id="div_'.$eqLogic->getLogicalId().'" style="display:none;">' ;
-        echo '</br>&nbsp;';
-        echo '<h4>'.$eqLogic->getHumanName().'</h4>';
-        echo '<table  class="table table-condensed tablesorter" id="myTable_'.$eqLogic->getLogicalId().'">
-            <thead>
-                <tr>
-                    <th>Date création</th>
-                    <th>date</th>
-                    <th>time</th>
-                    <th>days</th>
-                    <th>repeat</th>
-                    <th>start_date</th>
-                    <th>end_date</th>
-                    <th>attrs</th>
-                    <th>remark</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>' ;
-        echo '</div>' ;
+        if( $eqLogic->getIsEnable() == 1 ){
+          echo '<div id="div_'.$eqLogic->getLogicalId().'" style="display:none;">' ;
+          echo '</br>&nbsp;';
+          echo '<h4>'.$eqLogic->getHumanName().'</h4>';
+          echo '<table  class="table table-condensed tablesorter" id="myTable_'.$eqLogic->getLogicalId().'">
+              <thead>
+                  <tr>
+                      <th>Active</th>
+                      <th>Date création</th>
+                      <th>date</th>
+                      <th>time</th>
+                      <th>days</th>
+                      <th>repeat</th>
+                      <th>start_date</th>
+                      <th>end_date</th>
+                      <th>attrs</th>
+                      <th>remark</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+              </tbody>
+          </table>' ;
+          echo '</div>' ;
+        }
     }
 ?>
   
 <script>
-	GetSchedulers() ;
+    GetSchedulers() ;
 </script>

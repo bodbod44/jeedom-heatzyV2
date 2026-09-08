@@ -27,12 +27,16 @@ class heatzyCmd extends cmd {
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $_options3 : '.var_export($_options, true) );
         }
       
-        $Result = array();        
+        $Result = array();
       
         if ($this->getLogicalId() == 'refresh') {
             $this->getEqLogic()->updateHeatzyDid();
             //Synchro::StatsHeatzy( true );
             //Synchro::StatsMessage();
+            
+            if( in_array( $this->getEqLogic()->getConfiguration('product_name', '') , array( 'Heatzy' , 'Flam_Week2') ) ){
+                heatzy::VerifProg( $this->getEqLogic()->getLogicalId() ) ;
+            }
         }
         else if($this->getType() == 'info' ) {
             return $this->getValue();
@@ -46,75 +50,81 @@ class heatzyCmd extends cmd {
             $ForUpdate = '' ;
             if ($this->getLogicalId() == 'plugzyon') {        
                 $Consigne = array( 'attrs' => array ( 'on_off' => 1 )  );
-                $ForUpdate = 1 ;
+                //$ForUpdate = 1 ;
             }
             else if ($this->getLogicalId() == 'plugzyoff') {              
                 $Consigne = array( 'attrs' => array ( 'on_off' => 0 )  );
-                $ForUpdate = 0 ;
+                //$ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'ProgOn') {
-                if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
+                //if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
+                if( in_array( $eqLogic->getConfiguration('product_name', '') , array( 'Heatzy' , 'Flam_Week2') ) ){
                     $eqLogic->GestProg(true);
+                    //$eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , 1 ) ;
+                    $ForUpdate = 1 ;
                 }
                 else {
                     $Consigne = array( 'attrs' => array ( 'timer_switch' => 1 )  );
                 }
-                $ForUpdate = 1 ;
+                //$ForUpdate = 1 ;
             }
             else if ($this->getLogicalId() == 'ProgOff') {
-                if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
+                //if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
+                if( in_array( $eqLogic->getConfiguration('product_name', '') , array( 'Heatzy' , 'Flam_Week2') ) ){
                     $eqLogic->GestProg(false);
+                    //$eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , 0 ) ;
+                    $ForUpdate = 0 ;
                 }
                 else {
                     $Consigne = array( 'attrs' => array ( 'timer_switch' => 0 )  );
                 }
-                $ForUpdate = 0 ;
+                //$ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'LockOn') {
                 $Consigne = array( 'attrs' => array ( 'lock_switch' => 1 )  );
-                $ForUpdate = 1 ;
+                //$ForUpdate = 1 ;
             }
             else if ($this->getLogicalId() == 'LockOff') {
                 $Consigne = array( 'attrs' => array ( 'lock_switch' => 0 )  );
-                $ForUpdate = 0 ;
+                //$ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'Lock_C_On') {
                 $Consigne = array( 'attrs' => array ( 'LOCK_C' => 1 )  );
-                $ForUpdate = 1 ;
+                //$ForUpdate = 1 ;
             }
             else if ($this->getLogicalId() == 'Lock_C_Off') {
                 $Consigne = array( 'attrs' => array ( 'LOCK_C' => 0 )  );
-                $ForUpdate = 0 ;
+                //$ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'WindowSwitchOn') {
                 $Consigne = array( 'attrs' => array ( 'window_switch' => 1 )  );
-                $ForUpdate = 1 ;
+                //$ForUpdate = 1 ;
             }
             else if ($this->getLogicalId() == 'WindowSwitchOff') {
                 $Consigne = array( 'attrs' => array ( 'window_switch' => 0 )  );
-                $ForUpdate = 0 ;
+                //$ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'derog_off') {
                 $Consigne = array( 'attrs' => array ( 'derog_mode' => 0 )  ); // 0 : pas de dérogation
-                $ForUpdate = 0 ;
+                //$ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'derog_vacances') {
                   isset( $_options['slider'] ) ? $delai = intval( $_options['slider'] ) : $delai = 1 ;
                 $Consigne = array( 'attrs' => array ( 'derog_mode' => 1 , 'derog_time' => $delai , 'mode' => 'fro' )  ); // 1 : mode vacances
-                $ForUpdate = $delai ;
+                //$ForUpdate = $delai ;
             }
             else if ($this->getLogicalId() == 'derog_boost') {
                   isset( $_options['slider'] ) ? $delai = intval( $_options['slider'] ) : $delai = 60 ;
                 $Consigne = array( 'attrs' => array ( 'derog_mode' => 2 , 'derog_time' => $delai , 'mode' => 'cft' )  ); // 2 : mode boost
-                $ForUpdate = $delai ;
+                //$ForUpdate = $delai ;
             }
             else if ($this->getLogicalId() == 'derog_presence') {
                 $Consigne = array( 'attrs' => array ( 'derog_mode' => 3 )  ); // 3 : détection de presence
-                $ForUpdate = 3 ;
+                //$ForUpdate = 3 ;
             }
             else if ($this->getLogicalId() == 'derog_time') {
                 $Consigne = array( 'attrs' => array ( 'derog_time' => 0 )  );
-                $ForUpdate = 0 ;
+                //$ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'cft_temp_consigne') {
                 //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
@@ -132,7 +142,7 @@ class heatzyCmd extends cmd {
                 else{
                     $Consigne = array( 'attrs' => array ( 'cft_temp' => $consigne * 10 )  );
                 }
-                $ForUpdate = $consigne ;
+                //$ForUpdate = $consigne ;
             }
             else if ($this->getLogicalId() == 'eco_temp_consigne') {
                 isset( $_options['slider'] ) ? $consigne = floatval( $_options['slider'] ) : $consigne = 0 ;
@@ -147,7 +157,7 @@ class heatzyCmd extends cmd {
                 else{
                     $Consigne = array( 'attrs' => array ( 'eco_temp' => $consigne * 10 )  );
                 }
-                $ForUpdate = $consigne ;
+                //$ForUpdate = $consigne ;
             }
             else if( in_array($this->getLogicalId() , heatzy::$_HeatzyMode ) ) {
                 //public static $_HeatzyMode = array('Confort', 'Eco', 'HorsGel', 'Off','Confort-1','Confort-2');
@@ -156,37 +166,39 @@ class heatzyCmd extends cmd {
               
                 //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' mode = '. var_export($Mode, true));
               
-                if( $eqLogic->getConfiguration('product_name', 'Heatzy') == 'Heatzy') {    /// Premiere version du module pilote
-                    $Consigne = array( 'raw' => array(1, 1, $Mode[0]) ) ; //"stop;[1,1,3]" "cft;[1,1,0]" "eco;[1,1,1]" "fro;[1,1,2]"
+                //if( $eqLogic->getConfiguration('product_name', 'Heatzy') == 'Heatzy') {    /// Premiere version du module pilote
+                if( in_array( $eqLogic->getConfiguration('product_name', '') , array('Heatzy') ) ){  /// Premiere version du module pilote
+                    // API REST  :            $Consigne = array( 'raw' => array(1, 1, $Mode[0]) ) ; //"stop;[1,1,3]" "cft;[1,1,0]" "eco;[1,1,1]" "fro;[1,1,2]"
+                    // API REST + WebSocket : $Consigne = array( 'attrs' => array ( 'mode' => '舒适'  )  ); // cft:舒适  eco:经济   fro:解冻   sstop:停止
+                    switch($Mode[0]){
+                        case 0: $Mode = '舒适'; break; // cft
+                        case 1: $Mode = '经济'; break; // eco
+                        case 2: $Mode = '解冻'; break; // fro
+                        case 3: $Mode = '停止'; break; // stop
+                    }
+                    $Consigne = array( 'attrs' => array ( 'mode' => $Mode  )  );
                 }
                 else {
-                    switch($Mode[0])
-                    {
-                    case 0:
-                       $Mode = 'cft'; break;
-                    case 1:
-                       $Mode = 'eco'; break;
-                    case 2:
-                       $Mode = 'fro'; break;
-                    case 3:
-                       $Mode = 'stop'; break;
-                    case 4:
-                       $Mode = 'cft1'; break;
-                    case 5:
-                       $Mode = 'cft2'; break;
-                    }
-                  
+                    switch($Mode[0]){
+                        case 0: $Mode = 'cft'; break;
+                        case 1: $Mode = 'eco'; break;
+                        case 2: $Mode = 'fro'; break;
+                        case 3: $Mode = 'stop'; break;
+                        case 4: $Mode = 'cft1'; break;
+                        case 5: $Mode = 'cft2'; break;
+                    }                  
                     $Consigne = array( 'attrs' => array ( 'mode' => $Mode )  );
                 }
-                $ForUpdate = '' ;
+                //$ForUpdate = '' ;
             }
             else{
                 log::add('heatzy', 'error',  __METHOD__.'(ln '.__LINE__.')'.' : Commande inconnue : '.$this->getEqLogic()->getName().' - '.$this->getLogicalId().' ('.$this->getId().')');
             }/// Le mode
-              
+                     
             
             if( $Consigne != '' ){
-              	if( config::byKey('API_Type','heatzy','REST') == 'REST' ){
+                // or $this->getEqLogic()->getConfiguration('product_name', '') == 'Heatzy'
+                if( config::byKey('API_Type','heatzy','REST') == 'REST' ){
                     log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' :$Consigne != null : ');
                     //$Result = HttpGizwits::SetConsigne($UserToken, $eqLogic->getLogicalId(), $Consigne);
                     $Result = HttpGizwits::SetConsigne( $eqLogic->getLogicalId(), $Consigne);
@@ -208,25 +220,39 @@ class heatzyCmd extends cmd {
                             }
                             return false;
                         }
-                        else if($ForUpdate != ''){
-                              log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
-                            $eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , $ForUpdate ) ;
+                        else{
                             $eqLogic->checkAndUpdateCmd('IsOnLine', 1 );
                         }
                     } // $Result === false
+                  
                 } // if REST
-				else{
+                else{
                     // Envoi au demon
+                    //$Consigne = array( 'raw' => array(1, 1, 2 ) ) ; //"stop;[1,1,3]" "cft;[1,1,0]" "eco;[1,1,1]" "fro;[1,1,2]"
+                  
                     log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' Envoi au demon : '.json_encode($Consigne) );
                     $this->getEqLogic()->sendToDaemon( 'execute' , $this->getEqLogic()->getLogicalId() , $Consigne ) ; 
                 } // REST
             } // if $Consigne != ''
-            
+          
             if( config::byKey('API_Type','heatzy','REST') == 'REST' ){
                 /// Mise à jour de l'état
-                sleep(1); // tempo de 1sec pour laisser le temps a l'API de le prendre en compte et le restituer
+                sleep(2); // tempo de 1sec pour laisser le temps a l'API de le prendre en compte et le restituer
                 $this->getEqLogic()->updateHeatzyDid();
             }
+            else{
+      
+                // Mise à jour de la commande
+                if($ForUpdate != '' ){
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' ForUpdate - '.$this->getConfiguration('infoName').'=>'.$ForUpdate );
+                    $eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , $ForUpdate ) ;
+
+                    $this->getEqLogic()->toHtml('mobile');
+                    $this->getEqLogic()->toHtml('dashboard');
+                    $this->getEqLogic()->refreshWidget();
+                }
+            }
+
             
         } /// Fin action
         $mc = cache::byKey('heatzyWidgetmobile' . $this->getEqLogic()->getId());
@@ -234,9 +260,10 @@ class heatzyCmd extends cmd {
         $mc = cache::byKey('heatzyWidgetdashboard' . $this->getEqLogic()->getId());
         $mc->remove();
 
-        //$this->getEqLogic()->toHtml('mobile');
-        //$this->getEqLogic()->toHtml('dashboard');
-        //$this->getEqLogic()->refreshWidget();
+          /*$this->getEqLogic()->toHtml('mobile');
+          $this->getEqLogic()->toHtml('dashboard');
+          $this->getEqLogic()->refreshWidget();*/
+      
         log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' FIN EXECUTE' );
         return true;
     }
