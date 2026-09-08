@@ -49,10 +49,8 @@ function GetSchedulersByDid( did , deb = 0 ){
         type: 'POST',
         url: 'plugins/heatzy/core/ajax/heatzy.ajax.php', // Chemin vers votre fichier AJAX
         data: {
-            action: 'GetSchedulerList', // Nom de l'action à exécuter (voir switch en PHP)
-            Did: did[1] ,
-            Skip: deb,
-            Limit: deb + Nb
+            action: 'GetSchedulerListFull', // Nom de l'action à exécuter (voir switch en PHP)
+            Did: did[1]
         },
         dataType: 'json',
         success: function(data) {
@@ -64,8 +62,6 @@ function GetSchedulersByDid( did , deb = 0 ){
             }
           if( data.result != ""){
             InsertLignes( data.result , did[1]  ) ;
-            if( data.result.length >= Nb ) GetSchedulersByDid( did , deb + data.result.length ) ;
-              
           }
         },
         error: function(err) {
@@ -109,6 +105,8 @@ function CreateScheduler( did , Param ){
             Param["enabled"] = "true" ;
             InsertLigne( Param , did ) ;
             RazForm() ; // Reinit le formulaire si appel OK
+            
+            $('#div_alert').showAlert({message: 'Ajout effectué', level: 'success'}); //'info', 'success', 'warning', 'danger'
         }
     });  
 }
@@ -154,6 +152,8 @@ function UpdateScheduler( did , Id , Param ){
           
             // Reinit le formulaire
             RazForm() ;
+            
+            $('#div_alert').showAlert({message: 'Mise à jour effectuée', level: 'success'}); //'info', 'success', 'warning', 'danger'
         }
     });  
 }
@@ -187,6 +187,8 @@ function DeleteScheduler( did , Id ){
             if( document.getElementById('myTable_' + did ).rows.length == 1 ){
               document.getElementById('div_' + did ).style.display = "none" ;
             }
+            
+            $('#div_alert').showAlert({message: 'Suppression effectuée', level: 'success'}); //'info', 'success', 'warning', 'danger'
         }
     });
 }
@@ -200,8 +202,8 @@ function InsertLignes( TabScheduler , LogicalId ){
 
 function InsertLigne( variable , LogicalId ){
     // Insert les lignes
-    document.getElementById('div_' + variable['did']).style.display = "" ;              
-    let tbody = document.getElementById('myTable_' + variable["did"]).getElementsByTagName('tbody')[0];              
+    document.getElementById('div_' + variable['did']).style.display = "" ;
+    let tbody = document.getElementById('myTable_' + variable["did"]).getElementsByTagName('tbody')[0];
     let row = tbody.insertRow(); // insère une nouvelle ligne
     row.id = "row_" + variable["id"] ;
     row.insertCell(0).innerHTML   = (variable["enabled"] ? "V" : "x") ;

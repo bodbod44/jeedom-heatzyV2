@@ -27,15 +27,15 @@ class heatzyCmd extends cmd {
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' : $_options3 : '.var_export($_options, true) );
         }
       
-        $Result = array();        
+        $Result = array();
       
         if ($this->getLogicalId() == 'refresh') {
             $this->getEqLogic()->updateHeatzyDid();
             //Synchro::StatsHeatzy( true );
             //Synchro::StatsMessage();
             
-            if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
-                heatzy::VerifProg() ;
+            if( in_array( $this->getEqLogic()->getConfiguration('product_name', '') , array( 'Heatzy' , 'Flam_Week2') ) ){
+                heatzy::VerifProg( $this->getEqLogic()->getLogicalId() ) ;
             }
         }
         else if($this->getType() == 'info' ) {
@@ -57,7 +57,8 @@ class heatzyCmd extends cmd {
                 //$ForUpdate = 0 ;
             }
             else if ($this->getLogicalId() == 'ProgOn') {
-                if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
+                //if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
+                if( in_array( $$eqLogic->getConfiguration('product_name', '') , array( 'Heatzy' , 'Flam_Week2') ) ){
                     $eqLogic->GestProg(true);
                     //$eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , 1 ) ;
                     $ForUpdate = 1 ;
@@ -68,7 +69,8 @@ class heatzyCmd extends cmd {
                 //$ForUpdate = 1 ;
             }
             else if ($this->getLogicalId() == 'ProgOff') {
-                if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
+                //if( $eqLogic->getConfiguration('product_name', '') == 'Heatzy' || $eqLogic->getConfiguration('product_name', '') == 'Flam_Week2'){
+                if( in_array( $$eqLogic->getConfiguration('product_name', '') , array( 'Heatzy' , 'Flam_Week2') ) ){
                     $eqLogic->GestProg(false);
                     //$eqLogic->checkAndUpdateCmd( $this->getConfiguration('infoName') , 0 ) ;
                     $ForUpdate = 0 ;
@@ -164,7 +166,8 @@ class heatzyCmd extends cmd {
               
                 //log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$this->getLogicalId() . ' mode = '. var_export($Mode, true));
               
-                if( $eqLogic->getConfiguration('product_name', 'Heatzy') == 'Heatzy') {    /// Premiere version du module pilote
+                //if( $eqLogic->getConfiguration('product_name', 'Heatzy') == 'Heatzy') {    /// Premiere version du module pilote
+                if( in_array( $$eqLogic->getConfiguration('product_name', '') , array('Heatzy') ) ){  /// Premiere version du module pilote
                     // API REST  :            $Consigne = array( 'raw' => array(1, 1, $Mode[0]) ) ; //"stop;[1,1,3]" "cft;[1,1,0]" "eco;[1,1,1]" "fro;[1,1,2]"
                     // API REST + WebSocket : $Consigne = array( 'attrs' => array ( 'mode' => '舒适'  )  ); // cft:舒适  eco:经济   fro:解冻   sstop:停止
                     switch($Mode[0]){

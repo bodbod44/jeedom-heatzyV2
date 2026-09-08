@@ -747,92 +747,122 @@ class heatzy extends eqLogic {
     }
     
     /**
-    * Fonction exécutée automatiquement toutes les 30minutes par Jeedom
+    * Fonction permettant de vérifier (et mettre à jour) la programmation pour tout ou partie des modules
     * seulement pour les modules Heatzy et Flam_Week2
     * */
 //class heatzy extends eqLogic
-    public static function VerifProg() {
-        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : VerifProg' );
-      
-        foreach (eqLogic::byType('heatzy') as $heatzy) {
-
-            if($heatzy->getIsEnable() != 1 )
-                continue;
-
-            if( $heatzy->getConfiguration('product_name', 'Heatzy') != 'Flam_Week2' &&
-            $heatzy->getConfiguration('product_name', 'Heatzy') != 'Heatzy' )
-                continue;
-
-            $EtatProg1 = null;
-            $EtatProg2 = null;
-
-            /// Si le module est en timeout on ne verifie pas la programmation
-            if ( $heatzy->getStatus('timeout', '0') == '1' ) {
-            /// Mise à jour de l'etat de la programmation désactivé
-                $EtatProg1 = false ;
+    public static function VerifProg( $Dids = null ) {
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : VerifProg '.var_export( $Dids , true) );
+        
+        if( is_string($Dids) ){
+            $Dids = array( $Dids ) ;
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : $conversion tab ='.count($Dids).'-'.var_export( $Dids , true) );
+        }
+        
+        if( $Dids === null ){
+            foreach (eqLogic::byType('heatzy') as $heatzy) {
+                $Dids[] = $heatzy->getLogicalId() ;
             }
-            else {
-                /// Lecture des taches de ce module
-                $Skip = 0;            /// Nombre d'element sauté
-                $Limit = 100;         /// Limite du nombre de tache
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : $Dids null. Valorisation avec '.count($Dids).' modules' );
+        }
+        
+        if( !is_array($Dids) ){
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : Argument invalide' );
+            return ;
+        }
 
-                /// Lecture du token
-                $UserToken = config::byKey('UserToken','heatzy','none');
-
-                do {
-                    /// Lecture des taches par pas de $Limit
-                    $aTasks = HttpGizwits::GetSchedulerList($UserToken, $heatzy->getLogicalId(), $Skip, $Limit);
-                  
-                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : count($aTasks)='.count($aTasks)  );
-
-                    /// Boucle des taches
-                    foreach ($aTasks as $TaskNum => $aTask) {
-                        if($aTask['repeat'] === 'mon' && $aTask['date'] === '' && $aTask['time'] === '00:00' && isset( $aTask['attrs']['mode'] ) ) {
-                            /// Tâche du lundi trouvé. On sort de la boucle
-                            $EtatProg1 = $aTask['enabled'] ;
-                            break;
-                        }
-                        if(strlen($aTask['repeat']) === 3 && $aTask['date'] === '' && in_array( substr( $aTask['time'] , -2) , array( '00' ,'30' ) ) && isset( $aTask['attrs']['mode'] ) ) {
-                            // Une tâche en semaine trouvée. On continue a chercher
-                            $EtatProg2 = $aTask['enabled'] ;
-                        }
-                    }
-                    $Skip += count($aTasks);
-
-                    if($EtatProg1 !== null ) {/// Sort de la boucle des recherches des taches si au moins une est désactivée
-                        break;
-                    }
-                } while(!empty($aTasks) && count($aTasks) >= $Limit);
+        foreach($Dids as $Did){
+            $heatzy = eqLogic::byLogicalId($Did, 'heatzy' , false) ;
+            
+            if( $heatzy ){
+                $Tasks = HttpGizwits::GetSchedulerListFull( $heatzy->getLogicalId() ) ;
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : count($Tasks)='.count($Tasks) );
+                self::CheckAndUpdateActivProg( $Tasks , $heatzy ) ; //->getLogicalId()
             }
-
-            if( $Skip === 0 && empty($aTasks) ){ /// Si pas de saut c'est qu'il n'y a pas de programmation
-                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog trouvé. Aucune tâche trouvée' );
-                $heatzy->checkAndUpdateCmd('etatprog', false);
-            }
-            else if( $EtatProg1 !== null ){
-                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog trouvé. Tâche du lundi '.($EtatProg1 ? 'active' : 'inactive') );
-                /// Mise à jour de l'etat EtatProg1
-                $heatzy->checkAndUpdateCmd('etatprog', $EtatProg1);
-            }
-            else if( $EtatProg2 !== null ){
-                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Prog trouvé. Tâche en semaine '.($EtatProg2 ? 'active' : 'inactive') );
-                /// Mise à jour de l'etat EtatProg2
-                $heatzy->checkAndUpdateCmd('etatprog', $EtatProg2);
-            }
-            else{
-                log::add('heatzy', 'error', __METHOD__.'(ln '.__LINE__.') '.$heatzy->getLogicalId().' : Programmation non determinée');
-            }
-
-            $mc = cache::byKey('heatzyWidgetmobile' . $heatzy->getId());
-            $mc->remove();
-            $mc = cache::byKey('heatzyWidgetdashboard' . $heatzy->getId());
-            $mc->remove();
-
-            $heatzy->toHtml('mobile');
-            $heatzy->toHtml('dashboard');
-            $heatzy->refreshWidget();
-
+            else
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : eqlogic non trouvé' );
         }/// Fin boucle des modules
+        return true ;
+    }
+    
+    /**
+    * Fonction permettant à partir d'un tablau de tâches de savoir si la programation est active
+    * Utile seulement pour les modules Heatzy et Flam_Week2
+    * */
+//class heatzy extends eqLogic
+   public static function CheckAndUpdateActivProg( $Tasks , $did = null ) {
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : CheckAndUpdateActivProg' );
+        
+        if( !is_array( $Tasks ) ){
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : Argument invalide' );
+            $Tasks = HttpGizwits::GetSchedulerListFull( $heatzy->getLogicalId() ) ;
+        }
+
+        $EtatProg1 = null;
+        $EtatProg2 = null;
+        foreach ($Tasks as $aTask){
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') Tâche - repeat='.$aTask['repeat'].' - time='.$aTask['time'].' - enabled='.($aTask['enabled'] ? '1' : '0').' - mode='.$aTask['attrs']['mode'] );
+            if($aTask['repeat'] === 'mon' &&
+               $aTask['date'] === '' &&
+               $aTask['time'] === '00:00' &&
+               isset( $aTask['attrs']['mode'])  ){
+                /// Tâche du lundi trouvé. On sort de la boucle
+                $EtatProg1 = $aTask['enabled'] ;
+                break;
+            } // if
+            if(strlen($aTask['repeat']) === 3 &&
+               $aTask['date'] === '' &&
+               in_array( substr( $aTask['time'] , -2) , array( '00' ,'30' ) ) &&
+               isset($aTask['attrs']['mode'])  ){
+                // Une tâche en semaine trouvée. On continue a chercher
+                $EtatProg2 = $aTask['enabled'] ;
+            } // if
+        } // foreach
+        
+        $return = null ;
+        if( empty($Tasks) ){ /// Si pas de tâche c'est qu'il n'y a pas de programmation
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') Prog trouvé. Aucune tâche trouvée' );
+            $return = false ;
+        }
+        else if( $EtatProg1 !== null ){
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') Prog trouvé. Tâche du lundi 00:00 '.($EtatProg1 ? 'active' : 'inactive') );
+            $return = $EtatProg1 ;
+        }
+        else if( $EtatProg2 !== null ){
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') Prog trouvé. Tâche en semaine '.($EtatProg2 ? 'active' : 'inactive') );
+            $return = $EtatProg2 ;
+        }
+        else{
+            log::add('heatzy', 'error', __METHOD__.'(ln '.__LINE__.') Programmation non determinée');
+            $return = false ;
+        }
+        
+        // Si le did est valorisé, il faut le mettre à our (etatprog)
+        if( !empty($did) ){
+            if( is_string($did) ){
+                // Si seul l'id est fourni, chercher l'objet heatzy associé
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') Recherche eqlogic' );
+                $did = eqLogic::byLogicalId($did, 'heatzy' , false) ;
+            }
+            
+            if( $did ){
+                if ( $did->getStatus('timeout', '0') == '1' )
+                    $return = false ;
+                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') etatprog='.$return );
+                $did->checkAndUpdateCmd('etatprog', $return);
+                
+                $mc = cache::byKey('heatzyWidgetmobile' . $did->getId());
+                $mc->remove();
+                $mc = cache::byKey('heatzyWidgetdashboard' . $did->getId());
+                $mc->remove();
+
+                $did->toHtml('mobile');
+                $did->toHtml('dashboard');
+                $did->refreshWidget();
+            } // if $did
+        } // if !empty
+
+        return $return ;
     }
      
     /**
@@ -842,68 +872,56 @@ class heatzy extends eqLogic {
      */
 //class heatzy extends eqLogic
     public function GestProg($EtatProg) {
-
-        $Skip = 0;            /// Nombre d'element sauté
-        $Limit = 100;        /// Limite du nombre de tache
-        $Cpt = 0 ;
         
-        /// Lecture du token
-        $UserToken = config::byKey('UserToken','heatzy','none');
+        $Tasks = HttpGizwits::GetSchedulerListFull( $this->getLogicalId() ) ;
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : count($Tasks)='.count($Tasks) );
         
-        do {
-            /// Lecture des taches par pas de $Limit
-            $aTasks = HttpGizwits::GetSchedulerList($UserToken, $this->getLogicalId(), $Skip, $Limit);
-          
-            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : count($aTasks)='.count($aTasks) );
+        foreach ($Tasks as $aTask){
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : Tâche' );
             
-            /// Boucle de mise à jour des taches
-            foreach ($aTasks as $TaskNum => $aTask) {
-
-                /// Sauvegarde de l'Id
-                $Id = $aTask['id'];
+            /// Sauvegarde de l'Id
+            $Id = $aTask['id'];
+            
+            if( strlen($aTask['repeat']) === 3 && $aTask['date'] === '' && isset( $aTask['attrs']['mode'] ) ) {
+                /// On envoie le minimum => suppression des données inutiles
+                unset($aTask['remark']);
+                unset($aTask['end_date']);
+                unset($aTask['did']);
+                unset($aTask['created_at']);
+                unset($aTask['enabled']);
+                unset($aTask['updated_at']);
+                unset($aTask['product_key']);
+                unset($aTask['days']);
+                unset($aTask['raw']);
+                unset($aTask['start_date']);
+                unset($aTask['date']);
+                unset($aTask['scene_id']);
+                unset($aTask['group_id']);
+                unset($aTask['id']);
+              
+                unset($aTask['attrs_config']) ;
+              
+                $aTask['enabled']=$EtatProg;
                 
-                if( strlen($aTask['repeat']) === 3 && $aTask['date'] === '' && isset( $aTask['attrs']['mode'] ) ) {
-                    /// On envoie le minimum => suppression des données inutiles
-                    unset($aTask['remark']);
-                    unset($aTask['end_date']);
-                    unset($aTask['did']);
-                    unset($aTask['created_at']);
-                    unset($aTask['enabled']);
-                    unset($aTask['updated_at']);
-                    unset($aTask['product_key']);
-                    unset($aTask['days']);
-                    unset($aTask['raw']);
-                    unset($aTask['start_date']);
-                    unset($aTask['date']);
-                    unset($aTask['scene_id']);
-                    unset($aTask['group_id']);
-                    unset($aTask['id']);
-                  
-                    unset($aTask['attrs_config']) ;
-                  
-                    $aTask['enabled']=$EtatProg;
-                    
-                    /// Mise a jour de la tache
-                    $aTaskResul = HttpGizwits::UpdateScheduler($UserToken, $this->getLogicalId(), $Id, $aTask);
-                    if ($aTaskResul === false ) {
-                        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId().' : Erreur : mise à jour de la tache - '.var_export( $aTaskResul , true) );
-                        throw new Exception(__('Erreur : mise à jour de la tache', __FILE__));
-                    }
-                    else if ($aTaskResul['id'] != $Id) {
-                        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId().' : Erreur : identifiant de tache invalide - '.var_export( $aTaskResul , true) );
-                        throw new Exception(__('Erreur : identifiant de tache invalide', __FILE__));
-                    }
-                    else{
-                        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId().' : UpdateScheduler OK '.var_export( $aTaskResul , true) );
-                        $Cpt++ ;
-                    }
+                /// Mise a jour de la tache
+                $aTaskResul = HttpGizwits::UpdateScheduler($this->getLogicalId(), $Id, $aTask);
+                if ($aTaskResul === false ) {
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId().' : Erreur : mise à jour de la tache - '.var_export( $aTaskResul , true) );
+                    throw new Exception(__('Erreur : mise à jour de la tache', __FILE__));
                 }
-            }
-            $Skip += count($aTasks);
-        } while(!empty($aTasks) && count($aTasks) >= $Limit);
+                else if ($aTaskResul['id'] != $Id) {
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId().' : Erreur : identifiant de tache invalide - '.var_export( $aTaskResul , true) );
+                    throw new Exception(__('Erreur : identifiant de tache invalide', __FILE__));
+                }
+                else{
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId().' : UpdateScheduler OK '.var_export( $aTaskResul , true) );
+                    $Cpt++ ;
+                }
+            } // critère
+        } // foreach
         
-        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : '.$Cpt.' taches mise a jour (sur '.$Skip.' tâches trouvées)');
-        return $Skip ;
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : '.$Cpt.' taches mise a jour (sur '.count($Tasks).' tâches trouvées)');
+        return $Cpt ;
     }
 
     /**

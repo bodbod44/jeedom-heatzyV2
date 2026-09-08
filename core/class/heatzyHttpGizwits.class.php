@@ -221,7 +221,7 @@ class HttpGizwits {
      * @return Un tableau associatif ou false en cas d'erreur
      */
 //class HttpGizwits
-    public static function GetSchedulerList($UserToken, $Did, $Skip = 0, $Limit = 50, $Recurrence = 0) {
+    public static function GetSchedulerList($Did, $Skip = 0, $Limit = 50, $Recurrence = 0) {
 
         /*
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $UserToken='.$UserToken);
@@ -229,6 +229,8 @@ class HttpGizwits {
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Skip='.$Skip);
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Limit='.$Limit);
         */
+        
+        $UserToken = config::byKey('UserToken','heatzy','');
     
         if(empty($UserToken) || empty($Did)){
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
@@ -271,8 +273,8 @@ class HttpGizwits {
                 log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
                 sleep( 1 + 2 ** $Recurrence ); // tempo (augmente avec le cumul des essais - A la puissance de la recurrence)
                 
-                //$aRep = self::GetSchedulerList($UserToken, $Did, $Skip, $Limit, $Recurrence + 1) ;
-                $aRep = self::GetSchedulerList($UserToken, $Did, $Skip, $Limit, $Recurrence+ 1) ;
+                //$aRep = self::GetSchedulerList($Did, $Skip, $Limit, $Recurrence + 1) ;
+                $aRep = self::GetSchedulerList($Did, $Skip, $Limit, $Recurrence+ 1) ;
                 if( $aRep === false ){
                     log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
                     return false;
@@ -299,6 +301,55 @@ class HttpGizwits {
         
         return $aRep;
     }
+    /**
+     * @brief Fonction qui permet de récuperer la liste taches
+     *        associé a un device did
+     *
+     * @param $UserToken   Token utilisateur d'acces au cloud
+     * @param $Did           Identifiant du module dans le cloud
+     *
+     * @return Un tableau associatif ou false en cas d'erreur
+     */
+//class HttpGizwits
+    public static function GetSchedulerListFull($Dids, $Param = array() ) {
+        
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')');
+        
+        if( empty($Dids) ){
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide - $Did='.$Dids);
+            return false;
+        }
+
+        if( is_string( $Dids ) ){
+            $Dids = array( $Dids ) ;
+        }
+    
+        $Tab_Tasks = array() ;
+
+        foreach( $Dids as $Did ){
+            log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Did='.$Did);
+            /// Lecture des taches de ce module
+            $Skip = 0;            /// Nombre d'element sauté
+            $Limit = 100;         /// Limite du nombre de tache
+
+            do {
+                /// Lecture des taches par pas de $Limit
+                $aTasks = HttpGizwits::GetSchedulerList($Did, $Skip, $Limit);
+
+                /// Boucle des taches
+                foreach ($aTasks as $TaskNum => $aTask) {
+                    $Tab_Tasks[] = $aTask ;
+                }
+                $Skip += count($aTasks);
+
+            } while(!empty($aTasks) && count($aTasks) >= $Limit);
+        } // foreach
+        
+        if( $Skip === 0 )
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') : Aucune tâche trouvée' );
+        
+        return $Tab_Tasks ;
+    }
 
     /**
      * @brief Fonction qui permet de créer une tache
@@ -311,13 +362,15 @@ class HttpGizwits {
      * @return l'id de la tâche ou false en cas d'erreur
      */
 //class HttpGizwits
-    public static function CreateScheduler($UserToken, $Did, $Param) {
+    public static function CreateScheduler($Did, $Param) {
 
         /*
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $UserToken='.$UserToken);
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Did='.$Did);
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Param='.var_export($Param, true));
         */
+        
+        $UserToken = config::byKey('UserToken','heatzy','');
       
         if(empty($UserToken) || empty($Did) || empty($Param)){
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
@@ -391,7 +444,7 @@ class HttpGizwits {
      * @return Un tableau associatif ou false en cas d'erreur
      */
 //class HttpGizwits
-    public static function UpdateScheduler($UserToken, $Did, $Id, $Param, $Recurrence = 0) {
+    public static function UpdateScheduler($Did, $Id, $Param, $Recurrence = 0) {
 
         /*
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $UserToken='.$UserToken);
@@ -399,6 +452,8 @@ class HttpGizwits {
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Id='.$Id);
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Param='.var_export($Param, true));
         */
+
+        $UserToken = config::byKey('UserToken','heatzy','');
         
         if(empty($UserToken) || empty($Did) || empty($Id) || empty($Param)){
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
@@ -450,8 +505,8 @@ class HttpGizwits {
                 log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- On retente (Recurrence '.$Recurrence.')');
                 sleep( 1 + 2 ** $Recurrence ); // tempo (augmente avec le cumul des essais - A la puissance de la recurrence)
                 
-                //$aRep = self::UpdateScheduler($UserToken, $Did, $Id, $Param, $Recurrence + 1) ;
-                $aRep = self::UpdateScheduler($UserToken, $Did, $Id, $Param, $Recurrence + 1) ;
+                //$aRep = self::UpdateScheduler($Did, $Id, $Param, $Recurrence + 1) ;
+                $aRep = self::UpdateScheduler($Did, $Id, $Param, $Recurrence + 1) ;
                 if( $aRep === false ){
                     log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- Nouvelle tentative KO (Recurrence '.$Recurrence.')');
                     return false;
@@ -490,13 +545,15 @@ class HttpGizwits {
      * @return true ou false en cas d'erreur
      */
 //class HttpGizwits
-    public static function DeleteScheduler($UserToken, $Did, $Id, $Recurrence = 0 ) {
+    public static function DeleteScheduler($Did, $Id, $Recurrence = 0 ) {
     
         /*
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $UserToken='.$UserToken);
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Did='.$Did);
         log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': $Id='.$Id);
         */
+        
+        $UserToken = config::byKey('UserToken','heatzy','');
     
         if(empty($UserToken) || empty($Did) || empty($Id) ){
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');
@@ -773,7 +830,7 @@ class HttpGizwits {
 //class HttpGizwits
     public static function GetConsigne($Did, $Recurrence = 0 ) {
               
-      	$UserToken = config::byKey('UserToken','heatzy','');
+        $UserToken = config::byKey('UserToken','heatzy','');
       
         if(empty($Did) || empty($UserToken)){
             log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.': argument invalide');

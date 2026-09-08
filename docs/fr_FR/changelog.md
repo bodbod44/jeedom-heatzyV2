@@ -1,32 +1,32 @@
-# 05/09/2026 (beta)
-- En mode API REST, la modification de l'affichage (après un clic sur un nouveau mode par ex) ne sera plus forcé et attendra la bonne prise en compte par heatzy (enviro 2sec) pour éviter les faux positifs.
-- Correction et amélioration de la prise en charge des modules de première génération (Heatzy - Pilote_V1)
+# 08/09/2026 (beta)
+- Correction et amélioration de la **prise en charge des modules de première génération** (Heatzy - Pilote_V1)
   - Correction de l'envoi et récéption de commande en WebSocket (merci @SylvainF et @toysnic pour les tests)
   - Correction de l'activation et désactivation de la programmation
   - Mise à jour de l'affichage de l'état de la programmation (actif si au moins une tâche est active)
   - Prise en charge de l'affichage du planning de programmation pour ce module (merci @toysnic pour sa patience lors de mes nombreuses demandes)
+- En mode API REST, la modification de l'affichage (après un clic sur un nouveau mode par ex) ne sera plus forcé et attendra la bonne prise en compte par heatzy (enviro 2sec) pour éviter les faux positifs.
 - L'affichage des tâches programmées n'est plus limitées à 20 par modules
 - La mise à jour et supression des tâches programmées ont été améliorées (rejeu sur échec)
 
 # 21/07/2026 (stable)
-- Correction de l'opacity sur la page configuration
 - Modfication des comptabilités du plugin (info.json)
+- Correction de l'opacity sur la page configuration
 
 # 16/05/2026 (stable)
-- Ajustements des commandes créées par défaut pour les nouveaux modules
-  - Module "Glow_Simple" : Ajout de la commande lock, temp_eco (valeur+consigne), temp_confort (valeur+consigne), Tendance de t° et détéction ouverture fenetre
-  - Module "Glow_Simple_ble" : Ajout de la commande lock
-  - Module "onyx" : Ajout de la commande lock, temp_eco (valeur+consigne), temp_confort (valeur+consigne), Tendancede t° et détéction ouverture fenetre
-  - Module "Elec_Pro" : Ajout des commandes lock et dérogation
-  - Module "Pilote_Soc_C3" : Ajout des commandes lock et dérogation
+- Ajustements des **commandes créées** par défaut pour les nouveaux modules
+  - **Module "Glow_Simple"** : Ajout de la commande lock, temp_eco (valeur+consigne), temp_confort (valeur+consigne), Tendance de t° et détéction ouverture fenetre
+  - **Module "Glow_Simple_ble"** : Ajout de la commande lock
+  - **Module "onyx"** : Ajout de la commande lock, temp_eco (valeur+consigne), temp_confort (valeur+consigne), Tendancede t° et détéction ouverture fenetre
+  - **Module "Elec_Pro"** : Ajout des commandes lock et dérogation
+  - **Module "Pilote_Soc_C3"** : Ajout des commandes lock et dérogation
 - Mise à jour de la documentation
 - Ajout des infos du plugin dans les statistiques
 
 # 09/05/2026 (stable)
-- Ajout d'un demon pour améliorer la gestion des appels
+- **Ajout d'un demon pour améliorer la gestion des appels**
   - Si le port du demon n'est pas valorisé le plugin le valorise avec un port libre
   - Le choix du type d'appel est laissé à l'utilisateur
-- La configuration du plugin se trouve maintenant dans la rubrique "confort" (au lieu de "objets connectés")
+- La configuration du plugin se trouve maintenant dans la **rubrique "confort"** (au lieu de "objets connectés")
 - Refonte du systeme de création des commandes (parametré dans le pluigin, reconnaissancee et apprentissage)
 - Ajout d'une modale pour afficher le planning de programmation de la semaine
 - Ajout d'un bouton permettant de remettre l'ordre d'origine dans les commandes (n'influe pas sur l'ordre d'affichage du tempalte bodbod)
@@ -45,11 +45,11 @@
 - Testé sur Trixie (Debian 13.4 / jeedom 4.5.3 / Python 3.13.5 / PHP 8.4.16)
 
 # 23/11/2025 (stable)
-- Ajout d'une modale permettant de gérer les tâches planifiées Heatzy (Visualisation, Création, Mise à jour, et suppression)
+- Ajout d'une **modale permettant de gérer les tâches planifiées** Heatzy (Visualisation, Création, Mise à jour, et suppression)
 
 # 15/11/2025 (stable)
 - Le timeout par défaut pour les connexions gizwits.com passe à 30sec
-- Mise en place d'un système de réémission d'appel API (jusqu'à 4 fois) lors d'un problème de connexion au serveur (Uniquement sur SetConsigne et GetConsigne)
+- Mise en place d'un **système de réémission d'appel API** (jusqu'à 4 fois) lors d'un problème de connexion au serveur (Uniquement sur SetConsigne et GetConsigne)
 
 # 25/10/2025 (stable)
 - Le mode derogation vacances passe de 0 à 1 jour par défaut (si pas de délai fourni)
