@@ -4,9 +4,9 @@
   - Correction de l'activation et désactivation de la programmation
   - Mise à jour de l'affichage de l'état de la programmation (actif si au moins une tâche est active)
   - Prise en charge de l'affichage du planning de programmation pour ce module (merci @toysnic pour sa patience lors de mes nombreuses demandes)
-- En mode API REST, la modification de l'affichage (après un clic sur un nouveau mode par ex) ne sera plus forcé et attendra la bonne prise en compte par heatzy (enviro 2sec) pour éviter les faux positifs.
+- En mode API REST, la modification de l'affichage (après un clic sur un nouveau mode par ex) ne sera plus forcée et attendra la bonne prise en compte par heatzy (enviro 2sec) pour éviter les faux positifs.
 - L'affichage des tâches programmées n'est plus limitées à 20 par modules
-- La mise à jour et supression des tâches programmées ont été améliorées (rejeu sur échec)
+- La mise à jour et suppression des tâches programmées ont été améliorées (rejeu sur échec)
 
 # 21/07/2026 (stable)
 - Modfication des comptabilités du plugin (info.json)
