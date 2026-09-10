@@ -775,9 +775,15 @@ class heatzy extends eqLogic {
             $heatzy = eqLogic::byLogicalId($Did, 'heatzy' , false) ;
             
             if( $heatzy ){
-                $Tasks = HttpGizwits::GetSchedulerListFull( $heatzy->getLogicalId() ) ;
-                log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : count($Tasks)='.count($Tasks) );
-                self::CheckAndUpdateActivProg( $Tasks , $heatzy ) ; //->getLogicalId()
+                
+                if( in_array( $heatzy->getConfiguration('product_name', '') , array( 'Heatzy' , 'Flam_Week2') ) ){
+                    $Tasks = HttpGizwits::GetSchedulerListFull( $heatzy->getLogicalId() ) ;
+                    if( $Tasks === false )
+                        continue ;
+                    
+                    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : count($Tasks)='.count($Tasks) );
+                    self::CheckAndUpdateActivProg( $Tasks , $heatzy ) ; //->getLogicalId()
+                }
             }
             else
                 log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : eqlogic non trouvé' );

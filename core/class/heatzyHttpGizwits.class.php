@@ -285,13 +285,12 @@ class HttpGizwits {
                 return false;
         }
         else{ // Le serveur a répondu
+            ///Décodage de la réponse
             $aRep = json_decode($result, true);
         }
       
         log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
 
-        ///Décodage de la réponse
-        $aRep = json_decode($result, true);
         if(isset($aRep['error_message'])) {
             throw new Exception(__('DID : ', __FILE__) . $Did.' '.__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
         }
@@ -335,6 +334,8 @@ class HttpGizwits {
             do {
                 /// Lecture des taches par pas de $Limit
                 $aTasks = HttpGizwits::GetSchedulerList($Did, $Skip, $Limit);
+                if( $aTasks === false )
+                    return false ;
 
                 /// Boucle des taches
                 foreach ($aTasks as $TaskNum => $aTask) {
@@ -517,13 +518,11 @@ class HttpGizwits {
                 return false;
         }
         else{ // Le serveur a répondu
+            ///Décodage de la réponse
             $aRep = json_decode($result, true);
         }
       
         log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
-        
-        ///Décodage de la réponse
-        //$aRep = json_decode($result, true);
     
         if(isset($aRep['error_message'])) {
             throw new Exception(__('Gizwits erreur : ', __FILE__) . $aRep['error_code'].' '.$aRep['error_message'] . __(', detail :  ', __FILE__) .$aRep['detail_message']);
@@ -613,6 +612,7 @@ class HttpGizwits {
                 return false;
         }
         else{ // Le serveur a répondu
+            ///Décodage de la réponse
             $aRep = json_decode($result, true);
         }
         log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.':'.$Did.'- http OK (Recurrence '.$Recurrence.')');
@@ -942,7 +942,7 @@ class HttpGizwits {
 //class HttpGizwits
     public static function GetGroups() {
               
-      	$UserToken = config::byKey('UserToken','heatzy','');
+        $UserToken = config::byKey('UserToken','heatzy','');
               
         /// Parametres cUrl
         $params = array(
