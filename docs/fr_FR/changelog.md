@@ -1,3 +1,6 @@
+# 11/09/2026 (beta)
+- Correction d'une erreur en cas de rejeu de GetSchedulerList
+
 # 08/09/2026 (beta)
 - Correction et amélioration de la **prise en charge des modules de première génération** (Heatzy - Pilote_V1)
   - Correction de l'envoi et récéption de commande en WebSocket (merci @SylvainF et @toysnic pour les tests)
