@@ -159,7 +159,10 @@ function RecupDonnees_PiloteV1( $MonEqLogic ){
 
     // Récupère toutes les tâches
     $Tasks = HttpGizwits::GetSchedulerListFull( $MonEqLogic->getLogicalId() );
-    log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$MonEqLogic->getLogicalId().' : count($Tasks)='.count($Tasks ?? array()) );
+    if( $Tasks === false )
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$MonEqLogic->getLogicalId().' : GetSchedulerListFull KO' );
+    else
+        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$MonEqLogic->getLogicalId().' : count($Tasks)='.count($Tasks ?? array()) );
     
     // Verification de l'activation de la programmation
     $time_switch = heatzy::CheckAndUpdateActivProg( $Tasks , $MonEqLogic->getLogicalId() ) ;
