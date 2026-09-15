@@ -54,10 +54,10 @@ class Synchro {
             return false;
         }
             
-        $UserToken = config::byKey('UserToken','heatzy','none');   
+        $UserToken = config::byKey('UserToken','heatzy','none');
       
         /// Bindings
-        $aDevices = HttpGizwits::Bindings($UserToken);      
+        $aDevices = HttpGizwits::Bindings($UserToken);
       
         if($aDevices === false) {
             log::add('heatzy', 'warning',  __METHOD__.'(ln '.__LINE__.')'.' : HttpGizwits::Bindings - impossible de se connecter à : '.HttpGizwits::$UrlGizwits);
@@ -155,7 +155,7 @@ class Synchro {
         } // foreach
         
         //log::add('heatzy', 'info', 'Synchronistation de '. count($aDevices ['devices']).' module(s) Heatzy');
-      	$return['delete'] = 0 ;
+        $return['delete'] = 0 ;
         if( $return['new'] > 0)
             log::add('heatzy', 'info', $return['new'].' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s) Heatzy rattaché(s) au compte');
         log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.')'.' '.$return['new'].' module(s) Heatzy ajouté(s) - '.count($aDevices ['devices']).'  module(s) Heatzy rattaché(s) au compte');
@@ -167,12 +167,12 @@ class Synchro {
                 if( $heatzy->getIsEnable() == 1 ){
                     $heatzy->setIsEnable(0);
                     $heatzy->setIsVisible(0) ;
-                    $heatzy->checkAndUpdateCmd('IsOnLine', 0 );   
-                  	$heatzy->save();
+                    $heatzy->checkAndUpdateCmd('IsOnLine', 0 );
+                    $heatzy->save();
 
                     $heatzy->setStatus('timeout','1');
                     log::add('heatzy', 'error', 'Le module -'.$heatzy->getName().'- ('.$heatzy->getLogicalId().') n est plus rattaché au compte. Il est maintenant désactivé et non visible (mais pas supprimé)' );   
-                  	$return['delete']++ ;
+                    $return['delete']++ ;
                 }
             }
         }
@@ -220,7 +220,7 @@ class Synchro {
             } //foreach($aRep['attr']
         } //foreach ($eqLogics
         //message::add("Heatzy", 'Etape 2/3 : Commandes créées par lecture et reconneconnaissance de json de retour' );
-      	log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' Etape 1/2 : Commandes créées par lecture et reconneconnaissance de json de retour' );
+        log::add('heatzy', 'debug',  __METHOD__.'(ln '.__LINE__.')'.' Etape 1/2 : Commandes créées par lecture et reconneconnaissance de json de retour' );
 
       
         $tab_Learn = self::LireJSON( '_Learn' ) ;

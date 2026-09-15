@@ -324,7 +324,7 @@ logging.debug('Log level: %s', _log_level)
 logging.debug('Socket port: %s', _socket_port)
 logging.debug('Socket host: %s', _socket_host)
 logging.debug('PID file: %s', _pidfile)
-logging.debug('Apikey: %s', _apikey)
+#logging.debug('Apikey: %s', _apikey)
 logging.debug('Device: %s', _device)
 
 signal.signal(signal.SIGINT, handler)

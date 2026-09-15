@@ -760,6 +760,7 @@ class heatzy extends eqLogic {
         }
         
         if( $Dids === null ){
+            $Dids = array() ;
             foreach (eqLogic::byType('heatzy') as $heatzy) {
                 $Dids[] = $heatzy->getLogicalId() ;
             }
@@ -773,14 +774,13 @@ class heatzy extends eqLogic {
 
         foreach($Dids as $Did){
             $heatzy = eqLogic::byLogicalId($Did, 'heatzy' , false) ;
-            
+
             if( $heatzy ){
-                
                 if( in_array( $heatzy->getConfiguration('product_name', '') , array( 'Heatzy' , 'Flam_Week2') ) ){
                     $Tasks = HttpGizwits::GetSchedulerListFull( $heatzy->getLogicalId() ) ;
                     if( $Tasks === false )
                         continue ;
-                    
+
                     log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : count($Tasks)='.count($Tasks) );
                     self::CheckAndUpdateActivProg( $Tasks , $heatzy ) ; //->getLogicalId()
                 }
@@ -880,7 +880,12 @@ class heatzy extends eqLogic {
     public function GestProg($EtatProg) {
         
         $Tasks = HttpGizwits::GetSchedulerListFull( $this->getLogicalId() ) ;
-        log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : count($Tasks)='.count($Tasks) );
+        if( $Tasks === false ){
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : GetSchedulerListFull KO' );
+            return true ;
+        }
+        else
+            log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.') '.$this->getLogicalId() . ' : count($Tasks)='.count($Tasks) );
         
         foreach ($Tasks as $aTask){
             log::add('heatzy', 'debug', __METHOD__.'(ln '.__LINE__.'). : Tâche' );
