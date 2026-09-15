@@ -63,22 +63,26 @@ try {
   
 	if (init('action') == 'GetSchedulerList') {
 		//require_once dirname(__FILE__) . '/../class/heatzy.class.php';
-		ajax::success( HttpGizwits::GetSchedulerList( config::byKey('UserToken','heatzy','none'), init('Did'), init('Skip'), init('Limit') ) );
+		ajax::success( HttpGizwits::GetSchedulerList(init('Did'), init('Skip'), init('Limit') ) );
 	}
-  
+	if (init('action') == 'GetSchedulerListFull') {
+		//require_once dirname(__FILE__) . '/../class/heatzy.class.php';
+		ajax::success( HttpGizwits::GetSchedulerListFull(init('Did') ) );
+	}
+	
     if (init('action') == 'CreateScheduler') {
 		//require_once dirname(__FILE__) . '/../class/heatzy.class.php';
-		ajax::success( HttpGizwits::CreateScheduler(config::byKey('UserToken','heatzy','none'), init('Did'), json_decode(init('Param')) ) );
+		ajax::success( HttpGizwits::CreateScheduler(init('Did'), json_decode(init('Param')) ) );
 	}
 
 	if (init('action') == 'UpdateScheduler') {
 		//require_once dirname(__FILE__) . '/../class/heatzy.class.php';
-		ajax::success( HttpGizwits::UpdateScheduler(config::byKey('UserToken','heatzy','none'), init('Did'), init('Id'), json_decode(init('Param')) ) );
+		ajax::success( HttpGizwits::UpdateScheduler(init('Did'), init('Id'), json_decode(init('Param')) ) );
 	}
 
 	if (init('action') == 'DeleteScheduler') {
 		//require_once dirname(__FILE__) . '/../class/heatzy.class.php';
-		ajax::success( HttpGizwits::DeleteScheduler(config::byKey('UserToken','heatzy','none'), init('Did'), init('Id') ) );
+		ajax::success( HttpGizwits::DeleteScheduler(init('Did'), init('Id') ) );
     }
 
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
